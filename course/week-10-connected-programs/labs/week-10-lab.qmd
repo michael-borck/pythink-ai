@@ -1,0 +1,1491 @@
+---
+title: "Week 10 Lab: Connected Programs"
+subtitle: "Building Resilient Applications That Connect to the World"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Lab Overview
+
+**Duration**: 2 hours  
+**Objective**: Build connected programs that handle errors gracefully and integrate with external services
+
+## Learning Goals
+
+By the end of this lab, you will:
+- Master try/except error handling patterns
+- Process JSON data safely and efficiently  
+- Make HTTP requests to real APIs
+- Build fault-tolerant applications
+- Create professional user experiences during failures
+- Use AI effectively for debugging connection issues
+
+---
+
+# Exercise 1: Error Handling Fundamentals (20 minutes)
+
+## Introduction
+
+Before connecting to external services, we need to master error handling. Let's start with common operations that can fail.
+
+### 1.1 File Operations with Error Handling
+
+**Task**: Create a robust file reader that handles all possible errors.
+
+```python
+def safe_file_reader(filename):
+    """Read file content with comprehensive error handling."""
+    try:
+        with open(filename, 'r') as file:
+            content = file.read()
+            return {"success": True, "content": content}
+    except FileNotFoundError:
+        return {"success": False, "error": "File not found"}
+    except PermissionError:
+        return {"success": False, "error": "Permission denied"}
+    except UnicodeDecodeError:
+        return {"success": False, "error": "File encoding error"}
+    except Exception as e:
+        return {"success": False, "error": f"Unexpected error: {e}"}
+
+# Test your function:
+print(safe_file_reader("existing_file.txt"))
+print(safe_file_reader("missing_file.txt"))
+```
+
+**AI Collaboration Challenge**: 
+Ask AI: "What other file errors should I handle for production code?"
+
+### 1.2 Data Conversion with Validation
+
+**Task**: Create functions that safely convert user input.
+
+```python
+def safe_int_converter(user_input, default=None):
+    """Convert string to integer with error handling."""
+    try:
+        return {"success": True, "value": int(user_input)}
+    except ValueError:
+        if default is not None:
+            return {"success": True, "value": default, "used_default": True}
+        return {"success": False, "error": "Not a valid number"}
+    except TypeError:
+        return {"success": False, "error": "Input must be a string or number"}
+
+def safe_float_converter(user_input, min_value=None, max_value=None):
+    """Convert to float with range validation."""
+    try:
+        value = float(user_input)
+        
+        # Range validation
+        if min_value is not None and value < min_value:
+            return {"success": False, "error": f"Value must be at least {min_value}"}
+        if max_value is not None and value > max_value:
+            return {"success": False, "error": f"Value must be at most {max_value}"}
+            
+        return {"success": True, "value": value}
+        
+    except ValueError:
+        return {"success": False, "error": "Not a valid number"}
+    except TypeError:
+        return {"success": False, "error": "Input must be a string or number"}
+
+# Test your functions:
+print(safe_int_converter("42"))
+print(safe_int_converter("not_a_number"))
+print(safe_float_converter("3.14", min_value=0, max_value=10))
+print(safe_float_converter("-5", min_value=0))
+```
+
+### 1.3 Dictionary Access with Fallbacks
+
+**Task**: Create safe data access functions.
+
+```python
+def safe_get_nested(data, keys, default=None):
+    """Safely get nested dictionary values."""
+    try:
+        current = data
+        for key in keys:
+            current = current[key]
+        return {"success": True, "value": current}
+    except (KeyError, TypeError):
+        return {"success": True, "value": default, "used_default": True}
+    except Exception as e:
+        return {"success": False, "error": f"Access error: {e}"}
+
+# Test with nested data:
+test_data = {
+    "user": {
+        "profile": {
+            "name": "Alice",
+            "age": 30
+        },
+        "settings": {
+            "theme": "dark",
+            "notifications": True
+        }
+    }
+}
+
+print(safe_get_nested(test_data, ["user", "profile", "name"]))
+print(safe_get_nested(test_data, ["user", "profile", "email"], "No email"))
+print(safe_get_nested(test_data, ["user", "missing", "field"], "Default"))
+```
+
+**Reflection Questions**:
+1. Which error types are most common in your tests?
+2. How do default values improve user experience?
+3. When should you use specific exceptions vs generic Exception?
+
+---
+
+# Exercise 2: JSON Data Processing (25 minutes)
+
+## Introduction
+
+JSON is the universal language of APIs. Let's master safe JSON processing.
+
+### 2.1 Basic JSON Operations
+
+**Task**: Create robust JSON processors.
+
+```python
+import json
+
+def safe_json_parse(json_string):
+    """Parse JSON with comprehensive error handling."""
+    try:
+        data = json.loads(json_string)
+        return {"success": True, "data": data}
+    except json.JSONDecodeError as e:
+        return {"success": False, "error": f"Invalid JSON: {e.msg} at line {e.lineno}"}
+    except TypeError:
+        return {"success": False, "error": "Input must be a string"}
+    except Exception as e:
+        return {"success": False, "error": f"Parse error: {e}"}
+
+def safe_json_create(data):
+    """Convert Python data to JSON safely."""
+    try:
+        json_string = json.dumps(data, indent=2)
+        return {"success": True, "json": json_string}
+    except TypeError as e:
+        return {"success": False, "error": f"Data not JSON serializable: {e}"}
+    except Exception as e:
+        return {"success": False, "error": f"Conversion error: {e}"}
+
+# Test with various inputs:
+print(safe_json_parse('{"name": "Alice", "age": 30}'))
+print(safe_json_parse('{"name": "Bob", "age":}'))  # Invalid JSON
+print(safe_json_parse(123))  # Wrong type
+
+test_data = {"name": "Charlie", "hobbies": ["reading", "coding"]}
+print(safe_json_create(test_data))
+```
+
+### 2.2 Data Validation and Extraction
+
+**Task**: Create a data validator for API responses.
+
+```python
+def validate_weather_data(json_data):
+    """Validate weather API response structure."""
+    try:
+        # Required fields check
+        required_fields = ["temp", "condition", "humidity"]
+        missing_fields = []
+        
+        for field in required_fields:
+            if field not in json_data:
+                missing_fields.append(field)
+        
+        if missing_fields:
+            return {
+                "valid": False, 
+                "error": f"Missing required fields: {', '.join(missing_fields)}"
+            }
+        
+        # Type validation
+        temp = json_data["temp"]
+        if not isinstance(temp, (int, float)):
+            return {"valid": False, "error": "Temperature must be a number"}
+        
+        humidity = json_data["humidity"]
+        if not isinstance(humidity, (int, float)) or not (0 <= humidity <= 100):
+            return {"valid": False, "error": "Humidity must be 0-100"}
+        
+        condition = json_data["condition"]
+        if not isinstance(condition, str) or len(condition) == 0:
+            return {"valid": False, "error": "Condition must be a non-empty string"}
+        
+        # Extract validated data
+        return {
+            "valid": True,
+            "data": {
+                "temperature": float(temp),
+                "condition": condition.strip(),
+                "humidity": float(humidity),
+                "location": json_data.get("location", "Unknown"),
+                "timestamp": json_data.get("timestamp", "Unknown")
+            }
+        }
+        
+    except Exception as e:
+        return {"valid": False, "error": f"Validation error: {e}"}
+
+# Test with various data:
+valid_data = {
+    "temp": 72.5,
+    "condition": "sunny",
+    "humidity": 45,
+    "location": "Seattle"
+}
+
+invalid_data_1 = {
+    "temp": "not_a_number",
+    "condition": "sunny",
+    "humidity": 45
+}
+
+invalid_data_2 = {
+    "temp": 72,
+    "condition": "sunny"
+    # Missing humidity
+}
+
+print("Valid data:", validate_weather_data(valid_data))
+print("Invalid temp:", validate_weather_data(invalid_data_1))
+print("Missing field:", validate_weather_data(invalid_data_2))
+```
+
+### 2.3 Complex JSON Processing
+
+**Task**: Handle nested JSON structures safely.
+
+```python
+def process_forecast_data(forecast_json):
+    """Process complex forecast JSON with error handling."""
+    try:
+        # Parse JSON if it's a string
+        if isinstance(forecast_json, str):
+            data = json.loads(forecast_json)
+        else:
+            data = forecast_json
+        
+        # Navigate nested structure
+        location = data.get("location", {}).get("name", "Unknown Location")
+        current = data.get("current", {})
+        forecast = data.get("forecast", {}).get("forecastday", [])
+        
+        if not current:
+            return {"success": False, "error": "No current weather data"}
+        
+        # Process current weather
+        current_weather = {
+            "location": location,
+            "temperature": current.get("temp_f", 0),
+            "condition": current.get("condition", {}).get("text", "Unknown"),
+            "humidity": current.get("humidity", 0),
+            "wind_speed": current.get("wind_mph", 0)
+        }
+        
+        # Process forecast (first 3 days)
+        forecast_days = []
+        for day in forecast[:3]:
+            day_data = day.get("day", {})
+            forecast_days.append({
+                "date": day.get("date", "Unknown"),
+                "high": day_data.get("maxtemp_f", 0),
+                "low": day_data.get("mintemp_f", 0),
+                "condition": day_data.get("condition", {}).get("text", "Unknown"),
+                "chance_of_rain": day_data.get("daily_chance_of_rain", 0)
+            })
+        
+        return {
+            "success": True,
+            "current": current_weather,
+            "forecast": forecast_days
+        }
+        
+    except json.JSONDecodeError as e:
+        return {"success": False, "error": f"Invalid JSON format: {e}"}
+    except Exception as e:
+        return {"success": False, "error": f"Processing error: {e}"}
+
+# Test with sample data:
+sample_forecast = '''
+{
+  "location": {"name": "Seattle, WA"},
+  "current": {
+    "temp_f": 68.5,
+    "condition": {"text": "Partly cloudy"},
+    "humidity": 72,
+    "wind_mph": 8.5
+  },
+  "forecast": {
+    "forecastday": [
+      {
+        "date": "2024-01-15",
+        "day": {
+          "maxtemp_f": 71,
+          "mintemp_f": 55,
+          "condition": {"text": "Sunny"},
+          "daily_chance_of_rain": 10
+        }
+      },
+      {
+        "date": "2024-01-16",
+        "day": {
+          "maxtemp_f": 69,
+          "mintemp_f": 58,
+          "condition": {"text": "Cloudy"},
+          "daily_chance_of_rain": 30
+        }
+      }
+    ]
+  }
+}
+'''
+
+result = process_forecast_data(sample_forecast)
+if result["success"]:
+    print(f"Current: {result['current']['temperature']}°F, {result['current']['condition']}")
+    for day in result["forecast"]:
+        print(f"{day['date']}: {day['high']}°F/{day['low']}°F - {day['condition']}")
+else:
+    print(f"Error: {result['error']}")
+```
+
+**AI Challenge**: 
+Ask AI: "How can I make this JSON processing more efficient while maintaining safety?"
+
+---
+
+# Exercise 3: HTTP Requests and API Integration (25 minutes)
+
+## Introduction
+
+Now let's connect to real external services using HTTP requests.
+
+### 3.1 Basic HTTP Requests
+
+**Task**: Create a robust HTTP client.
+
+```python
+import urllib.request
+import urllib.parse
+import json
+
+def make_http_request(url, params=None, timeout=10):
+    """Make HTTP request with comprehensive error handling."""
+    try:
+        # Build URL with parameters
+        if params:
+            query_string = urllib.parse.urlencode(params)
+            full_url = f"{url}?{query_string}"
+        else:
+            full_url = url
+        
+        # Make request
+        with urllib.request.urlopen(full_url, timeout=timeout) as response:
+            status_code = response.getcode()
+            content = response.read().decode('utf-8')
+            
+            return {
+                "success": True,
+                "status_code": status_code,
+                "content": content,
+                "url": full_url
+            }
+            
+    except urllib.error.HTTPError as e:
+        return {
+            "success": False,
+            "error": f"HTTP {e.code}: {e.reason}",
+            "status_code": e.code
+        }
+    except urllib.error.URLError as e:
+        return {
+            "success": False,
+            "error": f"Connection failed: {e.reason}"
+        }
+    except TimeoutError:
+        return {
+            "success": False,
+            "error": f"Request timed out after {timeout} seconds"
+        }
+    except Exception as e:
+        return {
+            "success": False,
+            "error": f"Unexpected error: {e}"
+        }
+
+# Test with a simple API:
+result = make_http_request("https://httpbin.org/json")
+if result["success"]:
+    print(f"Status: {result['status_code']}")
+    print(f"Content: {result['content'][:100]}...")
+else:
+    print(f"Error: {result['error']}")
+
+# Test with parameters:
+params_result = make_http_request(
+    "https://httpbin.org/get", 
+    {"test": "value", "number": 42}
+)
+print(f"With params: {params_result['success']}")
+```
+
+### 3.2 API Response Handling
+
+**Task**: Create functions to handle different API response types.
+
+```python
+def handle_api_response(response_result):
+    """Process API response with appropriate error handling."""
+    if not response_result["success"]:
+        return {
+            "status": "error",
+            "message": response_result["error"],
+            "data": None
+        }
+    
+    status_code = response_result["status_code"]
+    content = response_result["content"]
+    
+    # Handle different status codes
+    if status_code == 200:
+        try:
+            data = json.loads(content)
+            return {
+                "status": "success",
+                "message": "Data retrieved successfully",
+                "data": data
+            }
+        except json.JSONDecodeError:
+            return {
+                "status": "error",
+                "message": "Invalid JSON response",
+                "data": None
+            }
+    
+    elif status_code == 400:
+        return {
+            "status": "error",
+            "message": "Bad request - check your parameters",
+            "data": None
+        }
+    elif status_code == 401:
+        return {
+            "status": "error",
+            "message": "Authentication required - check API key",
+            "data": None
+        }
+    elif status_code == 403:
+        return {
+            "status": "error",
+            "message": "Access forbidden - check permissions",
+            "data": None
+        }
+    elif status_code == 404:
+        return {
+            "status": "error",
+            "message": "Resource not found",
+            "data": None
+        }
+    elif status_code == 429:
+        return {
+            "status": "error",
+            "message": "Rate limit exceeded - try again later",
+            "data": None
+        }
+    elif status_code >= 500:
+        return {
+            "status": "error",
+            "message": "Server error - try again later",
+            "data": None
+        }
+    else:
+        return {
+            "status": "error",
+            "message": f"Unexpected status code: {status_code}",
+            "data": None
+        }
+
+# Test with different scenarios:
+good_response = make_http_request("https://httpbin.org/json")
+print("Good response:", handle_api_response(good_response))
+
+not_found_response = make_http_request("https://httpbin.org/status/404")
+print("404 response:", handle_api_response(not_found_response))
+```
+
+### 3.3 Retry Logic and Resilience
+
+**Task**: Build a resilient API client with retry logic.
+
+```python
+import time
+
+def resilient_api_call(url, params=None, max_retries=3, timeout=10):
+    """Make API call with retry logic and exponential backoff."""
+    for attempt in range(max_retries):
+        try:
+            print(f"Attempt {attempt + 1} of {max_retries}")
+            
+            result = make_http_request(url, params, timeout)
+            
+            if result["success"]:
+                status_code = result["status_code"]
+                
+                # Success - return immediately
+                if status_code == 200:
+                    return {
+                        "success": True,
+                        "data": json.loads(result["content"]),
+                        "attempts": attempt + 1
+                    }
+                
+                # Rate limited - wait and retry
+                elif status_code == 429:
+                    if attempt < max_retries - 1:
+                        wait_time = 2 ** attempt  # Exponential backoff: 1, 2, 4 seconds
+                        print(f"Rate limited. Waiting {wait_time} seconds...")
+                        time.sleep(wait_time)
+                        continue
+                
+                # Server error - retry
+                elif status_code >= 500:
+                    if attempt < max_retries - 1:
+                        wait_time = 1 + attempt  # Linear backoff: 1, 2, 3 seconds
+                        print(f"Server error. Waiting {wait_time} seconds...")
+                        time.sleep(wait_time)
+                        continue
+                
+                # Other errors - don't retry
+                else:
+                    return {
+                        "success": False,
+                        "error": f"HTTP {status_code}",
+                        "attempts": attempt + 1
+                    }
+            
+            # Connection failed - retry
+            else:
+                if attempt < max_retries - 1:
+                    wait_time = 1 + attempt
+                    print(f"Connection failed. Waiting {wait_time} seconds...")
+                    time.sleep(wait_time)
+                    continue
+                else:
+                    return {
+                        "success": False,
+                        "error": result["error"],
+                        "attempts": attempt + 1
+                    }
+        
+        except Exception as e:
+            if attempt < max_retries - 1:
+                print(f"Unexpected error: {e}. Retrying...")
+                time.sleep(1)
+                continue
+            else:
+                return {
+                    "success": False,
+                    "error": f"Unexpected error: {e}",
+                    "attempts": attempt + 1
+                }
+    
+    return {
+        "success": False,
+        "error": "Max retries exceeded",
+        "attempts": max_retries
+    }
+
+# Test the resilient client:
+result = resilient_api_call("https://httpbin.org/json")
+if result["success"]:
+    print(f"Success after {result['attempts']} attempts")
+    print(f"Data keys: {list(result['data'].keys())}")
+else:
+    print(f"Failed after {result['attempts']} attempts: {result['error']}")
+```
+
+**AI Collaboration**: 
+Ask AI: "What other retry strategies should I consider for production APIs?"
+
+---
+
+# Exercise 4: Building a Weather Information System (30 minutes)
+
+## Introduction
+
+Let's integrate everything into a complete weather information system.
+
+### 4.1 Weather API Client
+
+**Task**: Create a complete weather service client.
+
+```python
+import json
+import time
+from datetime import datetime
+
+class WeatherClient:
+    """Professional weather API client with caching and error handling."""
+    
+    def __init__(self, api_key=None, cache_duration=300):  # 5 minutes default
+        self.api_key = api_key or "demo_key"
+        self.cache_duration = cache_duration
+        self.cache = {}
+        
+    def _get_cache_key(self, city):
+        """Generate cache key for city."""
+        return f"weather_{city.lower().replace(' ', '_')}"
+    
+    def _is_cache_valid(self, cache_entry):
+        """Check if cached data is still valid."""
+        if not cache_entry:
+            return False
+        
+        cached_time = cache_entry.get("timestamp", 0)
+        current_time = time.time()
+        
+        return (current_time - cached_time) < self.cache_duration
+    
+    def _cache_data(self, city, data):
+        """Cache weather data with timestamp."""
+        cache_key = self._get_cache_key(city)
+        self.cache[cache_key] = {
+            "data": data,
+            "timestamp": time.time()
+        }
+    
+    def _get_cached_data(self, city):
+        """Get cached data if valid."""
+        cache_key = self._get_cache_key(city)
+        cache_entry = self.cache.get(cache_key)
+        
+        if self._is_cache_valid(cache_entry):
+            return cache_entry["data"]
+        
+        return None
+    
+    def get_weather(self, city):
+        """Get weather data with caching and error handling."""
+        try:
+            # Check cache first
+            cached_data = self._get_cached_data(city)
+            if cached_data:
+                cached_data["source"] = "cache"
+                return {
+                    "success": True,
+                    "data": cached_data,
+                    "message": "Data from cache"
+                }
+            
+            # Make API request (using a mock API for demo)
+            api_url = "https://httpbin.org/json"  # Mock API for demo
+            
+            result = resilient_api_call(api_url, max_retries=2, timeout=8)
+            
+            if result["success"]:
+                # Simulate weather data processing
+                weather_data = self._process_api_response(city, result["data"])
+                
+                # Cache the result
+                self._cache_data(city, weather_data)
+                
+                return {
+                    "success": True,
+                    "data": weather_data,
+                    "message": "Fresh data from API"
+                }
+            else:
+                # Try to use expired cache as fallback
+                cache_key = self._get_cache_key(city)
+                old_cache = self.cache.get(cache_key, {}).get("data")
+                
+                if old_cache:
+                    old_cache["source"] = "expired_cache"
+                    return {
+                        "success": True,
+                        "data": old_cache,
+                        "message": f"API failed, using cached data. Error: {result['error']}"
+                    }
+                
+                return {
+                    "success": False,
+                    "error": result["error"],
+                    "message": "No cached data available"
+                }
+        
+        except Exception as e:
+            return {
+                "success": False,
+                "error": f"Unexpected error: {e}",
+                "message": "Weather service unavailable"
+            }
+    
+    def _process_api_response(self, city, api_data):
+        """Process API response into weather data format."""
+        # This would normally parse real API data
+        # For demo, we'll create realistic weather data
+        import random
+        
+        base_temp = 65
+        temp_variation = random.randint(-15, 25)
+        
+        conditions = ["sunny", "cloudy", "partly cloudy", "rainy", "foggy"]
+        
+        return {
+            "city": city,
+            "temperature": base_temp + temp_variation,
+            "condition": random.choice(conditions),
+            "humidity": random.randint(30, 90),
+            "wind_speed": random.randint(0, 15),
+            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "source": "api"
+        }
+
+# Test the weather client:
+weather = WeatherClient()
+
+# Test multiple requests (should see caching in action)
+print("First request:")
+result1 = weather.get_weather("Seattle")
+print(f"Success: {result1['success']}")
+print(f"Message: {result1['message']}")
+if result1["success"]:
+    data = result1["data"]
+    print(f"Weather: {data['temperature']}°F, {data['condition']}")
+
+print("\nSecond request (should use cache):")
+result2 = weather.get_weather("Seattle")
+print(f"Message: {result2['message']}")
+print(f"Source: {result2['data']['source'] if result2['success'] else 'N/A'}")
+```
+
+### 4.2 User Interface with Error Handling
+
+**Task**: Create a user-friendly interface for the weather system.
+
+```python
+def display_weather(weather_data):
+    """Display weather data in a user-friendly format."""
+    if not weather_data:
+        return "No weather data available"
+    
+    city = weather_data.get("city", "Unknown Location")
+    temp = weather_data.get("temperature", "Unknown")
+    condition = weather_data.get("condition", "Unknown")
+    humidity = weather_data.get("humidity", "Unknown")
+    wind = weather_data.get("wind_speed", "Unknown")
+    timestamp = weather_data.get("timestamp", "Unknown")
+    source = weather_data.get("source", "unknown")
+    
+    # Create weather display
+    display = f"""
+🌤️  Weather Report for {city}
+{'=' * (25 + len(city))}
+🌡️  Temperature: {temp}°F
+☁️  Condition: {condition.title()}
+💧 Humidity: {humidity}%
+💨 Wind Speed: {wind} mph
+📅 Updated: {timestamp}
+"""
+    
+    # Add source indicator
+    if source == "cache":
+        display += "\n📱 Data from cache (recent)"
+    elif source == "expired_cache":
+        display += "\n⚠️  Data from cache (may be outdated)"
+    elif source == "api":
+        display += "\n🌐 Fresh data from weather service"
+    
+    return display
+
+def weather_app():
+    """Main weather application with error handling."""
+    weather_client = WeatherClient()
+    
+    print("🌤️  Welcome to the Weather Information System!")
+    print("Type 'quit' to exit\n")
+    
+    while True:
+        try:
+            city = input("Enter city name: ").strip()
+            
+            if city.lower() in ['quit', 'exit', 'q']:
+                print("Thank you for using Weather Info System!")
+                break
+            
+            if not city:
+                print("⚠️  Please enter a city name.\n")
+                continue
+            
+            print(f"\n🔄 Getting weather for {city}...")
+            
+            # Get weather data
+            result = weather_client.get_weather(city)
+            
+            if result["success"]:
+                # Display weather information
+                print(display_weather(result["data"]))
+                
+                # Show any important messages
+                if "API failed" in result["message"]:
+                    print(f"\n⚠️  Note: {result['message']}")
+                elif "cache" in result["message"]:
+                    print(f"\n💡 Info: {result['message']}")
+            
+            else:
+                # Handle errors gracefully
+                print(f"\n❌ Sorry, couldn't get weather for {city}")
+                print(f"   Reason: {result['message']}")
+                
+                if "network" in result['error'].lower():
+                    print("   💡 Check your internet connection")
+                elif "timeout" in result['error'].lower():
+                    print("   💡 Try again in a moment")
+                else:
+                    print("   💡 Try a different city name")
+            
+            print("\n" + "-" * 50)
+        
+        except KeyboardInterrupt:
+            print("\n\nGoodbye!")
+            break
+        except Exception as e:
+            print(f"\n❌ Unexpected error: {e}")
+            print("   💡 Please try again")
+
+# Run the weather app (uncomment to test interactively):
+# weather_app()
+
+# For demo, let's show a few automated examples:
+print("=== Weather System Demo ===")
+weather_client = WeatherClient()
+
+cities = ["Seattle", "New York", "London", "Tokyo"]
+for city in cities:
+    result = weather_client.get_weather(city)
+    if result["success"]:
+        print(display_weather(result["data"]))
+    else:
+        print(f"Failed to get weather for {city}: {result['error']}")
+    print()
+```
+
+**Reflection Questions**:
+1. How does caching improve user experience?
+2. What fallback strategies help when APIs fail?
+3. How do clear error messages help users?
+
+---
+
+# Exercise 5: Advanced Error Handling Patterns (20 minutes)
+
+## Introduction
+
+Let's explore professional error handling patterns used in production applications.
+
+### 5.1 Circuit Breaker Pattern
+
+**Task**: Implement a circuit breaker to prevent cascading failures.
+
+```python
+import time
+
+class CircuitBreaker:
+    """Circuit breaker pattern for external service calls."""
+    
+    def __init__(self, failure_threshold=5, recovery_timeout=60):
+        self.failure_threshold = failure_threshold
+        self.recovery_timeout = recovery_timeout
+        self.failure_count = 0
+        self.last_failure_time = None
+        self.state = "closed"  # closed, open, half_open
+    
+    def call(self, func, *args, **kwargs):
+        """Execute function with circuit breaker protection."""
+        if self.state == "open":
+            if self._should_attempt_reset():
+                self.state = "half_open"
+            else:
+                return {
+                    "success": False,
+                    "error": "Circuit breaker is open - service unavailable",
+                    "circuit_state": self.state
+                }
+        
+        try:
+            result = func(*args, **kwargs)
+            
+            if result.get("success", True):
+                self._on_success()
+                return result
+            else:
+                self._on_failure()
+                return result
+        
+        except Exception as e:
+            self._on_failure()
+            return {
+                "success": False,
+                "error": f"Function failed: {e}",
+                "circuit_state": self.state
+            }
+    
+    def _should_attempt_reset(self):
+        """Check if enough time has passed to attempt reset."""
+        if self.last_failure_time is None:
+            return True
+        
+        return time.time() - self.last_failure_time > self.recovery_timeout
+    
+    def _on_success(self):
+        """Handle successful call."""
+        self.failure_count = 0
+        self.state = "closed"
+    
+    def _on_failure(self):
+        """Handle failed call."""
+        self.failure_count += 1
+        self.last_failure_time = time.time()
+        
+        if self.failure_count >= self.failure_threshold:
+            self.state = "open"
+
+# Test the circuit breaker:
+def unreliable_service(should_fail=False):
+    """Simulate an unreliable external service."""
+    if should_fail:
+        return {"success": False, "error": "Service temporarily unavailable"}
+    return {"success": True, "data": "Service response"}
+
+# Create circuit breaker with low thresholds for demo
+breaker = CircuitBreaker(failure_threshold=3, recovery_timeout=5)
+
+print("=== Circuit Breaker Demo ===")
+
+# Test with failures
+for i in range(6):
+    result = breaker.call(unreliable_service, should_fail=True)
+    print(f"Call {i+1}: Success={result['success']}, State={breaker.state}")
+    if not result["success"]:
+        print(f"   Error: {result['error']}")
+
+print(f"\nAfter failures - Circuit state: {breaker.state}")
+print("Waiting for recovery timeout...")
+time.sleep(6)  # Wait for recovery
+
+# Test recovery
+result = breaker.call(unreliable_service, should_fail=False)
+print(f"Recovery attempt: Success={result['success']}, State={breaker.state}")
+```
+
+### 5.2 Graceful Degradation System
+
+**Task**: Build a system that provides reduced functionality when services fail.
+
+```python
+class WeatherService:
+    """Weather service with graceful degradation."""
+    
+    def __init__(self):
+        self.circuit_breaker = CircuitBreaker(failure_threshold=3, recovery_timeout=30)
+        self.fallback_data = {
+            "seattle": {"temp": 65, "condition": "partly cloudy"},
+            "new york": {"temp": 70, "condition": "sunny"},
+            "london": {"temp": 55, "condition": "rainy"},
+            "tokyo": {"temp": 75, "condition": "clear"}
+        }
+    
+    def _call_weather_api(self, city):
+        """Simulate weather API call."""
+        # For demo, simulate failures randomly
+        import random
+        if random.random() < 0.3:  # 30% failure rate
+            return {"success": False, "error": "API temporarily unavailable"}
+        
+        # Simulate API response
+        return {
+            "success": True,
+            "data": {
+                "temperature": random.randint(50, 85),
+                "condition": random.choice(["sunny", "cloudy", "rainy"]),
+                "humidity": random.randint(30, 90),
+                "source": "api"
+            }
+        }
+    
+    def get_weather(self, city):
+        """Get weather with graceful degradation."""
+        city_key = city.lower()
+        
+        # Try primary service
+        api_result = self.circuit_breaker.call(self._call_weather_api, city)
+        
+        if api_result["success"]:
+            return {
+                "success": True,
+                "data": api_result["data"],
+                "degradation_level": "none",
+                "message": "Full weather data available"
+            }
+        
+        # Primary service failed - try fallback data
+        if city_key in self.fallback_data:
+            fallback = self.fallback_data[city_key].copy()
+            fallback["source"] = "fallback"
+            fallback["humidity"] = "unavailable"
+            
+            return {
+                "success": True,
+                "data": fallback,
+                "degradation_level": "partial",
+                "message": "Using basic weather data (some features unavailable)"
+            }
+        
+        # No fallback data available
+        return {
+            "success": False,
+            "error": "Weather data unavailable",
+            "degradation_level": "total",
+            "message": f"Sorry, no weather data available for {city}"
+        }
+
+# Test graceful degradation:
+weather_service = WeatherService()
+
+print("=== Graceful Degradation Demo ===")
+
+test_cities = ["Seattle", "New York", "Paris"]  # Paris not in fallback data
+
+for city in test_cities:
+    print(f"\nTesting {city}:")
+    for attempt in range(3):
+        result = weather_service.get_weather(city)
+        
+        print(f"  Attempt {attempt + 1}:")
+        print(f"    Success: {result['success']}")
+        print(f"    Degradation: {result['degradation_level']}")
+        print(f"    Message: {result['message']}")
+        
+        if result["success"]:
+            data = result["data"]
+            source = data.get("source", "unknown")
+            print(f"    Data source: {source}")
+            print(f"    Temperature: {data.get('temp', data.get('temperature', 'N/A'))}")
+```
+
+### 5.3 Comprehensive Error Recovery
+
+**Task**: Create a comprehensive error recovery system.
+
+```python
+class RobustDataProcessor:
+    """Data processor with comprehensive error recovery."""
+    
+    def __init__(self):
+        self.error_counts = {}
+        self.recovery_strategies = []
+    
+    def add_recovery_strategy(self, name, func):
+        """Add a recovery strategy."""
+        self.recovery_strategies.append({"name": name, "func": func})
+    
+    def process_data(self, data_source):
+        """Process data with comprehensive error recovery."""
+        errors_encountered = []
+        
+        # Try each recovery strategy in order
+        for strategy in self.recovery_strategies:
+            try:
+                print(f"Trying strategy: {strategy['name']}")
+                result = strategy["func"](data_source)
+                
+                if result["success"]:
+                    return {
+                        "success": True,
+                        "data": result["data"],
+                        "strategy_used": strategy["name"],
+                        "errors_encountered": errors_encountered
+                    }
+                else:
+                    errors_encountered.append({
+                        "strategy": strategy["name"],
+                        "error": result["error"]
+                    })
+            
+            except Exception as e:
+                errors_encountered.append({
+                    "strategy": strategy["name"],
+                    "error": f"Strategy failed: {e}"
+                })
+        
+        # All strategies failed
+        return {
+            "success": False,
+            "error": "All recovery strategies failed",
+            "errors_encountered": errors_encountered
+        }
+
+# Define recovery strategies:
+def primary_processing(data_source):
+    """Primary data processing strategy."""
+    if "error" in data_source:
+        return {"success": False, "error": "Primary processing failed"}
+    
+    return {
+        "success": True,
+        "data": {"processed": data_source, "method": "primary"}
+    }
+
+def secondary_processing(data_source):
+    """Secondary processing with relaxed validation."""
+    try:
+        # More lenient processing
+        if isinstance(data_source, str) and len(data_source) > 0:
+            return {
+                "success": True,
+                "data": {"processed": data_source[:50], "method": "secondary"}
+            }
+        return {"success": False, "error": "Secondary processing failed"}
+    except:
+        return {"success": False, "error": "Secondary processing exception"}
+
+def fallback_processing(data_source):
+    """Fallback processing - always succeeds with minimal data."""
+    return {
+        "success": True,
+        "data": {"processed": "fallback_data", "method": "fallback", "original_type": type(data_source).__name__}
+    }
+
+# Test comprehensive error recovery:
+processor = RobustDataProcessor()
+processor.add_recovery_strategy("Primary", primary_processing)
+processor.add_recovery_strategy("Secondary", secondary_processing)
+processor.add_recovery_strategy("Fallback", fallback_processing)
+
+print("=== Comprehensive Error Recovery Demo ===")
+
+test_cases = [
+    "good_data",
+    "data_with_error",
+    "",
+    None,
+    {"complex": "data"}
+]
+
+for i, test_data in enumerate(test_cases):
+    print(f"\nTest case {i+1}: {test_data}")
+    result = processor.process_data(test_data)
+    
+    print(f"  Success: {result['success']}")
+    if result["success"]:
+        print(f"  Strategy used: {result['strategy_used']}")
+        print(f"  Processed data: {result['data']}")
+    else:
+        print(f"  Final error: {result['error']}")
+    
+    if result["errors_encountered"]:
+        print("  Errors encountered:")
+        for error in result["errors_encountered"]:
+            print(f"    {error['strategy']}: {error['error']}")
+```
+
+**AI Challenge**: 
+Ask AI: "What other error recovery patterns should I know for building resilient systems?"
+
+---
+
+# Exercise 6: Connected Application Workshop (20 minutes)
+
+## Final Integration Challenge
+
+### 6.1 Complete Weather Dashboard
+
+**Task**: Build a complete weather dashboard that integrates all concepts.
+
+```python
+class WeatherDashboard:
+    """Complete weather dashboard with all error handling concepts."""
+    
+    def __init__(self):
+        self.weather_service = WeatherService()
+        self.processor = RobustDataProcessor()
+        self.setup_data_processors()
+    
+    def setup_data_processors(self):
+        """Setup data processing strategies."""
+        def format_full_data(weather_data):
+            if not weather_data.get("success"):
+                return {"success": False, "error": "No weather data"}
+            
+            data = weather_data["data"]
+            formatted = f"""
+🌤️  {data.get('city', 'Unknown City')} Weather Dashboard
+{'=' * 50}
+🌡️  Temperature: {data.get('temperature', 'N/A')}°F
+☁️  Condition: {data.get('condition', 'Unknown').title()}
+💧 Humidity: {data.get('humidity', 'N/A')}%
+💨 Wind: {data.get('wind_speed', 'N/A')} mph
+📊 Data Source: {data.get('source', 'Unknown')}
+⏰ Last Updated: {data.get('timestamp', 'Unknown')}
+"""
+            return {"success": True, "data": formatted}
+        
+        def format_basic_data(weather_data):
+            if not weather_data.get("success"):
+                return {"success": False, "error": "No weather data"}
+            
+            data = weather_data["data"]
+            basic = f"Weather: {data.get('temperature', 'N/A')}°F, {data.get('condition', 'Unknown')}"
+            return {"success": True, "data": basic}
+        
+        def format_minimal_data(weather_data):
+            return {"success": True, "data": "Weather data temporarily unavailable. Please try again later."}
+        
+        self.processor.add_recovery_strategy("Full Display", format_full_data)
+        self.processor.add_recovery_strategy("Basic Display", format_basic_data)
+        self.processor.add_recovery_strategy("Minimal Display", format_minimal_data)
+    
+    def get_weather_display(self, city):
+        """Get formatted weather display with error recovery."""
+        try:
+            # Get weather data
+            weather_result = self.weather_service.get_weather(city)
+            
+            # Process display format
+            display_result = self.processor.process_data(weather_result)
+            
+            return {
+                "success": display_result["success"],
+                "display": display_result["data"] if display_result["success"] else "Display unavailable",
+                "weather_status": weather_result.get("degradation_level", "unknown"),
+                "display_strategy": display_result.get("strategy_used", "unknown"),
+                "errors": display_result.get("errors_encountered", [])
+            }
+        
+        except Exception as e:
+            return {
+                "success": False,
+                "display": f"Dashboard error: {e}",
+                "weather_status": "error",
+                "display_strategy": "none",
+                "errors": [{"error": str(e)}]
+            }
+    
+    def run_dashboard(self):
+        """Run interactive weather dashboard."""
+        print("🌤️  Advanced Weather Dashboard")
+        print("Features: Error handling, caching, graceful degradation")
+        print("Type 'quit' to exit, 'status' for system status\n")
+        
+        while True:
+            try:
+                command = input("Enter city name or command: ").strip()
+                
+                if command.lower() in ['quit', 'exit', 'q']:
+                    print("Thank you for using Weather Dashboard!")
+                    break
+                
+                elif command.lower() == 'status':
+                    self.show_system_status()
+                    continue
+                
+                elif not command:
+                    print("Please enter a city name or 'status' for system info.\n")
+                    continue
+                
+                # Get and display weather
+                result = self.get_weather_display(command)
+                
+                print("\n" + "="*60)
+                print(result["display"])
+                
+                # Show system information
+                if result["weather_status"] != "none":
+                    print(f"\n📊 System Status:")
+                    print(f"   Weather Service: {result['weather_status']}")
+                    print(f"   Display Strategy: {result['display_strategy']}")
+                
+                if result["errors"]:
+                    print(f"   Errors handled: {len(result['errors'])}")
+                
+                print("="*60 + "\n")
+            
+            except KeyboardInterrupt:
+                print("\nGoodbye!")
+                break
+            except Exception as e:
+                print(f"Dashboard error: {e}")
+                print("Please try again.\n")
+    
+    def show_system_status(self):
+        """Show detailed system status."""
+        print("\n" + "="*60)
+        print("🔧 Weather Dashboard System Status")
+        print("="*60)
+        
+        # Circuit breaker status
+        cb = self.weather_service.circuit_breaker
+        print(f"Circuit Breaker State: {cb.state}")
+        print(f"Failure Count: {cb.failure_count}")
+        print(f"Failure Threshold: {cb.failure_threshold}")
+        
+        # Cache status
+        cache_count = len(self.weather_service.cache)
+        print(f"Cached Cities: {cache_count}")
+        if cache_count > 0:
+            print(f"Cached Locations: {list(self.weather_service.cache.keys())}")
+        
+        # Recovery strategies
+        strategies = [s["name"] for s in self.processor.recovery_strategies]
+        print(f"Available Display Strategies: {', '.join(strategies)}")
+        
+        print("="*60 + "\n")
+
+# Create and test the dashboard:
+dashboard = WeatherDashboard()
+
+print("=== Weather Dashboard Demo ===")
+
+# Test a few cities automatically:
+test_cities = ["Seattle", "Boston", "Chicago"]
+for city in test_cities:
+    print(f"\nTesting dashboard for {city}:")
+    result = dashboard.get_weather_display(city)
+    print(result["display"])
+    print(f"Status: {result['weather_status']} | Strategy: {result['display_strategy']}")
+
+# For interactive testing, uncomment:
+# dashboard.run_dashboard()
+```
+
+### 6.2 API Integration Best Practices Summary
+
+**Task**: Document your learnings and create a best practices guide.
+
+```python
+def create_best_practices_report():
+    """Generate a best practices report based on today's exercises."""
+    
+    best_practices = {
+        "Error Handling": [
+            "Always use try/except for external operations",
+            "Catch specific exceptions when possible",
+            "Provide meaningful error messages to users",
+            "Have fallback strategies for critical operations",
+            "Log errors for debugging but show user-friendly messages"
+        ],
+        
+        "JSON Processing": [
+            "Validate JSON structure before processing",
+            "Use .get() method for optional fields",
+            "Handle nested data with multiple safety checks",
+            "Always check data types after parsing",
+            "Provide default values for missing fields"
+        ],
+        
+        "HTTP Requests": [
+            "Set reasonable timeouts for all requests",
+            "Implement retry logic with exponential backoff",
+            "Handle different HTTP status codes appropriately",
+            "Cache responses when possible",
+            "Use circuit breakers for unreliable services"
+        ],
+        
+        "User Experience": [
+            "Provide clear feedback during operations",
+            "Show progress for long-running operations",
+            "Explain what users can do when errors occur",
+            "Degrade gracefully when services are unavailable",
+            "Cache data to improve responsiveness"
+        ],
+        
+        "AI Collaboration": [
+            "Include exact error messages in prompts",
+            "Provide code context with questions",
+            "Ask for alternative approaches when stuck",
+            "Use AI to understand API documentation",
+            "Get help with testing strategies"
+        ]
+    }
+    
+    report = "🔧 Connected Programming Best Practices\n"
+    report += "=" * 50 + "\n\n"
+    
+    for category, practices in best_practices.items():
+        report += f"📋 {category}:\n"
+        for practice in practices:
+            report += f"   • {practice}\n"
+        report += "\n"
+    
+    return report
+
+print(create_best_practices_report())
+```
+
+---
+
+# Lab Reflection and Assessment
+
+## What You've Accomplished
+
+In this lab, you've built:
+
+1. **Robust error handling systems** that gracefully handle failures
+2. **JSON processing tools** that safely parse and validate external data
+3. **HTTP client libraries** with retry logic and circuit breakers
+4. **Complete weather applications** with caching and fallback strategies
+5. **Professional user interfaces** that provide excellent error feedback
+6. **AI integration workflows** for debugging and optimization
+
+## Key Skills Developed
+
+- **Defensive programming mindset**
+- **Exception handling patterns**
+- **API integration techniques**
+- **Graceful degradation strategies**
+- **User experience design for error states**
+- **AI-assisted debugging skills**
+
+## Real-World Applications
+
+These skills apply directly to:
+- Web application development
+- Mobile app backend services
+- Data processing pipelines
+- Microservices architecture
+- API integration projects
+- Real-time systems
+
+## Next Steps
+
+**For continued learning:**
+1. Explore additional HTTP libraries (requests, aiohttp)
+2. Learn about async/await for concurrent operations
+3. Study database integration patterns
+4. Practice with authentication systems
+5. Build complete web applications
+
+**Week 11 Preview:**
+Next week we'll focus on interactive applications, building on the error handling and external data skills you've developed to create robust, user-friendly programs that handle both user errors and service failures gracefully.
+
+## Final Challenge
+
+**Your mission**: Take one of today's exercises and extend it with a feature that requires additional API integration or error handling. Document your approach and use AI to help optimize your solution.
+
+Great work on mastering connected programming! You're now equipped to build applications that thrive in the real world of unreliable networks and imperfect services.

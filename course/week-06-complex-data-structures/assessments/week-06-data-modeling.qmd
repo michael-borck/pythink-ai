@@ -1,0 +1,314 @@
+---
+title: "Week 6 Assessment: Data Modeling"
+subtitle: "Designing Effective Dictionary Structures"
+format:
+  html:
+    toc: true
+    code-fold: false
+    embed-resources: true
+  pdf:
+    toc: true
+---
+
+# Assessment Overview
+
+This assessment tests your ability to design appropriate dictionary structures for real-world scenarios. You'll analyze requirements, choose data structures, and justify your decisions.
+
+**Time Limit:** 45 minutes  
+**Points:** 100 total  
+**Format:** Design and implementation tasks
+
+---
+
+# Part 1: Structure Design (40 points)
+
+## Question 1.1: Library System (20 points)
+
+Design a dictionary structure for a library book tracking system.
+
+**Requirements:**
+- Track multiple books
+- Each book has: ISBN, title, author(s), year, available copies
+- Support multiple authors per book
+- Easy lookup by ISBN
+- Track who has borrowed each copy
+
+```python
+# Design your structure here:
+library_books = {
+    # Your design...
+    
+    
+    
+}
+
+# Explain your key choice (ISBN vs title vs other):
+# _______________________________________________
+# _______________________________________________
+
+# Show how to:
+# A. Add a new book
+_______________
+
+# B. Check if a book is available
+_______________
+
+# C. Record a book being borrowed
+_______________
+```
+
+## Question 1.2: School Course Registration (20 points)
+
+Design a structure for managing course registrations.
+
+**Requirements:**
+- Multiple courses with capacities
+- Students can enroll in multiple courses
+- Track instructor for each course
+- Easy to find: students in a course, courses for a student
+
+```python
+# Option A: Course-centered design
+courses = {
+    # Your design...
+    
+    
+}
+
+# Option B: Student-centered design
+students = {
+    # Your design...
+    
+    
+}
+
+# Which design is better for:
+# 1. Finding all students in a course? _______________
+# 2. Finding all courses for a student? _______________
+# 3. Checking course capacity? _______________
+# 4. Your recommendation and why: _______________
+```
+
+---
+
+# Part 2: Data Structure Comparison (30 points)
+
+## Question 2.1: List vs Dictionary Choice (15 points)
+
+For each scenario, choose the best structure and explain why:
+
+```python
+# Scenario A: Store daily temperatures for a month
+# Option 1: List
+temperatures_list = [72, 75, 71, 68, ...]  # 30 values
+
+# Option 2: Dictionary  
+temperatures_dict = {1: 72, 2: 75, 3: 71, ...}
+
+# Option 3: Dictionary with date strings
+temperatures_dates = {"2024-03-01": 72, "2024-03-02": 75, ...}
+
+# Best choice: _______________
+# Reason: _______________________________________________
+
+# Scenario B: Store product inventory with SKU codes
+# Option 1: List of dictionaries
+inventory_list = [
+    {"sku": "ABC123", "name": "Widget", "qty": 50},
+    {"sku": "DEF456", "name": "Gadget", "qty": 30}
+]
+
+# Option 2: Dictionary with SKU as key
+inventory_dict = {
+    "ABC123": {"name": "Widget", "qty": 50},
+    "DEF456": {"name": "Gadget", "qty": 30}
+}
+
+# Best choice: _______________
+# Reason: _______________________________________________
+```
+
+## Question 2.2: Nested Structure Design (15 points)
+
+Design structures for these relationships:
+
+```python
+# A. Company organizational chart
+# Departments → Teams → Employees
+company = {
+    # Your nested structure...
+    
+    
+    
+}
+
+# B. Recipe collection with categories
+# Categories → Recipes → Ingredients
+recipes = {
+    # Your nested structure...
+    
+    
+    
+}
+
+# For each structure above, write code to:
+# 1. Access a specific employee in company:
+_______________
+
+# 2. Get all ingredients for a specific recipe:
+_______________
+```
+
+---
+
+# Part 3: Implementation Challenges (30 points)
+
+## Question 3.1: Handle Duplicate Keys (10 points)
+
+Design a contact system that handles multiple people with the same name:
+
+```python
+# Problem: Multiple "John Smith" entries
+# Design a solution:
+
+contacts = {
+    # Your solution...
+    
+    
+}
+
+def add_contact(contacts, name, phone, email):
+    """Add contact handling duplicates."""
+    # Your implementation...
+    
+    
+    
+
+# Test cases:
+add_contact(contacts, "John Smith", "555-1111", "john1@email.com")
+add_contact(contacts, "John Smith", "555-2222", "john2@email.com")
+```
+
+## Question 3.2: Two-way Lookup (10 points)
+
+Create a system that can look up both ways efficiently:
+
+```python
+# Username ↔ Email lookup system
+# Need to find email by username AND username by email
+
+# Your design:
+user_system = {
+    # Structure here...
+    
+    
+}
+
+def create_user(system, username, email):
+    """Add user maintaining both lookups."""
+    # Your implementation...
+    
+    
+
+def find_by_username(system, username):
+    """Get email for username."""
+    # Your implementation...
+    
+
+def find_by_email(system, email):
+    """Get username for email."""
+    # Your implementation...
+    
+```
+
+## Question 3.3: Data Aggregation (10 points)
+
+Design a sales tracking system:
+
+```python
+# Track daily sales by product and location
+# Need: total by product, total by location, daily totals
+
+sales_data = {
+    # Your structure design...
+    
+    
+}
+
+def record_sale(data, date, product, location, amount):
+    """Record a sale in the system."""
+    # Your implementation...
+    
+    
+    
+
+def get_product_total(data, product):
+    """Get total sales for a product across all dates/locations."""
+    # Your implementation...
+    
+    
+
+def get_location_total(data, location):
+    """Get total sales for a location across all dates/products."""
+    # Your implementation...
+    
+    
+```
+
+---
+
+# Part 4: Design Decisions (Bonus - 10 points)
+
+## Reflection Questions
+
+Answer these questions about your design choices:
+
+1. **Key Selection**
+   - What makes a good dictionary key?
+   - _______________________________________________
+   - When would you use a generated ID vs natural key?
+   - _______________________________________________
+
+2. **Nesting Depth**
+   - How deep is too deep for nested dictionaries?
+   - _______________________________________________
+   - How do you decide between nested dicts vs separate dicts?
+   - _______________________________________________
+
+3. **Performance Considerations**
+   - When do dictionaries perform better than lists?
+   - _______________________________________________
+   - What operations become slow with poor structure design?
+   - _______________________________________________
+
+4. **Real-World Application**
+   - Describe a real system you'd build with dictionaries:
+   - _______________________________________________
+   - What would be your main design challenges?
+   - _______________________________________________
+
+---
+
+# Submission Requirements
+
+1. Complete all structure designs with clear comments
+2. Implement all requested functions
+3. Answer all design questions
+4. Test your code with sample data
+5. Submit as `data_modeling_assessment.py`
+
+## Evaluation Criteria
+
+- **Correctness** (40%): Structures meet requirements
+- **Efficiency** (20%): Good key choices and access patterns  
+- **Clarity** (20%): Clear, understandable designs
+- **Completeness** (20%): All requirements addressed
+
+## Tips
+
+- Think about how data will be accessed
+- Consider what operations need to be fast
+- Keep structures as simple as possible
+- Document your reasoning
+
+Good luck with your designs!

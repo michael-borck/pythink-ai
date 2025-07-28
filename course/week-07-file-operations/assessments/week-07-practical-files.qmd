@@ -1,0 +1,221 @@
+---
+title: "Week 7 Assessment: Practical File Applications"
+subtitle: "Real-World File Processing Challenges"
+format:
+  html:
+    toc: true
+    code-fold: false
+    embed-resources: true
+  pdf:
+    toc: true
+---
+
+# Assessment Overview
+
+This assessment tests your ability to solve real-world file processing problems. You'll work with data files, generate reports, merge information, and create practical file utilities.
+
+**Time Limit:** 60 minutes  
+**Points:** 100 total  
+**Difficulty:** Advanced Application
+
+---
+
+# Part 1: Data File Processing (30 points)
+
+## Question 1.1: Log File Analysis (15 points)
+
+Process a web server log file and extract statistics:
+
+```python
+# Sample access.log format:
+# 192.168.1.1 - - [15/Mar/2024:10:00:01] "GET /index.html HTTP/1.1" 200 1234
+# 192.168.1.2 - - [15/Mar/2024:10:00:15] "POST /login HTTP/1.1" 200 567
+# 192.168.1.1 - - [15/Mar/2024:10:01:30] "GET /profile HTTP/1.1" 404 89
+
+def analyze_access_log(filename):
+    """Analyze web server access log."""
+    stats = {
+        "total_requests": 0,
+        "status_codes": {},
+        "ip_addresses": {},
+        "request_methods": {},
+        "popular_pages": {},
+        "error_count": 0
+    }
+    
+    try:
+        with open(filename, "r") as file:
+            for line in file:
+                line = line.strip()
+                if not line:
+                    continue
+                
+                stats["total_requests"] += 1
+                
+                # Parse log line
+                # Extract IP address (first field)
+                parts = line.split()
+                if len(parts) >= 9:
+                    ip = _______________
+                    
+                    # Extract request method and page
+                    request_part = line.split('"')[1]  # "GET /index.html HTTP/1.1"
+                    request_parts = request_part.split()
+                    if len(request_parts) >= 2:
+                        method = _______________
+                        page = _______________
+                        
+                        # Update method stats
+                        if method in stats["request_methods"]:
+                            _______________
+                        else:
+                            _______________
+                        
+                        # Update page stats
+                        if page in stats["popular_pages"]:
+                            _______________
+                        else:
+                            _______________
+                    
+                    # Extract status code
+                    status_code = _______________
+                    
+                    # Update status code stats
+                    if status_code in stats["status_codes"]:
+                        _______________
+                    else:
+                        _______________
+                    
+                    # Count errors (4xx and 5xx status codes)
+                    if status_code.startswith("4") or status_code.startswith("5"):
+                        _______________
+                    
+                    # Update IP stats
+                    if ip in stats["ip_addresses"]:
+                        _______________
+                    else:
+                        _______________
+    
+    except FileNotFoundError:
+        print("Log file not found")
+    
+    return stats
+
+def generate_log_report(stats, output_file="log_report.txt"):
+    """Generate comprehensive log analysis report."""
+    with open(output_file, "w") as file:
+        file.write("WEB SERVER LOG ANALYSIS REPORT\\n")
+        file.write("=" * 50 + "\\n\\n")
+        
+        # Summary statistics
+        file.write(f"Total Requests: {stats['total_requests']}\\n")
+        file.write(f"Error Requests: {stats['error_count']}\\n")
+        error_rate = (stats['error_count'] / stats['total_requests'] * 100) if stats['total_requests'] > 0 else 0
+        file.write(f"Error Rate: {error_rate:.2f}%\\n\\n")
+        
+        # Top 5 IP addresses
+        file.write("TOP 5 IP ADDRESSES:\\n")
+        file.write("-" * 30 + "\\n")
+        sorted_ips = sorted(stats["ip_addresses"].items(), key=lambda x: x[1], reverse=True)
+        for i, (ip, count) in enumerate(sorted_ips[:5], 1):
+            file.write(f"{i}. {ip:<15} {count:>5} requests\\n")
+        
+        # Your turn: Add sections for top pages and status code breakdown
+        file.write("\\nTOP 5 PAGES:\\n")
+        file.write("-" * 30 + "\\n")
+        # Your code here
+        
+        
+        file.write("\\nSTATUS CODE BREAKDOWN:\\n")
+        file.write("-" * 30 + "\\n")
+        # Your code here
+        
+        
+
+# Create sample log file and test
+sample_log = '''192.168.1.1 - - [15/Mar/2024:10:00:01] "GET /index.html HTTP/1.1" 200 1234
+192.168.1.2 - - [15/Mar/2024:10:00:15] "POST /login HTTP/1.1" 200 567
+192.168.1.1 - - [15/Mar/2024:10:01:30] "GET /profile HTTP/1.1" 404 89
+192.168.1.3 - - [15/Mar/2024:10:02:45] "GET /index.html HTTP/1.1" 200 1234
+192.168.1.2 - - [15/Mar/2024:10:03:12] "GET /admin HTTP/1.1" 403 45'''
+
+with open("access.log", "w") as file:
+    file.write(sample_log)
+
+# Analyze and generate report
+log_stats = analyze_access_log("access.log")
+generate_log_report(log_stats)
+print("Log analysis complete! Check log_report.txt")
+```
+
+## Question 1.2: Data Merging (15 points)
+
+Merge data from multiple files:
+
+```python
+# Files: students.txt, grades.txt, attendance.txt
+# Create comprehensive student report
+
+def merge_student_data(students_file, grades_file, attendance_file):
+    """Merge student information from multiple files."""
+    
+    # Load students (Format: ID|Name|Email)
+    students = {}
+    try:
+        with open(students_file, "r") as file:
+            for line in file:
+                parts = line.strip().split("|")
+                if len(parts) >= 3:
+                    student_id, name, email = parts[:3]
+                    students[student_id] = {
+                        "name": name,
+                        "email": email,
+                        "grades": [],
+                        "attendance": 0
+                    }
+    except FileNotFoundError:
+        print(f"Students file {students_file} not found")
+    
+    # Load grades (Format: StudentID|Subject|Grade)
+    try:
+        with open(grades_file, "r") as file:
+            for line in file:
+                parts = line.strip().split("|")
+                if len(parts) >= 3:
+                    student_id, subject, grade = parts[:3]
+                    if student_id in students:
+                        # Your code to add grade
+                        
+                        
+    except FileNotFoundError:
+        print(f"Grades file {grades_file} not found")
+    
+    # Load attendance (Format: StudentID|DaysPresent|TotalDays)
+    try:
+        with open(attendance_file, "r") as file:
+            for line in file:
+                parts = line.strip().split("|")
+                if len(parts) >= 3:
+                    student_id, present, total = parts[:3]
+                    if student_id in students:
+                        # Calculate attendance percentage
+                        attendance_rate = _______________
+                        students[student_id]["attendance"] = attendance_rate
+    except FileNotFoundError:
+        print(f"Attendance file {attendance_file} not found")
+    
+    return students
+
+def generate_student_report(student_data, output_file="student_report.txt"):
+    """Generate comprehensive student report."""
+    with open(output_file, "w") as file:
+        file.write("COMPREHENSIVE STUDENT REPORT\\n")
+        file.write("=" * 60 + "\\n\\n")
+        
+        for student_id, data in sorted(student_data.items()):
+            file.write(f"Student ID: {student_id}\\n")
+            file.write(f"Name: {data['name']}\\n")
+            file.write(f"Email: {data['email']}\\n")
+            
+            # Calculate GPA
+            if data['grades']:\n                total_points = sum(grade for _, grade in data['grades'])\n                gpa = total_points / len(data['grades'])\n                file.write(f\"GPA: {gpa:.2f}\\n\")\n                \n                # List all grades\n                file.write(\"Grades:\\n\")\n                for subject, grade in data['grades']:\n                    file.write(f\"  {subject}: {grade}\\n\")\n            else:\n                file.write(\"GPA: No grades recorded\\n\")\n            \n            file.write(f\"Attendance: {data['attendance']:.1f}%\\n\")\n            \n            # Determine status\n            status = \"Good Standing\"\n            if data['attendance'] < 80:\n                status = \"Poor Attendance\"\n            elif data['grades'] and gpa < 70:\n                status = \"Academic Warning\"\n            \n            file.write(f\"Status: {status}\\n\")\n            file.write(\"-\" * 40 + \"\\n\\n\")\n\n# Create sample data files\nwith open(\"students.txt\", \"w\") as file:\n    file.write(\"S001|Alice Johnson|alice@email.com\\n\")\n    file.write(\"S002|Bob Smith|bob@email.com\\n\")\n    file.write(\"S003|Carol Davis|carol@email.com\\n\")\n\nwith open(\"grades.txt\", \"w\") as file:\n    file.write(\"S001|Math|92\\n\")\n    file.write(\"S001|Science|88\\n\")\n    file.write(\"S002|Math|85\\n\")\n    file.write(\"S002|Science|90\\n\")\n    file.write(\"S003|Math|78\\n\")\n\nwith open(\"attendance.txt\", \"w\") as file:\n    file.write(\"S001|95|100\\n\")  # 95% attendance\n    file.write(\"S002|75|100\\n\")  # 75% attendance\n    file.write(\"S003|88|100\\n\")  # 88% attendance\n\n# Test the merger\nmerged_data = merge_student_data(\"students.txt\", \"grades.txt\", \"attendance.txt\")\ngenerate_student_report(merged_data)\nprint(\"Student report generated!\")\n```\n\n---\n\n# Part 2: File Utilities (35 points)\n\n## Question 2.1: File Statistics Tool (15 points)\n\nCreate a comprehensive file analysis tool:\n\n```python\ndef analyze_text_file(filename):\n    \"\"\"Analyze text file and return detailed statistics.\"\"\"\n    stats = {\n        \"filename\": filename,\n        \"exists\": False,\n        \"size_bytes\": 0,\n        \"line_count\": 0,\n        \"word_count\": 0,\n        \"char_count\": 0,\n        \"char_count_no_spaces\": 0,\n        \"longest_line\": 0,\n        \"shortest_line\": float('inf'),\n        \"empty_lines\": 0,\n        \"average_words_per_line\": 0,\n        \"word_frequency\": {},\n        \"line_length_distribution\": {\"short\": 0, \"medium\": 0, \"long\": 0}\n    }\n    \n    try:\n        with open(filename, \"r\") as file:\n            stats[\"exists\"] = True\n            \n            # Get file size\n            file.seek(0, 2)  # Go to end\n            stats[\"size_bytes\"] = file.tell()\n            file.seek(0)  # Go back to start\n            \n            for line in file:\n                stats[\"line_count\"] += 1\n                \n                # Character counting\n                line_chars = len(line)\n                stats[\"char_count\"] += line_chars\n                stats[\"char_count_no_spaces\"] += len(line.replace(\" \", \"\").replace(\"\\t\", \"\"))\n                \n                # Line length analysis\n                line_stripped = line.strip()\n                if not line_stripped:\n                    stats[\"empty_lines\"] += 1\n                else:\n                    line_length = len(line_stripped)\n                    stats[\"longest_line\"] = max(stats[\"longest_line\"], line_length)\n                    stats[\"shortest_line\"] = min(stats[\"shortest_line\"], line_length)\n                    \n                    # Categorize line length\n                    if line_length < 20:\n                        _______________\n                    elif line_length < 80:\n                        _______________\n                    else:\n                        _______________\n                \n                # Word counting and frequency\n                words = line_stripped.lower().split()\n                stats[\"word_count\"] += len(words)\n                \n                for word in words:\n                    # Clean word (remove punctuation)\n                    clean_word = \"\".join(c for c in word if c.isalnum())\n                    if clean_word:\n                        if clean_word in stats[\"word_frequency\"]:\n                            _______________\n                        else:\n                            _______________\n            \n            # Calculate averages\n            if stats[\"line_count\"] > 0:\n                stats[\"average_words_per_line\"] = stats[\"word_count\"] / stats[\"line_count\"]\n            \n            # Handle case of no non-empty lines\n            if stats[\"shortest_line\"] == float('inf'):\n                stats[\"shortest_line\"] = 0\n    \n    except FileNotFoundError:\n        stats[\"exists\"] = False\n    \n    return stats\n\ndef generate_file_report(stats, output_file=None):\n    \"\"\"Generate detailed file analysis report.\"\"\"\n    if output_file:\n        file_obj = open(output_file, \"w\")\n    else:\n        import sys\n        file_obj = sys.stdout\n    \n    try:\n        file_obj.write(f\"FILE ANALYSIS REPORT: {stats['filename']}\\n\")\n        file_obj.write(\"=\" * 60 + \"\\n\\n\")\n        \n        if not stats[\"exists\"]:\n            file_obj.write(\"ERROR: File not found\\n\")\n            return\n        \n        # Basic statistics\n        file_obj.write(\"BASIC STATISTICS:\\n\")\n        file_obj.write(f\"File size: {stats['size_bytes']:,} bytes\\n\")\n        file_obj.write(f\"Lines: {stats['line_count']:,}\\n\")\n        file_obj.write(f\"Words: {stats['word_count']:,}\\n\")\n        file_obj.write(f\"Characters: {stats['char_count']:,}\\n\")\n        file_obj.write(f\"Characters (no spaces): {stats['char_count_no_spaces']:,}\\n\")\n        file_obj.write(f\"Empty lines: {stats['empty_lines']:,}\\n\\n\")\n        \n        # Line statistics\n        file_obj.write(\"LINE STATISTICS:\\n\")\n        file_obj.write(f\"Longest line: {stats['longest_line']} characters\\n\")\n        file_obj.write(f\"Shortest line: {stats['shortest_line']} characters\\n\")\n        file_obj.write(f\"Average words per line: {stats['average_words_per_line']:.2f}\\n\")\n        \n        # Line length distribution\n        file_obj.write(\"\\nLINE LENGTH DISTRIBUTION:\\n\")\n        file_obj.write(f\"Short lines (<20 chars): {stats['line_length_distribution']['short']}\\n\")\n        file_obj.write(f\"Medium lines (20-79 chars): {stats['line_length_distribution']['medium']}\\n\")\n        file_obj.write(f\"Long lines (80+ chars): {stats['line_length_distribution']['long']}\\n\\n\")\n        \n        # Word frequency (top 10)\n        file_obj.write(\"TOP 10 MOST FREQUENT WORDS:\\n\")\n        sorted_words = sorted(stats[\"word_frequency\"].items(), key=lambda x: x[1], reverse=True)\n        for i, (word, count) in enumerate(sorted_words[:10], 1):\n            file_obj.write(f\"{i:2}. {word:<15} {count:>5} times\\n\")\n    \n    finally:\n        if output_file:\n            file_obj.close()\n\n# Create sample text file for testing\nsample_text = '''This is a sample text file for testing.\nIt contains multiple lines with different lengths.\nSome lines are short.\nOthers are much longer and contain many more words to test the analysis functionality.\n\nThere are empty lines too.\nThe word \"test\" appears multiple times in this test file.\nThis helps test the word frequency analysis.'''\n\nwith open(\"sample.txt\", \"w\") as file:\n    file.write(sample_text)\n\n# Analyze the file\nfile_stats = analyze_text_file(\"sample.txt\")\ngenerate_file_report(file_stats, \"file_analysis.txt\")\nprint(\"File analysis complete! Check file_analysis.txt\")\n```\n\n## Question 2.2: File Backup Tool (10 points)\n\nCreate an intelligent backup system:\n\n```python\nfrom datetime import datetime\n\ndef smart_backup(source_file, backup_dir=\".\", max_backups=5):\n    \"\"\"Create numbered backups with rotation.\"\"\"\n    timestamp = datetime.now().strftime(\"%Y%m%d_%H%M%S\")\n    base_name = source_file.replace(\".\", \"_\")\n    \n    try:\n        # Read source file\n        with open(source_file, \"r\") as source:\n            content = source.read()\n        \n        # Find existing backups\n        existing_backups = []\n        # Note: We can't list directory files yet, so simulate\n        for i in range(1, max_backups + 5):  # Check a few extra\n            backup_name = f\"{base_name}_backup_{i:03d}.txt\"\n            try:\n                with open(backup_name, \"r\") as test:\n                    existing_backups.append((backup_name, i))\n            except FileNotFoundError:\n                break\n        \n        # Remove oldest backups if we have too many\n        if len(existing_backups) >= max_backups:\n            # Sort by number and remove oldest\n            existing_backups.sort(key=lambda x: x[1])\n            for backup_name, _ in existing_backups[max_backups-1:]:\n                # In real system, would delete file\n                print(f\"Would delete old backup: {backup_name}\")\n        \n        # Create new backup\n        next_number = len(existing_backups) + 1\n        backup_name = f\"{base_name}_backup_{next_number:03d}.txt\"\n        \n        with open(backup_name, \"w\") as backup:\n            backup.write(f\"# Backup created: {timestamp}\\n\")\n            backup.write(f\"# Source file: {source_file}\\n\")\n            backup.write(f\"# Backup number: {next_number}\\n\\n\")\n            backup.write(content)\n        \n        print(f\"Backup created: {backup_name}\")\n        return backup_name\n    \n    except FileNotFoundError:\n        print(f\"Source file {source_file} not found\")\n        return None\n    except Exception as e:\n        print(f\"Backup failed: {e}\")\n        return None\n\ndef compare_files(file1, file2):\n    \"\"\"Compare two files and show differences.\"\"\"\n    try:\n        with open(file1, \"r\") as f1:\n            lines1 = f1.readlines()\n        \n        with open(file2, \"r\") as f2:\n            lines2 = f2.readlines()\n        \n        differences = []\n        max_lines = max(len(lines1), len(lines2))\n        \n        for i in range(max_lines):\n            line1 = lines1[i].strip() if i < len(lines1) else \"<MISSING>\"\n            line2 = lines2[i].strip() if i < len(lines2) else \"<MISSING>\"\n            \n            if line1 != line2:\n                differences.append({\n                    \"line_number\": i + 1,\n                    \"file1_content\": line1,\n                    \"file2_content\": line2\n                })\n        \n        return differences\n    \n    except FileNotFoundError as e:\n        print(f\"File not found: {e}\")\n        return None\n\ndef restore_from_backup(backup_file, target_file):\n    \"\"\"Restore file from backup.\"\"\"\n    try:\n        with open(backup_file, \"r\") as backup:\n            lines = backup.readlines()\n            \n            # Skip backup header lines (start with #)\n            content_lines = []\n            skip_headers = True\n            \n            for line in lines:\n                if skip_headers and line.strip().startswith(\"#\"):\n                    continue\n                elif skip_headers and line.strip() == \"\":\n                    skip_headers = False\n                    continue\n                else:\n                    skip_headers = False\n                    content_lines.append(line)\n        \n        # Write restored content\n        with open(target_file, \"w\") as target:\n            target.writelines(content_lines)\n        \n        print(f\"File restored from {backup_file} to {target_file}\")\n        return True\n    \n    except Exception as e:\n        print(f\"Restore failed: {e}\")\n        return False\n\n# Test backup system\nwith open(\"important.txt\", \"w\") as file:\n    file.write(\"This is important data version 1\\n\")\n    file.write(\"Do not lose this information!\\n\")\n\n# Create first backup\nbackup1 = smart_backup(\"important.txt\")\n\n# Modify file\nwith open(\"important.txt\", \"w\") as file:\n    file.write(\"This is important data version 2\\n\")\n    file.write(\"Updated with new information\\n\")\n    file.write(\"Even more critical now!\\n\")\n\n# Create second backup\nbackup2 = smart_backup(\"important.txt\")\n\n# Compare versions\nif backup1 and backup2:\n    differences = compare_files(backup1, backup2)\n    print(f\"\\nFound {len(differences)} differences:\")\n    for diff in differences[:5]:  # Show first 5\n        print(f\"Line {diff['line_number']}:\")\n        print(f\"  File 1: {diff['file1_content']}\")\n        print(f\"  File 2: {diff['file2_content']}\")\n```\n\n## Question 2.3: Configuration File Manager (10 points)\n\nBuild a robust configuration system:\n\n```python\nclass ConfigManager:\n    def __init__(self, config_file=\"app.config\"):\n        self.config_file = config_file\n        self.settings = {}\n        self.comments = {}\n        self.sections = {}\n    \n    def load_config(self):\n        \"\"\"Load configuration with comments and sections.\"\"\"\n        try:\n            current_section = \"general\"\n            \n            with open(self.config_file, \"r\") as file:\n                for line_num, line in enumerate(file, 1):\n                    original_line = line\n                    line = line.strip()\n                    \n                    # Skip empty lines\n                    if not line:\n                        continue\n                    \n                    # Handle comments\n                    if line.startswith(\"#\"):\n                        comment = line[1:].strip()\n                        self.comments[f\"line_{line_num}\"] = comment\n                        continue\n                    \n                    # Handle sections\n                    if line.startswith(\"[\") and line.endswith(\"]\"):\n                        current_section = line[1:-1]\n                        if current_section not in self.sections:\n                            self.sections[current_section] = []\n                        continue\n                    \n                    # Handle key=value pairs\n                    if \"=\" in line:\n                        key, value = line.split(\"=\", 1)\n                        key = key.strip()\n                        value = value.strip()\n                        \n                        # Remove quotes if present\n                        if value.startswith('\"') and value.endswith('\"'):\n                            value = value[1:-1]\n                        \n                        # Store with section prefix\n                        full_key = f\"{current_section}.{key}\" if current_section != \"general\" else key\n                        self.settings[full_key] = value\n                        \n                        # Track which section this belongs to\n                        if current_section not in self.sections:\n                            self.sections[current_section] = []\n                        self.sections[current_section].append(full_key)\n        \n        except FileNotFoundError:\n            print(f\"Config file {self.config_file} not found, using defaults\")\n            self._load_defaults()\n    \n    def _load_defaults(self):\n        \"\"\"Load default configuration.\"\"\"\n        self.settings = {\n            \"app_name\": \"My Application\",\n            \"version\": \"1.0.0\",\n            \"ui.theme\": \"light\",\n            \"ui.font_size\": \"12\",\n            \"database.host\": \"localhost\",\n            \"database.port\": \"5432\",\n            \"debug\": \"false\"\n        }\n    \n    def save_config(self):\n        \"\"\"Save configuration with proper formatting.\"\"\"\n        with open(self.config_file, \"w\") as file:\n            file.write(\"# Application Configuration File\\n\")\n            file.write(f\"# Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\\n\\n\")\n            \n            # Group settings by section\n            sections = {}\n            for key, value in self.settings.items():\n                if \".\" in key:\n                    section, setting = key.split(\".\", 1)\n                else:\n                    section, setting = \"general\", key\n                \n                if section not in sections:\n                    sections[section] = []\n                sections[section].append((setting, value))\n            \n            # Write each section\n            for section, settings in sorted(sections.items()):\n                if section != \"general\":\n                    file.write(f\"[{section}]\\n\")\n                \n                for setting, value in sorted(settings):\n                    # Quote values with spaces\n                    if \" \" in str(value):\n                        file.write(f\"{setting} = \\\"{value}\\\"\\n\")\n                    else:\n                        file.write(f\"{setting} = {value}\\n\")\n                \n                file.write(\"\\n\")\n    \n    def get(self, key, default=None):\n        \"\"\"Get configuration value.\"\"\"\n        return self.settings.get(key, default)\n    \n    def set(self, key, value):\n        \"\"\"Set configuration value.\"\"\"\n        self.settings[key] = str(value)\n    \n    def get_section(self, section_name):\n        \"\"\"Get all settings in a section.\"\"\"\n        section_settings = {}\n        prefix = f\"{section_name}.\"\n        \n        for key, value in self.settings.items():\n            if key.startswith(prefix):\n                setting_name = key[len(prefix):]\n                section_settings[setting_name] = value\n            elif \".\" not in key and section_name == \"general\":\n                section_settings[key] = value\n        \n        return section_settings\n    \n    def validate_config(self):\n        \"\"\"Validate configuration values.\"\"\"\n        errors = []\n        warnings = []\n        \n        # Check required settings\n        required = [\"app_name\", \"version\"]\n        for req in required:\n            if req not in self.settings:\n                errors.append(f\"Missing required setting: {req}\")\n        \n        # Validate specific types\n        numeric_settings = [\"ui.font_size\", \"database.port\"]\n        for setting in numeric_settings:\n            value = self.settings.get(setting)\n            if value and not value.isdigit():\n                errors.append(f\"Setting {setting} must be numeric, got: {value}\")\n        \n        # Validate boolean settings\n        boolean_settings = [\"debug\"]\n        for setting in boolean_settings:\n            value = self.settings.get(setting, \"\").lower()\n            if value and value not in [\"true\", \"false\", \"yes\", \"no\", \"1\", \"0\"]:\n                warnings.append(f\"Setting {setting} should be boolean, got: {value}\")\n        \n        return {\"errors\": errors, \"warnings\": warnings}\n\n# Test configuration manager\nconfig = ConfigManager(\"test_app.config\")\n\n# Create sample config file\nwith open(\"test_app.config\", \"w\") as file:\n    file.write(\"# Test Application Configuration\\n\")\n    file.write(\"app_name = Test App\\n\")\n    file.write(\"version = 2.0.1\\n\")\n    file.write(\"debug = true\\n\\n\")\n    file.write(\"[ui]\\n\")\n    file.write(\"theme = dark\\n\")\n    file.write(\"font_size = 14\\n\\n\")\n    file.write(\"[database]\\n\")\n    file.write(\"host = localhost\\n\")\n    file.write(\"port = 5432\\n\")\n\n# Load and test\nconfig.load_config()\nprint(f\"App name: {config.get('app_name')}\")\nprint(f\"UI theme: {config.get('ui.theme')}\")\nprint(f\"Database settings: {config.get_section('database')}\")\n\n# Validate\nvalidation = config.validate_config()\nif validation[\"errors\"]:\n    print(\"Configuration errors:\", validation[\"errors\"])\nif validation[\"warnings\"]:\n    print(\"Configuration warnings:\", validation[\"warnings\"])\n```\n\n---\n\n# Part 3: Advanced File Operations (35 points)\n\n## Question 3.1: CSV-style Data Processing (20 points)\n\nWork with structured data files:\n\n```python\ndef parse_csv_line(line, delimiter=\",\"):\n    \"\"\"Parse CSV line handling quoted fields.\"\"\"\n    fields = []\n    current_field = \"\"\n    in_quotes = False\n    \n    for char in line:\n        if char == '\"' and not in_quotes:\n            in_quotes = True\n        elif char == '\"' and in_quotes:\n            in_quotes = False\n        elif char == delimiter and not in_quotes:\n            fields.append(current_field.strip())\n            current_field = \"\"\n        else:\n            current_field += char\n    \n    # Add the last field\n    fields.append(current_field.strip())\n    return fields\n\ndef process_sales_data(filename):\n    \"\"\"Process sales data and generate insights.\"\"\"\n    sales_data = []\n    \n    try:\n        with open(filename, \"r\") as file:\n            # Read header\n            header_line = file.readline().strip()\n            headers = parse_csv_line(header_line)\n            \n            # Process data lines\n            for line_num, line in enumerate(file, 2):\n                line = line.strip()\n                if not line:\n                    continue\n                \n                fields = parse_csv_line(line)\n                if len(fields) != len(headers):\n                    print(f\"Warning: Line {line_num} has {len(fields)} fields, expected {len(headers)}\")\n                    continue\n                \n                # Create record dictionary\n                record = {}\n                for i, header in enumerate(headers):\n                    record[header] = fields[i] if i < len(fields) else \"\"\n                \n                sales_data.append(record)\n    \n    except FileNotFoundError:\n        print(f\"Sales file {filename} not found\")\n        return []\n    \n    return sales_data\n\ndef analyze_sales(sales_data):\n    \"\"\"Analyze sales data and return insights.\"\"\"\n    analysis = {\n        \"total_sales\": 0,\n        \"product_totals\": {},\n        \"monthly_totals\": {},\n        \"top_customers\": {},\n        \"average_order\": 0,\n        \"order_count\": len(sales_data)\n    }\n    \n    for record in sales_data:\n        # Extract numeric values safely\n        try:\n            amount = float(record.get(\"Amount\", 0))\n            quantity = int(record.get(\"Quantity\", 0))\n        except ValueError:\n            continue\n        \n        analysis[\"total_sales\"] += amount\n        \n        # Product analysis\n        product = record.get(\"Product\", \"Unknown\")\n        if product in analysis[\"product_totals\"]:\n            analysis[\"product_totals\"][product][\"revenue\"] += amount\n            analysis[\"product_totals\"][product][\"quantity\"] += quantity\n        else:\n            analysis[\"product_totals\"][product] = {\"revenue\": amount, \"quantity\": quantity}\n        \n        # Monthly analysis\n        date = record.get(\"Date\", \"\")\n        if len(date) >= 7:  # YYYY-MM format\n            month = date[:7]\n            if month in analysis[\"monthly_totals\"]:\n                analysis[\"monthly_totals\"][month] += amount\n            else:\n                analysis[\"monthly_totals\"][month] = amount\n        \n        # Customer analysis\n        customer = record.get(\"Customer\", \"Unknown\")\n        if customer in analysis[\"top_customers\"]:\n            analysis[\"top_customers\"][customer] += amount\n        else:\n            analysis[\"top_customers\"][customer] = amount\n    \n    # Calculate average\n    if analysis[\"order_count\"] > 0:\n        analysis[\"average_order\"] = analysis[\"total_sales\"] / analysis[\"order_count\"]\n    \n    return analysis\n\ndef generate_sales_dashboard(analysis, output_file=\"sales_dashboard.txt\"):\n    \"\"\"Generate comprehensive sales dashboard.\"\"\"\n    with open(output_file, \"w\") as file:\n        file.write(\"SALES DASHBOARD\\n\")\n        file.write(\"=\" * 50 + \"\\n\\n\")\n        \n        # Summary metrics\n        file.write(\"SUMMARY METRICS:\\n\")\n        file.write(f\"Total Revenue: ${analysis['total_sales']:,.2f}\\n\")\n        file.write(f\"Total Orders: {analysis['order_count']:,}\\n\")\n        file.write(f\"Average Order: ${analysis['average_order']:,.2f}\\n\\n\")\n        \n        # Top products by revenue\n        file.write(\"TOP 5 PRODUCTS BY REVENUE:\\n\")\n        file.write(\"-\" * 40 + \"\\n\")\n        sorted_products = sorted(analysis[\"product_totals\"].items(), \n                               key=lambda x: x[1][\"revenue\"], reverse=True)\n        for i, (product, data) in enumerate(sorted_products[:5], 1):\n            file.write(f\"{i}. {product:<20} ${data['revenue']:>8,.2f}\\n\")\n        \n        # Your turn: Add sections for monthly trends and top customers\n        file.write(\"\\nMONTHLY REVENUE TRENDS:\\n\")\n        file.write(\"-\" * 40 + \"\\n\")\n        # Your code here\n        \n        \n        file.write(\"\\nTOP 5 CUSTOMERS:\\n\")\n        file.write(\"-\" * 40 + \"\\n\")\n        # Your code here\n        \n        \n\n# Create sample sales data\nsample_sales = '''Date,Customer,Product,Quantity,Amount\n2024-01-15,\"ABC Corp\",Laptops,5,4999.95\n2024-01-16,\"XYZ Ltd\",\"Office Chairs\",10,599.90\n2024-01-20,\"ABC Corp\",Monitors,3,899.97\n2024-02-01,\"Tech Solutions\",Laptops,2,1999.98\n2024-02-15,\"XYZ Ltd\",Keyboards,20,399.80'''\n\nwith open(\"sales_data.csv\", \"w\") as file:\n    file.write(sample_sales)\n\n# Process and analyze\nsales_records = process_sales_data(\"sales_data.csv\")\nprint(f\"Loaded {len(sales_records)} sales records\")\n\nsales_analysis = analyze_sales(sales_records)\ngenerate_sales_dashboard(sales_analysis)\nprint(\"Sales dashboard generated!\")\n```\n\n## Question 3.2: Template System (15 points)\n\nCreate a simple template processing system:\n\n```python\ndef process_template(template_file, data, output_file):\n    \"\"\"Process template file with data substitution.\"\"\"\n    try:\n        with open(template_file, \"r\") as file:\n            template_content = file.read()\n        \n        # Replace variables in format {{variable_name}}\n        processed_content = template_content\n        \n        # Find all template variables\n        import re\n        variables = re.findall(r'\\{\\{([^}]+)\\}\\}', template_content)\n        \n        for variable in variables:\n            variable = variable.strip()\n            \n            # Handle nested data access (e.g., user.name)\n            value = data\n            for key in variable.split(\".\"):\n                if isinstance(value, dict) and key in value:\n                    value = value[key]\n                else:\n                    value = f\"{{{{MISSING: {variable}}}}}\"\n                    break\n            \n            # Replace in content\n            processed_content = processed_content.replace(\n                f\"{{{{{variable}}}}}\", str(value)\n            )\n        \n        # Write processed content\n        with open(output_file, \"w\") as file:\n            file.write(processed_content)\n        \n        return True\n    \n    except Exception as e:\n        print(f\"Template processing failed: {e}\")\n        return False\n\ndef generate_report_from_template(data, template_name=\"report_template.txt\"):\n    \"\"\"Generate report using template system.\"\"\"\n    \n    # Create template if it doesn't exist\n    template_content = '''MONTHLY REPORT: {{report.month}} {{report.year}}\n==================================================\n\nGenerated on: {{report.date}}\nGenerated by: {{report.author}}\n\nSUMMARY:\n- Total Revenue: ${{summary.revenue}}\n- Total Orders: {{summary.orders}}\n- Average Order: ${{summary.average}}\n- Growth Rate: {{summary.growth}}%\n\nTOP PERFORMERS:\n1. {{top_products.0.name}} - ${{top_products.0.revenue}}\n2. {{top_products.1.name}} - ${{top_products.1.revenue}}\n3. {{top_products.2.name}} - ${{top_products.2.revenue}}\n\nCUSTOMER INSIGHTS:\n- New Customers: {{customers.new_count}}\n- Returning Customers: {{customers.returning_count}}\n- Customer Retention: {{customers.retention_rate}}%\n\nRECOMMENDations:\n{{recommendations}}\n\n--- End of Report ---'''\n    \n    with open(template_name, \"w\") as file:\n        file.write(template_content)\n    \n    # Process template with data\n    output_filename = f\"report_{data['report']['month']}_{data['report']['year']}.txt\"\n    success = process_template(template_name, data, output_filename)\n    \n    if success:\n        print(f\"Report generated: {output_filename}\")\n    \n    return output_filename if success else None\n\n# Test template system\nreport_data = {\n    \"report\": {\n        \"month\": \"March\",\n        \"year\": \"2024\",\n        \"date\": \"2024-04-01\",\n        \"author\": \"Sales Team\"\n    },\n    \"summary\": {\n        \"revenue\": \"125,750.00\",\n        \"orders\": \"1,247\",\n        \"average\": \"100.84\",\n        \"growth\": \"15.3\"\n    },\n    \"top_products\": [\n        {\"name\": \"Laptops\", \"revenue\": \"45,230.00\"},\n        {\"name\": \"Monitors\", \"revenue\": \"32,150.00\"},\n        {\"name\": \"Keyboards\", \"revenue\": \"18,975.00\"}\n    ],\n    \"customers\": {\n        \"new_count\": \"156\",\n        \"returning_count\": \"1,091\",\n        \"retention_rate\": \"87.5\"\n    },\n    \"recommendations\": \"Focus on laptop promotions and expand monitor inventory. Consider customer loyalty program for improved retention.\"\n}\n\ngenerated_report = generate_report_from_template(report_data)\nif generated_report:\n    print(f\"✓ Template processing successful: {generated_report}\")\n```\n\n---\n\n# Submission Requirements\n\n## What to Submit\n\n1. **Python script** (`practical_files_assessment.py`)\n   - All completed functions\n   - Test code and sample data\n   - Clear comments and documentation\n\n2. **Sample output files** showing:\n   - Log analysis report\n   - Student report\n   - File statistics\n   - Sales dashboard\n   - Generated template report\n\n3. **Documentation** (`file_utilities_guide.txt`)\n   - Explanation of each utility\n   - Usage instructions\n   - Design decisions\n\n## Grading Rubric\n\n| Section | Points | Focus |\n|---------|---------|-------|\n| Data Processing | 30 | Correct file parsing and analysis |\n| File Utilities | 35 | Useful, working tools |\n| Advanced Operations | 35 | Complex file handling |\n\n## Tips for Success\n\n1. **Test Thoroughly** - Use the provided sample data\n2. **Handle Errors** - Files may be missing or corrupted\n3. **Format Output** - Make reports readable\n4. **Document Code** - Explain complex logic\n5. **Optimize for Usability** - Build practical tools\n\nGood luck building real-world file applications!

@@ -1,0 +1,970 @@
+---
+title: "Week 7: Complete Solutions"
+subtitle: "File Operations and Data Persistence"
+format:
+  html:
+    toc: true
+    code-fold: true
+    code-summary: "Show solution"
+  pdf:
+    toc: true
+---
+
+# Lab Solutions
+
+## Part 1: Reading Files
+
+### Exercise 1.1: Basic File Reading
+
+```python
+# Create a sample file
+with open("sample.txt", "w") as file:
+    file.write("Hello, World!\n")
+    file.write("This is line 2\n")
+    file.write("Python is fun\n")
+    file.write("Files are powerful\n")
+
+print("Sample file created!")
+
+# 1. Read entire file at once
+print("=== Method 1: Read All ===")
+with open("sample.txt", "r") as file:
+    content = file.read()
+    print(content)
+    print(f"Type: {type(content)}")
+    print(f"Length: {len(content)} characters")
+
+# 2. Read line by line
+print("\n=== Method 2: Line by Line ===")
+with open("sample.txt", "r") as file:
+    line_count = 0
+    for line in file:
+        line_count = line_count + 1
+        print(f"Line {line_count}: {line.strip()}")
+
+# 3. Read into a list
+print("\n=== Method 3: Read Lines into List ===")
+with open("sample.txt", "r") as file:
+    lines = file.readlines()
+    print(f"Got {len(lines)} lines")
+    for i, line in enumerate(lines):
+        print(f"[{i}]: {line.strip()}")
+```
+
+### Exercise 1.2: Processing File Data
+
+```python
+# Create a file with numbers
+with open("numbers.txt", "w") as file:
+    file.write("10\n")
+    file.write("25\n")
+    file.write("30\n")
+    file.write("15\n")
+    file.write("40\n")
+
+# Read and calculate sum
+total = 0
+count = 0
+
+with open("numbers.txt", "r") as file:
+    for line in file:
+        number = int(line.strip())
+        total = total + number
+        count = count + 1
+
+average = total / count
+print(f"Sum: {total}")
+print(f"Count: {count}")
+print(f"Average: {average:.2f}")
+
+# Find the largest number
+largest = 0
+with open("numbers.txt", "r") as file:
+    for line in file:
+        number = int(line.strip())
+        if number > largest:
+            largest = number
+
+print(f"Largest: {largest}")
+```
+
+### Exercise 1.3: Handling Missing Files
+
+```python
+def read_file_safe(filename):
+    """Read file contents or return empty string if missing."""
+    try:
+        with open(filename, "r") as file:
+            return file.read()
+    except FileNotFoundError:
+        print(f"Warning: {filename} not found")
+        return ""
+
+# Test with existing file
+content1 = read_file_safe("sample.txt")
+print(f"Read {len(content1)} characters")
+
+# Test with missing file
+content2 = read_file_safe("missing.txt")
+print(f"Read {len(content2)} characters")
+
+# Read or create function
+def read_or_create(filename, default_content=""):
+    """Read file or create it with default content."""
+    try:
+        with open(filename, "r") as file:
+            return file.read()
+    except FileNotFoundError:
+        print(f"Creating new file: {filename}")
+        with open(filename, "w") as file:
+            file.write(default_content)
+        return default_content
+
+# Test read or create
+content = read_or_create("new_file.txt", "Default content\n")
+print(f"Content: {content}")
+```
+
+## Part 2: Writing Files
+
+### Exercise 2.1: Creating New Files
+
+```python
+# 1. Write a simple list
+shopping = ["Milk", "Bread", "Eggs", "Cheese", "Apples"]
+
+with open("shopping.txt", "w") as file:
+    file.write("Shopping List\n")
+    file.write("=" * 20 + "\n")
+    for item in shopping:
+        file.write(f"- {item}\n")
+
+print("Shopping list created!")
+
+# 2. Write formatted data
+students = [
+    {"name": "Alice", "grade": 92},
+    {"name": "Bob", "grade": 85},
+    {"name": "Carol", "grade": 88}
+]
+
+with open("grades.txt", "w") as file:
+    file.write("Student Grade Report\n")
+    file.write("-" * 30 + "\n")
+    for student in students:
+        file.write(f"{student['name']:<10} {student['grade']:>3}%\n")
+    
+    # Calculate and write average
+    total = sum(s["grade"] for s in students)
+    average = total / len(students)
+    file.write("-" * 30 + "\n")
+    file.write(f"Average:   {average:>5.1f}%\n")
+
+# 3. Write multiplication table
+def write_times_table(n, filename):
+    """Write times table for n to a file."""
+    with open(filename, "w") as file:
+        file.write(f"Times Table for {n}\n")
+        file.write("=" * 20 + "\n")
+        for i in range(1, 13):
+            result = n * i
+            file.write(f"{n} x {i:2} = {result:2}\n")
+
+write_times_table(7, "times7.txt")
+print("Times table created!")
+```
+
+### Exercise 2.2: Appending to Files
+
+```python
+# Create a log file
+with open("activity.log", "w") as file:
+    file.write("Activity Log\n")
+    file.write("============\n")
+
+# Append entries
+from datetime import datetime
+
+def log_activity(message):
+    """Add entry to activity log."""
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    with open("activity.log", "a") as file:
+        file.write(f"[{timestamp}] {message}\n")
+
+# Test logging
+log_activity("Program started")
+log_activity("User logged in")
+log_activity("File saved")
+
+# Read and display log
+print("\n=== Current Log ===")
+with open("activity.log", "r") as file:
+    print(file.read())
+
+# Guest book function
+def sign_guest_book(name, message):
+    """Add entry to guest book."""
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
+    with open("guest_book.txt", "a") as file:
+        file.write(f"{timestamp} - {name}: {message}\n")
+
+# Test guest book
+sign_guest_book("Alice", "Great event!")
+sign_guest_book("Bob", "Thanks for hosting!")
+```
+
+### Exercise 2.3: Saving Data Structures
+
+```python
+# Save a dictionary to file
+inventory = {
+    "apples": 50,
+    "bananas": 30,
+    "oranges": 25,
+    "grapes": 40
+}
+
+def save_inventory(inventory, filename):
+    """Save inventory to file."""
+    with open(filename, "w") as file:
+        file.write("Fruit Inventory\n")
+        for fruit, quantity in inventory.items():
+            file.write(f"{fruit}:{quantity}\n")
+
+def load_inventory(filename):
+    """Load inventory from file."""
+    inventory = {}
+    try:
+        with open(filename, "r") as file:
+            file.readline()  # Skip header
+            for line in file:
+                if ":" in line:
+                    fruit, quantity = line.strip().split(":")
+                    inventory[fruit] = int(quantity)
+    except FileNotFoundError:
+        print("No inventory file found")
+    return inventory
+
+# Test save and load
+save_inventory(inventory, "inventory.txt")
+loaded = load_inventory("inventory.txt")
+print(f"Loaded {len(loaded)} items")
+print(loaded)
+
+# High scores save/load
+high_scores = [
+    ("Alice", 1000),
+    ("Bob", 850),
+    ("Carol", 920)
+]
+
+def save_high_scores(scores, filename):
+    """Save high scores to file."""
+    with open(filename, "w") as file:
+        file.write("High Scores\n")
+        file.write("-----------\n")
+        for name, score in scores:
+            file.write(f"{name}|{score}\n")
+
+def load_high_scores(filename):
+    """Load high scores from file."""
+    scores = []
+    try:
+        with open(filename, "r") as file:
+            file.readline()  # Skip "High Scores"
+            file.readline()  # Skip "-----------"
+            for line in file:
+                if "|" in line:
+                    name, score = line.strip().split("|")
+                    scores.append((name, int(score)))
+    except FileNotFoundError:
+        print("No high scores file found")
+    return scores
+
+# Test high scores
+save_high_scores(high_scores, "scores.txt")
+loaded_scores = load_high_scores("scores.txt")
+print(f"Loaded {len(loaded_scores)} scores")
+```
+
+## Part 3: File Patterns
+
+### Exercise 3.1: Configuration Files
+
+```python
+def save_settings(settings, filename="settings.txt"):
+    """Save program settings to file."""
+    with open(filename, "w") as file:
+        file.write("# Program Settings\n")
+        for key, value in settings.items():
+            file.write(f"{key}={value}\n")
+
+def load_settings(filename="settings.txt"):
+    """Load settings from file."""
+    settings = {}
+    try:
+        with open(filename, "r") as file:
+            for line in file:
+                line = line.strip()
+                if line and not line.startswith("#"):
+                    if "=" in line:
+                        key, value = line.split("=", 1)
+                        settings[key.strip()] = value.strip()
+    except FileNotFoundError:
+        print("No settings file found, using defaults")
+    return settings
+
+# Test settings
+my_settings = {
+    "username": "player1",
+    "difficulty": "medium",
+    "sound": "on",
+    "fullscreen": "no"
+}
+
+save_settings(my_settings)
+loaded_settings = load_settings()
+print("Loaded settings:", loaded_settings)
+```
+
+### Exercise 3.2: Backup Files
+
+```python
+def create_backup(filename):
+    """Create a backup copy of a file."""
+    try:
+        # Read original
+        with open(filename, "r") as original:
+            content = original.read()
+        
+        # Write backup
+        backup_name = filename + ".backup"
+        with open(backup_name, "w") as backup:
+            backup.write(content)
+        
+        print(f"Backup created: {backup_name}")
+        return True
+    except FileNotFoundError:
+        print(f"Cannot backup: {filename} not found")
+        return False
+
+# Test backup
+create_backup("settings.txt")
+create_backup("inventory.txt")
+
+# Rotate backups function
+def rotate_backups(filename, max_backups=3):
+    """Keep only the last N backups."""
+    import os
+    
+    # Note: This would require os module for real file operations
+    # For now, we'll simulate the concept
+    print(f"Would rotate backups for {filename}, keeping {max_backups}")
+    
+    # In a real implementation:
+    # 1. Find all backup files
+    # 2. Sort by creation time
+    # 3. Delete oldest ones beyond max_backups
+    # 4. Create new backup
+    
+    create_backup(filename)
+
+rotate_backups("settings.txt", 3)
+```
+
+---
+
+# Project Solution: Complete Journal Application
+
+```python
+from datetime import datetime
+
+def load_entries(filename="journal.txt"):
+    """Load journal entries from file."""
+    entries = []
+    
+    try:
+        with open(filename, "r") as file:
+            current_entry = {}
+            content_lines = []
+            reading_content = False
+            
+            for line in file:
+                line = line.strip()
+                
+                if line == "===ENTRY===":
+                    current_entry = {}
+                    content_lines = []
+                    reading_content = False
+                elif line == "===END===":
+                    if current_entry:
+                        current_entry["content"] = "\n".join(content_lines)
+                        entries.append(current_entry)
+                elif line.startswith("DATE: "):
+                    current_entry["date"] = line[6:]
+                elif line.startswith("TIME: "):
+                    current_entry["time"] = line[6:]
+                elif line.startswith("TITLE: "):
+                    current_entry["title"] = line[7:]
+                    reading_content = True
+                elif reading_content:
+                    content_lines.append(line)
+    
+    except FileNotFoundError:
+        print("No journal file found. Starting new journal!")
+    
+    return entries
+
+def save_entry(date, time, title, content, filename="journal.txt"):
+    """Save a single entry to journal file."""
+    with open(filename, "a") as file:
+        file.write("===ENTRY===\n")
+        file.write(f"DATE: {date}\n")
+        file.write(f"TIME: {time}\n")
+        file.write(f"TITLE: {title}\n")
+        file.write(f"{content}\n")
+        file.write("===END===\n")
+
+def create_entry():
+    """Create a new journal entry."""
+    date = datetime.now().strftime("%Y-%m-%d")
+    time = datetime.now().strftime("%H:%M")
+    
+    print(f"\n=== New Journal Entry for {date} at {time} ===")
+    
+    title = input("Entry title (optional): ").strip()
+    if not title:
+        title = "Untitled"
+    
+    print("Write your entry (type 'DONE' on a new line when finished):")
+    content_lines = []
+    while True:
+        line = input()
+        if line == "DONE":
+            break
+        content_lines.append(line)
+    
+    content = "\n".join(content_lines)
+    
+    if content.strip():
+        save_entry(date, time, title, content)
+        print("✓ Entry saved!")
+    else:
+        print("Entry was empty, not saved.")
+
+def view_entries():
+    """Display all journal entries."""
+    entries = load_entries()
+    
+    if not entries:
+        print("No journal entries yet!")
+        return
+    
+    print(f"\n=== Journal Entries ({len(entries)} total) ===")
+    for i, entry in enumerate(entries, 1):
+        print(f"{i}. {entry['date']} {entry['time']} - {entry['title']}")
+    
+    choice = input("\nEnter number to read (0 to go back): ")
+    if choice.isdigit() and 0 < int(choice) <= len(entries):
+        display_entry(entries[int(choice) - 1])
+
+def display_entry(entry):
+    """Display a single journal entry."""
+    print("\n" + "=" * 60)
+    print(f"Date: {entry['date']} at {entry['time']}")
+    print(f"Title: {entry['title']}")
+    print("=" * 60)
+    print(entry['content'])
+    print("=" * 60)
+    input("\nPress Enter to continue...")
+
+def search_entries():
+    """Search through journal entries."""
+    entries = load_entries()
+    
+    if not entries:
+        print("No entries to search!")
+        return
+    
+    search_term = input("Search for: ").lower()
+    matches = []
+    
+    for entry in entries:
+        if (search_term in entry['title'].lower() or 
+            search_term in entry['content'].lower() or
+            search_term in entry['date']):
+            matches.append(entry)
+    
+    if matches:
+        print(f"\nFound {len(matches)} matching entries:")
+        for i, entry in enumerate(matches, 1):
+            print(f"{i}. {entry['date']} {entry['time']} - {entry['title']}")
+        
+        choice = input("\nEnter number to read (0 to go back): ")
+        if choice.isdigit() and 0 < int(choice) <= len(matches):
+            display_entry(matches[int(choice) - 1])
+    else:
+        print("No matching entries found.")
+
+def show_statistics():
+    """Display journal statistics."""
+    entries = load_entries()
+    
+    if not entries:
+        print("No entries for statistics!")
+        return
+    
+    print("\n=== Journal Statistics ===")
+    print(f"Total entries: {len(entries)}")
+    
+    # Find date range
+    dates = [entry['date'] for entry in entries]
+    print(f"First entry: {min(dates)}")
+    print(f"Last entry: {max(dates)}")
+    
+    # Count words
+    total_words = 0
+    for entry in entries:
+        words = len(entry['content'].split())
+        total_words += words
+    
+    avg_words = total_words / len(entries) if entries else 0
+    print(f"Total words: {total_words}")
+    print(f"Average words per entry: {avg_words:.1f}")
+    
+    # Entries this month
+    current_month = datetime.now().strftime("%Y-%m")
+    month_entries = [e for e in entries if e['date'].startswith(current_month)]
+    print(f"Entries this month: {len(month_entries)}")
+
+def export_journal():
+    """Export journal to a readable format."""
+    entries = load_entries()
+    
+    if not entries:
+        print("No entries to export!")
+        return
+    
+    export_filename = f"journal_export_{datetime.now().strftime('%Y%m%d')}.txt"
+    
+    with open(export_filename, "w") as file:
+        file.write("PERSONAL JOURNAL EXPORT\n")
+        file.write("=" * 50 + "\n")
+        file.write(f"Exported on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+        file.write(f"Total entries: {len(entries)}\n\n")
+        
+        for i, entry in enumerate(entries, 1):
+            file.write(f"Entry {i}: {entry['title']}\n")
+            file.write(f"Date: {entry['date']} at {entry['time']}\n")
+            file.write("-" * 40 + "\n")
+            file.write(entry['content'])
+            file.write("\n\n")
+    
+    print(f"Journal exported to: {export_filename}")
+
+def journal_menu():
+    """Main journal application."""
+    print("Welcome to Your Personal Journal!")
+    
+    while True:
+        print("\n=== Personal Journal ===")
+        print("1. New Entry")
+        print("2. View All Entries")
+        print("3. Search Entries")
+        print("4. Today's Entries")
+        print("5. Journal Statistics")
+        print("6. Export Journal")
+        print("7. Exit")
+        
+        choice = input("\nYour choice: ")
+        
+        if choice == "1":
+            create_entry()
+        elif choice == "2":
+            view_entries()
+        elif choice == "3":
+            search_entries()
+        elif choice == "4":
+            today = datetime.now().strftime("%Y-%m-%d")
+            entries = load_entries()
+            today_entries = [e for e in entries if e['date'] == today]
+            if today_entries:
+                print(f"\nToday's entries ({len(today_entries)}):")
+                for i, entry in enumerate(today_entries, 1):
+                    print(f"{i}. {entry['time']} - {entry['title']}")
+                
+                choice = input("\nEnter number to read (0 to go back): ")
+                if choice.isdigit() and 0 < int(choice) <= len(today_entries):
+                    display_entry(today_entries[int(choice) - 1])
+            else:
+                print("No entries for today yet.")
+        elif choice == "5":
+            show_statistics()
+        elif choice == "6":
+            export_journal()
+        elif choice == "7":
+            print("\nThank you for journaling!")
+            print("Your thoughts are safely saved.")
+            break
+        else:
+            print("Invalid choice! Please try again.")
+
+# Create sample entries for testing
+def create_sample_entries():
+    """Create sample journal entries for testing."""
+    samples = [
+        ("2024-03-10", "08:00", "First Day", "Started learning Python today! Very excited about file operations."),
+        ("2024-03-11", "19:30", "Progress Update", "Functions make so much sense now. Can't wait to save data to files."),
+        ("2024-03-12", "21:00", "Breakthrough", "Finally understood dictionaries! The contact book project was amazing."),
+        ("2024-03-13", "10:15", "File Operations", "Learning about files today. This changes everything!"),
+        ("2024-03-14", "20:00", "Journal Success", "My journal app works! I can save my thoughts permanently now.")
+    ]
+    
+    for date, time, title, content in samples:
+        save_entry(date, time, title, content)
+    
+    print("Sample entries created!")
+
+# Run the journal application
+if __name__ == "__main__":
+    # Uncomment to create sample data
+    # create_sample_entries()
+    
+    journal_menu()
+```
+
+---
+
+# Assessment Solutions
+
+## File Operations Assessment
+
+### Part 1: Basic File Operations
+
+```python
+# Question 1.1: File Modes
+# A. Read an existing configuration file
+with open("config.txt", "r") as file:
+    settings = file.read()
+
+# B. Create a new log file (overwrite if exists)
+with open("app.log", "w") as file:
+    file.write("Application started\n")
+
+# C. Add entries to an existing log file
+with open("app.log", "a") as file:
+    file.write("New user logged in\n")
+
+# D. Read user data (handle if file doesn't exist)
+try:
+    with open("users.txt", "r") as file:
+        users = file.read()
+except FileNotFoundError:
+    users = ""
+
+# Question 1.2: Reading Files
+# A. Read entire file at once
+with open("grades.txt", "r") as file:
+    content = file.read()
+    print(f"File contains {len(content)} characters")
+
+# B. Read line by line and process
+total_grade = 0
+student_count = 0
+
+with open("grades.txt", "r") as file:
+    for line in file:
+        name, grade = line.strip().split(": ")
+        total_grade += int(grade)
+        student_count += 1
+
+average = total_grade / student_count
+print(f"Class average: {average}")
+
+# C. Read all lines into a list
+with open("grades.txt", "r") as file:
+    lines = file.readlines()
+    print(f"File has {len(lines)} lines")
+
+# Question 1.3: Writing Files
+# A. Write a shopping list
+shopping_items = ["Milk", "Bread", "Eggs", "Cheese"]
+
+with open("shopping.txt", "w") as file:
+    file.write("Shopping List\n")
+    file.write("=============\n")
+    for item in shopping_items:
+        file.write(f"- {item}\n")
+
+# B. Write formatted grade report
+student_grades = {
+    "Alice": 92,
+    "Bob": 85,
+    "Carol": 88
+}
+
+with open("report.txt", "w") as file:
+    file.write("Grade Report\n")
+    for name, grade in student_grades.items():
+        file.write(f"{name}: {grade}%\n")
+
+# C. Append new scores to existing file
+new_scores = [("Dave", 91), ("Eve", 89)]
+
+with open("report.txt", "a") as file:
+    for name, grade in new_scores:
+        file.write(f"{name}: {grade}%\n")
+```
+
+### Part 2: Data Persistence
+
+```python
+# Question 2.1: Saving Data Structures
+def save_high_scores(scores, filename):
+    """Save high scores to a file."""
+    with open(filename, "w") as file:
+        file.write("High Scores\n")
+        for name, score in scores:
+            file.write(f"{name}|{score}\n")
+
+def load_high_scores(filename):
+    """Load high scores from file."""
+    scores = []
+    try:
+        with open(filename, "r") as file:
+            file.readline()  # Skip header
+            for line in file:
+                parts = line.strip().split("|")
+                if len(parts) == 2:
+                    name = parts[0]
+                    score = int(parts[1])
+                    scores.append((name, score))
+    except FileNotFoundError:
+        print("No saved scores found")
+    return scores
+
+# Question 2.2: Configuration System
+def save_settings(settings_dict, filename="settings.txt"):
+    """Save program settings to file."""
+    with open(filename, "w") as file:
+        file.write("# Program Settings\n")
+        for key, value in settings_dict.items():
+            file.write(f"{key}={value}\n")
+
+def load_settings(filename="settings.txt"):
+    """Load settings from file."""
+    settings = {}
+    try:
+        with open(filename, "r") as file:
+            for line in file:
+                line = line.strip()
+                if line and not line.startswith("#"):
+                    if "=" in line:
+                        key, value = line.split("=", 1)
+                        settings[key.strip()] = value.strip()
+    except FileNotFoundError:
+        settings = {
+            "volume": "50",
+            "difficulty": "medium",
+            "player_name": "Player1"
+        }
+    return settings
+
+# Question 2.3: Contact Book Persistence
+def save_contacts(contacts, filename="contacts.txt"):
+    """Save contacts dictionary to file."""
+    with open(filename, "w") as file:
+        file.write("CONTACTS_V1\n")
+        for name, info in contacts.items():
+            phone = info.get("phone", "")
+            email = info.get("email", "")
+            line = f"{name}|{phone}|{email}\n"
+            file.write(line)
+
+def load_contacts(filename="contacts.txt"):
+    """Load contacts from file."""
+    contacts = {}
+    try:
+        with open(filename, "r") as file:
+            version = file.readline().strip()
+            if version != "CONTACTS_V1":
+                print("Unknown file format")
+                return contacts
+            
+            for line in file:
+                parts = line.strip().split("|")
+                if len(parts) >= 3:
+                    name, phone, email = parts[:3]
+                    contacts[name] = {
+                        "phone": phone,
+                        "email": email
+                    }
+    except FileNotFoundError:
+        print("No saved contacts found")
+    
+    return contacts
+```
+
+---
+
+# Common File Operations Patterns
+
+## Safe File Reading
+
+```python
+def safe_read_file(filename, default=""):
+    """Safely read file with error handling."""
+    try:
+        with open(filename, "r") as file:
+            return file.read()
+    except FileNotFoundError:
+        print(f"File {filename} not found")
+        return default
+    except PermissionError:
+        print(f"Permission denied reading {filename}")
+        return default
+    except Exception as e:
+        print(f"Error reading {filename}: {e}")
+        return default
+```
+
+## Backup Before Write
+
+```python
+def safe_write_with_backup(filename, content):
+    """Write file with automatic backup."""
+    # Create backup if file exists
+    try:
+        with open(filename, "r") as original:
+            backup_content = original.read()
+        with open(filename + ".backup", "w") as backup:
+            backup.write(backup_content)
+        print(f"Backup created: {filename}.backup")
+    except FileNotFoundError:
+        pass  # No existing file to backup
+    
+    # Write new content
+    with open(filename, "w") as file:
+        file.write(content)
+    print(f"File written: {filename}")
+```
+
+## Line-by-Line Processing
+
+```python
+def process_large_file(filename):
+    """Process file line by line for memory efficiency."""
+    line_count = 0
+    word_count = 0
+    
+    try:
+        with open(filename, "r") as file:
+            for line in file:
+                line_count += 1
+                words = line.strip().split()
+                word_count += len(words)
+                
+                # Process line here
+                print(f"Line {line_count}: {len(words)} words")
+    
+    except FileNotFoundError:
+        print(f"File {filename} not found")
+    
+    print(f"Total: {line_count} lines, {word_count} words")
+```
+
+## Configuration File Pattern
+
+```python
+class ConfigFile:
+    def __init__(self, filename="config.txt"):
+        self.filename = filename
+        self.settings = {}
+        self.load()
+    
+    def load(self):
+        """Load configuration from file."""
+        try:
+            with open(self.filename, "r") as file:
+                for line in file:
+                    line = line.strip()
+                    if line and not line.startswith("#"):
+                        if "=" in line:
+                            key, value = line.split("=", 1)
+                            self.settings[key.strip()] = value.strip()
+        except FileNotFoundError:
+            self.load_defaults()
+    
+    def load_defaults(self):
+        """Load default settings."""
+        self.settings = {
+            "theme": "light",
+            "font_size": "12",
+            "auto_save": "true"
+        }
+    
+    def save(self):
+        """Save configuration to file."""
+        with open(self.filename, "w") as file:
+            file.write("# Configuration File\n")
+            for key, value in sorted(self.settings.items()):
+                file.write(f"{key}={value}\n")
+    
+    def get(self, key, default=None):
+        """Get setting value."""
+        return self.settings.get(key, default)
+    
+    def set(self, key, value):
+        """Set setting value."""
+        self.settings[key] = str(value)
+        self.save()
+```
+
+## Data File Format Pattern
+
+```python
+def save_structured_data(data, filename, version="V1"):
+    """Save structured data with version header."""
+    with open(filename, "w") as file:
+        file.write(f"DATA_{version}\n")
+        file.write(f"# Created: {datetime.now().isoformat()}\n")
+        file.write(f"# Record count: {len(data)}\n")
+        
+        for record in data:
+            # Convert record to line format
+            if isinstance(record, dict):
+                line = "|".join(str(record.get(key, "")) for key in sorted(record.keys()))
+            else:
+                line = "|".join(str(item) for item in record)
+            file.write(line + "\n")
+
+def load_structured_data(filename):
+    """Load structured data with version checking."""
+    data = []
+    
+    try:
+        with open(filename, "r") as file:
+            # Read version
+            version_line = file.readline().strip()
+            if not version_line.startswith("DATA_"):
+                print("Unknown file format")
+                return data
+            
+            # Skip comment lines
+            for line in file:
+                if line.startswith("#"):
+                    continue
+                
+                # Parse data line
+                line = line.strip()
+                if line:
+                    parts = line.split("|")
+                    data.append(parts)
+    
+    except FileNotFoundError:
+        print("Data file not found")
+    
+    return data
+```
+
+These solutions demonstrate best practices for file operations including error handling, data validation, and robust format design.

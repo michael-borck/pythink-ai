@@ -1,0 +1,885 @@
+---
+title: "Week 10: Connected Programs"
+subtitle: "Building Apps That Connect to the World"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# From Isolated to Connected
+
+## The Connected World Reality Check (10 minutes)
+
+### A Morning Disaster
+
+Picture this: You wake up, check your weather app, and see...
+
+```
+❌ ERROR: Cannot load weather data
+❌ ERROR: Network connection failed
+❌ ERROR: Service temporarily unavailable
+```
+
+Your app is broken! But why? Let's investigate:
+
+**What could go wrong?**
+- Internet connection down
+- Weather service API is offline
+- Your API key expired
+- Server returns unexpected data format
+- Network timeout during request
+
+**The hard truth**: Modern apps are connected to dozens of external services. When those connections fail, your app breaks too.
+
+### But Great Apps Handle This!
+
+Watch what happens when we open a well-designed weather app during an outage:
+
+```
+🌤️  Weather (Last updated: 8:15 AM)
+📍 Seattle, WA
+🌡️  72°F - Partly Cloudy
+
+⚠️  Unable to get latest forecast
+📱 Using cached data from this morning
+🔄 Tap to retry
+```
+
+**Key insight**: Professional apps expect failure and handle it gracefully!
+
+### Today's Mission
+
+Transform you into builders of resilient, connected programs that:
+- **Handle errors like a pro** using try/except
+- **Connect to external services** through APIs
+- **Process JSON data** from the web
+- **Provide excellent user experience** even when things break
+- **Partner with AI** to debug connection issues
+
+## What Makes Programs Connected? (20 minutes)
+
+### The Modern App Ecosystem
+
+**Your app doesn't live in isolation:**
+
+```
+Your Weather App
+    ↓ requests data
+🌐 Weather API Service
+    ↓ gets data from  
+🛰️ Weather Satellites
+    ↓ sends to
+☁️ Processing Servers
+    ↓ returns JSON to
+📱 Your App
+```
+
+**At every step, things can go wrong!**
+
+### Core Concepts for Connected Programs
+
+#### 1. Defensive Programming
+**Assume Murphy's Law**: "Anything that can go wrong, will go wrong"
+
+```python
+# Instead of hoping it works:
+temperature = get_weather()["temp"]
+
+# Plan for every failure:
+try:
+    weather_data = get_weather()
+    if "temp" in weather_data:
+        temperature = weather_data["temp"]
+    else:
+        temperature = "Unknown"
+except ConnectionError:
+    temperature = load_cached_temp()
+except ValueError:
+    temperature = "Data Error"
+```
+
+#### 2. Error Types We Must Handle
+
+**Network Errors**:
+- No internet connection
+- Server is down
+- Request timeout
+- DNS lookup failed
+
+**Data Errors**:
+- Invalid JSON format
+- Missing required fields
+- Wrong data types
+- Corrupted responses
+
+**Service Errors**:
+- API key expired
+- Rate limit exceeded
+- Authentication failed
+- Service maintenance
+
+#### 3. Graceful Degradation
+
+**The UX Principle**: App should work even when external services fail
+
+```python
+def get_weather_display():
+    """Get weather or fallback gracefully."""
+    try:
+        # Try to get fresh data
+        data = fetch_weather_api()
+        save_to_cache(data)
+        return format_weather(data)
+    
+    except NetworkError:
+        # Use cached data
+        cached = load_from_cache()
+        if cached:
+            return format_weather(cached) + " (cached)"
+        else:
+            return "Weather unavailable - check connection"
+    
+    except DataError:
+        return "Weather service error - try again later"
+```
+
+### AI as Your Connection Debugging Partner
+
+**When external integrations fail, AI becomes invaluable:**
+
+```python
+# EFFECTIVE AI DEBUGGING PROMPT:
+"""
+I'm getting this error when calling a weather API:
+
+Error: HTTPError: 403 Forbidden
+URL: https://api.weather.com/v1/current?key=abc123&q=Seattle
+Response: {"error": "Invalid API key"}
+
+What does 403 mean and how do I fix this?
+"""
+
+# AI explains:
+# - 403 = Authentication/permission error
+# - Check API key validity
+# - Verify key has required permissions
+# - Check if account is active
+```
+
+## From Concepts to Code: Error Handling (15 minutes)
+
+### The try/except Foundation
+
+**Basic syntax that changes everything:**
+
+```python
+def safe_divide(a, b):
+    """Divide safely with error handling."""
+    try:
+        result = a / b
+        return result
+    except ZeroDivisionError:
+        print("Cannot divide by zero!")
+        return None
+    except TypeError:
+        print("Please provide numbers only!")
+        return None
+
+# Test it:
+print(safe_divide(10, 2))    # 5.0
+print(safe_divide(10, 0))    # None (with error message)
+print(safe_divide(10, "x"))  # None (with error message)
+```
+
+### Exception Types You Need to Know
+
+```python
+# File operations
+try:
+    with open("data.txt", "r") as file:
+        content = file.read()
+except FileNotFoundError:
+    print("File doesn't exist")
+except PermissionError:
+    print("No permission to read file")
+
+# Data conversion
+try:
+    number = int(user_input)
+except ValueError:
+    print("That's not a valid number")
+
+# Dictionary access
+try:
+    value = data["required_field"]
+except KeyError:
+    print("Missing required field in data")
+
+# General catch-all
+try:
+    risky_operation()
+except Exception as e:
+    print(f"Something went wrong: {e}")
+```
+
+### Professional Error Handling Patterns
+
+**Pattern 1: Try with Default**
+```python
+def get_setting(config, key, default):
+    """Get config value or return default."""
+    try:
+        return config[key]
+    except (KeyError, TypeError):
+        return default
+
+# Usage:
+theme = get_setting(user_config, "theme", "light")
+```
+
+**Pattern 2: Multiple Attempts**
+```python
+def reliable_operation(max_attempts=3):
+    """Try operation with retries."""
+    for attempt in range(max_attempts):
+        try:
+            return perform_operation()
+        except ConnectionError:
+            if attempt == max_attempts - 1:
+                raise  # Re-raise after final attempt
+            print(f"Attempt {attempt + 1} failed, retrying...")
+            time.sleep(1)  # Wait before retry
+```
+
+**Pattern 3: Resource Cleanup**
+```python
+def process_file(filename):
+    """Process file with guaranteed cleanup."""
+    file_handle = None
+    try:
+        file_handle = open(filename, "r")
+        return process_data(file_handle.read())
+    except FileNotFoundError:
+        return "File not found"
+    except Exception as e:
+        return f"Processing error: {e}"
+    finally:
+        # This ALWAYS runs
+        if file_handle:
+            file_handle.close()
+```
+
+## JSON: The Language of APIs (15 minutes)
+
+### What is JSON?
+
+**JSON (JavaScript Object Notation)** is how web services talk to each other:
+
+```json
+{
+  "weather": {
+    "temperature": 72,
+    "condition": "partly_cloudy",
+    "humidity": 65,
+    "forecast": [
+      {"day": "Monday", "high": 75, "low": 58},
+      {"day": "Tuesday", "high": 73, "low": 60}
+    ]
+  },
+  "location": {
+    "city": "Seattle",
+    "state": "WA",
+    "coordinates": {"lat": 47.6062, "lng": -122.3321}
+  }
+}
+```
+
+**It's just Python dictionaries and lists, but as text!**
+
+### Working with JSON in Python
+
+```python
+import json
+
+# Convert Python to JSON (string)
+weather_data = {
+    "temp": 72,
+    "condition": "sunny",
+    "humidity": 45
+}
+
+json_string = json.dumps(weather_data)
+print(json_string)
+# Output: {"temp": 72, "condition": "sunny", "humidity": 45}
+
+# Convert JSON to Python
+received_json = '{"temp": 68, "condition": "cloudy"}'
+weather_dict = json.loads(received_json)
+print(weather_dict["temp"])  # 68
+```
+
+### Safe JSON Processing
+
+**Always handle JSON errors:**
+
+```python
+def parse_weather_response(json_text):
+    """Safely parse weather JSON."""
+    try:
+        data = json.loads(json_text)
+        
+        # Validate required fields
+        if "temp" not in data:
+            return {"error": "Missing temperature data"}
+        
+        if not isinstance(data["temp"], (int, float)):
+            return {"error": "Invalid temperature format"}
+        
+        return {
+            "temperature": data["temp"],
+            "condition": data.get("condition", "unknown"),
+            "humidity": data.get("humidity", 0)
+        }
+        
+    except json.JSONDecodeError:
+        return {"error": "Invalid JSON format"}
+    except Exception as e:
+        return {"error": f"Processing error: {e}"}
+
+# Test with various inputs:
+print(parse_weather_response('{"temp": 72, "condition": "sunny"}'))
+print(parse_weather_response('{"temp": "not_a_number"}'))
+print(parse_weather_response('invalid json'))
+```
+
+### Working with Complex JSON
+
+```python
+def extract_forecast(weather_json):
+    """Extract forecast from nested JSON."""
+    try:
+        data = json.loads(weather_json)
+        
+        # Navigate nested structure safely
+        forecast = data.get("weather", {}).get("forecast", [])
+        
+        if not forecast:
+            return "No forecast available"
+        
+        # Process forecast list
+        forecast_text = "3-Day Forecast:\n"
+        for day_data in forecast[:3]:  # First 3 days
+            day = day_data.get("day", "Unknown")
+            high = day_data.get("high", "?")
+            low = day_data.get("low", "?")
+            forecast_text += f"  {day}: High {high}°F, Low {low}°F\n"
+        
+        return forecast_text
+        
+    except Exception as e:
+        return f"Forecast error: {e}"
+
+# Example usage:
+sample_json = '''
+{
+  "weather": {
+    "forecast": [
+      {"day": "Monday", "high": 75, "low": 58},
+      {"day": "Tuesday", "high": 73, "low": 60},
+      {"day": "Wednesday", "high": 70, "low": 55}
+    ]
+  }
+}
+'''
+
+print(extract_forecast(sample_json))
+```
+
+## Making HTTP Requests (10 minutes)
+
+### Connecting to Web APIs
+
+**Using Python's built-in urllib module:**
+
+```python
+import urllib.request
+import urllib.parse
+import json
+
+def get_weather_data(city):
+    """Fetch weather data from API."""
+    try:
+        # Build URL with parameters
+        base_url = "https://api.weather.example.com/current"
+        params = {
+            "q": city,
+            "units": "imperial",
+            "key": "your_api_key_here"
+        }
+        
+        # Encode parameters
+        query_string = urllib.parse.urlencode(params)
+        full_url = f"{base_url}?{query_string}"
+        
+        # Make request
+        with urllib.request.urlopen(full_url, timeout=10) as response:
+            if response.getcode() == 200:
+                json_data = response.read().decode('utf-8')
+                return json.loads(json_data)
+            else:
+                return {"error": f"API returned status {response.getcode()}"}
+                
+    except urllib.error.HTTPError as e:
+        return {"error": f"HTTP Error {e.code}: {e.reason}"}
+    except urllib.error.URLError as e:
+        return {"error": f"Connection Error: {e.reason}"}
+    except json.JSONDecodeError:
+        return {"error": "Invalid response format"}
+    except Exception as e:
+        return {"error": f"Request failed: {e}"}
+```
+
+### HTTP Status Codes You Should Know
+
+```python
+def handle_api_response(response_code, data):
+    """Handle different API response codes."""
+    if response_code == 200:
+        return {"status": "success", "data": data}
+    elif response_code == 401:
+        return {"status": "error", "message": "API key invalid or missing"}
+    elif response_code == 403:
+        return {"status": "error", "message": "Access forbidden - check permissions"}
+    elif response_code == 404:
+        return {"status": "error", "message": "Endpoint not found"}
+    elif response_code == 429:
+        return {"status": "error", "message": "Rate limit exceeded - try again later"}
+    elif response_code >= 500:
+        return {"status": "error", "message": "Server error - try again later"}
+    else:
+        return {"status": "error", "message": f"Unexpected status: {response_code}"}
+```
+
+### Building a Robust API Client
+
+```python
+def robust_api_call(url, params=None, max_retries=3):
+    """Make robust API call with retries and error handling."""
+    import time
+    
+    for attempt in range(max_retries):
+        try:
+            # Build request
+            if params:
+                query_string = urllib.parse.urlencode(params)
+                full_url = f"{url}?{query_string}"
+            else:
+                full_url = url
+            
+            # Make request with timeout
+            with urllib.request.urlopen(full_url, timeout=15) as response:
+                status_code = response.getcode()
+                content = response.read().decode('utf-8')
+                
+                if status_code == 200:
+                    return {
+                        "success": True,
+                        "data": json.loads(content),
+                        "status_code": status_code
+                    }
+                else:
+                    return {
+                        "success": False,
+                        "error": f"HTTP {status_code}",
+                        "status_code": status_code
+                    }
+        
+        except urllib.error.HTTPError as e:
+            if e.code == 429:  # Rate limited
+                wait_time = 2 ** attempt  # Exponential backoff
+                print(f"Rate limited. Waiting {wait_time} seconds...")
+                time.sleep(wait_time)
+                continue
+            else:
+                return {"success": False, "error": f"HTTP {e.code}: {e.reason}"}
+        
+        except urllib.error.URLError as e:
+            if attempt < max_retries - 1:
+                print(f"Connection failed. Retry {attempt + 1}/{max_retries}")
+                time.sleep(1)
+                continue
+            return {"success": False, "error": f"Connection failed: {e.reason}"}
+        
+        except Exception as e:
+            return {"success": False, "error": f"Unexpected error: {e}"}
+    
+    return {"success": False, "error": "Max retries exceeded"}
+```
+
+## Deep Dive: AI Partnership for Connected Programming (10 minutes)
+
+### Strategic AI Collaboration for External Integrations
+
+#### Level 1: Understanding APIs and Documentation
+
+```python
+# EFFECTIVE API EXPLORATION PROMPT:
+"""
+I'm trying to use the OpenWeatherMap API. Here's their documentation:
+
+Endpoint: https://api.openweathermap.org/data/2.5/weather
+Parameters:
+- q: city name (required)
+- appid: API key (required) 
+- units: standard, metric, imperial (optional)
+
+Response format:
+{
+  "main": {"temp": 280.32, "humidity": 81},
+  "weather": [{"main": "Clear", "description": "clear sky"}],
+  "name": "London"
+}
+
+How do I:
+1. Make a request to get Seattle weather in Fahrenheit?
+2. Extract just the temperature and description?
+3. Handle when the city isn't found?
+"""
+
+# AI provides complete working example with error handling
+```
+
+#### Level 2: Debugging Connection Issues
+
+```python
+# DEBUGGING PROMPT WITH CONTEXT:
+"""
+My weather API request is failing with this error:
+
+urllib.error.HTTPError: HTTP Error 401: Unauthorized
+
+My code:
+url = "https://api.openweathermap.org/data/2.5/weather"
+params = {"q": "Seattle", "appid": "12345"}
+response = urllib.request.urlopen(f"{url}?{urllib.parse.urlencode(params)}")
+
+What's wrong and how do I fix it?
+"""
+
+# AI explains:
+# - 401 means authentication failed
+# - API key might be invalid
+# - Check key format and permissions
+# - Show how to test API key
+```
+
+#### Level 3: Advanced Error Handling Strategy
+
+```python
+# ARCHITECTURAL PROMPT:
+"""
+I'm building a weather app that needs to be reliable. It should:
+1. Try to get fresh weather data
+2. Fall back to cached data if API fails  
+3. Show appropriate messages to users
+4. Handle different types of failures
+
+What error handling strategy should I use?
+Structure my try/except blocks?
+"""
+
+# AI provides comprehensive error handling architecture
+```
+
+### Real-World AI Collaboration Scenarios
+
+#### Scenario 1: API Response Analysis
+
+```python
+# RESPONSE DEBUGGING PROMPT:
+"""
+I'm getting unexpected data from this API response:
+
+{
+  "cod": 200,
+  "message": 0,
+  "list": [
+    {"dt": 1609459200, "main": {"temp": 282.55}, "dt_txt": "2021-01-01 00:00:00"},
+    {"dt": 1609462800, "main": {"temp": 281.15}, "dt_txt": "2021-01-01 01:00:00"}
+  ]
+}
+
+I expected simple weather data but got this array. How do I:
+1. Understand what this data structure represents?
+2. Extract current temperature?
+3. Handle the timestamp format?
+"""
+
+# AI explains it's forecast data and shows parsing approach
+```
+
+#### Scenario 2: Performance Optimization
+
+```python
+# OPTIMIZATION PROMPT:
+"""
+My weather app makes API calls every time a user checks weather.
+This is slow and hits rate limits. 
+
+Current code:
+def get_weather(city):
+    response = call_weather_api(city)
+    return parse_response(response)
+
+How should I:
+1. Implement caching to reduce API calls?
+2. Determine when cached data is too old?
+3. Handle cache misses gracefully?
+4. Store data between app sessions?
+"""
+
+# AI suggests caching strategy with implementation
+```
+
+#### Scenario 3: User Experience Design
+
+```python
+# UX PROMPT:
+"""
+When my weather app's API call fails, users see:
+
+"Error: HTTPError: 503 Service Unavailable"
+
+This is confusing. How do I create better error messages that:
+1. Explain what happened in plain English
+2. Tell users what they can do about it
+3. Handle different error types appropriately
+4. Maintain a professional tone
+"""
+
+# AI provides user-friendly error message examples
+```
+
+### AI Integration Best Practices
+
+#### 1. Progressive Problem Solving
+
+```python
+# Start with working example, then add complexity:
+
+# BASIC PROMPT:
+"Show me how to make an HTTP request to get JSON data"
+
+# ENHANCED PROMPT:
+"Show me HTTP request with error handling for connection failures"
+
+# PRODUCTION PROMPT:
+"Show me production-ready HTTP client with retries, caching, and user-friendly errors"
+```
+
+#### 2. Error-First Thinking
+
+```python
+# PROACTIVE ERROR HANDLING PROMPT:
+"""
+Before I implement this weather API integration, what errors should I prepare for?
+API: OpenWeatherMap
+Features: Current weather, 5-day forecast
+Users: Mobile app in areas with poor connectivity
+
+What can go wrong and how should I handle each case?
+"""
+
+# This prevents issues instead of fixing them later
+```
+
+#### 3. Testing Strategy
+
+```python
+# TESTING PROMPT:
+"""
+How do I test my API integration when:
+1. I have limited API calls per day
+2. I need to test error conditions
+3. Internet might not be available
+4. API service could be down
+
+What's the best testing approach?
+"""
+
+# AI suggests mocking, caching, and offline testing strategies
+```
+
+## Real-World Applications (5 minutes)
+
+### Where Connected Programs Rule
+
+**Weather Apps**
+- Multiple weather service APIs
+- Location services
+- Push notification services
+- Map data providers
+
+**Social Media Apps**
+- Authentication services
+- Media upload APIs
+- Push notification platforms
+- Analytics services
+
+**E-commerce Apps**
+- Payment processing APIs
+- Shipping calculation services
+- Inventory management systems
+- Review and rating platforms
+
+**Navigation Apps**
+- GPS location services
+- Traffic data APIs
+- Map rendering services
+- Point-of-interest databases
+
+### The API Economy
+
+**Everything is connected:**
+- Your fitness app talks to health platforms
+- Your music app connects to streaming services
+- Your photos sync to cloud storage
+- Your calendar integrates with email
+
+**Professional developers spend 70% of their time integrating external services!**
+
+### Building for the Real World
+
+**Key principles:**
+1. **Assume external services will fail**
+2. **Always provide fallbacks**
+3. **Cache data when possible**
+4. **Give users clear feedback**
+5. **Monitor and log everything**
+6. **Test failure scenarios**
+
+---
+
+# Preparing for Lab
+
+## What You'll Build Today
+
+In today's lab, you'll create increasingly sophisticated connected programs:
+
+1. **Error-Safe File Operations** - Master try/except patterns
+2. **JSON Data Processor** - Parse and validate external data
+3. **HTTP Request Client** - Connect to real APIs
+4. **Weather Information System** - Complete connected application
+5. **Robust Error Handler** - Professional error management
+6. **Connected App Workshop** - Integration of all concepts
+
+## Key Skills to Practice
+
+- **Defensive programming mindset**
+- **Exception handling patterns**
+- **JSON processing and validation**
+- **HTTP request management**
+- **User experience during failures**
+- **AI-assisted debugging**
+
+## Success Criteria
+
+You'll know you've mastered connected programming when you can:
+- Handle any error gracefully
+- Process external data safely  
+- Build fault-tolerant applications
+- Debug connection issues with AI
+- Create professional user experiences
+
+## Tips for Success
+
+- **Start with error handling** - Add try/except to everything
+- **Test failure scenarios** - Disconnect internet, use bad data
+- **Think like a user** - What feedback do they need?
+- **Use AI strategically** - Show exact errors and context
+- **Cache everything** - Don't rely on connections
+
+### AI Partnership Reminders
+
+**Effective prompts for today:**
+- "Help me understand this API error: [exact error message]"
+- "How do I handle when this JSON field is missing?"
+- "What's the best way to cache this data?"
+- "How do I test this without using up my API calls?"
+
+**Remember**: Include specific error messages, sample data, and your code context in AI prompts. The more specific your question, the better the help!
+
+---
+
+# Looking Ahead
+
+**Next week (Week 11)**: Interactive Applications
+- User interface design
+- Menu-driven programs
+- Input validation
+- State management
+- Building complete interactive systems
+
+The error handling and external data skills from this week will be crucial for building robust interactive applications that can handle user errors and service failures gracefully!
+
+---
+
+# Instructor Notes
+
+## Live Coding Strategy
+
+Build connected programs incrementally:
+
+1. **Start with simple try/except**
+   - Show what happens without error handling
+   - Add basic try/except
+   - Demonstrate the difference
+
+2. **Add JSON processing**
+   - Show malformed JSON breaking code
+   - Implement safe parsing
+   - Validate data structure
+
+3. **Make HTTP requests**
+   - Start with working API
+   - Show what happens when service is down
+   - Implement retry logic
+
+4. **Complete integration**
+   - Combine all concepts
+   - Add caching
+   - Polish user experience
+
+## Common Student Challenges
+
+1. **Understanding when to use specific exceptions**
+   - Show examples of each error type
+   - Practice identifying appropriate catches
+
+2. **JSON structure navigation**
+   - Draw diagrams of nested structures
+   - Practice safe access patterns
+
+3. **HTTP error debugging**
+   - Show network tab in browser
+   - Explain status codes with examples
+
+4. **Balancing user experience with technical accuracy**
+   - Show good vs bad error messages
+   - Practice writing user-friendly text
+
+## AI Integration Checkpoints
+
+1. **After error handling**: "What would you ask AI about exception types?"
+2. **After JSON section**: "How could AI help with data validation?"
+3. **After HTTP requests**: "What would you ask AI about debugging API errors?"
+4. **Before lab**: "How will you use AI to debug connection issues?"
+
+Remember: Students should feel empowered to build robust, professional applications that handle the messy reality of connected systems!

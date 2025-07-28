@@ -1,0 +1,455 @@
+---
+title: "Week 6 Assessment: Nested Structures"
+subtitle: "Navigating and Managing Complex Data"
+format:
+  html:
+    toc: true
+    code-fold: false
+    embed-resources: true
+  pdf:
+    toc: true
+---
+
+# Assessment Overview
+
+This assessment tests your ability to work with nested dictionaries and complex data structures. You'll navigate hierarchies, update nested values, and process multi-level data.
+
+**Time Limit:** 45 minutes  
+**Points:** 100 total  
+**Difficulty:** Intermediate to Advanced
+
+---
+
+# Part 1: Navigation Skills (30 points)
+
+## Question 1.1: Basic Navigation (10 points)
+
+Navigate this school data structure:
+
+```python
+school = {
+    "name": "Lincoln High",
+    "address": {
+        "street": "123 Education Blvd",
+        "city": "Springfield",
+        "state": "IL",
+        "zip": "62701"
+    },
+    "departments": {
+        "math": {
+            "head": "Dr. Smith",
+            "teachers": ["Alice", "Bob", "Carol"],
+            "budget": 50000
+        },
+        "science": {
+            "head": "Dr. Jones", 
+            "teachers": ["Dave", "Eve"],
+            "budget": 75000
+        },
+        "english": {
+            "head": "Dr. Brown",
+            "teachers": ["Frank", "Grace", "Henry"],
+            "budget": 40000
+        }
+    },
+    "students": {
+        "total": 1200,
+        "by_grade": {
+            "9": 350,
+            "10": 325,
+            "11": 275,
+            "12": 250
+        }
+    }
+}
+
+# Extract these values:
+# A. School's city
+city = _______________
+
+# B. Math department head
+math_head = _______________
+
+# C. Number of 10th grade students
+grade_10_count = _______________
+
+# D. List of all English teachers
+english_teachers = _______________
+
+# E. Science department budget
+science_budget = _______________
+```
+
+## Question 1.2: Safe Navigation (10 points)
+
+Navigate with error handling:
+
+```python
+# Same school structure as above
+
+# Write safe access code for:
+# A. Get PE department head (doesn't exist) with default "No PE Department"
+pe_head = _______________
+
+# B. Check if music department exists before accessing
+if _______________:
+    music_info = _______________
+else:
+    music_info = "No music department"
+
+# C. Get total number of teachers across all departments
+total_teachers = 0
+for dept_name, dept_info in _______________:
+    if _______________ in dept_info:
+        total_teachers = total_teachers + _______________
+
+# D. Get zip code safely even if address might not exist
+zip_code = _______________
+```
+
+## Question 1.3: Complex Navigation (10 points)
+
+Work with this e-commerce data:
+
+```python
+store = {
+    "categories": {
+        "electronics": {
+            "laptops": [
+                {"id": "L1", "name": "MacBook", "price": 1299, "stock": 5},
+                {"id": "L2", "name": "ThinkPad", "price": 999, "stock": 8}
+            ],
+            "phones": [
+                {"id": "P1", "name": "iPhone", "price": 899, "stock": 12},
+                {"id": "P2", "name": "Samsung", "price": 799, "stock": 15}
+            ]
+        },
+        "clothing": {
+            "shirts": [
+                {"id": "S1", "name": "T-Shirt", "price": 19.99, "stock": 50},
+                {"id": "S2", "name": "Polo", "price": 39.99, "stock": 30}
+            ]
+        }
+    }
+}
+
+# Tasks:
+# A. Get the price of the MacBook
+macbook_price = _______________
+
+# B. Find total stock of all phones
+phone_stock = 0
+for phone in _______________:
+    phone_stock = phone_stock + _______________
+
+# C. Get all product names in electronics
+electronic_products = []
+for category, items in _______________:
+    for item in items:
+        _______________
+
+# D. Find the cheapest item in the entire store
+cheapest_price = float('inf')
+cheapest_item = None
+for _______________:
+    _______________
+    _______________
+```
+
+---
+
+# Part 2: Modifying Nested Data (35 points)
+
+## Question 2.1: Update Operations (15 points)
+
+Modify nested values:
+
+```python
+game_data = {
+    "player": {
+        "name": "Hero",
+        "level": 5,
+        "stats": {
+            "health": 100,
+            "mana": 50,
+            "strength": 15,
+            "defense": 10
+        },
+        "inventory": {
+            "weapons": ["sword", "bow"],
+            "potions": 3,
+            "gold": 250
+        }
+    },
+    "quests": {
+        "active": ["Find the treasure", "Defeat the dragon"],
+        "completed": ["Tutorial", "First battle"]
+    }
+}
+
+# Perform these updates:
+# A. Increase player level by 1
+_______________
+
+# B. Add 50 to player's gold
+_______________
+
+# C. Reduce health by 25
+_______________
+
+# D. Add "shield" to weapons
+_______________
+
+# E. Move "Find the treasure" from active to completed quests
+treasure_quest = _______________
+_______________
+_______________
+```
+
+## Question 2.2: Adding Nested Data (10 points)
+
+Add new nested structures:
+
+```python
+company = {
+    "departments": {
+        "sales": {
+            "employees": ["Alice", "Bob"],
+            "budget": 100000
+        }
+    }
+}
+
+# A. Add a new department "marketing" with employees and budget
+_______________
+_______________
+_______________
+
+# B. Add a new employee "Carol" to sales
+_______________
+
+# C. Add a subdepartment "online_sales" under sales
+_______________
+_______________
+_______________
+
+# D. Add contact info for each department
+for dept_name in company["departments"]:
+    _______________
+```
+
+## Question 2.3: Deleting Nested Data (10 points)
+
+Remove nested elements safely:
+
+```python
+library = {
+    "sections": {
+        "fiction": {
+            "books": {
+                "F001": {"title": "1984", "author": "Orwell", "copies": 3},
+                "F002": {"title": "Dune", "author": "Herbert", "copies": 2}
+            }
+        },
+        "science": {
+            "books": {
+                "S001": {"title": "Cosmos", "author": "Sagan", "copies": 1},
+                "S002": {"title": "Physics", "author": "Feynman", "copies": 4}
+            }
+        }
+    }
+}
+
+# Tasks:
+# A. Remove the "copies" field from all books
+for section in library["sections"].values():
+    for book_id, book_info in _______________:
+        if _______________ in book_info:
+            _______________
+
+# B. Delete book F002 entirely
+if _______________ in _______________:
+    _______________
+
+# C. Remove the entire science section
+if _______________ in _______________:
+    _______________
+```
+
+---
+
+# Part 3: Processing Nested Data (35 points)
+
+## Question 3.1: Data Aggregation (15 points)
+
+Calculate statistics from nested data:
+
+```python
+sales_data = {
+    "2024-01": {
+        "electronics": {"laptops": 45000, "phones": 32000},
+        "clothing": {"shirts": 12000, "pants": 15000}
+    },
+    "2024-02": {
+        "electronics": {"laptops": 48000, "phones": 35000},
+        "clothing": {"shirts": 13000, "pants": 16000}
+    },
+    "2024-03": {
+        "electronics": {"laptops": 52000, "phones": 38000},
+        "clothing": {"shirts": 14000, "pants": 17000}
+    }
+}
+
+# Calculate:
+# A. Total sales for all months
+total_sales = 0
+for month_data in _______________:
+    for category_data in _______________:
+        for amount in _______________:
+            _______________
+
+# B. Total laptop sales across all months
+laptop_total = 0
+for _______________:
+    if _______________ in _______________:
+        if _______________ in _______________:
+            _______________
+
+# C. Best month for electronics
+best_month = ""
+best_electronics = 0
+for _______________:
+    electronics_total = 0
+    if _______________ in _______________:
+        for _______________:
+            _______________
+    if _______________:
+        _______________
+        _______________
+```
+
+## Question 3.2: Searching Nested Data (10 points)
+
+Find specific items in nested structures:
+
+```python
+university = {
+    "courses": {
+        "CS101": {
+            "name": "Intro to Programming",
+            "instructor": "Dr. Smith",
+            "students": ["Alice", "Bob", "Carol"],
+            "schedule": {"day": "MWF", "time": "10:00"}
+        },
+        "CS202": {
+            "name": "Data Structures",
+            "instructor": "Dr. Jones",
+            "students": ["Bob", "Dave", "Eve"],
+            "schedule": {"day": "TTh", "time": "14:00"}
+        },
+        "MATH101": {
+            "name": "Calculus I",
+            "instructor": "Dr. Brown",
+            "students": ["Alice", "Carol", "Frank"],
+            "schedule": {"day": "MWF", "time": "09:00"}
+        }
+    }
+}
+
+# Find:
+# A. All courses taught by Dr. Smith
+smith_courses = []
+for _______________:
+    if _______________:
+        _______________
+
+# B. All courses that Bob is enrolled in
+bob_courses = []
+for _______________:
+    if _______________:
+        _______________
+
+# C. All MWF courses
+mwf_courses = []
+for _______________:
+    if _______________:
+        if _______________:
+            _______________
+```
+
+## Question 3.3: Transforming Nested Data (10 points)
+
+Convert between different nested structures:
+
+```python
+# Original structure: organized by department
+employees_by_dept = {
+    "engineering": [
+        {"name": "Alice", "salary": 75000, "years": 5},
+        {"name": "Bob", "salary": 65000, "years": 3}
+    ],
+    "sales": [
+        {"name": "Carol", "salary": 70000, "years": 4},
+        {"name": "Dave", "salary": 60000, "years": 2}
+    ]
+}
+
+# Transform to: organized by employee name
+employees_by_name = {}
+
+for dept, emp_list in employees_by_dept.items():
+    for emp in emp_list:
+        name = _______________
+        employees_by_name[name] = {
+            "department": _______________,
+            "salary": _______________,
+            "years": _______________
+        }
+
+# Now create a salary ranking (list of names sorted by salary)
+salary_ranking = []
+for name, info in employees_by_name.items():
+    salary_ranking.append((_______________))
+
+# Sort by salary (highest first)
+# Manual sort without using sorted()
+for i in range(len(salary_ranking)):
+    for j in range(i + 1, len(salary_ranking)):
+        if _______________:
+            # Swap
+            _______________
+```
+
+---
+
+# Submission Guidelines
+
+## Required Files
+
+1. **Python script** (`nested_structures_assessment.py`)
+   - Complete all exercises
+   - Include test output
+   - Add comments explaining complex navigation
+
+2. **Reflection** (`reflection.txt`)
+   - What was most challenging about nested structures?
+   - Strategies you developed for navigation
+   - Common patterns you noticed
+
+## Grading Rubric
+
+| Section | Points | Focus |
+|---------|---------|-------|
+| Navigation | 30 | Correct path traversal |
+| Modification | 35 | Safe updates and deletes |
+| Processing | 35 | Aggregation and transformation |
+
+## Tips for Success
+
+1. **Draw the structure** - Visualize before coding
+2. **Check each level** - Verify keys exist
+3. **Use .get() for safety** - Avoid KeyErrors
+4. **Break complex paths** - Store intermediate values
+5. **Test with prints** - Debug step by step
+
+Good luck navigating these nested structures!

@@ -1,0 +1,795 @@
+---
+title: "Week 6: Complete Solutions"
+subtitle: "Dictionary Operations and Contact Book Implementation"
+format:
+  html:
+    toc: true
+    code-fold: true
+    code-summary: "Show solution"
+  pdf:
+    toc: true
+---
+
+# Lab Solutions
+
+## Part 1: Creating and Accessing Dictionaries
+
+### Exercise 1.1: Basic Dictionary Operations
+
+```python
+# 1. Create a person dictionary
+person = {
+    "first_name": "John",
+    "last_name": "Doe",
+    "age": 30,
+    "city": "New York"
+}
+
+# a) Print the person's full name
+full_name = person["first_name"] + " " + person["last_name"]
+print(f"Full name: {full_name}")
+
+# b) Update their age to 31
+person["age"] = 31
+
+# c) Add their email
+person["email"] = "john.doe@email.com"
+
+# d) Print all information
+for key, value in person.items():
+    print(f"{key}: {value}")
+```
+
+### Exercise 1.2: Safe Access with .get()
+
+```python
+# Product information
+product = {
+    "name": "Laptop",
+    "price": 999.99,
+    "stock": 15
+}
+
+# Safe access practice
+# a) Get the price (exists)
+price = product.get("price")
+print(f"Price: ${price}")
+
+# b) Get the discount (doesn't exist)
+discount = product.get("discount")  # Returns None
+print(f"Discount: {discount}")
+
+# c) Get warranty with default
+warranty = product.get("warranty", "No warranty")
+print(f"Warranty: {warranty}")
+
+# d) Check before accessing
+if "stock" in product:
+    print(f"Stock available: {product['stock']}")
+else:
+    print("Stock information not available")
+```
+
+### Exercise 1.3: Building Dictionaries
+
+```python
+# 1. Student record
+student = {
+    "id": "STU001",
+    "name": "Sarah Johnson",
+    "grades": {
+        "math": 88,
+        "science": 92,
+        "english": 85
+    },
+    "graduated": False
+}
+
+# 2. Restaurant menu item
+menu_item = {
+    "name": "Cheeseburger",
+    "price": 12.99,
+    "category": "Main Course",
+    "ingredients": ["beef", "cheese", "lettuce", "tomato", "bun"],
+    "vegetarian": False,
+    "calories": 650
+}
+
+# 3. Book information
+book = {
+    "isbn": "978-0-545-01022-1",
+    "title": "Harry Potter and the Sorcerer's Stone",
+    "author": "J.K. Rowling",
+    "year": 1997,
+    "pages": 309,
+    "genre": "Fantasy",
+    "available": True
+}
+```
+
+## Part 2: Dictionary Methods
+
+### Exercise 2.1: Using Keys, Values, and Items
+
+```python
+# Sample inventory
+inventory = {
+    "apples": 50,
+    "bananas": 30,
+    "oranges": 25,
+    "grapes": 40
+}
+
+# 1. Get all product names
+products = list(inventory.keys())
+print(f"Products: {products}")
+
+# 2. Get all quantities
+quantities = list(inventory.values())
+print(f"Quantities: {quantities}")
+
+# 3. Find total items in stock
+total = 0
+for quantity in inventory.values():
+    total = total + quantity
+print(f"Total items: {total}")
+
+# 4. Find products with low stock (< 30)
+low_stock = []
+for product, quantity in inventory.items():
+    if quantity < 30:
+        low_stock.append(product)
+print(f"Low stock: {low_stock}")
+```
+
+### Exercise 2.2: Modifying Dictionaries
+
+```python
+# Shopping cart
+cart = {}
+
+# 1. Add items to cart
+def add_to_cart(cart, item, quantity):
+    """Add item to shopping cart."""
+    if item in cart:
+        cart[item] = cart[item] + quantity
+    else:
+        cart[item] = quantity
+
+# Test adding items
+add_to_cart(cart, "apples", 3)
+add_to_cart(cart, "bananas", 2)
+add_to_cart(cart, "apples", 2)  # Add more apples
+print(f"Cart: {cart}")
+
+# 2. Remove item from cart
+def remove_from_cart(cart, item):
+    """Remove item from cart if it exists."""
+    if item in cart:
+        del cart[item]
+        print(f"Removed {item}")
+    else:
+        print(f"{item} not in cart")
+
+# Test removal
+remove_from_cart(cart, "bananas")
+remove_from_cart(cart, "oranges")  # Not in cart
+
+# 3. Update quantity
+def update_quantity(cart, item, new_quantity):
+    """Update item quantity in cart."""
+    if item in cart:
+        if new_quantity > 0:
+            cart[item] = new_quantity
+        else:
+            del cart[item]
+            print(f"Removed {item} (quantity was 0)")
+    else:
+        print(f"{item} not in cart")
+```
+
+### Exercise 2.3: Dictionary Patterns
+
+```python
+# 1. Counting pattern
+def count_letters(text):
+    """Count frequency of each letter."""
+    counts = {}
+    for char in text.lower():
+        if char.isalpha():
+            if char in counts:
+                counts[char] = counts[char] + 1
+            else:
+                counts[char] = 1
+    return counts
+
+# Test it
+text = "Hello World"
+letter_counts = count_letters(text)
+print(f"Letter counts: {letter_counts}")
+
+# 2. Grouping pattern
+def group_by_first_letter(words):
+    """Group words by their first letter."""
+    groups = {}
+    for word in words:
+        first = word[0].upper()
+        if first in groups:
+            groups[first].append(word)
+        else:
+            groups[first] = [word]
+    return groups
+
+# Test it
+words = ["apple", "banana", "apricot", "berry", "cherry"]
+grouped = group_by_first_letter(words)
+print(f"Grouped: {grouped}")
+
+# 3. Lookup table pattern
+def create_grade_lookup():
+    """Create grade point lookup table."""
+    grades = {
+        "A+": 4.0,
+        "A": 4.0,
+        "A-": 3.7,
+        "B+": 3.3,
+        "B": 3.0,
+        "B-": 2.7,
+        "C+": 2.3,
+        "C": 2.0,
+        "C-": 1.7,
+        "D": 1.0,
+        "F": 0.0
+    }
+    return grades
+
+# Test it
+grades = create_grade_lookup()
+letter_grade = "B"
+points = grades.get(letter_grade, 0)
+print(f"{letter_grade} = {points} points")
+```
+
+## Part 3: Data Modeling
+
+### Exercise 3.1: Design Appropriate Structures
+
+```python
+# Scenario 1: Class roster with student names and IDs
+# Option B is best for finding by ID
+roster_b = {"A001": "Alice", "B002": "Bob"}
+
+# Option C is best for listing all students with details
+roster_c = [
+    {"name": "Alice", "id": "A001"},
+    {"name": "Bob", "id": "B002"}
+]
+```
+
+### Exercise 3.2: Model Real-World Data
+
+```python
+# 2. A recipe
+recipe = {
+    "name": "Chocolate Chip Cookies",
+    "prep_time": 15,
+    "cook_time": 12,
+    "servings": 24,
+    "ingredients": {
+        "flour": "2 cups",
+        "sugar": "1 cup",
+        "butter": "1 cup",
+        "eggs": "2",
+        "chocolate_chips": "2 cups",
+        "vanilla": "1 tsp",
+        "baking_soda": "1 tsp",
+        "salt": "1/2 tsp"
+    },
+    "instructions": [
+        "Preheat oven to 375°F",
+        "Mix dry ingredients",
+        "Cream butter and sugar",
+        "Add eggs and vanilla",
+        "Combine wet and dry ingredients",
+        "Fold in chocolate chips",
+        "Drop on baking sheet",
+        "Bake 10-12 minutes"
+    ],
+    "difficulty": "easy"
+}
+
+# 3. A calendar event
+event = {
+    "title": "Team Meeting",
+    "date": "2024-03-15",
+    "start_time": "14:00",
+    "end_time": "15:30",
+    "location": "Conference Room A",
+    "attendees": ["Alice", "Bob", "Carol", "Dave"],
+    "description": "Weekly project status update",
+    "reminder": 15,  # minutes before
+    "recurring": "weekly",
+    "organizer": "Alice"
+}
+```
+
+---
+
+# Project Solution: Complete Contact Book
+
+```python
+# Contact Book System - Complete Solution
+# A fully functional contact management system
+
+def display_menu():
+    """Display the main menu."""
+    print("\n" + "="*30)
+    print("     CONTACT BOOK")
+    print("="*30)
+    print("1. Add Contact")
+    print("2. View All Contacts")
+    print("3. Search Contact")
+    print("4. Update Contact")
+    print("5. Delete Contact")
+    print("6. Exit")
+    print("="*30)
+
+def add_contact(contacts):
+    """Add a new contact to the book."""
+    print("\n--- Add New Contact ---")
+    
+    # Get required fields
+    name = input("Enter name: ").strip()
+    if not name:
+        print("Error: Name cannot be empty!")
+        return False
+    
+    # Check for duplicate
+    if name.lower() in [n.lower() for n in contacts.keys()]:
+        print(f"Error: {name} already exists!")
+        return False
+    
+    phone = input("Enter phone: ").strip()
+    if not phone:
+        print("Error: Phone cannot be empty!")
+        return False
+    
+    # Get optional fields
+    email = input("Enter email (press Enter to skip): ").strip()
+    address = input("Enter address (press Enter to skip): ").strip()
+    
+    # Add to contacts
+    contacts[name] = {
+        "phone": phone,
+        "email": email if email else "No email",
+        "address": address if address else "No address"
+    }
+    
+    print(f"\nContact '{name}' added successfully!")
+    return True
+
+def view_all_contacts(contacts):
+    """Display all contacts in a formatted list."""
+    if not contacts:
+        print("\nNo contacts in book!")
+        return
+    
+    print("\n" + "="*50)
+    print("ALL CONTACTS")
+    print("="*50)
+    
+    # Sort by name
+    sorted_names = sorted(contacts.keys())
+    
+    for i, name in enumerate(sorted_names, 1):
+        phone = contacts[name]["phone"]
+        print(f"{i}. {name} - {phone}")
+    
+    print(f"\nTotal contacts: {len(contacts)}")
+
+def search_contact(contacts):
+    """Search for a contact by name or phone."""
+    if not contacts:
+        print("\nNo contacts to search!")
+        return
+    
+    print("\n--- Search Contact ---")
+    print("1. Search by name")
+    print("2. Search by phone")
+    
+    choice = input("Choose search method (1-2): ")
+    
+    if choice == "1":
+        search_term = input("Enter name to search: ").strip().lower()
+        
+        # Find matches (partial search)
+        matches = []
+        for name in contacts:
+            if search_term in name.lower():
+                matches.append(name)
+        
+        if matches:
+            print(f"\nFound {len(matches)} match(es):")
+            for name in matches:
+                display_contact(name, contacts[name])
+        else:
+            print("No contacts found with that name!")
+            
+    elif choice == "2":
+        phone_search = input("Enter phone to search: ").strip()
+        
+        found = False
+        for name, info in contacts.items():
+            if phone_search in info["phone"]:
+                display_contact(name, info)
+                found = True
+        
+        if not found:
+            print("No contacts found with that phone number!")
+    else:
+        print("Invalid choice!")
+
+def display_contact(name, info):
+    """Display a single contact's information."""
+    print(f"\n--- {name} ---")
+    print(f"Phone: {info['phone']}")
+    print(f"Email: {info['email']}")
+    print(f"Address: {info['address']}")
+
+def update_contact(contacts):
+    """Update existing contact information."""
+    if not contacts:
+        print("\nNo contacts to update!")
+        return
+    
+    print("\n--- Update Contact ---")
+    name = input("Enter contact name to update: ").strip()
+    
+    # Find exact match (case-insensitive)
+    exact_match = None
+    for contact_name in contacts:
+        if name.lower() == contact_name.lower():
+            exact_match = contact_name
+            break
+    
+    if not exact_match:
+        print(f"Contact '{name}' not found!")
+        return
+    
+    print(f"\nCurrent information for {exact_match}:")
+    display_contact(exact_match, contacts[exact_match])
+    
+    print("\nWhat to update?")
+    print("1. Phone")
+    print("2. Email")
+    print("3. Address")
+    print("4. Cancel")
+    
+    choice = input("Choose option (1-4): ")
+    
+    if choice == "1":
+        new_phone = input("Enter new phone: ").strip()
+        if new_phone:
+            contacts[exact_match]["phone"] = new_phone
+            print("Phone updated successfully!")
+    elif choice == "2":
+        new_email = input("Enter new email: ").strip()
+        contacts[exact_match]["email"] = new_email if new_email else "No email"
+        print("Email updated successfully!")
+    elif choice == "3":
+        new_address = input("Enter new address: ").strip()
+        contacts[exact_match]["address"] = new_address if new_address else "No address"
+        print("Address updated successfully!")
+    elif choice == "4":
+        print("Update cancelled.")
+    else:
+        print("Invalid choice!")
+
+def delete_contact(contacts):
+    """Delete a contact with confirmation."""
+    if not contacts:
+        print("\nNo contacts to delete!")
+        return
+    
+    print("\n--- Delete Contact ---")
+    name = input("Enter contact name to delete: ").strip()
+    
+    # Find exact match (case-insensitive)
+    exact_match = None
+    for contact_name in contacts:
+        if name.lower() == contact_name.lower():
+            exact_match = contact_name
+            break
+    
+    if not exact_match:
+        print(f"Contact '{name}' not found!")
+        return
+    
+    # Show contact and confirm
+    display_contact(exact_match, contacts[exact_match])
+    confirm = input(f"\nAre you sure you want to delete {exact_match}? (yes/no): ")
+    
+    if confirm.lower() == "yes":
+        del contacts[exact_match]
+        print(f"Contact '{exact_match}' deleted successfully!")
+    else:
+        print("Deletion cancelled.")
+
+def main():
+    """Run the contact book application."""
+    contacts = {}
+    
+    # Add some test data (remove in production)
+    test_data = {
+        "Alice Johnson": {
+            "phone": "555-1234",
+            "email": "alice@email.com",
+            "address": "123 Main St"
+        },
+        "Bob Smith": {
+            "phone": "555-5678",
+            "email": "bob@email.com",
+            "address": "456 Oak Ave"
+        }
+    }
+    
+    # Uncomment to start with test data
+    # contacts = test_data.copy()
+    
+    print("Welcome to Contact Book System!")
+    
+    while True:
+        display_menu()
+        choice = input("\nEnter choice (1-6): ")
+        
+        if choice == "1":
+            add_contact(contacts)
+        elif choice == "2":
+            view_all_contacts(contacts)
+        elif choice == "3":
+            search_contact(contacts)
+        elif choice == "4":
+            update_contact(contacts)
+        elif choice == "5":
+            delete_contact(contacts)
+        elif choice == "6":
+            print("\nThank you for using Contact Book!")
+            print("Goodbye!")
+            break
+        else:
+            print("\nInvalid choice! Please try again.")
+        
+        # Pause before showing menu again
+        input("\nPress Enter to continue...")
+
+# Run the program
+if __name__ == "__main__":
+    main()
+```
+
+---
+
+# Assessment Solutions
+
+## Dictionary Operations Assessment
+
+### Part 1: Dictionary Basics
+
+```python
+# Question 1.1
+product = {
+    "name": "Laptop",
+    "price": 999.99,
+    "in_stock": True,
+    "quantity": 15
+}
+
+empty1 = {}
+empty2 = dict()
+
+student = {
+    "id": "S123",
+    "age": 20,
+    "gpa": 3.75,
+    "courses": ["Math", "CS", "Physics"],
+    "graduated": False
+}
+
+# Question 1.2
+name = person["name"]
+age = person["age"]
+second_skill = person["skills"][1]
+phone = person.get("phone", "No phone")
+has_email = "email" in person
+
+# Question 1.3
+book["year"] = 2024
+book["isbn"] = "978-1234567890"
+book["reviews"] = []
+del book["pages"]
+book["author"] = "Jane M. Doe"
+```
+
+### Part 2: Dictionary Methods
+
+```python
+# Question 2.1
+fruits = list(inventory.keys())
+quantities = list(inventory.values())
+pairs = list(inventory.items())
+
+total = 0
+for quantity in inventory.values():
+    total = total + quantity
+
+high_stock = []
+for fruit, quantity in inventory.items():
+    if quantity > 30:
+        high_stock.append(fruit)
+
+# Question 2.2
+timeout = config.get("timeout", 60)
+max_conn = config.get("max_connections", 100)
+
+if "database" in config:
+    db_settings = config["database"]
+else:
+    db_settings = {"type": "sqlite", "name": "default.db"}
+
+if "timeout" not in config:
+    config["timeout"] = 30
+```
+
+### Part 3: Dictionary Patterns
+
+```python
+# Question 3.1
+def count_words(text):
+    word_count = {}
+    words = text.lower().split()
+    
+    for word in words:
+        if word in word_count:
+            word_count[word] = word_count[word] + 1
+        else:
+            word_count[word] = 1
+    
+    return word_count
+
+# Question 3.2
+grade_groups = {}
+
+for student in students:
+    grade = student["grade"]
+    name = student["name"]
+    
+    if grade in grade_groups:
+        grade_groups[grade].append(name)
+    else:
+        grade_groups[grade] = [name]
+
+# Question 3.3
+months = {
+    1: "January", 2: "February", 3: "March",
+    4: "April", 5: "May", 6: "June",
+    7: "July", 8: "August", 9: "September",
+    10: "October", 11: "November", 12: "December"
+}
+
+month_numbers = {}
+for num, name in months.items():
+    month_numbers[name] = num
+
+month_name = months.get(month_num, "Invalid month")
+```
+
+---
+
+# Common Mistakes and Fixes
+
+## 1. KeyError Handling
+
+**Mistake:**
+```python
+value = dictionary[key]  # Crashes if key missing
+```
+
+**Fix:**
+```python
+value = dictionary.get(key, default_value)
+```
+
+## 2. Modifying While Iterating
+
+**Mistake:**
+```python
+for key in dictionary:
+    if condition:
+        del dictionary[key]  # RuntimeError!
+```
+
+**Fix:**
+```python
+keys_to_delete = []
+for key in dictionary:
+    if condition:
+        keys_to_delete.append(key)
+for key in keys_to_delete:
+    del dictionary[key]
+```
+
+## 3. Case Sensitivity
+
+**Mistake:**
+```python
+contacts["alice"] != contacts["Alice"]
+```
+
+**Fix:**
+```python
+# Standardize keys
+name = input("Name: ").title()
+```
+
+## 4. Empty Dictionary Check
+
+**Mistake:**
+```python
+if dictionary == {}:  # Works but not idiomatic
+```
+
+**Fix:**
+```python
+if not dictionary:  # Pythonic way
+```
+
+---
+
+# Testing Strategies
+
+## Edge Cases to Test
+
+1. **Empty dictionary operations**
+2. **Single item dictionary**
+3. **Missing keys**
+4. **Duplicate handling**
+5. **Case variations**
+6. **Special characters in keys**
+7. **Very long values**
+8. **Nested structure depth**
+
+## Test Data Generator
+
+```python
+def generate_test_contacts(num_contacts):
+    """Generate test contact data."""
+    first_names = ["Alice", "Bob", "Carol", "Dave", "Eve"]
+    last_names = ["Smith", "Johnson", "Davis", "Brown", "Wilson"]
+    
+    contacts = {}
+    for i in range(num_contacts):
+        first = first_names[i % len(first_names)]
+        last = last_names[i % len(last_names)]
+        name = f"{first} {last} {i}"
+        
+        contacts[name] = {
+            "phone": f"555-{1000 + i:04d}",
+            "email": f"{first.lower()}{i}@email.com",
+            "address": f"{100 + i} Main St"
+        }
+    
+    return contacts
+```
+
+---
+
+# Best Practices Summary
+
+1. **Always use .get() for uncertain keys**
+2. **Check dictionary emptiness with `if dict:`**
+3. **Use .items() for key-value iteration**
+4. **Standardize string keys (case, whitespace)**
+5. **Document your data structure design**
+6. **Test edge cases thoroughly**
+7. **Keep nesting depth reasonable (max 3-4 levels)**
+8. **Choose meaningful, consistent key names**

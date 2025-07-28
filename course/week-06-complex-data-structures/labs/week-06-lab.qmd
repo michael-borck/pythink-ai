@@ -1,0 +1,748 @@
+---
+title: "Week 6 Lab: Mastering Dictionaries"
+subtitle: "Building Complex Data Structures"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Lab Overview
+
+This lab will help you master dictionaries through hands-on practice. You'll learn to model real-world data, work with nested structures, and build a contact book system.
+
+**Duration:** 2 hours  
+**Goals:**
+1. Create and manipulate dictionaries
+2. Use dictionary methods effectively
+3. Design appropriate data structures
+4. Navigate nested dictionaries
+5. Build a functional contact book
+
+---
+
+# Hour 1: Dictionary Fundamentals
+
+## Part 1: Creating and Accessing Dictionaries (20 minutes)
+
+### Exercise 1.1: Basic Dictionary Operations
+
+Create these dictionaries and perform the operations:
+
+```python
+# 1. Create a person dictionary
+person = {
+    "first_name": "John",
+    "last_name": "Doe",
+    "age": 30,
+    "city": "New York"
+}
+
+# Tasks:
+# a) Print the person's full name
+full_name = person["first_name"] + " " + person["last_name"]
+print(f"Full name: {full_name}")
+
+# b) Update their age to 31
+person["age"] = ___
+
+# c) Add their email
+person["email"] = ___
+
+# d) Print all information
+for key, value in person.items():
+    print(f"{key}: {value}")
+```
+
+### Exercise 1.2: Safe Access with .get()
+
+Practice safe dictionary access:
+
+```python
+# Product information
+product = {
+    "name": "Laptop",
+    "price": 999.99,
+    "stock": 15
+}
+
+# Safe access practice
+# a) Get the price (exists)
+price = product.get("price")
+print(f"Price: ${price}")
+
+# b) Get the discount (doesn't exist)
+discount = product.get("discount")  # What will this be?
+print(f"Discount: {discount}")
+
+# c) Get warranty with default
+warranty = product.get("warranty", "No warranty")
+print(f"Warranty: {warranty}")
+
+# d) Check before accessing
+if "stock" in product:
+    print(f"Stock available: {product['stock']}")
+else:
+    print("Stock information not available")
+```
+
+### Exercise 1.3: Building Dictionaries
+
+Create dictionaries for these scenarios:
+
+```python
+# 1. Student record
+student = {
+    "id": "___",
+    "name": "___",
+    "grades": {
+        "math": ___,
+        "science": ___,
+        "english": ___
+    },
+    "graduated": ___  # True/False
+}
+
+# 2. Restaurant menu item
+menu_item = {
+    # Your structure here
+    
+    
+    
+}
+
+# 3. Book information
+book = {
+    # Your structure here
+    
+    
+    
+}
+```
+
+## Part 2: Dictionary Methods (20 minutes)
+
+### Exercise 2.1: Using Keys, Values, and Items
+
+```python
+# Sample inventory
+inventory = {
+    "apples": 50,
+    "bananas": 30,
+    "oranges": 25,
+    "grapes": 40
+}
+
+# 1. Get all product names
+products = list(inventory.keys())
+print(f"Products: {products}")
+
+# 2. Get all quantities
+quantities = list(inventory._____)
+print(f"Quantities: {quantities}")
+
+# 3. Find total items in stock
+total = 0
+for quantity in inventory._____:
+    total = total + quantity
+print(f"Total items: {total}")
+
+# 4. Find products with low stock (< 30)
+low_stock = []
+for product, quantity in inventory._____:
+    if quantity < 30:
+        low_stock.append(product)
+print(f"Low stock: {low_stock}")
+```
+
+### Exercise 2.2: Modifying Dictionaries
+
+```python
+# Shopping cart
+cart = {}
+
+# 1. Add items to cart
+def add_to_cart(cart, item, quantity):
+    """Add item to shopping cart."""
+    if item in cart:
+        cart[item] = cart[item] + quantity
+    else:
+        cart[item] = quantity
+
+# Test adding items
+add_to_cart(cart, "apples", 3)
+add_to_cart(cart, "bananas", 2)
+add_to_cart(cart, "apples", 2)  # Add more apples
+print(f"Cart: {cart}")
+
+# 2. Remove item from cart
+def remove_from_cart(cart, item):
+    """Remove item from cart if it exists."""
+    if item in cart:
+        del cart[___]
+        print(f"Removed {item}")
+    else:
+        print(f"{item} not in cart")
+
+# Test removal
+remove_from_cart(cart, "bananas")
+remove_from_cart(cart, "oranges")  # Not in cart
+
+# 3. Update quantity
+def update_quantity(cart, item, new_quantity):
+    """Update item quantity in cart."""
+    # Your code here
+    
+    
+```
+
+### Exercise 2.3: Dictionary Patterns
+
+Implement these common patterns:
+
+```python
+# 1. Counting pattern
+def count_letters(text):
+    """Count frequency of each letter."""
+    counts = {}
+    for char in text.lower():
+        if char.isalpha():
+            if char in counts:
+                counts[char] = counts[char] + 1
+            else:
+                counts[char] = 1
+    return counts
+
+# Test it
+text = "Hello World"
+letter_counts = count_letters(text)
+print(f"Letter counts: {letter_counts}")
+
+# 2. Grouping pattern
+def group_by_first_letter(words):
+    """Group words by their first letter."""
+    groups = {}
+    for word in words:
+        first = word[0].upper()
+        if first in groups:
+            groups[first].append(word)
+        else:
+            groups[first] = [word]
+    return groups
+
+# Test it
+words = ["apple", "banana", "apricot", "berry", "cherry"]
+grouped = group_by_first_letter(words)
+print(f"Grouped: {grouped}")
+
+# 3. Lookup table pattern
+def create_grade_lookup():
+    """Create grade point lookup table."""
+    # Your code here
+    
+    
+    
+    return grades
+
+# Test it
+grades = create_grade_lookup()
+letter_grade = "B"
+points = grades.get(letter_grade, 0)
+print(f"{letter_grade} = {points} points")
+```
+
+## Part 3: Data Modeling (20 minutes)
+
+### Exercise 3.1: Design Appropriate Structures
+
+Choose the best data structure for each scenario:
+
+```python
+# Scenario 1: Class roster with student names and IDs
+# Option A: List of tuples
+roster_a = [("Alice", "A001"), ("Bob", "B002")]
+
+# Option B: Dictionary with ID as key
+roster_b = {"A001": "Alice", "B002": "Bob"}
+
+# Option C: List of dictionaries
+roster_c = [
+    {"name": "Alice", "id": "A001"},
+    {"name": "Bob", "id": "B002"}
+]
+
+# Which is best for finding a student by ID? _____
+# Which is best for listing all students? _____
+```
+
+### Exercise 3.2: Model Real-World Data
+
+Design dictionary structures for:
+
+```python
+# 1. A library book
+book = {
+    "isbn": "978-0-123456-78-9",
+    "title": "Python Programming",
+    "authors": ["John Doe", "Jane Smith"],
+    "year": 2024,
+    "available": True,
+    "location": {
+        "floor": 2,
+        "section": "Computer Science",
+        "shelf": "CS-101"
+    }
+}
+
+# 2. A recipe (you design this)
+recipe = {
+    # Your structure
+    
+    
+    
+    
+    
+}
+
+# 3. A calendar event (you design this)
+event = {
+    # Your structure
+    
+    
+    
+    
+}
+```
+
+---
+
+# Hour 2: Complex Structures and Contact Book
+
+## Part 4: Nested Structures (20 minutes)
+
+### Exercise 4.1: Navigating Nested Dictionaries
+
+```python
+# Company organization
+company = {
+    "name": "TechCorp",
+    "departments": {
+        "engineering": {
+            "manager": "Alice",
+            "employees": ["Bob", "Carol", "Dave"],
+            "budget": 500000
+        },
+        "sales": {
+            "manager": "Eve",
+            "employees": ["Frank", "Grace"],
+            "budget": 300000
+        },
+        "hr": {
+            "manager": "Henry",
+            "employees": ["Iris"],
+            "budget": 100000
+        }
+    }
+}
+
+# Tasks:
+# 1. Get engineering manager
+eng_manager = company["departments"]["engineering"]["manager"]
+print(f"Engineering Manager: {eng_manager}")
+
+# 2. Get all department names
+dept_names = list(company["departments"].keys())
+print(f"Departments: {dept_names}")
+
+# 3. Calculate total budget
+total_budget = 0
+for dept_name, dept_info in company["departments"].items():
+    total_budget = total_budget + dept_info["budget"]
+print(f"Total Budget: ${total_budget}")
+
+# 4. Find department with most employees
+largest_dept = ""
+max_employees = 0
+for dept_name, dept_info in company["departments"].items():
+    num_employees = len(dept_info["employees"])
+    if num_employees > max_employees:
+        max_employees = num_employees
+        largest_dept = dept_name
+print(f"Largest department: {largest_dept}")
+```
+
+### Exercise 4.2: Lists of Dictionaries
+
+```python
+# Student records
+students = [
+    {
+        "name": "Alice Johnson",
+        "id": "A001",
+        "grades": {"math": 92, "science": 88, "english": 95},
+        "gpa": 3.8
+    },
+    {
+        "name": "Bob Smith",
+        "id": "B002",
+        "grades": {"math": 85, "science": 90, "english": 82},
+        "gpa": 3.5
+    },
+    {
+        "name": "Carol Davis",
+        "id": "C003",
+        "grades": {"math": 78, "science": 85, "english": 90},
+        "gpa": 3.3
+    }
+]
+
+# Tasks:
+# 1. Find student with highest GPA
+def find_top_student(students):
+    """Find student with highest GPA."""
+    top_student = None
+    highest_gpa = 0
+    
+    for student in students:
+        if student["gpa"] > highest_gpa:
+            highest_gpa = student["gpa"]
+            top_student = student
+    
+    return top_student
+
+# 2. Calculate class average for math
+def calculate_class_average(students, subject):
+    """Calculate average grade for a subject."""
+    total = 0
+    count = 0
+    
+    for student in students:
+        if subject in student["grades"]:
+            total = total + student["grades"][subject]
+            count = count + 1
+    
+    if count > 0:
+        return total / count
+    return 0
+
+# Test functions
+top = find_top_student(students)
+print(f"Top student: {top['name']} (GPA: {top['gpa']})")
+
+math_avg = calculate_class_average(students, "math")
+print(f"Math average: {math_avg:.1f}")
+
+# 3. Add new student
+def add_student(students, name, id, grades, gpa):
+    """Add new student to list."""
+    # Your code here
+    
+    
+    
+```
+
+### Exercise 4.3: Updating Nested Data
+
+```python
+# Game state
+game_state = {
+    "player": {
+        "name": "Hero",
+        "health": 100,
+        "inventory": {
+            "gold": 50,
+            "items": ["sword", "shield", "potion"]
+        },
+        "stats": {
+            "level": 5,
+            "experience": 1200,
+            "strength": 15,
+            "defense": 12
+        }
+    },
+    "current_location": "village",
+    "quests_completed": ["tutorial", "first_battle"]
+}
+
+# Functions to modify game state
+def add_item(game_state, item):
+    """Add item to player inventory."""
+    game_state["player"]["inventory"]["items"].append(item)
+
+def use_potion(game_state):
+    """Use potion to restore health."""
+    inventory = game_state["player"]["inventory"]
+    if "potion" in inventory["items"]:
+        # Remove potion
+        inventory["items"].remove("potion")
+        # Restore health
+        game_state["player"]["health"] = min(100, game_state["player"]["health"] + 50)
+        return True
+    return False
+
+def level_up(game_state):
+    """Level up the player."""
+    # Your code here - increase level and stats
+    
+    
+    
+
+# Test modifications
+print(f"Health before: {game_state['player']['health']}")
+game_state["player"]["health"] = 60  # Take damage
+print(f"Health after damage: {game_state['player']['health']}")
+
+if use_potion(game_state):
+    print(f"Used potion! Health now: {game_state['player']['health']}")
+```
+
+## Part 5: Contact Book Project (40 minutes)
+
+### Build Your Contact Book System
+
+Create a functional contact book with these features:
+
+```python
+# Initialize contact book
+contacts = {}
+
+def add_contact(contacts, name, phone, email=None, address=None):
+    """Add a new contact."""
+    if name in contacts:
+        print(f"Contact {name} already exists!")
+        return False
+    
+    contacts[name] = {
+        "phone": phone,
+        "email": email if email else "No email",
+        "address": address if address else "No address"
+    }
+    print(f"Added contact: {name}")
+    return True
+
+def view_contact(contacts, name):
+    """Display a single contact."""
+    if name in contacts:
+        contact = contacts[name]
+        print(f"\n--- {name} ---")
+        print(f"Phone: {contact['phone']}")
+        print(f"Email: {contact['email']}")
+        print(f"Address: {contact['address']}")
+    else:
+        print(f"Contact {name} not found!")
+
+def update_contact(contacts, name, field, new_value):
+    """Update a contact field."""
+    if name not in contacts:
+        print(f"Contact {name} not found!")
+        return False
+    
+    if field not in ["phone", "email", "address"]:
+        print(f"Invalid field: {field}")
+        return False
+    
+    contacts[name][field] = new_value
+    print(f"Updated {name}'s {field}")
+    return True
+
+def delete_contact(contacts, name):
+    """Delete a contact."""
+    if name in contacts:
+        del contacts[name]
+        print(f"Deleted contact: {name}")
+        return True
+    else:
+        print(f"Contact {name} not found!")
+        return False
+
+def search_contacts(contacts, search_term):
+    """Search contacts by name or phone."""
+    search_term = search_term.lower()
+    found = []
+    
+    for name, info in contacts.items():
+        if (search_term in name.lower() or 
+            search_term in info["phone"]):
+            found.append(name)
+    
+    return found
+
+def display_all_contacts(contacts):
+    """Display all contacts."""
+    if not contacts:
+        print("No contacts in book!")
+        return
+    
+    print("\n--- All Contacts ---")
+    for name in sorted(contacts.keys()):
+        print(f"{name}: {contacts[name]['phone']}")
+
+# Main contact book menu
+def contact_book_menu():
+    """Run the contact book application."""
+    contacts = {}
+    
+    while True:
+        print("\n=== Contact Book ===")
+        print("1. Add Contact")
+        print("2. View Contact")
+        print("3. Update Contact")
+        print("4. Delete Contact")
+        print("5. Search Contacts")
+        print("6. Display All")
+        print("7. Exit")
+        
+        choice = input("\nChoose option: ")
+        
+        if choice == "1":
+            name = input("Name: ")
+            phone = input("Phone: ")
+            email = input("Email (optional): ")
+            address = input("Address (optional): ")
+            add_contact(contacts, name, phone, 
+                       email if email else None,
+                       address if address else None)
+            
+        elif choice == "2":
+            name = input("Contact name: ")
+            view_contact(contacts, name)
+            
+        elif choice == "3":
+            name = input("Contact name: ")
+            field = input("Field to update (phone/email/address): ")
+            new_value = input(f"New {field}: ")
+            update_contact(contacts, name, field, new_value)
+            
+        elif choice == "4":
+            name = input("Contact to delete: ")
+            delete_contact(contacts, name)
+            
+        elif choice == "5":
+            search = input("Search for: ")
+            results = search_contacts(contacts, search)
+            if results:
+                print(f"Found: {', '.join(results)}")
+            else:
+                print("No matches found")
+                
+        elif choice == "6":
+            display_all_contacts(contacts)
+            
+        elif choice == "7":
+            print("Goodbye!")
+            break
+            
+        else:
+            print("Invalid choice!")
+
+# Run the contact book
+# contact_book_menu()
+```
+
+---
+
+# Lab Submission
+
+## What to Submit
+
+1. **Dictionary exercises** from Parts 1-3
+2. **Nested structure code** from Part 4
+3. **Working contact book** from Part 5
+4. **Enhanced features** (if any)
+5. **Reflection** (3-5 sentences):
+   - What was most challenging about dictionaries?
+   - How do they compare to lists?
+   - What would you add to the contact book?
+
+## Grading Rubric
+
+| Component | Points | Criteria |
+|-----------|---------|----------|
+| Basic Operations | 15 | Create, access, modify dicts |
+| Dictionary Methods | 15 | Use keys(), values(), items() |
+| Data Modeling | 15 | Design appropriate structures |
+| Nested Structures | 20 | Navigate and update nested data |
+| Contact Book | 25 | Core features working |
+| Code Quality | 10 | Clear, well-organized |
+
+---
+
+# Common Issues and Solutions
+
+## KeyError Prevention
+
+**Problem:**
+```python
+person = {"name": "Alice", "age": 25}
+phone = person["phone"]  # KeyError!
+```
+
+**Solution:**
+```python
+phone = person.get("phone", "No phone")  # Safe
+```
+
+## Modifying During Iteration
+
+**Problem:**
+```python
+for key in dict:
+    if condition:
+        del dict[key]  # RuntimeError!
+```
+
+**Solution:**
+```python
+keys_to_delete = []
+for key in dict:
+    if condition:
+        keys_to_delete.append(key)
+for key in keys_to_delete:
+    del dict[key]
+```
+
+## Deep Copy Issues
+
+**Problem:**
+```python
+original = {"a": [1, 2, 3]}
+copy = original  # Not a real copy!
+copy["a"].append(4)  # Modifies original!
+```
+
+**Solution:**
+```python
+import copy
+real_copy = copy.deepcopy(original)
+# Or manually copy for simple cases
+```
+
+---
+
+# Extra Challenges
+
+If you finish early:
+
+1. **Contact Groups**: Add categories to contacts
+2. **Import/Export**: Save contacts as formatted text
+3. **Birthday Tracking**: Add birthdays and reminders
+4. **Merge Duplicates**: Handle similar names
+5. **Backup System**: Keep previous versions
+
+---
+
+# Next Steps
+
+After this lab:
+1. Practice modeling different data types
+2. Work with more complex nested structures
+3. Think about when to use dicts vs lists
+4. Consider data organization in your projects
+
+Next week: File operations to save your data!

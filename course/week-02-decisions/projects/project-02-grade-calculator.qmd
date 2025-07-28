@@ -1,0 +1,391 @@
+---
+title: "Week 2 Project: Smart Grade Calculator"
+subtitle: "Building Programs That Make Intelligent Decisions"
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    code-fold: false
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Smart Grade Calculator Project
+
+## Project Overview
+
+Create an intelligent grade calculator that converts numerical scores to letter grades with modifiers (+/-), provides personalized feedback, and handles invalid inputs gracefully. This project demonstrates your ability to use conditional logic to build a program that makes complex decisions.
+
+## Learning Objectives
+
+- Apply if/elif/else statements effectively
+- Use comparison and logical operators
+- Validate user input
+- Provide meaningful user feedback
+- Test edge cases systematically
+- Document your decision logic
+
+## Project Requirements
+
+### Core Features (Required)
+
+Your grade calculator must:
+
+1. **Accept Numerical Input**
+   - Prompt user for a score between 0-100
+   - Convert input to float for decimal scores
+   - Handle decimal scores (like 89.5)
+
+2. **Validate Input**
+   - Check if score is below 0
+   - Check if score is above 100
+   - Provide clear error messages for invalid input
+   - Don't crash on invalid input
+
+3. **Convert to Letter Grades with Modifiers**
+   - Implement the full grading scale (see below)
+   - Include plus and minus modifiers
+   - Handle boundary cases correctly
+
+4. **Provide Personalized Feedback**
+   - Different encouraging message for each grade range
+   - Appropriate tone (celebrate success, encourage improvement)
+   - Specific to the achievement level
+
+5. **User-Friendly Interface**
+   - Clear title and instructions
+   - Well-formatted output
+   - Option to calculate another grade
+   - Polite exit message
+
+### Grading Scale
+
+Implement this exact scale:
+
+| Score Range | Grade | Feedback Theme |
+|------------|-------|----------------|
+| 97-100 | A+ | Outstanding/Exceptional |
+| 93-96 | A | Excellent |
+| 90-92 | A- | Great/Impressive |
+| 87-89 | B+ | Very Good |
+| 83-86 | B | Good/Solid |
+| 80-82 | B- | Above Average |
+| 77-79 | C+ | Satisfactory Plus |
+| 73-76 | C | Satisfactory |
+| 70-72 | C- | Adequate |
+| 67-69 | D+ | Below Average |
+| 63-66 | D | Poor |
+| 60-62 | D- | Minimal Pass |
+| 0-59 | F | Failing |
+
+### Example Program Run
+
+```
+=== Smart Grade Calculator ===
+I'll convert your numerical score to a letter grade.
+
+Enter your score (0-100): 87.5
+
+Results:
+--------
+Score: 87.5%
+Grade: B+
+Feedback: Very good work! You're performing above expectations.
+
+Would you like to calculate another grade? (Y/N): y
+
+Enter your score (0-100): 105
+
+Error: Invalid score! Please enter a value between 0 and 100.
+
+Enter your score (0-100): 73
+
+Results:
+--------
+Score: 73.0%
+Grade: C
+Feedback: Satisfactory performance. Keep working to improve!
+
+Would you like to calculate another grade? (Y/N): n
+
+Thanks for using the Smart Grade Calculator!
+```
+
+## Implementation Guide
+
+### Step 1: Plan Your Logic
+
+Before coding, create a flowchart showing:
+- Input validation flow
+- Grade determination logic
+- Feedback selection
+- Loop for multiple calculations
+
+### Step 2: Structure Your Program
+
+```python
+# Smart Grade Calculator
+# Author: [Your Name]
+# Date: [Today's Date]
+
+print("=== Smart Grade Calculator ===")
+print("I'll convert your numerical score to a letter grade.")
+print()
+
+# Main program loop
+continue_calculating = True
+
+while continue_calculating:
+    # Get score from user
+    score_string = input("Enter your score (0-100): ")
+    
+    # Convert to float
+    # (What could go wrong here? Plan for it!)
+    
+    # Validate input
+    
+    # Determine grade and feedback
+    
+    # Display results
+    
+    # Ask if user wants to continue
+    
+print("\nThanks for using the Smart Grade Calculator!")
+```
+
+### Step 3: Implement Validation
+
+```python
+# Input validation pattern
+if score < 0 or score > 100:
+    print("\nError: Invalid score! Please enter a value between 0 and 100.")
+else:
+    # Process valid score
+```
+
+### Step 4: Grade Determination
+
+Remember:
+- Check highest grades first
+- Use elif to avoid checking unnecessary conditions
+- Be careful with boundaries (>= vs >)
+
+### Step 5: Add Personality
+
+Make your feedback encouraging and specific:
+- A+: "Outstanding work! You've achieved perfection!"
+- B: "Good job! You're demonstrating solid understanding."
+- C-: "You passed, but there's room for improvement."
+- F: "Don't give up! Seek help and keep trying."
+
+## Testing Requirements
+
+### Boundary Testing
+
+Test these exact values:
+- 100, 97, 96.5, 93, 92.5, 90
+- 89.5, 87, 86.5, 83, 82.5, 80
+- (Continue for all boundaries)
+- 60, 59.5, 59, 0
+
+### Invalid Input Testing
+- Negative numbers: -10, -1
+- Over 100: 101, 150, 1000
+- Exact boundaries: 0, 100
+
+### User Experience Testing
+- Y/y/YES/yes for continue
+- N/n/NO/no for stop
+- Invalid responses to continue prompt
+
+## AI Partnership Guidelines
+
+### Appropriate AI Use
+
+✅ **Good Uses of AI**:
+- "Explain why my grade of 90 is showing as B+ instead of A-"
+- "Help me understand how to check multiple conditions with OR"
+- "What's the best way to validate that input is between 0 and 100?"
+- "How can I make my feedback messages more encouraging?"
+
+❌ **Don't Ask AI To**:
+- "Write the complete grade calculator for me"
+- "Give me all the if/elif statements"
+- "Debug my entire program"
+
+### Debugging with AI
+
+When something isn't working:
+1. First, identify the specific problem
+2. Test with specific inputs
+3. Ask AI to explain the concept, not fix the code
+4. Apply the understanding yourself
+
+### Progressive Development
+
+Use this approach with AI:
+1. Get validation working first
+2. Add basic grades (A, B, C, D, F)
+3. Add plus/minus modifiers
+4. Add feedback messages
+5. Add continuation loop
+
+## Submission Requirements
+
+### 1. Complete Program
+
+Submit your `.ipynb` file containing:
+- Full working calculator
+- Comments explaining your logic
+- Test runs showing various inputs
+
+### 2. Flowchart
+
+Include a flowchart (photo/drawing) showing:
+- Overall program flow
+- Decision points
+- Input validation logic
+- Grade determination process
+
+### 3. Test Documentation
+
+```markdown
+## Test Results
+
+### Boundary Tests
+- Score: 100 → Grade: A+ ✓
+- Score: 97 → Grade: A+ ✓
+- Score: 96 → Grade: A ✓
+- Score: 93 → Grade: A ✓
+[Continue for all boundaries]
+
+### Invalid Input Tests
+- Score: -5 → Error message ✓
+- Score: 105 → Error message ✓
+[Document all tests]
+
+### User Experience Tests
+- Continue: Y → Works ✓
+- Continue: n → Exits properly ✓
+[Document variations]
+```
+
+### 4. AI Usage Log
+
+```markdown
+## AI Partnership Documentation
+
+### Challenge 1: [Describe problem]
+**What I Asked AI**: [Your prompt]
+**What I Learned**: [Key insight]
+**How I Applied It**: [Your solution]
+
+### Challenge 2: [Describe problem]
+[Continue for major challenges]
+
+### Key Learnings
+- [Important concept 1]
+- [Important concept 2]
+- [Important concept 3]
+```
+
+### 5. Reflection
+
+Write a brief reflection (150-200 words) addressing:
+- What was the hardest part of this project?
+- How did organizing with a flowchart help?
+- What did you learn about decision logic?
+- How would you extend this program in the future?
+
+## Grading Rubric
+
+### Functionality (40 points)
+- **Input/Validation** (10 pts)
+  - Accepts decimal scores
+  - Validates range properly
+  - Handles invalid input gracefully
+  
+- **Grade Calculation** (20 pts)
+  - All grades calculate correctly
+  - Plus/minus modifiers work
+  - Boundaries are correct
+  
+- **User Experience** (10 pts)
+  - Clear prompts and output
+  - Continue option works
+  - Polite and encouraging
+
+### Code Quality (30 points)
+- **Logic Structure** (15 pts)
+  - Efficient use of elif
+  - No redundant conditions
+  - Clear flow
+  
+- **Style and Comments** (15 pts)
+  - Meaningful variable names
+  - Helpful comments
+  - Consistent formatting
+
+### Testing (20 points)
+- **Comprehensive Testing** (10 pts)
+  - All boundaries tested
+  - Invalid inputs tested
+  - Edge cases covered
+  
+- **Documentation** (10 pts)
+  - Test results recorded
+  - Problems identified
+  - Solutions explained
+
+### Process (10 points)
+- **Planning** (5 pts)
+  - Flowchart provided
+  - Logic is sound
+  
+- **AI Usage** (5 pts)
+  - Used for learning
+  - Documented appropriately
+  - Shows understanding
+
+## Extension Challenges (Optional)
+
+If you finish early and want extra practice:
+
+### Challenge 1: Grade Distribution
+Keep track of all grades entered and show summary:
+```
+Grade Distribution:
+A: 3 students
+B: 5 students
+C: 2 students
+[etc.]
+```
+
+### Challenge 2: Class Average
+Calculate and display the class average
+
+### Challenge 3: Custom Scale
+Allow teacher to input their own grade boundaries
+
+### Challenge 4: Save Results
+*Wait - we haven't learned files yet! Save this idea for Week 7!*
+
+## Tips for Success
+
+1. **Start Simple**: Get basic A/B/C/D/F working first
+2. **Test Often**: Run your code after each major addition
+3. **Use Comments**: Explain your logic, especially complex conditions
+4. **Think Edge Cases**: What happens at exact boundaries?
+5. **Keep It Organized**: Use clear variable names and spacing
+
+## Common Mistakes to Avoid
+
+1. **Wrong Order**: Checking low grades before high grades
+2. **Missing Cases**: Gaps between grade ranges
+3. **Bad Boundaries**: Using > when you need >=
+4. **No Validation**: Accepting any input without checking
+5. **Complex Logic**: Making it harder than needed
+
+Remember: This project is about decision-making. Show that you can build a program that makes intelligent choices based on input!

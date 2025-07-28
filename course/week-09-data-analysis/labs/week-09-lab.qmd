@@ -1,0 +1,920 @@
+---
+title: "Week 9 Lab: Data Analysis Workshop"
+subtitle: "Hands-On Data Processing and Visualization"
+author: "AI-Integrated Programming Course"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Lab Overview
+
+**Duration:** 2 hours  
+**Objective:** Master practical data analysis skills through hands-on exercises with real datasets.
+
+By the end of this lab, you'll be able to:
+- Parse CSV files with various formats
+- Clean and validate messy data
+- Calculate meaningful statistics
+- Create clear visualizations
+- Build complete analysis pipelines
+
+---
+
+# Hour 1: Data Processing Fundamentals
+
+## Exercise 1: CSV File Reading (20 minutes)
+
+### Part A: Basic CSV Parsing
+
+Let's start by creating a robust CSV parser that handles real-world data.
+
+```python
+def parse_csv_line(line, delimiter=","):
+    """
+    Parse a single CSV line, handling quoted values.
+    
+    Example:
+        'John,25,"New York, NY"' → ['John', '25', 'New York, NY']
+    """
+    values = []
+    current_value = ""
+    in_quotes = False
+    
+    for char in line:
+        if char == '"':
+            in_quotes = not in_quotes
+        elif char == delimiter and not in_quotes:
+            values.append(current_value.strip())
+            current_value = ""
+        else:
+            current_value += char
+    
+    # Don't forget the last value!
+    values.append(current_value.strip())
+    
+    return values
+
+# Test the parser
+test_line = 'Product,Price,Description'
+print(f"Simple: {parse_csv_line(test_line)}")
+
+test_line_complex = '"Laptop, Pro",1299.99,"High-end laptop, 16GB RAM"'
+print(f"Complex: {parse_csv_line(test_line_complex)}")
+```
+
+**Your Task 1.1:** 
+Modify the parser to handle these edge cases:
+1. Empty values: `"John,,Smith"` → `['John', '', 'Smith']`
+2. Quotes in values: `"6' 2\" tall"` 
+3. Different delimiters: pipe (`|`) or tab (`\t`)
+
+### Part B: Complete CSV Reader
+
+Now build a complete CSV file reader:
+
+```python
+def read_csv_enhanced(filename, delimiter=",", has_header=True):
+    """
+    Read CSV file with enhanced error handling and flexibility.
+    
+    Args:
+        filename: Path to CSV file
+        delimiter: Character separating values
+        has_header: Whether first line contains column names
+    
+    Returns:
+        If has_header: List of dictionaries
+        Otherwise: List of lists
+    """
+    # Your implementation here
+    
+    
+    
+    
+    
+
+# Test with sample file
+# Create a test CSV file first
+sample_csv = """Name,Age,City,Salary
+Alice,25,"New York, NY","$75,000"
+Bob,30,San Francisco,"$95,000"
+"Charlie, Jr.",35,"Chicago, IL","$85,000"
+Diana,28,Boston,"$80,000"
+"""
+
+with open("employees.csv", "w") as f:
+    f.write(sample_csv)
+
+# Now read it
+data = read_csv_enhanced("employees.csv")
+print(f"Loaded {len(data)} records")
+print(f"First record: {data[0] if data else 'None'}")
+```
+
+**Your Task 1.2:**
+Complete the `read_csv_enhanced` function with:
+- Proper quote handling using your parser
+- Skip empty lines
+- Handle files without headers
+- Add encoding support for international characters
+
+### Part C: Different Delimiter Handling
+
+Real data comes in many formats:
+
+```python
+# Tab-delimited data
+tab_data = """Name\tScore\tGrade
+Alice\t95\tA
+Bob\t87\tB
+Carol\t92\tA
+"""
+
+# Pipe-delimited data  
+pipe_data = """ID|Product|Price|Stock
+101|Laptop|999.99|15
+102|Mouse|29.99|50
+103|Keyboard|79.99|32
+"""
+
+# Your task: Create a universal delimiter detector
+def detect_delimiter(sample_lines):
+    """
+    Automatically detect the delimiter used in data.
+    
+    Args:
+        sample_lines: List of first few lines from file
+    
+    Returns:
+        Most likely delimiter character
+    """
+    # Your implementation here
+    
+    
+    
+    
+```
+
+**Your Task 1.3:**
+Implement delimiter detection that:
+- Counts occurrences of common delimiters
+- Checks consistency across lines
+- Returns the most likely delimiter
+
+## Exercise 2: Data Cleaning Workshop (20 minutes)
+
+### Part A: Cleaning Numeric Data
+
+Real-world numeric data is messy. Let's build robust cleaners:
+
+```python
+def clean_currency(value):
+    """
+    Clean currency strings to float values.
+    
+    Examples:
+        "$1,234.56" → 1234.56
+        "€1.234,56" → 1234.56 (European format)
+        "($100.00)" → -100.00 (Accounting negative)
+        "1.5M" → 1500000.0 (Abbreviated)
+    """
+    if not value or str(value).strip() == "":
+        return 0.0
+    
+    value = str(value).strip()
+    
+    # Your implementation here
+    
+    
+    
+    
+    
+
+# Test cases
+test_values = [
+    "$1,234.56",
+    "€1.234,56", 
+    "($100.00)",
+    "1.5M",
+    "2.3K",
+    "$1,234,567.89",
+    "N/A",
+    "",
+    "FREE"
+]
+
+for val in test_values:
+    cleaned = clean_currency(val)
+    print(f"{val:<20} → {cleaned:>12,.2f}")
+```
+
+**Your Task 2.1:**
+Implement currency cleaning that handles:
+- Different currency symbols ($, €, £, ¥)
+- European vs US number formats
+- Abbreviated values (K, M, B)
+- Accounting negatives
+- Special values (N/A, FREE, etc.)
+
+### Part B: Date Standardization
+
+Dates come in countless formats:
+
+```python
+def standardize_date(date_str, output_format="YYYY-MM-DD"):
+    """
+    Convert various date formats to standard format.
+    
+    Handles formats like:
+        "12/31/2023" → "2023-12-31"
+        "31-12-2023" → "2023-12-31"
+        "Dec 31, 2023" → "2023-12-31"
+        "20231231" → "2023-12-31"
+    """
+    # Your implementation here
+    
+    
+    
+    
+    
+
+# Test different formats
+date_formats = [
+    "12/31/2023",
+    "31-12-2023",
+    "Dec 31, 2023",
+    "20231231",
+    "2023.12.31",
+    "31/12/23",
+    "December 31st, 2023"
+]
+
+for date in date_formats:
+    standard = standardize_date(date)
+    print(f"{date:<25} → {standard}")
+```
+
+**Your Task 2.2:**
+Build date standardization that:
+- Recognizes multiple formats
+- Handles 2-digit years intelligently
+- Validates date logic (no 13th month, etc.)
+- Returns empty string for invalid dates
+
+### Part C: Data Validation Pipeline
+
+Create a complete validation system:
+
+```python
+def create_data_validator(rules):
+    """
+    Create a validator function based on rules.
+    
+    Args:
+        rules: Dictionary of column rules
+               {"Age": {"type": "int", "min": 0, "max": 150},
+                "Email": {"type": "email"},
+                "Salary": {"type": "float", "min": 0}}
+    
+    Returns:
+        Validator function
+    """
+    def validator(row):
+        """Validate a single row of data."""
+        errors = []
+        cleaned_row = {}
+        
+        for column, value in row.items():
+            if column in rules:
+                rule = rules[column]
+                # Your validation logic here
+                
+                
+                
+        
+        return cleaned_row, errors
+    
+    return validator
+
+# Example usage
+validation_rules = {
+    "Age": {"type": "int", "min": 0, "max": 150},
+    "Email": {"type": "email"},
+    "Salary": {"type": "float", "min": 0},
+    "Department": {"type": "choice", "choices": ["Sales", "IT", "HR", "Finance"]}
+}
+
+validator = create_data_validator(validation_rules)
+
+# Test data
+test_row = {
+    "Name": "John Doe",
+    "Age": "25",
+    "Email": "john@example.com",
+    "Salary": "$75,000",
+    "Department": "IT"
+}
+
+cleaned, errors = validator(test_row)
+print(f"Cleaned: {cleaned}")
+print(f"Errors: {errors}")
+```
+
+**Your Task 2.3:**
+Implement validation that:
+- Checks data types
+- Validates ranges
+- Verifies email format (basic check)
+- Ensures choices are valid
+- Returns cleaned data and error list
+
+## Exercise 3: Data Transformation (20 minutes)
+
+### Part A: Data Aggregation
+
+Learn to group and summarize data:
+
+```python
+def group_by(data, key_column):
+    """
+    Group data by a specific column.
+    
+    Args:
+        data: List of dictionaries
+        key_column: Column name to group by
+    
+    Returns:
+        Dictionary with groups
+    """
+    groups = {}
+    
+    for row in data:
+        key = row.get(key_column, "Unknown")
+        if key not in groups:
+            groups[key] = []
+        groups[key].append(row)
+    
+    return groups
+
+def aggregate_groups(grouped_data, value_column, operation="sum"):
+    """
+    Aggregate grouped data using specified operation.
+    
+    Operations: sum, mean, count, min, max
+    """
+    results = {}
+    
+    for key, group in grouped_data.items():
+        values = [row.get(value_column, 0) for row in group]
+        
+        if operation == "sum":
+            results[key] = sum(values)
+        elif operation == "mean":
+            results[key] = sum(values) / len(values) if values else 0
+        elif operation == "count":
+            results[key] = len(values)
+        elif operation == "min":
+            results[key] = min(values) if values else 0
+        elif operation == "max":
+            results[key] = max(values) if values else 0
+    
+    return results
+
+# Practice with sales data
+sales_data = [
+    {"Date": "2024-01-01", "Product": "Laptop", "Amount": 999.99, "Quantity": 1},
+    {"Date": "2024-01-01", "Product": "Mouse", "Amount": 29.99, "Quantity": 2},
+    {"Date": "2024-01-02", "Product": "Laptop", "Amount": 999.99, "Quantity": 1},
+    {"Date": "2024-01-02", "Product": "Keyboard", "Amount": 79.99, "Quantity": 1},
+    {"Date": "2024-01-03", "Product": "Mouse", "Amount": 29.99, "Quantity": 3},
+]
+
+# Group by product
+grouped = group_by(sales_data, "Product")
+totals = aggregate_groups(grouped, "Amount", "sum")
+print("Sales by Product:")
+for product, total in totals.items():
+    print(f"  {product}: ${total:.2f}")
+```
+
+**Your Task 3.1:**
+Extend the aggregation system to:
+1. Support multiple grouping columns
+2. Calculate multiple aggregations at once
+3. Add median and mode operations
+4. Handle missing values gracefully
+
+### Part B: Data Filtering and Sorting
+
+Build flexible data filtering:
+
+```python
+def create_filter(conditions):
+    """
+    Create a filter function from conditions.
+    
+    Args:
+        conditions: List of condition dictionaries
+                   [{"column": "Age", "operator": ">", "value": 25},
+                    {"column": "Department", "operator": "in", "value": ["IT", "Sales"]}]
+    """
+    def filter_function(row):
+        # Your implementation here
+        
+        
+        
+    
+    return filter_function
+
+def sort_data(data, sort_keys):
+    """
+    Sort data by multiple columns.
+    
+    Args:
+        data: List of dictionaries
+        sort_keys: List of (column, ascending) tuples
+                  [("Salary", False), ("Name", True)]
+    """
+    # Your implementation here
+    
+    
+    
+    
+
+# Test filtering and sorting
+employees = [
+    {"Name": "Alice", "Age": 25, "Department": "IT", "Salary": 75000},
+    {"Name": "Bob", "Age": 30, "Department": "Sales", "Salary": 85000},
+    {"Name": "Carol", "Age": 35, "Department": "IT", "Salary": 95000},
+    {"Name": "David", "Age": 28, "Department": "HR", "Salary": 70000},
+]
+
+# Filter: IT employees over 25
+filter_conditions = [
+    {"column": "Department", "operator": "==", "value": "IT"},
+    {"column": "Age", "operator": ">", "value": 25}
+]
+
+filter_func = create_filter(filter_conditions)
+filtered = [row for row in employees if filter_func(row)]
+print(f"Filtered: {len(filtered)} employees")
+
+# Sort by salary (desc) then name (asc)
+sorted_data = sort_data(filtered, [("Salary", False), ("Name", True)])
+```
+
+**Your Task 3.2:**
+Implement filtering and sorting that:
+- Supports operators: ==, !=, <, >, <=, >=, in, not in
+- Handles type conversions in comparisons
+- Sorts by multiple columns with direction
+- Maintains stable sort order
+
+---
+
+# Hour 2: Analysis and Visualization
+
+## Exercise 4: Statistical Analysis (20 minutes)
+
+### Part A: Advanced Statistics
+
+Extend basic statistics with more measures:
+
+```python
+def calculate_percentiles(values, percentiles=[25, 50, 75]):
+    """
+    Calculate specified percentiles from data.
+    
+    Args:
+        values: List of numbers
+        percentiles: List of percentiles to calculate (0-100)
+    
+    Returns:
+        Dictionary of percentile values
+    """
+    if not values:
+        return {p: 0 for p in percentiles}
+    
+    sorted_values = sorted(values)
+    n = len(sorted_values)
+    results = {}
+    
+    for p in percentiles:
+        # Your implementation here
+        
+        
+    
+    return results
+
+def find_outliers(values, method="iqr"):
+    """
+    Identify outliers in data.
+    
+    Methods:
+        'iqr': Interquartile range method
+        'zscore': Z-score method (values > 3 std devs from mean)
+    """
+    if not values or len(values) < 4:
+        return []
+    
+    if method == "iqr":
+        # Your implementation here
+        
+        
+        
+    elif method == "zscore":
+        # Your implementation here
+        
+        
+        
+    
+    return outliers
+
+# Test with sample data
+test_data = [10, 12, 12, 13, 14, 14, 15, 15, 16, 17, 18, 35, 95]
+percentiles = calculate_percentiles(test_data)
+outliers = find_outliers(test_data)
+
+print(f"Percentiles: {percentiles}")
+print(f"Outliers: {outliers}")
+```
+
+**Your Task 4.1:**
+Implement:
+1. Percentile calculation using linear interpolation
+2. IQR outlier detection (< Q1-1.5*IQR or > Q3+1.5*IQR)
+3. Z-score outlier detection
+4. Return outlier values and their indices
+
+### Part B: Correlation Analysis
+
+Find relationships between variables:
+
+```python
+def calculate_correlation(x_values, y_values):
+    """
+    Calculate Pearson correlation coefficient between two variables.
+    
+    Returns value between -1 (perfect negative) and 1 (perfect positive)
+    """
+    if len(x_values) != len(y_values) or len(x_values) < 2:
+        return 0
+    
+    # Your implementation here
+    
+    
+    
+    
+    
+
+def analyze_correlations(data, numeric_columns):
+    """
+    Calculate correlation matrix for numeric columns.
+    """
+    correlations = {}
+    
+    for col1 in numeric_columns:
+        correlations[col1] = {}
+        values1 = [row.get(col1, 0) for row in data]
+        
+        for col2 in numeric_columns:
+            values2 = [row.get(col2, 0) for row in data]
+            corr = calculate_correlation(values1, values2)
+            correlations[col1][col2] = round(corr, 3)
+    
+    return correlations
+
+# Test correlation
+data = [
+    {"Height": 170, "Weight": 70, "Age": 25},
+    {"Height": 175, "Weight": 75, "Age": 30},
+    {"Height": 180, "Weight": 80, "Age": 35},
+    {"Height": 165, "Weight": 65, "Age": 22},
+    {"Height": 185, "Weight": 85, "Age": 40},
+]
+
+corr_matrix = analyze_correlations(data, ["Height", "Weight", "Age"])
+print("Correlation Matrix:")
+for col1, correlations in corr_matrix.items():
+    print(f"{col1}: {correlations}")
+```
+
+**Your Task 4.2:**
+Calculate Pearson correlation:
+1. Calculate means of both variables
+2. Calculate covariance
+3. Calculate standard deviations
+4. Return correlation coefficient
+
+## Exercise 5: Creating Visualizations (20 minutes)
+
+### Part A: Enhanced Bar Charts
+
+Create more sophisticated bar charts:
+
+```python
+def create_grouped_bar_chart(data, title="Grouped Bar Chart", max_width=60):
+    """
+    Create a grouped bar chart for comparing multiple series.
+    
+    Args:
+        data: Dictionary of dictionaries
+              {"2023": {"Q1": 100, "Q2": 120, "Q3": 110, "Q4": 130},
+               "2024": {"Q1": 110, "Q2": 125, "Q3": 115, "Q4": 140}}
+    """
+    if not data:
+        return "No data to display"
+    
+    # Your implementation here
+    
+    
+    
+    
+    
+
+# Example data
+quarterly_sales = {
+    "2023": {"Q1": 100000, "Q2": 120000, "Q3": 110000, "Q4": 130000},
+    "2024": {"Q1": 110000, "Q2": 125000, "Q3": 115000, "Q4": 140000}
+}
+
+chart = create_grouped_bar_chart(quarterly_sales, "Quarterly Sales Comparison")
+print(chart)
+```
+
+**Your Task 5.1:**
+Create grouped bar chart that:
+- Shows multiple series side-by-side
+- Uses different characters for each series (█, ▓, ▒)
+- Scales appropriately
+- Includes legend
+
+### Part B: Line Charts in ASCII
+
+Create trend visualizations:
+
+```python
+def create_line_chart(data, width=60, height=20, title="Trend Chart"):
+    """
+    Create ASCII line chart showing trends.
+    
+    Args:
+        data: Dictionary with x:y values
+              {1: 10, 2: 15, 3: 13, 4: 18, 5: 22}
+    """
+    if not data or len(data) < 2:
+        return "Insufficient data for line chart"
+    
+    # Your implementation here
+    
+    
+    
+    
+    
+
+# Monthly data
+monthly_values = {
+    1: 45, 2: 52, 3: 48, 4: 55, 5: 61, 
+    6: 58, 7: 65, 8: 70, 9: 68, 10: 72, 
+    11: 75, 12: 78
+}
+
+chart = create_line_chart(monthly_values, title="Monthly Growth")
+print(chart)
+```
+
+**Your Task 5.2:**
+Create line chart that:
+- Plots points with *
+- Connects points with lines (/, \, -, |)
+- Shows axis labels
+- Handles scaling properly
+
+### Part C: Data Dashboards
+
+Combine multiple visualizations:
+
+```python
+def create_dashboard(data, analyses):
+    """
+    Create a text-based dashboard with multiple visualizations.
+    
+    Args:
+        data: The dataset
+        analyses: List of analysis configurations
+                 [{"type": "bar", "column": "Product", "value": "Sales"},
+                  {"type": "stats", "column": "Sales"},
+                  {"type": "top_n", "column": "Sales", "n": 5}]
+    """
+    dashboard = []
+    dashboard.append("=" * 80)
+    dashboard.append("                           DATA ANALYSIS DASHBOARD")
+    dashboard.append("=" * 80)
+    dashboard.append("")
+    
+    for analysis in analyses:
+        # Your implementation here
+        
+        
+        
+    
+    return "\n".join(dashboard)
+
+# Sample e-commerce data
+ecommerce_data = [
+    {"Date": "2024-01-01", "Product": "Laptop", "Category": "Electronics", "Sales": 2500, "Units": 2},
+    {"Date": "2024-01-01", "Product": "Phone", "Category": "Electronics", "Sales": 1800, "Units": 3},
+    {"Date": "2024-01-02", "Product": "Shirt", "Category": "Clothing", "Sales": 150, "Units": 5},
+    {"Date": "2024-01-02", "Product": "Laptop", "Category": "Electronics", "Sales": 1250, "Units": 1},
+    {"Date": "2024-01-03", "Product": "Shoes", "Category": "Clothing", "Sales": 200, "Units": 2},
+]
+
+# Configure dashboard
+dashboard_config = [
+    {"type": "stats", "column": "Sales", "title": "Sales Statistics"},
+    {"type": "bar", "group": "Category", "value": "Sales", "title": "Sales by Category"},
+    {"type": "top_n", "sort": "Sales", "n": 3, "title": "Top Products"},
+]
+
+dashboard = create_dashboard(ecommerce_data, dashboard_config)
+print(dashboard)
+```
+
+**Your Task 5.3:**
+Build dashboard generator that:
+- Supports multiple visualization types
+- Formats output consistently
+- Handles different data types
+- Creates professional-looking reports
+
+## Exercise 6: Complete Analysis Pipeline (20 minutes)
+
+### Your Final Challenge
+
+Build a complete data analysis system for student grades:
+
+```python
+def analyze_student_performance(filename):
+    """
+    Complete analysis pipeline for student grade data.
+    
+    Expected CSV format:
+        Student,Course,Assignment,Score,MaxScore,Date
+        Alice,Math,Homework 1,85,100,2024-01-15
+        Alice,Math,Quiz 1,90,100,2024-01-20
+        ...
+    
+    Should produce:
+        1. Overall statistics
+        2. Performance by student
+        3. Performance by course
+        4. Grade distribution
+        5. Trend analysis
+        6. Identify struggling students
+    """
+    print("📊 STUDENT PERFORMANCE ANALYSIS")
+    print("=" * 60)
+    
+    # Your complete implementation here
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+# Create sample data file
+sample_grades = """Student,Course,Assignment,Score,MaxScore,Date
+Alice,Math,Homework 1,85,100,2024-01-15
+Alice,Math,Quiz 1,90,100,2024-01-20
+Alice,Science,Lab 1,88,100,2024-01-18
+Bob,Math,Homework 1,75,100,2024-01-15
+Bob,Math,Quiz 1,70,100,2024-01-20
+Bob,Science,Lab 1,92,100,2024-01-18
+Carol,Math,Homework 1,95,100,2024-01-15
+Carol,Math,Quiz 1,98,100,2024-01-20
+Carol,Science,Lab 1,90,100,2024-01-18
+David,Math,Homework 1,60,100,2024-01-15
+David,Math,Quiz 1,65,100,2024-01-20
+David,Science,Lab 1,70,100,2024-01-18
+"""
+
+with open("grades.csv", "w") as f:
+    f.write(sample_grades)
+
+# Run your analysis
+analyze_student_performance("grades.csv")
+```
+
+**Your Task 6:**
+Implement complete analysis that:
+1. Loads and cleans the data
+2. Calculates overall class statistics
+3. Shows performance by student (average grades)
+4. Shows performance by course
+5. Creates grade distribution histogram
+6. Identifies students below 70% average
+7. Shows improvement/decline trends
+8. Generates actionable insights
+
+---
+
+# Lab Submission
+
+## Required Deliverables
+
+1. **CSV Parser** (csv_parser.py)
+   - Handles quotes and different delimiters
+   - Robust error handling
+   - Supports various formats
+
+2. **Data Cleaner** (data_cleaner.py)
+   - Currency cleaning function
+   - Date standardization
+   - General validation pipeline
+
+3. **Statistical Analyzer** (stats_analyzer.py)
+   - Advanced statistics calculations
+   - Outlier detection
+   - Correlation analysis
+
+4. **Visualization Generator** (visualizer.py)
+   - Multiple chart types
+   - Clean, readable output
+   - Dashboard creation
+
+5. **Complete Analysis** (student_analyzer.py)
+   - Full pipeline implementation
+   - Meaningful insights
+   - Professional output
+
+## Self-Check Criteria
+
+Before submitting, ensure your code:
+- ✓ Uses only Python features from Weeks 1-9
+- ✓ Handles edge cases gracefully
+- ✓ Produces clear, readable output
+- ✓ Includes appropriate error handling
+- ✓ Follows naming conventions
+- ✓ Contains helpful comments
+
+## Bonus Challenges
+
+If you finish early, try these:
+
+1. **Multi-file Analysis**: Modify your analyzer to process multiple CSV files and combine results
+
+2. **Custom Visualizations**: Create a scatter plot using ASCII characters
+
+3. **Automated Insights**: Add a function that automatically detects interesting patterns
+
+4. **Performance Optimization**: Handle files with 100,000+ rows efficiently
+
+---
+
+# AI Partnership Tips
+
+When working on this lab, use AI effectively:
+
+## Good Prompts
+- "How do I handle commas inside quoted CSV values using basic Python?"
+- "What's the formula for calculating standard deviation without using libraries?"
+- "How can I create a histogram using only print statements?"
+
+## Constraints to Include
+- "Using only Python built-in functions"
+- "No pandas, numpy, or external libraries"
+- "Output must be text-based"
+- "Handle edge cases like empty data"
+
+## Debugging Help
+- "My CSV parser fails on this line: [show specific line]"
+- "My statistics are wrong for this data: [show data and expected result]"
+- "My bar chart doesn't scale properly with these values: [show values]"
+
+Remember: The goal is to understand data processing fundamentals, not to use pre-built solutions!
+
+---
+
+# Next Steps
+
+After completing this lab:
+1. Review your code for clarity and efficiency
+2. Test with additional datasets
+3. Share interesting findings with classmates
+4. Prepare for the Week 9 project
+
+Great work on building real data analysis skills! 📊

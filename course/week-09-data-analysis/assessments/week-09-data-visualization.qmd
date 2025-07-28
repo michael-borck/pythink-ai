@@ -1,0 +1,544 @@
+---
+title: "Week 9 Assessment: Data Visualization and Reporting"
+subtitle: "Creating Clear Data Presentations"
+author: "AI-Integrated Programming Course"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Assessment Overview
+
+**Points:** 20 points  
+**Time Limit:** 40 minutes  
+**Type:** Implementation and design  
+
+This assessment evaluates your ability to create clear, informative text-based visualizations and generate professional data reports.
+
+---
+
+# Part A: Basic Visualizations (8 points)
+
+## Question 1: Enhanced Bar Chart (4 points)
+
+Create a flexible bar chart function with multiple display options:
+
+```python
+def create_bar_chart(data, title="", orientation="horizontal", 
+                     max_width=50, show_values=True, show_percentage=True):
+    """
+    Create a bar chart with various display options.
+    
+    Args:
+        data: Dictionary with labels as keys and values as numbers
+        title: Chart title
+        orientation: "horizontal" or "vertical"
+        max_width: Maximum bar width/height
+        show_values: Whether to display numeric values
+        show_percentage: Whether to show percentages
+    
+    Returns:
+        String containing the formatted chart
+    """
+    if not data:
+        return "No data to display"
+    
+    # Your implementation here
+    # Handle both horizontal and vertical orientations
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+# Test your function
+sales_data = {
+    "Electronics": 45000,
+    "Clothing": 32000,
+    "Food": 28000,
+    "Books": 15000,
+    "Toys": 20000
+}
+
+# Test horizontal
+print("Horizontal Bar Chart:")
+print(create_bar_chart(sales_data, "Sales by Category", "horizontal"))
+
+print("\n" + "="*60 + "\n")
+
+# Test vertical
+print("Vertical Bar Chart:")
+print(create_bar_chart(sales_data, "Sales by Category", "vertical", max_width=10))
+```
+
+## Question 2: Distribution Histogram (4 points)
+
+Create a histogram to show data distribution:
+
+```python
+def create_histogram(values, bins=10, title="Distribution", 
+                    show_stats=True, char="█"):
+    """
+    Create a histogram showing data distribution.
+    
+    Args:
+        values: List of numeric values
+        bins: Number of bins to use
+        title: Chart title
+        show_stats: Whether to show mean/median lines
+        char: Character to use for bars
+    
+    Returns:
+        String containing the histogram
+    """
+    if not values:
+        return "No data to display"
+    
+    # Your implementation here
+    # Should include:
+    # - Automatic bin calculation
+    # - Frequency counting
+    # - Optional mean/median indicators
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+# Test data - exam scores
+scores = [
+    65, 72, 78, 82, 85, 88, 91, 76, 79, 83,
+    87, 90, 93, 68, 74, 81, 86, 89, 92, 77,
+    80, 84, 88, 95, 70, 75, 82, 87, 91, 94,
+    66, 73, 85, 89, 92, 96, 71, 78, 83, 88
+]
+
+print(create_histogram(scores, bins=8, title="Exam Score Distribution"))
+
+# Test with different data - salaries (showing skew)
+salaries = [
+    45, 48, 50, 52, 55, 47, 51, 53, 49, 54,
+    58, 52, 51, 56, 48, 53, 49, 55, 250, 52
+]
+
+print("\n" + "="*60 + "\n")
+print(create_histogram(salaries, bins=10, title="Salary Distribution (thousands)"))
+```
+
+---
+
+# Part B: Advanced Visualizations (7 points)
+
+## Question 3: Multi-Series Line Chart (4 points)
+
+Create a line chart that can show trends over time:
+
+```python
+def create_line_chart(data_series, width=60, height=15, title=""):
+    """
+    Create ASCII line chart for time series data.
+    
+    Args:
+        data_series: Dictionary of series, each being a dict of x:y values
+                    {"Series1": {1: 10, 2: 15, 3: 12},
+                     "Series2": {1: 8, 2: 11, 3: 14}}
+        width: Chart width in characters
+        height: Chart height in lines
+        title: Chart title
+    
+    Returns:
+        String containing the line chart
+    """
+    if not data_series:
+        return "No data to display"
+    
+    # Your implementation here
+    # Should handle:
+    # - Multiple data series with different markers
+    # - Automatic scaling
+    # - Axis labels
+    # - Legend
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+# Test data - monthly sales for two years
+monthly_data = {
+    "2023": {1: 100, 2: 110, 3: 105, 4: 115, 5: 120, 6: 118,
+             7: 125, 8: 130, 9: 128, 10: 135, 11: 140, 12: 145},
+    "2024": {1: 120, 2: 125, 3: 130, 4: 128, 5: 135, 6: 140,
+             7: 145, 8: 150, 9: 148, 10: 155, 11: 160, 12: 165}
+}
+
+print(create_line_chart(monthly_data, title="Monthly Sales Comparison"))
+
+# Test with single series
+single_series = {
+    "Temperature": {0: 20, 2: 22, 4: 25, 6: 28, 8: 30, 10: 32,
+                   12: 35, 14: 33, 16: 30, 18: 27, 20: 24, 22: 22}
+}
+
+print("\n" + "="*60 + "\n")
+print(create_line_chart(single_series, title="Daily Temperature Pattern"))
+```
+
+## Question 4: Data Dashboard (3 points)
+
+Create a comprehensive dashboard combining multiple visualizations:
+
+```python
+def create_dashboard(data, config):
+    """
+    Create a text-based dashboard with multiple components.
+    
+    Args:
+        data: Dictionary containing all data
+        config: List of dashboard components to include
+                [{"type": "summary", "title": "Overview"},
+                 {"type": "bar", "data_key": "sales", "title": "Sales"},
+                 {"type": "table", "data_key": "top_items", "columns": ["Product", "Revenue"]}]
+    
+    Returns:
+        String containing the complete dashboard
+    """
+    dashboard = []
+    dashboard.append("╔" + "═" * 78 + "╗")
+    dashboard.append("║" + " ANALYTICS DASHBOARD ".center(78) + "║")
+    dashboard.append("╠" + "═" * 78 + "╣")
+    
+    # Your implementation here
+    # Should support:
+    # - Summary statistics boxes
+    # - Bar charts
+    # - Tables
+    # - Custom spacing and formatting
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    dashboard.append("╚" + "═" * 78 + "╝")
+    
+    return "\n".join(dashboard)
+
+# Test data
+dashboard_data = {
+    "summary": {
+        "Total Revenue": "$125,430",
+        "Transactions": "1,234",
+        "Avg Transaction": "$101.62",
+        "Growth": "+15.3%"
+    },
+    "sales_by_category": {
+        "Electronics": 45000,
+        "Clothing": 32000,
+        "Food": 28000,
+        "Books": 15000
+    },
+    "top_products": [
+        {"Product": "Laptop Pro", "Units": 45, "Revenue": "$44,550"},
+        {"Product": "Winter Jacket", "Units": 123, "Revenue": "$12,300"},
+        {"Product": "Coffee Maker", "Units": 89, "Revenue": "$8,900"}
+    ],
+    "daily_trend": {1: 3200, 2: 3500, 3: 3100, 4: 3800, 5: 4200}
+}
+
+dashboard_config = [
+    {"type": "summary", "title": "Key Metrics"},
+    {"type": "bar", "data_key": "sales_by_category", "title": "Sales by Category"},
+    {"type": "table", "data_key": "top_products", "title": "Top Products"}
+]
+
+print(create_dashboard(dashboard_data, dashboard_config))
+```
+
+---
+
+# Part C: Report Generation (5 points)
+
+## Question 5: Professional Report Generator (5 points)
+
+Create a system that generates professional text reports:
+
+```python
+def generate_analysis_report(data, analyses, company_name="ACME Corp"):
+    """
+    Generate a professional analysis report.
+    
+    Args:
+        data: Raw data used for analysis
+        analyses: Dictionary of completed analyses
+        company_name: Name for report header
+    
+    Returns:
+        Formatted report string
+    """
+    report = []
+    
+    # Header
+    report.append("=" * 80)
+    report.append(f"{company_name} - Data Analysis Report".center(80))
+    report.append(f"Generated: {get_current_date()}".center(80))
+    report.append("=" * 80)
+    report.append("")
+    
+    # Your implementation here
+    # Should include:
+    # 1. Executive Summary
+    # 2. Key Findings with visualizations
+    # 3. Detailed Analysis
+    # 4. Recommendations
+    # 5. Technical Appendix
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    return "\n".join(report)
+
+def get_current_date():
+    """Get current date in YYYY-MM-DD format."""
+    # Simplified for assessment
+    return "2024-03-15"
+
+# Test data and analyses
+report_data = {
+    "sales": [
+        {"date": "2024-01-01", "amount": 5000, "region": "North"},
+        {"date": "2024-01-02", "amount": 6200, "region": "South"},
+        {"date": "2024-01-03", "amount": 4800, "region": "North"},
+        {"date": "2024-01-04", "amount": 7100, "region": "East"},
+        {"date": "2024-01-05", "amount": 5500, "region": "West"},
+    ]
+}
+
+report_analyses = {
+    "total_sales": 28600,
+    "average_daily": 5720,
+    "best_region": "East",
+    "growth_rate": 15.3,
+    "trend": "increasing",
+    "regional_breakdown": {
+        "North": 9800,
+        "South": 6200,
+        "East": 7100,
+        "West": 5500
+    },
+    "insights": [
+        "Sales show consistent growth trend",
+        "East region outperforms others by 25%",
+        "Weekend sales are 30% lower than weekdays"
+    ],
+    "recommendations": [
+        "Increase inventory for East region",
+        "Launch weekend promotions",
+        "Investigate North region's strong performance"
+    ]
+}
+
+print(generate_analysis_report(report_data, report_analyses))
+```
+
+---
+
+# Bonus Question: Interactive Visualization (2 bonus points)
+
+Create an interactive data explorer:
+
+```python
+def interactive_data_explorer(dataset):
+    """
+    Create an interactive menu-driven data explorer.
+    
+    Features:
+    - View data summary
+    - Filter by criteria
+    - Generate custom charts
+    - Export results
+    
+    Returns:
+        None (runs interactive session)
+    """
+    print("📊 INTERACTIVE DATA EXPLORER")
+    print("=" * 40)
+    
+    while True:
+        print("\nOptions:")
+        print("1. Data Summary")
+        print("2. Filter Data")
+        print("3. Create Visualization")
+        print("4. Statistical Analysis")
+        print("5. Export Results")
+        print("6. Exit")
+        
+        choice = input("\nYour choice (1-6): ").strip()
+        
+        # Your implementation here
+        
+        
+        
+        
+        
+        
+        
+        
+        if choice == "6":
+            print("Thank you for using Data Explorer!")
+            break
+
+# Test with sample dataset
+sample_data = [
+    {"product": "Laptop", "price": 999, "category": "Electronics", "sales": 45},
+    {"product": "Shirt", "price": 29, "category": "Clothing", "sales": 120},
+    {"product": "Phone", "price": 699, "category": "Electronics", "sales": 78},
+    {"product": "Jeans", "price": 59, "category": "Clothing", "sales": 95},
+    {"product": "Tablet", "price": 399, "category": "Electronics", "sales": 62}
+]
+
+# Uncomment to test (interactive)
+# interactive_data_explorer(sample_data)
+```
+
+---
+
+# Grading Rubric
+
+## Part A: Basic Visualizations (8 points)
+- **Question 1 (4 points)**
+  - Horizontal charts: 2 points
+  - Vertical charts: 1 point
+  - Formatting options: 1 point
+- **Question 2 (4 points)**
+  - Bin calculation: 1 point
+  - Frequency counting: 1 point
+  - Visual representation: 1 point
+  - Statistics display: 1 point
+
+## Part B: Advanced Visualizations (7 points)
+- **Question 3 (4 points)**
+  - Multiple series: 2 points
+  - Scaling: 1 point
+  - Legend/labels: 1 point
+- **Question 4 (3 points)**
+  - Component rendering: 1 point
+  - Layout management: 1 point
+  - Professional appearance: 1 point
+
+## Part C: Report Generation (5 points)
+- **Question 5 (5 points)**
+  - Report structure: 1 point
+  - Content sections: 2 points
+  - Visualizations: 1 point
+  - Professional formatting: 1 point
+
+## Bonus (2 points)
+- Menu system: 1 point
+- Feature implementation: 1 point
+
+---
+
+# Answer Key (For Instructors)
+
+## Question 1 Solution (Bar Chart):
+```python
+def create_bar_chart(data, title="", orientation="horizontal", 
+                     max_width=50, show_values=True, show_percentage=True):
+    if not data:
+        return "No data to display"
+    
+    lines = []
+    if title:
+        lines.append(f"=== {title} ===")
+        lines.append("")
+    
+    total = sum(data.values())
+    max_value = max(data.values())
+    max_label_len = max(len(str(label)) for label in data.keys())
+    
+    if orientation == "horizontal":
+        for label, value in sorted(data.items(), key=lambda x: x[1], reverse=True):
+            bar_width = int((value / max_value) * max_width)
+            bar = "█" * bar_width
+            
+            label_str = f"{label:<{max_label_len}}"
+            bar_str = f"{bar:<{max_width}}"
+            
+            if show_values and show_percentage:
+                pct = (value / total * 100) if total > 0 else 0
+                value_str = f" {value:>8,} ({pct:>5.1f}%)"
+            elif show_values:
+                value_str = f" {value:>8,}"
+            else:
+                value_str = ""
+            
+            lines.append(f"{label_str} {bar_str}{value_str}")
+    
+    else:  # vertical
+        # Implementation for vertical charts
+        # This is more complex - need to build from bottom up
+        pass
+    
+    return "\n".join(lines)
+```
+
+## Teaching Notes
+
+### Visualization Best Practices
+1. **Clarity over complexity** - Simple charts communicate better
+2. **Appropriate scaling** - Don't distort data
+3. **Clear labeling** - Every element should be identifiable
+4. **Color coding** - Use different characters for different series
+
+### Common Mistakes
+- Not handling edge cases (empty data, single value)
+- Poor scaling making small values invisible
+- Missing labels or legends
+- Overcrowded displays
+
+This assessment focuses on practical visualization skills that translate directly to data presentation in professional settings!

@@ -1,0 +1,1076 @@
+---
+title: "Week 9: Data Analysis and Visualization"
+subtitle: "Turning Data Into Insights"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# From Numbers to Knowledge
+
+## The Data Detective Story (10 minutes)
+
+### A Mystery in the Numbers
+
+Let me show you something fascinating. Here's a snippet of data from a local coffee shop:
+
+```
+Date,Product,Price,Quantity
+2024-03-01,Latte,4.50,3
+2024-03-01,Espresso,2.50,5
+2024-03-01,Muffin,3.00,2
+2024-03-02,Latte,4.50,1
+2024-03-02,Cappuccino,4.00,4
+...
+```
+
+**Question for you**: Looking at this raw data, can you tell me:
+- What's their best-selling product?
+- Are sales growing or declining?
+- What's the average transaction value?
+- Which day of the week is busiest?
+
+**It's hard to see patterns in raw numbers, isn't it?**
+
+But watch what happens when we analyze this data properly:
+
+```
+COFFEE SHOP INSIGHTS - March 2024
+=================================
+Total Revenue: $12,456.50
+Best Seller: Latte (487 sold)
+Peak Day: Saturday
+Growth: +15% from February
+
+Daily Sales Pattern:
+Monday    ████████         $1,234
+Tuesday   ██████           $987
+Wednesday ███████          $1,123  
+Thursday  █████████        $1,456
+Friday    ████████████     $1,897
+Saturday  ████████████████ $2,543
+Sunday    ██████████       $1,678
+```
+
+**Now the story is clear!** The shop is busiest on weekends, lattes drive revenue, and business is growing.
+
+### Today's Mission
+
+Transform you into data detectives who can:
+- Extract data from messy files
+- Clean and organize information
+- Calculate meaningful statistics
+- Create visualizations that tell stories
+- Find insights that drive decisions
+
+## What is Data Analysis? (20 minutes)
+
+### The Data Analysis Pipeline
+
+**Think of data analysis like gold mining:**
+
+```
+Raw Data → Collection → Cleaning → Analysis → Visualization → Insights
+(Dirt)     (Mining)    (Sifting)  (Refining)  (Shaping)      (Gold!)
+```
+
+#### 1. Data Collection - Getting Your Raw Material
+
+**Where data lives:**
+- CSV files (Comma-Separated Values)
+- Text files with structure
+- User input and forms
+- System-generated logs
+- External data sources
+
+**CSV Format Basics:**
+```csv
+# Simple CSV
+Name,Age,City
+Alice,25,New York
+Bob,30,San Francisco
+
+# With quotes (for values containing commas)
+Product,Price,Description
+"Laptop, Pro Model",1299.99,"High-end laptop, 16GB RAM"
+
+# Different delimiters
+Name|Age|City        # Pipe-delimited
+Name\tAge\tCity      # Tab-delimited
+```
+
+#### 2. Data Cleaning - Making It Usable
+
+**Common data problems:**
+```python
+# Messy data examples
+"$1,234.56"      → 1234.56   # Remove symbols and commas
+"  John  "       → "John"     # Strip whitespace
+"12/31/2023"     → "2023-12-31" # Standardize dates
+""               → 0 or None  # Handle missing values
+"N/A"            → None       # Recognize null indicators
+```
+
+**Why cleaning matters:**
+- Inconsistent formats break calculations
+- Missing values cause errors
+- Duplicates skew results
+- Invalid data misleads analysis
+
+#### 3. Statistical Analysis - Finding Patterns
+
+**Key statistical measures:**
+
+**Central Tendency (Where's the middle?)**
+- **Mean**: Average of all values
+  - Use when: Data is evenly distributed
+  - Avoid when: Outliers present
+  
+- **Median**: Middle value when sorted
+  - Use when: Data has outliers
+  - Shows typical value better
+
+- **Mode**: Most frequent value
+  - Use when: Finding popular choices
+  - Good for categories
+
+**Spread (How varied is the data?)**
+- **Range**: Maximum - Minimum
+- **Standard Deviation**: How spread out from mean
+- **Percentiles**: Values below which X% of data falls
+
+#### 4. Data Visualization - Making It Clear
+
+**Text-based visualization power:**
+```
+Sales by Region (Q1 2024)
+North  ████████████████████ $125,000 (35%)
+South  ████████████        $89,000  (25%)  
+East   ██████████          $71,000  (20%)
+West   ████████            $71,000  (20%)
+
+Temperature Trend (March)
+35°C |                    *
+30°C |              *  *    *
+25°C |        *  *       *
+20°C |  *  *                 *
+15°C |*                        *
+     |________________________
+      1    5    10   15   20   25
+```
+
+**Visualization principles:**
+- Choose the right representation
+- Label clearly
+- Scale appropriately
+- Highlight key insights
+
+## From Concepts to Code: Data Processing (20 minutes)
+
+### Reading CSV Files Properly
+
+```python
+def read_csv_file(filename, delimiter=","):
+    """
+    Read CSV file and return data as list of dictionaries.
+    
+    Args:
+        filename: Path to CSV file
+        delimiter: Character that separates values
+    
+    Returns:
+        List of dictionaries, one per row
+    """
+    data = []
+    
+    try:
+        with open(filename, "r", encoding="utf-8") as file:
+            lines = file.readlines()
+            
+            if not lines:
+                print("Warning: File is empty")
+                return data
+            
+            # Extract headers from first line
+            headers = [h.strip() for h in lines[0].strip().split(delimiter)]
+            
+            # Process each data line
+            for line_num, line in enumerate(lines[1:], start=2):
+                # Skip empty lines
+                if not line.strip():
+                    continue
+                
+                # Split values
+                values = line.strip().split(delimiter)
+                
+                # Handle quote-wrapped values
+                values = [v.strip('"') for v in values]
+                
+                # Create dictionary for this row
+                row = {}
+                for i, header in enumerate(headers):
+                    if i < len(values):
+                        row[header] = values[i]
+                    else:
+                        row[header] = ""  # Missing value
+                
+                data.append(row)
+        
+        print(f"✓ Loaded {len(data)} records from {filename}")
+        return data
+    
+    except FileNotFoundError:
+        print(f"❌ Error: File '{filename}' not found")
+        return []
+    except UnicodeDecodeError:
+        print(f"❌ Error: File encoding issue. Try saving as UTF-8")
+        return []
+    except Exception as e:
+        print(f"❌ Error reading file: {e}")
+        return []
+
+# Example usage
+sales_data = read_csv_file("sales.csv")
+print(f"First record: {sales_data[0] if sales_data else 'No data'}")
+```
+
+### Data Cleaning Functions
+
+```python
+def clean_numeric_value(value, default=0.0):
+    """
+    Convert messy string to clean numeric value.
+    
+    Examples:
+        "$1,234.56" → 1234.56
+        "45%" → 45.0
+        "N/A" → 0.0 (default)
+    """
+    if not value or value.strip() == "":
+        return default
+    
+    # Remove common symbols
+    cleaned = value.strip()
+    cleaned = cleaned.replace("$", "")
+    cleaned = cleaned.replace(",", "")
+    cleaned = cleaned.replace("%", "")
+    cleaned = cleaned.replace("(", "-")  # Accounting negative
+    cleaned = cleaned.replace(")", "")
+    
+    # Handle special values
+    if cleaned.upper() in ["N/A", "NA", "NULL", "NONE", "-"]:
+        return default
+    
+    try:
+        return float(cleaned)
+    except ValueError:
+        print(f"Warning: Could not convert '{value}' to number")
+        return default
+
+def clean_date_string(date_str, input_format="MM/DD/YYYY"):
+    """
+    Standardize date strings to YYYY-MM-DD format.
+    """
+    if not date_str or date_str.strip() == "":
+        return ""
+    
+    date_str = date_str.strip()
+    
+    # Handle different formats
+    if input_format == "MM/DD/YYYY":
+        parts = date_str.split("/")
+        if len(parts) == 3:
+            month, day, year = parts
+            # Handle 2-digit years
+            if len(year) == 2:
+                year = "20" + year if int(year) < 50 else "19" + year
+            return f"{year}-{month.zfill(2)}-{day.zfill(2)}"
+    
+    elif input_format == "DD-MM-YYYY":
+        parts = date_str.split("-")
+        if len(parts) == 3:
+            day, month, year = parts
+            return f"{year}-{month.zfill(2)}-{day.zfill(2)}"
+    
+    return date_str  # Return original if can't parse
+
+def clean_text_value(value):
+    """Clean text data by trimming and standardizing."""
+    if not value:
+        return ""
+    
+    # Strip whitespace
+    cleaned = str(value).strip()
+    
+    # Standardize case for consistency
+    # (You might want to preserve original case depending on use)
+    
+    # Remove extra spaces
+    cleaned = " ".join(cleaned.split())
+    
+    return cleaned
+
+# Data cleaning pipeline
+def clean_dataset(raw_data, column_types):
+    """
+    Clean entire dataset based on column types.
+    
+    Args:
+        raw_data: List of dictionaries from CSV
+        column_types: Dict mapping column names to types
+                     {"Price": "numeric", "Date": "date", "Name": "text"}
+    
+    Returns:
+        Cleaned dataset
+    """
+    cleaned_data = []
+    
+    for row in raw_data:
+        cleaned_row = {}
+        
+        for column, value in row.items():
+            col_type = column_types.get(column, "text")
+            
+            if col_type == "numeric":
+                cleaned_row[column] = clean_numeric_value(value)
+            elif col_type == "date":
+                cleaned_row[column] = clean_date_string(value)
+            else:
+                cleaned_row[column] = clean_text_value(value)
+        
+        cleaned_data.append(cleaned_row)
+    
+    return cleaned_data
+```
+
+### Statistical Calculations
+
+```python
+def calculate_statistics(numbers):
+    """
+    Calculate comprehensive statistics for a list of numbers.
+    """
+    if not numbers:
+        return {
+            "count": 0,
+            "sum": 0,
+            "mean": 0,
+            "median": 0,
+            "mode": None,
+            "min": 0,
+            "max": 0,
+            "range": 0,
+            "std_dev": 0
+        }
+    
+    # Basic calculations
+    count = len(numbers)
+    total = sum(numbers)
+    mean = total / count
+    
+    # Sort for median and percentiles
+    sorted_nums = sorted(numbers)
+    
+    # Median
+    if count % 2 == 0:
+        median = (sorted_nums[count//2 - 1] + sorted_nums[count//2]) / 2
+    else:
+        median = sorted_nums[count//2]
+    
+    # Mode (most frequent value)
+    frequency = {}
+    for num in numbers:
+        frequency[num] = frequency.get(num, 0) + 1
+    
+    max_freq = max(frequency.values())
+    modes = [num for num, freq in frequency.items() if freq == max_freq]
+    mode = modes[0] if len(modes) == 1 else modes
+    
+    # Range
+    min_val = sorted_nums[0]
+    max_val = sorted_nums[-1]
+    range_val = max_val - min_val
+    
+    # Standard deviation
+    variance = sum((x - mean) ** 2 for x in numbers) / count
+    std_dev = variance ** 0.5
+    
+    return {
+        "count": count,
+        "sum": round(total, 2),
+        "mean": round(mean, 2),
+        "median": round(median, 2),
+        "mode": mode,
+        "min": round(min_val, 2),
+        "max": round(max_val, 2),
+        "range": round(range_val, 2),
+        "std_dev": round(std_dev, 2)
+    }
+
+def analyze_by_category(data, value_column, category_column):
+    """
+    Group data by category and calculate statistics.
+    
+    Example:
+        analyze_by_category(sales_data, "Amount", "Product")
+    """
+    categories = {}
+    
+    # Group values by category
+    for row in data:
+        category = row.get(category_column, "Unknown")
+        value = row.get(value_column, 0)
+        
+        if category not in categories:
+            categories[category] = []
+        
+        categories[category].append(value)
+    
+    # Calculate statistics for each category
+    results = {}
+    for category, values in categories.items():
+        results[category] = calculate_statistics(values)
+    
+    return results
+```
+
+### Text-Based Visualizations
+
+```python
+def create_bar_chart(data, title="Bar Chart", max_width=50, show_values=True):
+    """
+    Create a horizontal bar chart from dictionary data.
+    
+    Args:
+        data: Dictionary with labels as keys and values as numbers
+        title: Chart title
+        max_width: Maximum bar width in characters
+        show_values: Whether to show numeric values
+    
+    Returns:
+        String containing the chart
+    """
+    if not data:
+        return "No data to display"
+    
+    # Find maximum value for scaling
+    max_value = max(data.values()) if data else 1
+    if max_value == 0:
+        max_value = 1
+    
+    # Find longest label for formatting
+    max_label_length = max(len(str(label)) for label in data.keys())
+    
+    # Build chart
+    lines = []
+    lines.append(f"=== {title} ===")
+    lines.append("")
+    
+    # Sort by value (descending) for better readability
+    sorted_items = sorted(data.items(), key=lambda x: x[1], reverse=True)
+    
+    for label, value in sorted_items:
+        # Calculate bar width
+        bar_width = int((value / max_value) * max_width)
+        bar = "█" * bar_width
+        
+        # Format line
+        label_str = f"{label:<{max_label_length}}"
+        
+        if show_values:
+            # Calculate percentage
+            percentage = (value / sum(data.values()) * 100) if sum(data.values()) > 0 else 0
+            value_str = f"{value:,.0f} ({percentage:.1f}%)"
+            line = f"{label_str} {bar:<{max_width}} {value_str}"
+        else:
+            line = f"{label_str} {bar}"
+        
+        lines.append(line)
+    
+    # Add summary
+    lines.append("")
+    lines.append(f"Total: {sum(data.values()):,.0f}")
+    
+    return "\n".join(lines)
+
+def create_histogram(values, bins=10, title="Distribution"):
+    """
+    Create a histogram showing data distribution.
+    """
+    if not values:
+        return "No data to display"
+    
+    min_val = min(values)
+    max_val = max(values)
+    range_val = max_val - min_val
+    
+    if range_val == 0:
+        return "All values are the same"
+    
+    # Create bins
+    bin_width = range_val / bins
+    bin_counts = [0] * bins
+    
+    # Count values in each bin
+    for value in values:
+        bin_index = min(int((value - min_val) / bin_width), bins - 1)
+        bin_counts[bin_index] += 1
+    
+    # Create histogram
+    lines = []
+    lines.append(f"=== {title} ===")
+    lines.append(f"Range: {min_val:.1f} to {max_val:.1f}")
+    lines.append("")
+    
+    max_count = max(bin_counts) if bin_counts else 1
+    
+    for i, count in enumerate(bin_counts):
+        # Calculate bin range
+        bin_start = min_val + (i * bin_width)
+        bin_end = bin_start + bin_width
+        
+        # Create bar
+        bar_width = int((count / max_count) * 40)
+        bar = "█" * bar_width
+        
+        # Format line
+        range_str = f"{bin_start:6.1f} - {bin_end:6.1f}"
+        count_str = f"{count:3d}"
+        
+        lines.append(f"{range_str} |{bar:<40} {count_str}")
+    
+    return "\n".join(lines)
+
+def create_summary_table(data, columns, title="Summary Table"):
+    """
+    Create a formatted table from data.
+    
+    Args:
+        data: List of dictionaries
+        columns: List of column names to display
+        title: Table title
+    """
+    if not data or not columns:
+        return "No data to display"
+    
+    # Calculate column widths
+    col_widths = {}
+    for col in columns:
+        # Check header width
+        max_width = len(col)
+        
+        # Check data widths
+        for row in data:
+            value = str(row.get(col, ""))
+            max_width = max(max_width, len(value))
+        
+        col_widths[col] = min(max_width + 2, 20)  # Cap at 20 chars
+    
+    # Build table
+    lines = []
+    lines.append(f"=== {title} ===")
+    lines.append("")
+    
+    # Header row
+    header_parts = []
+    for col in columns:
+        header_parts.append(f"{col:<{col_widths[col]}}")
+    lines.append("".join(header_parts))
+    
+    # Separator
+    separator_parts = []
+    for col in columns:
+        separator_parts.append("-" * col_widths[col])
+    lines.append("".join(separator_parts))
+    
+    # Data rows
+    for row in data[:20]:  # Limit to 20 rows for display
+        row_parts = []
+        for col in columns:
+            value = str(row.get(col, ""))
+            if len(value) > col_widths[col] - 2:
+                value = value[:col_widths[col]-5] + "..."
+            row_parts.append(f"{value:<{col_widths[col]}}")
+        lines.append("".join(row_parts))
+    
+    if len(data) > 20:
+        lines.append(f"... and {len(data) - 20} more rows")
+    
+    return "\n".join(lines)
+```
+
+### Complete Analysis Example
+
+```python
+def analyze_sales_data(filename):
+    """
+    Complete sales data analysis pipeline.
+    """
+    print("📊 SALES DATA ANALYSIS")
+    print("=" * 50)
+    
+    # 1. Load data
+    print("\n1. Loading data...")
+    raw_data = read_csv_file(filename)
+    if not raw_data:
+        return
+    
+    # 2. Clean data
+    print("\n2. Cleaning data...")
+    column_types = {
+        "Date": "date",
+        "Product": "text",
+        "Price": "numeric",
+        "Quantity": "numeric",
+        "Total": "numeric"
+    }
+    
+    cleaned_data = clean_dataset(raw_data, column_types)
+    
+    # 3. Calculate totals
+    print("\n3. Calculating statistics...")
+    
+    # Add calculated total if not present
+    for row in cleaned_data:
+        if "Total" not in row or row["Total"] == 0:
+            row["Total"] = row.get("Price", 0) * row.get("Quantity", 0)
+    
+    # Overall statistics
+    totals = [row.get("Total", 0) for row in cleaned_data]
+    stats = calculate_statistics(totals)
+    
+    print(f"\nOverall Sales Statistics:")
+    print(f"  Total Revenue: ${stats['sum']:,.2f}")
+    print(f"  Average Sale: ${stats['mean']:,.2f}")
+    print(f"  Median Sale: ${stats['median']:,.2f}")
+    print(f"  Largest Sale: ${stats['max']:,.2f}")
+    
+    # 4. Analyze by product
+    print("\n4. Product Analysis...")
+    product_totals = {}
+    for row in cleaned_data:
+        product = row.get("Product", "Unknown")
+        total = row.get("Total", 0)
+        product_totals[product] = product_totals.get(product, 0) + total
+    
+    # 5. Create visualizations
+    print("\n5. Creating visualizations...")
+    
+    # Product sales chart
+    chart = create_bar_chart(product_totals, "Sales by Product")
+    print("\n" + chart)
+    
+    # Sales distribution
+    hist = create_histogram(totals, bins=8, title="Sales Distribution")
+    print("\n" + hist)
+    
+    # Top transactions table
+    sorted_data = sorted(cleaned_data, key=lambda x: x.get("Total", 0), reverse=True)
+    table = create_summary_table(
+        sorted_data[:10], 
+        ["Date", "Product", "Quantity", "Total"],
+        "Top 10 Transactions"
+    )
+    print("\n" + table)
+    
+    # 6. Insights
+    print("\n6. Key Insights:")
+    print(f"  • Best selling product: {max(product_totals, key=product_totals.get)}")
+    print(f"  • Number of products: {len(product_totals)}")
+    print(f"  • Total transactions: {len(cleaned_data)}")
+    
+    # Find trends
+    if "Date" in cleaned_data[0]:
+        dates = [row["Date"] for row in cleaned_data]
+        unique_dates = sorted(set(dates))
+        print(f"  • Date range: {unique_dates[0]} to {unique_dates[-1]}")
+
+# Run the analysis
+analyze_sales_data("coffee_shop_sales.csv")
+```
+
+## Deep Dive: AI Partnership for Data Analysis (15 minutes)
+
+### Building an Effective AI Data Workflow
+
+#### The Three-Level AI Engagement Model
+
+##### Level 1: Exploration and Discovery
+```python
+# INITIAL DATA EXPLORATION:
+"""
+I have a sales CSV with 10,000 rows. Headers are:
+Date,Product,Category,Price,Quantity,SalesRep,Region
+
+First few rows show prices like '$1,234.56' and '€234,50'
+Some products have commas: "Laptop, Pro Model"
+
+What analysis would be most valuable for business insights?
+What data quality issues should I check first?
+"""
+
+# AI helps prioritize: Check date consistency, currency mixing, missing values
+```
+
+##### Level 2: Implementation Partnership  
+```python
+# SOLVING SPECIFIC CHALLENGES:
+"""
+I'm calculating daily sales totals but getting wrong results.
+
+My code:
+for row in data:
+    daily_total += float(row['Price']) * int(row['Quantity'])
+
+Error: ValueError: invalid literal for float(): '$1,234.56'
+
+I need to handle currency but can't use regex. What's the best approach?
+"""
+
+# AI provides step-by-step string cleaning approach
+```
+
+##### Level 3: Optimization and Edge Cases
+```python
+# ADVANCED PROBLEM SOLVING:
+"""
+My CSV parser works but fails on this edge case:
+"Product ""Super"" Special","$100.00","Description with, comma"
+
+It has:
+- Escaped quotes ("")
+- Quotes inside quoted values  
+- Commas inside quotes
+
+How do I modify my state machine to handle escaped quotes?
+"""
+
+# AI explains quote escaping rules and implementation
+```
+
+### Real-World AI Collaboration Scenarios
+
+#### Scenario 1: Data Quality Investigation
+```python
+# YOUR DISCOVERY:
+"I'm seeing weird patterns in my data. Some days have 0 sales,
+but the shop was open. Other days show exactly $1,000.00."
+
+# AI INVESTIGATION PROMPT:
+"""
+In my coffee shop data:
+- 15 days show exactly $0.00 (but have transactions)
+- 8 days show exactly $1,000.00
+- Other days vary from $800-1,500
+
+What might cause these patterns?
+How do I investigate further?
+"""
+
+# AI suggests: Check for filtered data, test transactions, data caps
+```
+
+#### Scenario 2: Performance Bottleneck
+```python
+# PERFORMANCE ISSUE:
+"My analysis takes 5 minutes for a 100MB CSV file."
+
+# AI OPTIMIZATION PROMPT:
+"""
+Current approach:
+1. Read entire file into memory
+2. Loop through all rows 5 times for different calculations
+3. Create visualizations
+
+File: 100MB, 500K rows
+Time: 5 minutes
+Memory: Uses 2GB
+
+How can I optimize without pandas?
+"""
+
+# AI suggests: Single-pass processing, generators, incremental stats
+```
+
+#### Scenario 3: Statistical Decision Making
+```python
+# ANALYSIS QUESTION:
+"Which statistics should I show in my executive summary?"
+
+# AI CONSULTATION:
+"""
+Analyzing restaurant delivery times:
+- Most orders: 20-40 minutes  
+- Some orders: 2+ hours (kitchen problems)
+- Some orders: 5 minutes (pickup orders miscategorized)
+
+For executive summary, should I show:
+1. Mean delivery time?
+2. Median delivery time?
+3. Both with explanation?
+4. Percentiles (90% delivered within X minutes)?
+"""
+
+# AI recommends percentiles for SLA, median for typical experience
+```
+
+### AI Integration Best Practices
+
+#### 1. Progressive Problem Refinement
+```python
+# Start broad, get specific:
+
+# First attempt:
+"Help me analyze sales data"
+
+# Better:
+"Help me find monthly sales trends in CSV data using Python"
+
+# Best:
+"""
+I have daily sales data (Date,Product,Amount) for 2024.
+I need to calculate month-over-month growth percentage.
+Using only built-in Python, no pandas.
+Sample row: 2024-01-15,"Laptop, Pro",$1299.99
+"""
+```
+
+#### 2. Learning from AI Explanations
+```python
+# Don't just copy - understand:
+
+# GOOD LEARNING PROMPT:
+"""
+You suggested using enumerate(lines[1:], start=1) 
+
+Can you explain:
+1. Why lines[1:] skips the header?
+2. What start=1 does?
+3. When would I use enumerate vs range(len())?  
+"""
+
+# This builds lasting understanding!
+```
+
+#### 3. Verifying AI Suggestions
+```python
+# Always test edge cases:
+
+# AI VALIDATION PROMPT:
+"""
+Your CSV parser handles quotes well, but I'm worried about:
+- Empty quoted values: "",value,""
+- Single quotes: 'value'  
+- Newlines in quotes: "Line 1\nLine 2"
+- Unicode: "Café","10€"
+
+Will the current approach handle these?
+"""
+```
+
+### Common AI Pitfalls to Avoid
+
+**AI often suggests**:
+```python
+import pandas as pd
+import matplotlib.pyplot as plt
+df = pd.read_csv('file.csv')
+df.plot()
+```
+
+**You need**:
+```python
+# Manual implementation
+data = read_csv_file('file.csv')
+# Process without external libraries
+```
+
+**Always specify constraints**:
+- "Using only built-in Python modules"
+- "No pandas, numpy, or external libraries"
+- "Text-based terminal output only"
+- "Must handle files up to 1GB efficiently"
+- "Python 3.x compatible"
+
+**Include context**:
+- Show sample data (5-10 rows)
+- Mention data size/volume
+- Explain business purpose
+- List known issues
+
+## Real-World Applications with AI Partnership (5 minutes)
+
+### How Data Professionals Use AI
+
+1. **Data Exploration Phase**
+   ```python
+   # "Here's a sample of my data [paste].
+   #  What patterns should I investigate?
+   #  What quality issues do you see?"
+   ```
+
+2. **Implementation Phase**
+   ```python
+   # "My currency cleaner works for USD.
+   #  How do I extend it for EUR, GBP, JPY?
+   #  Sample formats: [examples]"
+   ```
+
+3. **Debugging Phase**
+   ```python
+   # "Getting unexpected results:
+   #  Input: [data]
+   #  Expected: [result]
+   #  Actual: [result]
+   #  Where's my logic error?"
+   ```
+
+4. **Optimization Phase**
+   ```python
+   # "Processing 1M rows takes 30 minutes.
+   #  Bottleneck is in [function].
+   #  How can I optimize without libraries?"
+   ```
+
+### Where Data Analysis Matters
+
+**Business Analytics**
+- Sales performance tracking
+- Customer behavior analysis  
+- Inventory management
+- Financial reporting
+
+**Scientific Research**
+- Experiment data processing
+- Climate data analysis
+- Survey result compilation
+- Medical statistics
+
+**Personal Productivity**
+- Budget tracking
+- Fitness progress
+- Time management
+- Grade tracking
+
+### The Data Analysis Mindset
+
+**Always ask**:
+1. Is my data clean and valid?
+2. What story does this data tell?
+3. What decisions can this inform?
+4. How can I make insights clearer?
+
+---
+
+# Preparing for Lab
+
+In today's lab, you'll:
+1. Parse real CSV files with various formats
+2. Clean messy, real-world data
+3. Calculate meaningful statistics
+4. Create clear visualizations
+5. Build a complete analysis pipeline
+
+Key skills to practice:
+- Handling different CSV delimiters
+- Dealing with missing and invalid data
+- Choosing appropriate statistical measures
+- Designing effective visualizations
+
+### Textbook Connection
+
+**Read for next class**:
+- Chapter 32: "Working with Data Files"
+- Chapter 33: "Statistical Calculations" 
+- Chapter 34: "Data Visualization Basics"
+- Chapter 35: "Real-World Data Analysis"
+
+---
+
+# Instructor Notes
+
+## Hook Management
+
+The coffee shop data story works because:
+1. Students relate to familiar business
+2. Raw data vs. insights contrast is dramatic
+3. Shows immediate practical value
+4. Sets up detective metaphor
+
+## Key Teaching Points
+
+### CSV Parsing
+- Start with simple, clean CSV
+- Gradually introduce complications
+- Show real-world messiness
+- Emphasize error handling
+
+### Statistical Concepts
+- Explain with concrete examples
+- Show when each measure is appropriate
+- Demonstrate with student grades (familiar context)
+- Avoid mathematical complexity
+
+### Visualization Design
+- Start with simple bar charts
+- Show how scaling affects perception
+- Emphasize clarity over complexity
+- Use emoji/Unicode characters effectively
+
+### Common Student Struggles
+1. **Quote handling in CSV** - Show step-by-step parsing
+2. **Statistical measure choice** - Use clear decision rules
+3. **Visualization scaling** - Demonstrate effects
+4. **Missing data handling** - Show multiple strategies
+
+## Live Coding Strategy
+
+Build analysis pipeline incrementally WITH AI:
+
+1. **Load simple CSV** 
+   - Hit error with quotes
+   - Demo AI debugging prompt
+   - Fix together
+
+2. **Add cleaning for currency**
+   - Show messy data
+   - Ask AI for edge cases
+   - Build comprehensive cleaner
+
+3. **Calculate statistics**
+   - Discover outlier
+   - Ask AI: "Mean or median?"
+   - Understand the why
+
+4. **Create visualization**
+   - Try basic version
+   - Ask AI for scaling help
+   - Refine together
+
+5. **Combine into analysis**
+   - Use AI to suggest insights
+   - Verify with data
+
+This shows realistic development: errors → AI help → understanding → solution.
+
+## Discussion Prompts
+- "What makes data 'dirty'?"
+- "When have you seen misleading statistics?"
+- "How do companies use data analysis?"
+- "What patterns surprise you in this data?"
+
+## AI Partnership Checkpoints
+
+1. **After CSV section**: "What would you ask AI about quote handling?"
+2. **After cleaning section**: "How could AI help find more edge cases?"
+3. **After statistics**: "When would you ask AI for statistical guidance?"
+4. **After visualization**: "What design questions would you ask AI?"
+
+Remember: Students should feel like detectives uncovering hidden stories in data, with AI as their intelligent assistant!

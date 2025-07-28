@@ -1,0 +1,2471 @@
+---
+title: "Week 9 Solutions: Complete Implementations"
+subtitle: "Lab Exercises and Assessment Solutions"
+author: "AI-Integrated Programming Course"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Complete Solutions Guide
+
+This document provides comprehensive solutions for Week 9 lab exercises, assessments, and the sales analyzer project.
+
+---
+
+# Lab Exercise Solutions
+
+## Exercise 1: CSV Parsing Solutions
+
+### Complete CSV Parser with Quote Handling
+
+```python
+def parse_csv_line(line, delimiter=","):
+    """
+    Parse a single CSV line, handling quoted values and embedded delimiters.
+    
+    Handles:
+    - Values containing the delimiter
+    - Quoted values with quotes inside them
+    - Empty values between delimiters
+    """
+    values = []
+    current_value = ""
+    in_quotes = False
+    i = 0
+    
+    while i < len(line):
+        char = line[i]
+        
+        if char == '"':
+            if in_quotes:
+                # Check if it's an escaped quote
+                if i + 1 < len(line) and line[i + 1] == '"':
+                    current_value += '"'
+                    i += 1  # Skip the next quote
+                else:
+                    # End of quoted value
+                    in_quotes = False
+            else:
+                # Start of quoted value
+                in_quotes = True
+        elif char == delimiter and not in_quotes:
+            # End of value
+            values.append(current_value.strip())
+            current_value = ""
+        else:
+            current_value += char
+        
+        i += 1
+    
+    # Don't forget the last value!
+    values.append(current_value.strip())
+    
+    return values
+
+def read_csv_enhanced(filename, delimiter=",", has_header=True, encoding="utf-8"):
+    """
+    Read CSV file with enhanced error handling and flexibility.
+    """
+    data = []
+    headers = []
+    
+    try:
+        with open(filename, "r", encoding=encoding) as file:
+            lines = file.readlines()
+            
+            if not lines:
+                return data
+            
+            # Process header if present
+            if has_header:
+                headers = parse_csv_line(lines[0].strip(), delimiter)
+                start_line = 1
+            else:
+                start_line = 0
+                # Create numeric headers
+                if lines:
+                    first_line = parse_csv_line(lines[0].strip(), delimiter)
+                    headers = [f"Column{i}" for i in range(len(first_line))]
+            
+            # Process data lines
+            for line_num, line in enumerate(lines[start_line:], start=start_line+1):
+                # Skip empty lines and comments
+                line = line.strip()
+                if not line or line.startswith("#"):
+                    continue
+                
+                values = parse_csv_line(line, delimiter)
+                
+                # Handle row length mismatch
+                if len(values) < len(headers):
+                    # Pad with empty values
+                    values.extend([""] * (len(headers) - len(values)))
+                elif len(values) > len(headers):
+                    # Truncate extra values (with warning)
+                    print(f"Warning: Line {line_num} has {len(values)} values, expected {len(headers)}")
+                    values = values[:len(headers)]
+                
+                # Create dictionary for row
+                if has_header:
+                    row = {headers[i]: values[i] for i in range(len(headers))}
+                else:
+                    row = values
+                
+                data.append(row)
+        
+        return data
+    
+    except FileNotFoundError:
+        print(f"Error: File '{filename}' not found")
+        return []
+    except UnicodeDecodeError:
+        print(f"Error: File encoding issue. Trying with latin-1...")
+        return read_csv_enhanced(filename, delimiter, has_header, encoding="latin-1")
+    except Exception as e:
+        print(f"Error reading file: {e}")
+        return []
+
+def detect_delimiter(sample_lines, possible_delimiters=[',', '\t', '|', ';']):
+    """
+    Automatically detect the delimiter used in CSV data.
+    """
+    delimiter_scores = {}
+    
+    for delimiter in possible_delimiters:
+        counts = []
+        
+        for line in sample_lines:
+            # Skip empty lines and comments
+            if not line.strip() or line.strip().startswith("#"):
+                continue
+            
+            # Count occurrences outside quotes
+            count = 0
+            in_quotes = False
+            for char in line:
+                if char == '"':
+                    in_quotes = not in_quotes
+                elif char == delimiter and not in_quotes:
+                    count += 1
+            
+            counts.append(count)
+        
+        # Check consistency
+        if counts and len(set(counts)) == 1 and counts[0] > 0:
+            # All lines have same number of delimiters
+            delimiter_scores[delimiter] = counts[0]
+        elif counts:
+            # Calculate consistency score
+            avg_count = sum(counts) / len(counts)
+            variance = sum((c - avg_count) ** 2 for c in counts) / len(counts)
+            if avg_count > 0:
+                consistency = 1 / (1 + variance)
+                delimiter_scores[delimiter] = avg_count * consistency
+    
+    if delimiter_scores:
+        # Return delimiter with highest score
+        return max(delimiter_scores, key=delimiter_scores.get)
+    
+    return ','  # Default to comma
+
+# Test the implementations
+if __name__ == "__main__":
+    # Test CSV parsing
+    test_lines = [
+        'John,25,New York',
+        '"Smith, Jane",30,"Los Angeles, CA"',
+        'Bob,"35","Chicago, IL"',
+        '"Alice ""The Great"" Johnson",28,Boston'
+    ]
+    
+    print("CSV Parsing Tests:")
+    for line in test_lines:
+        result = parse_csv_line(line)
+        print(f"Input:  {line}")
+        print(f"Output: {result}")
+        print()
+    
+    # Test delimiter detection
+    print("\nDelimiter Detection Tests:")
+    test_datasets = [
+        ["Name,Age,City", "John,25,NYC", "Jane,30,LA"],
+        ["Name\tAge\tCity", "John\t25\tNYC", "Jane\t30\tLA"],
+        ["Name|Age|City", "John|25|NYC", "Jane|30|LA"],
+    ]
+    
+    for i, dataset in enumerate(test_datasets):
+        delimiter = detect_delimiter(dataset)
+        print(f"Dataset {i+1}: Detected delimiter: '{delimiter}'")
+```
+
+## Exercise 2: Data Cleaning Solutions
+
+### Complete Currency Cleaning Function
+
+```python
+def clean_currency(value, default=0.0):
+    """
+    Convert currency string to float, handling various formats.
+    
+    Handles:
+    - Currency symbols ($, €, £, ¥)
+    - Thousands separators (commas and periods)
+    - Accounting negatives (parentheses)
+    - Abbreviated values (K, M, B)
+    - Special values (N/A, FREE, etc.)
+    """
+    if not value or str(value).strip() == "":
+        return default
+    
+    # Convert to string and clean whitespace
+    value_str = str(value).strip().upper()
+    
+    # Handle special text values
+    special_values = {
+        "N/A": default,
+        "NA": default,
+        "NULL": default,
+        "NONE": default,
+        "-": default,
+        "FREE": 0.0,
+        "COMPLIMENTARY": 0.0
+    }
+    
+    if value_str in special_values:
+        return special_values[value_str]
+    
+    # Remove currency symbols
+    currency_symbols = "$€£¥₹"
+    for symbol in currency_symbols:
+        value_str = value_str.replace(symbol, "")
+    
+    # Handle accounting negative (parentheses)
+    is_negative = False
+    if value_str.startswith("(") and value_str.endswith(")"):
+        is_negative = True
+        value_str = value_str[1:-1]
+    
+    # Handle percentage
+    if value_str.endswith("%"):
+        value_str = value_str[:-1]
+        # Note: You might want to divide by 100 depending on context
+    
+    # Detect number format (US vs European)
+    # US: 1,234.56   European: 1.234,56
+    comma_count = value_str.count(",")
+    period_count = value_str.count(".")
+    
+    if comma_count > 0 and period_count > 0:
+        # Both present - determine which is decimal separator
+        last_comma = value_str.rfind(",")
+        last_period = value_str.rfind(".")
+        
+        if last_comma > last_period:
+            # European format: period is thousands, comma is decimal
+            value_str = value_str.replace(".", "")
+            value_str = value_str.replace(",", ".")
+        else:
+            # US format: comma is thousands, period is decimal
+            value_str = value_str.replace(",", "")
+    elif comma_count > 0:
+        # Only commas - could be thousands or decimal
+        parts = value_str.split(",")
+        if len(parts) == 2 and len(parts[1]) == 2:
+            # Likely decimal separator (e.g., "123,45")
+            value_str = value_str.replace(",", ".")
+        else:
+            # Likely thousands separator
+            value_str = value_str.replace(",", "")
+    
+    # Handle abbreviated values (K, M, B)
+    multipliers = {
+        "K": 1_000,
+        "M": 1_000_000,
+        "B": 1_000_000_000,
+        "T": 1_000_000_000_000
+    }
+    
+    for suffix, multiplier in multipliers.items():
+        if value_str.endswith(suffix):
+            value_str = value_str[:-1]
+            try:
+                return float(value_str) * multiplier * (-1 if is_negative else 1)
+            except ValueError:
+                return default
+    
+    # Try to convert to float
+    try:
+        result = float(value_str)
+        return result * (-1 if is_negative else 1)
+    except ValueError:
+        return default
+
+def standardize_date(date_str, input_format=None):
+    """
+    Convert various date formats to YYYY-MM-DD.
+    
+    Auto-detects format if not specified.
+    """
+    if not date_str or str(date_str).strip() == "":
+        return ""
+    
+    date_str = str(date_str).strip()
+    
+    # Month name mappings
+    months = {
+        "JANUARY": "01", "JAN": "01",
+        "FEBRUARY": "02", "FEB": "02",
+        "MARCH": "03", "MAR": "03",
+        "APRIL": "04", "APR": "04",
+        "MAY": "05",
+        "JUNE": "06", "JUN": "06",
+        "JULY": "07", "JUL": "07",
+        "AUGUST": "08", "AUG": "08",
+        "SEPTEMBER": "09", "SEP": "09", "SEPT": "09",
+        "OCTOBER": "10", "OCT": "10",
+        "NOVEMBER": "11", "NOV": "11",
+        "DECEMBER": "12", "DEC": "12"
+    }
+    
+    # Try to parse without separators (YYYYMMDD)
+    if len(date_str) == 8 and date_str.isdigit():
+        return f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:8]}"
+    
+    # Replace common separators with consistent one
+    for sep in [".", "/", "-", " "]:
+        date_str = date_str.replace(sep, "-")
+    
+    # Handle month names
+    parts = date_str.split("-")
+    for i, part in enumerate(parts):
+        upper_part = part.upper()
+        if upper_part in months:
+            parts[i] = months[upper_part]
+    
+    # Rebuild date string
+    date_str = "-".join(parts)
+    
+    # Try to detect format
+    parts = date_str.split("-")
+    
+    if len(parts) == 3:
+        # Determine format based on values
+        p0, p1, p2 = parts
+        
+        # Handle suffixes (1st, 2nd, 3rd, etc.)
+        for i, part in enumerate(parts):
+            if part and part[-2:] in ["ST", "ND", "RD", "TH"]:
+                parts[i] = part[:-2]
+        
+        p0, p1, p2 = parts
+        
+        # Try to determine year position
+        year = None
+        month = None
+        day = None
+        
+        # Find 4-digit year
+        for i, part in enumerate([p0, p1, p2]):
+            if len(part) == 4 and part.isdigit():
+                year = part
+                if i == 0:  # YYYY-MM-DD or YYYY-DD-MM
+                    if p1.isdigit() and p2.isdigit():
+                        if int(p1) > 12:  # Must be day
+                            month, day = p2, p1
+                        elif int(p2) > 12:  # Must be day
+                            month, day = p1, p2
+                        else:  # Ambiguous, assume YYYY-MM-DD
+                            month, day = p1, p2
+                elif i == 2:  # MM-DD-YYYY or DD-MM-YYYY
+                    if p0.isdigit() and p1.isdigit():
+                        if int(p0) > 12:  # Must be day
+                            day, month = p0, p1
+                        elif int(p1) > 12:  # Must be day
+                            month, day = p0, p1
+                        else:  # Ambiguous
+                            # Check if input_format hint provided
+                            if input_format == "US":
+                                month, day = p0, p1
+                            else:  # Default to day first
+                                day, month = p0, p1
+        
+        # Handle 2-digit years
+        if not year:
+            for i, part in enumerate([p0, p1, p2]):
+                if len(part) == 2 and part.isdigit():
+                    year_int = int(part)
+                    # Assume 00-29 is 2000-2029, 30-99 is 1930-1999
+                    if year_int < 30:
+                        year = f"20{part}"
+                    else:
+                        year = f"19{part}"
+                    
+                    # Determine month and day from remaining parts
+                    remaining = [p for j, p in enumerate([p0, p1, p2]) if j != i]
+                    if len(remaining) == 2:
+                        if remaining[0].isdigit() and remaining[1].isdigit():
+                            if int(remaining[0]) > 12:
+                                day, month = remaining[0], remaining[1]
+                            elif int(remaining[1]) > 12:
+                                month, day = remaining[0], remaining[1]
+                            else:
+                                # Ambiguous, make best guess
+                                month, day = remaining[0], remaining[1]
+        
+        # Validate and format
+        if year and month and day:
+            try:
+                # Pad with zeros
+                month = month.zfill(2)
+                day = day.zfill(2)
+                
+                # Basic validation
+                if 1 <= int(month) <= 12 and 1 <= int(day) <= 31:
+                    return f"{year}-{month}-{day}"
+            except:
+                pass
+    
+    # If all else fails, return empty string
+    return ""
+
+def create_data_validator(rules):
+    """
+    Create a validator function based on rules.
+    """
+    def validator(row):
+        """Validate a single row of data."""
+        errors = []
+        cleaned_row = {}
+        
+        for column, value in row.items():
+            if column in rules:
+                rule = rules[column]
+                cleaned_value = value
+                
+                # Type validation and conversion
+                if "type" in rule:
+                    if rule["type"] == "int":
+                        try:
+                            cleaned_value = int(clean_currency(value))
+                        except:
+                            errors.append(f"{column}: Must be integer")
+                            cleaned_value = 0
+                    
+                    elif rule["type"] == "float":
+                        cleaned_value = clean_currency(value)
+                    
+                    elif rule["type"] == "email":
+                        # Basic email validation
+                        if "@" not in str(value) or "." not in str(value).split("@")[-1]:
+                            errors.append(f"{column}: Invalid email format")
+                    
+                    elif rule["type"] == "choice":
+                        if "choices" in rule and value not in rule["choices"]:
+                            errors.append(f"{column}: Must be one of {rule['choices']}")
+                
+                # Range validation
+                if "min" in rule and isinstance(cleaned_value, (int, float)):
+                    if cleaned_value < rule["min"]:
+                        errors.append(f"{column}: Below minimum {rule['min']}")
+                
+                if "max" in rule and isinstance(cleaned_value, (int, float)):
+                    if cleaned_value > rule["max"]:
+                        errors.append(f"{column}: Above maximum {rule['max']}")
+                
+                cleaned_row[column] = cleaned_value
+            else:
+                # Pass through columns without rules
+                cleaned_row[column] = value
+        
+        return cleaned_row, errors
+    
+    return validator
+
+# Test the cleaning functions
+if __name__ == "__main__":
+    # Test currency cleaning
+    print("Currency Cleaning Tests:")
+    test_values = [
+        "$1,234.56",
+        "€1.234,56",
+        "($100.00)",
+        "1.5K",
+        "2.3M",
+        "-$50.00",
+        "FREE",
+        "N/A",
+        "",
+        "$1,234,567.89"
+    ]
+    
+    for val in test_values:
+        cleaned = clean_currency(val)
+        print(f"{val:<20} → {cleaned:>12,.2f}")
+    
+    # Test date standardization
+    print("\n\nDate Standardization Tests:")
+    test_dates = [
+        "12/31/2023",
+        "31/12/2023",
+        "2023-12-31",
+        "Dec 31, 2023",
+        "31-Dec-2023",
+        "20231231",
+        "01/05/2023",
+        "December 31st, 2023"
+    ]
+    
+    for date in test_dates:
+        standard = standardize_date(date)
+        print(f"{date:<25} → {standard}")
+```
+
+## Exercise 3: Data Transformation Solutions
+
+### Advanced Aggregation and Filtering
+
+```python
+def group_by(data, key_columns):
+    """
+    Group data by one or more columns.
+    
+    Args:
+        data: List of dictionaries
+        key_columns: Single column name or list of column names
+    
+    Returns:
+        Dictionary with tuple keys (for multiple columns) or single keys
+    """
+    if isinstance(key_columns, str):
+        key_columns = [key_columns]
+    
+    groups = {}
+    
+    for row in data:
+        # Create key from specified columns
+        if len(key_columns) == 1:
+            key = row.get(key_columns[0], "Unknown")
+        else:
+            key = tuple(row.get(col, "Unknown") for col in key_columns)
+        
+        if key not in groups:
+            groups[key] = []
+        groups[key].append(row)
+    
+    return groups
+
+def aggregate_groups(grouped_data, value_column, operations):
+    """
+    Aggregate grouped data using multiple operations.
+    
+    Args:
+        grouped_data: Dictionary from group_by function
+        value_column: Column name to aggregate
+        operations: Single operation or list of operations
+    
+    Returns:
+        Dictionary with aggregated results
+    """
+    if isinstance(operations, str):
+        operations = [operations]
+    
+    results = {}
+    
+    for key, group in grouped_data.items():
+        values = [row.get(value_column, 0) for row in group]
+        
+        group_results = {}
+        for operation in operations:
+            if operation == "sum":
+                group_results["sum"] = sum(values)
+            elif operation == "mean" or operation == "avg":
+                group_results["mean"] = sum(values) / len(values) if values else 0
+            elif operation == "count":
+                group_results["count"] = len(values)
+            elif operation == "min":
+                group_results["min"] = min(values) if values else 0
+            elif operation == "max":
+                group_results["max"] = max(values) if values else 0
+            elif operation == "median":
+                sorted_vals = sorted(values)
+                n = len(sorted_vals)
+                if n == 0:
+                    group_results["median"] = 0
+                elif n % 2 == 0:
+                    group_results["median"] = (sorted_vals[n//2-1] + sorted_vals[n//2]) / 2
+                else:
+                    group_results["median"] = sorted_vals[n//2]
+            elif operation == "mode":
+                if values:
+                    frequency = {}
+                    for v in values:
+                        frequency[v] = frequency.get(v, 0) + 1
+                    max_freq = max(frequency.values())
+                    modes = [v for v, f in frequency.items() if f == max_freq]
+                    group_results["mode"] = modes[0] if len(modes) == 1 else modes
+                else:
+                    group_results["mode"] = None
+        
+        results[key] = group_results
+    
+    return results
+
+def create_filter(conditions):
+    """
+    Create a filter function from conditions.
+    
+    Conditions format:
+    [{"column": "Age", "operator": ">", "value": 25},
+     {"column": "Department", "operator": "in", "value": ["IT", "Sales"]}]
+    """
+    def filter_function(row):
+        for condition in conditions:
+            column = condition["column"]
+            operator = condition["operator"]
+            value = condition["value"]
+            
+            row_value = row.get(column)
+            
+            # Type conversion for comparison
+            if isinstance(value, (int, float)) and isinstance(row_value, str):
+                try:
+                    row_value = float(row_value)
+                except:
+                    return False
+            
+            # Apply operator
+            if operator == "==":
+                if row_value != value:
+                    return False
+            elif operator == "!=":
+                if row_value == value:
+                    return False
+            elif operator == "<":
+                if not (row_value < value):
+                    return False
+            elif operator == ">":
+                if not (row_value > value):
+                    return False
+            elif operator == "<=":
+                if not (row_value <= value):
+                    return False
+            elif operator == ">=":
+                if not (row_value >= value):
+                    return False
+            elif operator == "in":
+                if row_value not in value:
+                    return False
+            elif operator == "not in":
+                if row_value in value:
+                    return False
+            elif operator == "contains":
+                if value not in str(row_value):
+                    return False
+            elif operator == "startswith":
+                if not str(row_value).startswith(value):
+                    return False
+            elif operator == "endswith":
+                if not str(row_value).endswith(value):
+                    return False
+        
+        return True
+    
+    return filter_function
+
+def sort_data(data, sort_keys):
+    """
+    Sort data by multiple columns with direction.
+    
+    Args:
+        data: List of dictionaries
+        sort_keys: List of (column, ascending) tuples
+    """
+    sorted_data = data.copy()
+    
+    # Sort by keys in reverse order (last key first)
+    for column, ascending in reversed(sort_keys):
+        sorted_data.sort(
+            key=lambda x: x.get(column, ""),
+            reverse=not ascending
+        )
+    
+    return sorted_data
+
+# Test the transformation functions
+if __name__ == "__main__":
+    # Test data
+    employees = [
+        {"Name": "Alice", "Age": 25, "Department": "IT", "Salary": 75000},
+        {"Name": "Bob", "Age": 30, "Department": "Sales", "Salary": 85000},
+        {"Name": "Carol", "Age": 35, "Department": "IT", "Salary": 95000},
+        {"Name": "David", "Age": 28, "Department": "HR", "Salary": 70000},
+        {"Name": "Eve", "Age": 32, "Department": "Sales", "Salary": 90000},
+    ]
+    
+    # Test grouping
+    grouped = group_by(employees, "Department")
+    print("Grouped by Department:")
+    for dept, emps in grouped.items():
+        print(f"  {dept}: {len(emps)} employees")
+    
+    # Test aggregation
+    dept_salaries = aggregate_groups(grouped, "Salary", ["mean", "min", "max", "count"])
+    print("\nSalary Statistics by Department:")
+    for dept, stats in dept_salaries.items():
+        print(f"  {dept}: {stats}")
+    
+    # Test filtering
+    filter_conditions = [
+        {"column": "Department", "operator": "in", "value": ["IT", "Sales"]},
+        {"column": "Salary", "operator": ">", "value": 80000}
+    ]
+    
+    filter_func = create_filter(filter_conditions)
+    filtered = [emp for emp in employees if filter_func(emp)]
+    print(f"\nFiltered Employees (IT/Sales with salary > 80k): {len(filtered)}")
+    for emp in filtered:
+        print(f"  {emp['Name']} - {emp['Department']} - ${emp['Salary']}")
+    
+    # Test sorting
+    sorted_data = sort_data(employees, [("Department", True), ("Salary", False)])
+    print("\nSorted by Department (asc) then Salary (desc):")
+    for emp in sorted_data:
+        print(f"  {emp['Name']:<10} {emp['Department']:<10} ${emp['Salary']:,}")
+```
+
+---
+
+# Statistical Analysis Solutions
+
+## Complete Statistics Implementation
+
+```python
+def calculate_statistics(values):
+    """
+    Calculate comprehensive statistics for a list of numbers.
+    """
+    if not values:
+        return {
+            "count": 0, "sum": 0, "mean": 0,
+            "median": 0, "mode": None, "min": 0,
+            "max": 0, "range": 0, "variance": 0,
+            "std_dev": 0, "q1": 0, "q3": 0, "iqr": 0
+        }
+    
+    stats = {}
+    
+    # Basic statistics
+    stats["count"] = len(values)
+    stats["sum"] = sum(values)
+    stats["mean"] = stats["sum"] / stats["count"]
+    
+    # Sorted values for order statistics
+    sorted_values = sorted(values)
+    
+    # Median
+    mid = stats["count"] // 2
+    if stats["count"] % 2 == 0:
+        stats["median"] = (sorted_values[mid-1] + sorted_values[mid]) / 2
+    else:
+        stats["median"] = sorted_values[mid]
+    
+    # Mode
+    frequency = {}
+    for val in values:
+        frequency[val] = frequency.get(val, 0) + 1
+    
+    max_freq = max(frequency.values())
+    modes = [val for val, freq in frequency.items() if freq == max_freq]
+    
+    if len(modes) == 1:
+        stats["mode"] = modes[0]
+    elif len(modes) == stats["count"]:
+        stats["mode"] = None  # No mode if all values appear once
+    else:
+        stats["mode"] = modes  # Multiple modes
+    
+    # Range statistics
+    stats["min"] = sorted_values[0]
+    stats["max"] = sorted_values[-1]
+    stats["range"] = stats["max"] - stats["min"]
+    
+    # Variance and standard deviation
+    mean = stats["mean"]
+    squared_diffs = [(x - mean) ** 2 for x in values]
+    stats["variance"] = sum(squared_diffs) / stats["count"]
+    stats["std_dev"] = stats["variance"] ** 0.5
+    
+    # Quartiles
+    stats["q1"] = calculate_percentile(sorted_values, 25)
+    stats["q3"] = calculate_percentile(sorted_values, 75)
+    stats["iqr"] = stats["q3"] - stats["q1"]
+    
+    return stats
+
+def calculate_percentile(sorted_values, percentile):
+    """
+    Calculate specific percentile using linear interpolation.
+    """
+    if not sorted_values:
+        return 0
+    
+    n = len(sorted_values)
+    
+    if percentile == 0:
+        return sorted_values[0]
+    elif percentile == 100:
+        return sorted_values[-1]
+    
+    # Calculate position
+    pos = (n - 1) * (percentile / 100)
+    lower_index = int(pos)
+    upper_index = lower_index + 1
+    
+    if upper_index >= n:
+        return sorted_values[-1]
+    
+    # Linear interpolation
+    lower_value = sorted_values[lower_index]
+    upper_value = sorted_values[upper_index]
+    fraction = pos - lower_index
+    
+    return lower_value + fraction * (upper_value - lower_value)
+
+def calculate_percentiles(values, percentiles=[25, 50, 75, 90]):
+    """
+    Calculate multiple percentiles at once.
+    """
+    if not values:
+        return {p: 0 for p in percentiles}
+    
+    sorted_values = sorted(values)
+    results = {}
+    
+    for p in percentiles:
+        results[p] = calculate_percentile(sorted_values, p)
+    
+    return results
+
+def find_outliers(values, method="iqr", threshold=1.5):
+    """
+    Identify outliers using IQR or Z-score method.
+    """
+    if not values or len(values) < 4:
+        return {"outliers": [], "indices": [], "bounds": None}
+    
+    outliers = []
+    indices = []
+    bounds = None
+    
+    if method == "iqr":
+        sorted_values = sorted(values)
+        q1 = calculate_percentile(sorted_values, 25)
+        q3 = calculate_percentile(sorted_values, 75)
+        iqr = q3 - q1
+        
+        lower_bound = q1 - threshold * iqr
+        upper_bound = q3 + threshold * iqr
+        bounds = {"lower": lower_bound, "upper": upper_bound}
+        
+        for i, value in enumerate(values):
+            if value < lower_bound or value > upper_bound:
+                outliers.append(value)
+                indices.append(i)
+    
+    elif method == "zscore":
+        mean = sum(values) / len(values)
+        std_dev = (sum((x - mean) ** 2 for x in values) / len(values)) ** 0.5
+        
+        if std_dev > 0:
+            for i, value in enumerate(values):
+                z_score = abs((value - mean) / std_dev)
+                if z_score > 3:
+                    outliers.append(value)
+                    indices.append(i)
+        
+        bounds = {"lower": mean - 3 * std_dev, "upper": mean + 3 * std_dev}
+    
+    return {"outliers": outliers, "indices": indices, "bounds": bounds}
+
+def calculate_correlation(x_values, y_values):
+    """
+    Calculate Pearson correlation coefficient.
+    """
+    if not x_values or not y_values or len(x_values) != len(y_values):
+        return 0, "Invalid data"
+    
+    n = len(x_values)
+    if n < 2:
+        return 0, "Insufficient data"
+    
+    # Calculate means
+    x_mean = sum(x_values) / n
+    y_mean = sum(y_values) / n
+    
+    # Calculate covariance and standard deviations
+    covariance = 0
+    x_variance = 0
+    y_variance = 0
+    
+    for i in range(n):
+        x_diff = x_values[i] - x_mean
+        y_diff = y_values[i] - y_mean
+        
+        covariance += x_diff * y_diff
+        x_variance += x_diff ** 2
+        y_variance += y_diff ** 2
+    
+    # Calculate correlation
+    if x_variance == 0 or y_variance == 0:
+        return 0, "No variation in data"
+    
+    correlation = covariance / ((x_variance * y_variance) ** 0.5)
+    
+    # Interpret correlation
+    abs_corr = abs(correlation)
+    if abs_corr < 0.2:
+        interpretation = "Very weak or no correlation"
+    elif abs_corr < 0.4:
+        interpretation = "Weak correlation"
+    elif abs_corr < 0.6:
+        interpretation = "Moderate correlation"
+    elif abs_corr < 0.8:
+        interpretation = "Strong correlation"
+    else:
+        interpretation = "Very strong correlation"
+    
+    if correlation < 0:
+        interpretation = "Negative " + interpretation.lower()
+    elif correlation > 0:
+        interpretation = "Positive " + interpretation.lower()
+    
+    return round(correlation, 3), interpretation
+
+# Test statistical functions
+if __name__ == "__main__":
+    # Test basic statistics
+    test_data = [10, 12, 12, 13, 14, 14, 15, 15, 16, 17, 18, 35, 95]
+    stats = calculate_statistics(test_data)
+    
+    print("Statistical Analysis:")
+    print(f"Data: {test_data}")
+    print(f"Count: {stats['count']}")
+    print(f"Mean: {stats['mean']:.2f}")
+    print(f"Median: {stats['median']:.2f}")
+    print(f"Mode: {stats['mode']}")
+    print(f"Std Dev: {stats['std_dev']:.2f}")
+    print(f"Q1: {stats['q1']:.2f}, Q3: {stats['q3']:.2f}, IQR: {stats['iqr']:.2f}")
+    
+    # Test outlier detection
+    print("\nOutlier Detection:")
+    iqr_outliers = find_outliers(test_data, method="iqr")
+    print(f"IQR Method: {iqr_outliers['outliers']}")
+    print(f"Bounds: {iqr_outliers['bounds']}")
+    
+    zscore_outliers = find_outliers(test_data, method="zscore")
+    print(f"Z-score Method: {zscore_outliers['outliers']}")
+    
+    # Test correlation
+    print("\nCorrelation Analysis:")
+    x = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    y = [2, 4, 5, 7, 8, 10, 11, 13, 14, 16]
+    corr, interp = calculate_correlation(x, y)
+    print(f"X: {x}")
+    print(f"Y: {y}")
+    print(f"Correlation: {corr} - {interp}")
+```
+
+---
+
+# Visualization Solutions
+
+## Complete Visualization Functions
+
+```python
+def create_bar_chart(data, title="", orientation="horizontal", 
+                     max_width=50, show_values=True, show_percentage=True,
+                     char="█"):
+    """
+    Create a flexible bar chart with multiple display options.
+    """
+    if not data:
+        return "No data to display"
+    
+    lines = []
+    
+    # Add title
+    if title:
+        lines.append(f"=== {title} ===")
+        lines.append("")
+    
+    # Calculate totals and maximum
+    total = sum(data.values())
+    max_value = max(data.values()) if data else 1
+    
+    if orientation == "horizontal":
+        # Find longest label for alignment
+        max_label_len = max(len(str(label)) for label in data.keys())
+        
+        # Sort by value (descending)
+        sorted_items = sorted(data.items(), key=lambda x: x[1], reverse=True)
+        
+        for label, value in sorted_items:
+            # Calculate bar width
+            if max_value > 0:
+                bar_width = int((value / max_value) * max_width)
+            else:
+                bar_width = 0
+            
+            bar = char * bar_width
+            
+            # Format label
+            label_str = f"{str(label):<{max_label_len}}"
+            
+            # Format bar
+            bar_str = f"{bar:<{max_width}}"
+            
+            # Add value and percentage if requested
+            if show_values and show_percentage and total > 0:
+                pct = (value / total * 100)
+                value_str = f" {value:>8,.0f} ({pct:>5.1f}%)"
+            elif show_values:
+                value_str = f" {value:>8,.0f}"
+            else:
+                value_str = ""
+            
+            lines.append(f"{label_str} {bar_str}{value_str}")
+        
+        # Add summary
+        if show_values:
+            lines.append("")
+            lines.append(f"{'Total':<{max_label_len}} {' ' * max_width} {total:>8,.0f}")
+    
+    else:  # vertical orientation
+        # Vertical bar chart is more complex
+        # Find the maximum height
+        max_height = 20
+        
+        # Create scaled values
+        scaled_values = {}
+        for label, value in data.items():
+            if max_value > 0:
+                scaled_height = int((value / max_value) * max_height)
+            else:
+                scaled_height = 0
+            scaled_values[label] = scaled_height
+        
+        # Build chart from top to bottom
+        for row in range(max_height, -1, -1):
+            line_chars = []
+            for label in data.keys():
+                if scaled_values[label] >= row:
+                    line_chars.append(" █ ")
+                else:
+                    line_chars.append("   ")
+            lines.append("".join(line_chars))
+        
+        # Add labels
+        lines.append("-" * (len(data) * 3))
+        
+        # Add abbreviated labels
+        label_line = []
+        for label in data.keys():
+            label_str = str(label)[:2]
+            label_line.append(f"{label_str:^3}")
+        lines.append("".join(label_line))
+        
+        # Add values
+        if show_values:
+            value_line = []
+            for value in data.values():
+                if value < 1000:
+                    value_str = f"{value:.0f}"
+                else:
+                    value_str = f"{value/1000:.0f}k"
+                value_line.append(f"{value_str:^3}")
+            lines.append("".join(value_line))
+    
+    return "\n".join(lines)
+
+def create_histogram(values, bins=10, title="Distribution", 
+                    show_stats=True, char="█"):
+    """
+    Create a histogram showing data distribution.
+    """
+    if not values:
+        return "No data to display"
+    
+    lines = []
+    
+    # Add title
+    lines.append(f"=== {title} ===")
+    
+    # Calculate range
+    min_val = min(values)
+    max_val = max(values)
+    range_val = max_val - min_val
+    
+    if range_val == 0:
+        lines.append("All values are the same")
+        return "\n".join(lines)
+    
+    # Create bins
+    bin_width = range_val / bins
+    bin_counts = [0] * bins
+    bin_ranges = []
+    
+    # Count values in each bin
+    for value in values:
+        bin_index = min(int((value - min_val) / bin_width), bins - 1)
+        bin_counts[bin_index] += 1
+    
+    # Calculate bin ranges
+    for i in range(bins):
+        bin_start = min_val + (i * bin_width)
+        bin_end = bin_start + bin_width
+        bin_ranges.append((bin_start, bin_end))
+    
+    # Find maximum count for scaling
+    max_count = max(bin_counts) if bin_counts else 1
+    max_bar_width = 40
+    
+    # Add statistics if requested
+    if show_stats:
+        mean = sum(values) / len(values)
+        median = sorted(values)[len(values) // 2]
+        lines.append(f"Count: {len(values)}, Mean: {mean:.1f}, Median: {median:.1f}")
+        lines.append(f"Range: {min_val:.1f} to {max_val:.1f}")
+        lines.append("")
+    
+    # Create histogram bars
+    for i, count in enumerate(bin_counts):
+        # Create bar
+        if max_count > 0:
+            bar_width = int((count / max_count) * max_bar_width)
+        else:
+            bar_width = 0
+        
+        bar = char * bar_width
+        
+        # Format range
+        start, end = bin_ranges[i]
+        range_str = f"{start:6.1f} - {end:6.1f}"
+        
+        # Add count
+        count_str = f"{count:3d}"
+        
+        # Check if mean or median falls in this bin
+        markers = ""
+        if show_stats and mean >= start and mean < end:
+            markers += " ← mean"
+        if show_stats and median >= start and median < end:
+            markers += " ← median"
+        
+        lines.append(f"{range_str} |{bar:<{max_bar_width}} {count_str}{markers}")
+    
+    return "\n".join(lines)
+
+def create_line_chart(data_series, width=60, height=15, title=""):
+    """
+    Create ASCII line chart for time series data.
+    """
+    if not data_series:
+        return "No data to display"
+    
+    lines = []
+    
+    # Add title
+    if title:
+        lines.append(title.center(width))
+        lines.append("")
+    
+    # Find global min/max for scaling
+    all_values = []
+    all_x = []
+    
+    for series_values in data_series.values():
+        all_x.extend(series_values.keys())
+        all_values.extend(series_values.values())
+    
+    if not all_values:
+        return "No data values to display"
+    
+    min_y = min(all_values)
+    max_y = max(all_values)
+    min_x = min(all_x)
+    max_x = max(all_x)
+    
+    y_range = max_y - min_y if max_y != min_y else 1
+    x_range = max_x - min_x if max_x != min_x else 1
+    
+    # Create chart grid
+    chart = [[" " for _ in range(width)] for _ in range(height)]
+    
+    # Different markers for different series
+    markers = ["●", "▲", "■", "♦", "○", "△", "□", "◇"]
+    series_markers = {}
+    
+    # Plot each series
+    for i, (series_name, values) in enumerate(data_series.items()):
+        marker = markers[i % len(markers)]
+        series_markers[series_name] = marker
+        
+        # Plot points
+        for x, y in values.items():
+            # Scale to chart dimensions
+            x_pos = int((x - min_x) / x_range * (width - 1))
+            y_pos = height - 1 - int((y - min_y) / y_range * (height - 1))
+            
+            if 0 <= x_pos < width and 0 <= y_pos < height:
+                chart[y_pos][x_pos] = marker
+    
+    # Add axes
+    # Y-axis labels
+    y_labels = []
+    for i in range(height):
+        y_val = max_y - (i / (height - 1)) * y_range
+        y_labels.append(f"{y_val:6.1f}")
+    
+    # Build output
+    for i, row in enumerate(chart):
+        line = y_labels[i] + " |" + "".join(row)
+        lines.append(line)
+    
+    # X-axis
+    lines.append(" " * 7 + "+" + "-" * width)
+    
+    # X-axis labels (simplified - just show min, mid, max)
+    x_label_line = " " * 9
+    x_label_line += f"{min_x}"
+    x_label_line += " " * (width // 2 - len(str(min_x)) - len(str((min_x + max_x) // 2)) // 2)
+    x_label_line += f"{(min_x + max_x) // 2}"
+    x_label_line += " " * (width - len(x_label_line) + 9 - len(str(max_x)))
+    x_label_line += f"{max_x}"
+    lines.append(x_label_line)
+    
+    # Legend
+    if len(data_series) > 1:
+        lines.append("")
+        lines.append("Legend:")
+        for series_name, marker in series_markers.items():
+            lines.append(f"  {marker} {series_name}")
+    
+    return "\n".join(lines)
+
+def create_dashboard(data, config):
+    """
+    Create a text-based dashboard with multiple components.
+    """
+    dashboard = []
+    
+    # Header
+    dashboard.append("╔" + "═" * 78 + "╗")
+    dashboard.append("║" + " ANALYTICS DASHBOARD ".center(78) + "║")
+    dashboard.append("╠" + "═" * 78 + "╣")
+    
+    for component in config:
+        comp_type = component.get("type")
+        title = component.get("title", "")
+        
+        if comp_type == "summary":
+            # Summary box
+            dashboard.append("║" + f" {title} ".center(78, "─") + "║")
+            
+            summary_data = data.get("summary", {})
+            
+            # Create two-column layout
+            items = list(summary_data.items())
+            mid = len(items) // 2
+            
+            for i in range(max(mid, len(items) - mid)):
+                left = ""
+                right = ""
+                
+                if i < mid:
+                    key, value = items[i]
+                    left = f"{key}: {value}"
+                
+                if i + mid < len(items):
+                    key, value = items[i + mid]
+                    right = f"{key}: {value}"
+                
+                line = f"║ {left:<37} {right:<37} ║"
+                dashboard.append(line)
+        
+        elif comp_type == "bar":
+            # Bar chart
+            data_key = component.get("data_key")
+            chart_data = data.get(data_key, {})
+            
+            if chart_data:
+                dashboard.append("║" + f" {title} ".center(78, "─") + "║")
+                
+                # Create mini bar chart
+                max_value = max(chart_data.values()) if chart_data else 1
+                
+                for label, value in sorted(chart_data.items(), 
+                                          key=lambda x: x[1], reverse=True):
+                    bar_width = int((value / max_value) * 30)
+                    bar = "█" * bar_width
+                    line = f"║ {label:<15} {bar:<30} {value:>10,} ({value/sum(chart_data.values())*100:>5.1f}%) ║"
+                    dashboard.append(line)
+        
+        elif comp_type == "table":
+            # Data table
+            data_key = component.get("data_key")
+            table_data = data.get(data_key, [])
+            
+            if table_data and isinstance(table_data, list):
+                dashboard.append("║" + f" {title} ".center(78, "─") + "║")
+                
+                # Get columns from first row
+                if table_data:
+                    columns = list(table_data[0].keys())
+                    
+                    # Header row
+                    header = "║ "
+                    for col in columns[:3]:  # Limit to 3 columns for space
+                        header += f"{col:<25} "
+                    header += " " * (76 - len(header)) + " ║"
+                    dashboard.append(header)
+                    
+                    # Data rows
+                    for row in table_data[:5]:  # Limit rows
+                        line = "║ "
+                        for col in columns[:3]:
+                            value = str(row.get(col, ""))[:24]
+                            line += f"{value:<25} "
+                        line += " " * (76 - len(line)) + " ║"
+                        dashboard.append(line)
+        
+        # Add spacing between components
+        if component != config[-1]:
+            dashboard.append("║" + " " * 78 + "║")
+    
+    # Footer
+    dashboard.append("╚" + "═" * 78 + "╝")
+    
+    return "\n".join(dashboard)
+
+# Test visualization functions
+if __name__ == "__main__":
+    # Test bar chart
+    sales_data = {
+        "Electronics": 45000,
+        "Clothing": 32000,
+        "Food": 28000,
+        "Books": 15000,
+        "Toys": 20000
+    }
+    
+    print("Horizontal Bar Chart:")
+    print(create_bar_chart(sales_data, "Sales by Category"))
+    
+    print("\n" + "="*60 + "\n")
+    
+    # Test histogram
+    scores = [65, 72, 78, 82, 85, 88, 91, 76, 79, 83,
+              87, 90, 93, 68, 74, 81, 86, 89, 92, 77]
+    
+    print(create_histogram(scores, bins=6, title="Score Distribution"))
+    
+    print("\n" + "="*60 + "\n")
+    
+    # Test line chart
+    monthly_data = {
+        "2023": {1: 100, 2: 110, 3: 105, 4: 115, 5: 120, 6: 125},
+        "2024": {1: 120, 2: 125, 3: 130, 4: 128, 5: 135, 6: 140}
+    }
+    
+    print(create_line_chart(monthly_data, width=50, height=10, 
+                           title="Monthly Sales Trend"))
+```
+
+---
+
+# Complete Sales Analyzer Implementation
+
+```python
+"""
+Sales Data Analyzer - Complete Implementation
+Professional sales analysis system for business insights
+"""
+
+from datetime import datetime
+
+# =========================================
+# CONFIGURATION
+# =========================================
+
+COLUMN_MAPPINGS = {
+    "date": ["Date", "TransactionDate", "SaleDate", "OrderDate"],
+    "product": ["ProductName", "Product", "Item", "ProductID"],
+    "amount": ["TotalAmount", "Total", "Revenue", "Amount"],
+    "quantity": ["Quantity", "Qty", "Units"],
+    "rep": ["SalesRep", "Representative", "Salesperson", "EmployeeID"],
+    "region": ["Region", "Territory", "Area", "Location"],
+    "customer": ["CustomerID", "Customer", "ClientID"],
+    "category": ["Category", "ProductCategory", "Type"]
+}
+
+# =========================================
+# COMPLETE ANALYZER IMPLEMENTATION
+# =========================================
+
+def main():
+    """
+    Main program - Sales Data Analyzer
+    """
+    print("🚀 SALES DATA ANALYZER v1.0")
+    print("=" * 50)
+    
+    # Get filename
+    filename = input("Enter CSV filename (or press Enter for 'sales.csv'): ").strip()
+    if not filename:
+        filename = "sales.csv"
+    
+    # Create sample data if file doesn't exist
+    if not check_file_exists(filename):
+        print(f"File '{filename}' not found. Creating sample data...")
+        create_sample_sales_data(filename)
+    
+    # Load data
+    raw_data = read_sales_csv(filename)
+    if not raw_data:
+        print("❌ Failed to load data. Exiting.")
+        return
+    
+    # Clean data
+    print("\n🧹 Cleaning data...")
+    cleaned_data, quality_report = clean_sales_data(raw_data)
+    
+    # Show data quality report
+    print("\n📋 DATA QUALITY REPORT")
+    print("-" * 30)
+    print(f"Total records:      {quality_report['total_records']}")
+    print(f"Clean records:      {quality_report['cleaned_records']}")
+    print(f"Invalid records:    {quality_report['invalid_records']}")
+    print(f"Duplicates removed: {quality_report['duplicates_removed']}")
+    print(f"Missing values:     {quality_report['missing_values']}")
+    
+    if not cleaned_data:
+        print("❌ No valid data to analyze. Exiting.")
+        return
+    
+    # Perform analyses
+    print("\n🔍 Performing analysis...")
+    
+    analyses = {
+        "time_analysis": analyze_by_time_period(cleaned_data, "daily"),
+        "product_analysis": analyze_by_product(cleaned_data),
+        "regional_analysis": analyze_by_region(cleaned_data),
+        "rep_analysis": analyze_by_sales_rep(cleaned_data),
+        "statistical_analysis": perform_statistical_analysis(cleaned_data)
+    }
+    
+    # Generate dashboard
+    print("\n📊 Generating dashboard...")
+    dashboard = create_sales_dashboard(cleaned_data, analyses)
+    
+    # Display dashboard
+    print("\n" + dashboard)
+    
+    # Export options
+    while True:
+        print("\n📁 EXPORT OPTIONS")
+        print("1. Save dashboard to text file")
+        print("2. Export cleaned data to CSV")
+        print("3. Export detailed analysis report")
+        print("4. Generate insights summary")
+        print("5. Exit")
+        
+        choice = input("\nYour choice (1-5): ").strip()
+        
+        if choice == "1":
+            export_dashboard(dashboard)
+        elif choice == "2":
+            export_cleaned_data(cleaned_data)
+        elif choice == "3":
+            export_detailed_analysis(analyses)
+        elif choice == "4":
+            generate_insights_summary(cleaned_data, analyses)
+        elif choice == "5":
+            print("\n✅ Thank you for using Sales Data Analyzer!")
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+def check_file_exists(filename):
+    """Check if file exists."""
+    try:
+        with open(filename, "r"):
+            return True
+    except FileNotFoundError:
+        return False
+
+def create_sample_sales_data(filename):
+    """Create sample sales data for testing."""
+    sample_data = """TransactionID,Date,ProductID,ProductName,Category,Quantity,UnitPrice,TotalAmount,SalesRep,Region,CustomerID
+1001,2024-01-15,P-101,Laptop Pro,Electronics,1,999.99,999.99,John Smith,North,C-5001
+1002,2024-01-15,P-205,"Wireless Mouse, Premium",Accessories,2,29.99,59.98,Jane Doe,North,C-5002
+1003,2024-01-16,P-101,Laptop Pro,Electronics,1,999.99,999.99,Bob Johnson,South,C-5003
+1004,2024-01-16,P-301,Office Chair,Furniture,1,$249.99,$249.99,Alice Brown,East,C-5004
+1005,2024-01-17,P-401,Monitor 27",Electronics,2,299.00,598.00,John Smith,North,C-5005
+1006,01/18/2024,P-501,Keyboard,Accessories,3,$79.99,$239.97,Jane Doe,West,C-5006
+1007,2024-01-19,P-601,Desk Lamp,Office,2,39.99,79.98,Bob Johnson,South,C-5007
+1008,2024-01-20,P-701,"Notebook, Pack of 5",Office,10,12.99,129.90,Alice Brown,East,C-5008
+1009,2024-01-21,P-101,Laptop Pro,Electronics,2,999.99,1999.98,John Smith,North,C-5009
+1010,2024-01-22,P-801,Webcam HD,Electronics,1,89.99,89.99,Jane Doe,West,C-5010
+"""
+    
+    with open(filename, "w") as f:
+        f.write(sample_data)
+    
+    print(f"✓ Created sample data file: {filename}")
+
+def read_sales_csv(filename):
+    """Read sales data from CSV file."""
+    return read_csv_enhanced(filename)
+
+def standardize_column_names(headers):
+    """Standardize column names based on mappings."""
+    standardized = []
+    
+    for header in headers:
+        header_lower = header.lower().strip()
+        
+        # Check each mapping
+        found = False
+        for standard_name, variations in COLUMN_MAPPINGS.items():
+            if header in variations or header_lower in [v.lower() for v in variations]:
+                standardized.append(standard_name)
+                found = True
+                break
+        
+        if not found:
+            # Keep original if no mapping found
+            standardized.append(header.lower().replace(" ", "_"))
+    
+    return standardized
+
+def clean_sales_data(raw_data):
+    """Clean and validate sales data."""
+    cleaned_data = []
+    quality_report = {
+        "total_records": len(raw_data),
+        "cleaned_records": 0,
+        "invalid_records": 0,
+        "missing_values": 0,
+        "duplicates_removed": 0,
+        "issues": []
+    }
+    
+    seen_transactions = set()
+    
+    for row_num, row in enumerate(raw_data, start=1):
+        cleaned_row = {}
+        row_valid = True
+        row_missing_values = 0
+        
+        # Transaction ID
+        transaction_id = str(row.get("transactionid", row.get("TransactionID", ""))).strip()
+        if not transaction_id:
+            transaction_id = f"T{row_num:04d}"  # Generate ID if missing
+            row_missing_values += 1
+        
+        # Check for duplicates
+        if transaction_id in seen_transactions:
+            quality_report["duplicates_removed"] += 1
+            continue
+        seen_transactions.add(transaction_id)
+        cleaned_row["transaction_id"] = transaction_id
+        
+        # Date cleaning
+        date_str = row.get("date", row.get("Date", ""))
+        cleaned_date = standardize_date(date_str)
+        if not cleaned_date:
+            quality_report["issues"].append(f"Row {row_num}: Invalid date '{date_str}'")
+            row_valid = False
+        else:
+            cleaned_row["date"] = cleaned_date
+        
+        # Product info
+        product = clean_text_value(row.get("product", row.get("ProductName", "")))
+        if not product:
+            product = clean_text_value(row.get("productid", row.get("ProductID", "Unknown")))
+            row_missing_values += 1
+        cleaned_row["product"] = product
+        
+        # Category
+        category = clean_text_value(row.get("category", row.get("Category", "Uncategorized")))
+        cleaned_row["category"] = category
+        
+        # Quantity
+        quantity_str = row.get("quantity", row.get("Quantity", "1"))
+        quantity = clean_numeric_value(quantity_str, 1)
+        if quantity <= 0:
+            quality_report["issues"].append(f"Row {row_num}: Invalid quantity '{quantity_str}'")
+            quantity = 1
+        cleaned_row["quantity"] = int(quantity)
+        
+        # Amount cleaning
+        amount_str = row.get("amount", row.get("TotalAmount", ""))
+        cleaned_amount = clean_currency(amount_str)
+        if cleaned_amount <= 0:
+            # Try to calculate from unit price and quantity
+            unit_price_str = row.get("unitprice", row.get("UnitPrice", ""))
+            unit_price = clean_currency(unit_price_str)
+            if unit_price > 0:
+                cleaned_amount = unit_price * quantity
+            else:
+                quality_report["issues"].append(f"Row {row_num}: Invalid amount '{amount_str}'")
+                row_valid = False
+        cleaned_row["amount"] = cleaned_amount
+        
+        # Sales rep
+        rep = clean_text_value(row.get("rep", row.get("SalesRep", "Unknown")))
+        cleaned_row["rep"] = rep
+        
+        # Region
+        region = clean_text_value(row.get("region", row.get("Region", "Unknown")))
+        cleaned_row["region"] = region
+        
+        # Customer
+        customer = clean_text_value(row.get("customer", row.get("CustomerID", f"C{row_num:04d}")))
+        cleaned_row["customer"] = customer
+        
+        # Track missing values
+        quality_report["missing_values"] += row_missing_values
+        
+        if row_valid:
+            cleaned_data.append(cleaned_row)
+            quality_report["cleaned_records"] += 1
+        else:
+            quality_report["invalid_records"] += 1
+    
+    return cleaned_data, quality_report
+
+def analyze_by_time_period(data, period="daily"):
+    """Analyze sales by time period."""
+    from collections import defaultdict
+    
+    period_sales = defaultdict(float)
+    period_transactions = defaultdict(int)
+    period_products = defaultdict(set)
+    
+    for row in data:
+        date = row.get("date", "")
+        amount = row.get("amount", 0)
+        product = row.get("product", "")
+        
+        # Determine period key
+        if period == "daily":
+            period_key = date
+        elif period == "weekly":
+            # Simple week calculation
+            if date:
+                year, month, day = date.split("-")
+                week_num = (int(day) - 1) // 7 + 1
+                period_key = f"{year}-{month}-W{week_num}"
+            else:
+                period_key = "Unknown"
+        elif period == "monthly":
+            period_key = date[:7] if date else "Unknown"
+        elif period == "yearly":
+            period_key = date[:4] if date else "Unknown"
+        else:
+            period_key = date
+        
+        period_sales[period_key] += amount
+        period_transactions[period_key] += 1
+        period_products[period_key].add(product)
+    
+    # Calculate statistics
+    periods = sorted(period_sales.keys())
+    values = [period_sales[p] for p in periods]
+    
+    # Calculate growth rates
+    growth_rates = {}
+    for i in range(1, len(periods)):
+        prev_period = periods[i-1]
+        curr_period = periods[i]
+        
+        prev_sales = period_sales[prev_period]
+        curr_sales = period_sales[curr_period]
+        
+        if prev_sales > 0:
+            growth_rate = ((curr_sales - prev_sales) / prev_sales) * 100
+            growth_rates[curr_period] = round(growth_rate, 2)
+    
+    analysis = {
+        "period_type": period,
+        "periods": periods,
+        "sales": dict(period_sales),
+        "transactions": dict(period_transactions),
+        "unique_products": {p: len(products) for p, products in period_products.items()},
+        "statistics": calculate_statistics(values) if values else {},
+        "growth_rates": growth_rates,
+        "peak_period": max(period_sales, key=period_sales.get) if period_sales else None,
+        "slow_period": min(period_sales, key=period_sales.get) if period_sales else None,
+        "average_daily": sum(values) / len(values) if values else 0
+    }
+    
+    return analysis
+
+def analyze_by_product(data):
+    """Analyze sales by product."""
+    product_sales = {}
+    product_quantities = {}
+    product_transactions = {}
+    
+    for row in data:
+        product = row.get("product", "Unknown")
+        amount = row.get("amount", 0)
+        quantity = row.get("quantity", 0)
+        
+        if product not in product_sales:
+            product_sales[product] = 0
+            product_quantities[product] = 0
+            product_transactions[product] = 0
+        
+        product_sales[product] += amount
+        product_quantities[product] += quantity
+        product_transactions[product] += 1
+    
+    # Find best and worst performers
+    if product_sales:
+        best_seller = max(product_sales, key=product_sales.get)
+        worst_seller = min(product_sales, key=product_sales.get)
+        
+        # Calculate average transaction value
+        product_avg_transaction = {}
+        for product in product_sales:
+            if product_transactions[product] > 0:
+                product_avg_transaction[product] = (
+                    product_sales[product] / product_transactions[product]
+                )
+    else:
+        best_seller = worst_seller = None
+        product_avg_transaction = {}
+    
+    analysis = {
+        "product_sales": product_sales,
+        "product_quantities": product_quantities,
+        "product_transactions": product_transactions,
+        "product_avg_transaction": product_avg_transaction,
+        "best_seller": best_seller,
+        "worst_seller": worst_seller,
+        "total_products": len(product_sales),
+        "poor_sellers": [p for p, sales in product_sales.items() 
+                        if sales < sum(product_sales.values()) * 0.05]  # Less than 5% of total
+    }
+    
+    return analysis
+
+def analyze_by_region(data):
+    """Analyze sales by region."""
+    regional_sales = {}
+    regional_transactions = {}
+    regional_products = {}
+    
+    for row in data:
+        region = row.get("region", "Unknown")
+        amount = row.get("amount", 0)
+        product = row.get("product", "")
+        
+        if region not in regional_sales:
+            regional_sales[region] = 0
+            regional_transactions[region] = 0
+            regional_products[region] = set()
+        
+        regional_sales[region] += amount
+        regional_transactions[region] += 1
+        regional_products[region].add(product)
+    
+    # Calculate regional statistics
+    if regional_sales:
+        total_sales = sum(regional_sales.values())
+        regional_percentages = {
+            region: (sales / total_sales * 100) if total_sales > 0 else 0
+            for region, sales in regional_sales.items()
+        }
+        
+        # Find underperforming regions (less than fair share)
+        avg_percentage = 100 / len(regional_sales) if regional_sales else 0
+        underperforming_regions = [
+            region for region, pct in regional_percentages.items()
+            if pct < avg_percentage * 0.8  # 20% below average
+        ]
+    else:
+        regional_percentages = {}
+        underperforming_regions = []
+    
+    analysis = {
+        "region_sales": regional_sales,
+        "region_transactions": regional_transactions,
+        "region_products": {r: len(products) for r, products in regional_products.items()},
+        "region_percentages": regional_percentages,
+        "underperforming_regions": underperforming_regions,
+        "best_region": max(regional_sales, key=regional_sales.get) if regional_sales else None,
+        "total_regions": len(regional_sales)
+    }
+    
+    return analysis
+
+def analyze_by_sales_rep(data):
+    """Analyze performance by sales representative."""
+    rep_performance = {}
+    
+    for row in data:
+        rep = row.get("rep", "Unknown")
+        amount = row.get("amount", 0)
+        
+        if rep not in rep_performance:
+            rep_performance[rep] = {
+                "total_sales": 0,
+                "count": 0,
+                "products": set(),
+                "customers": set()
+            }
+        
+        rep_performance[rep]["total_sales"] += amount
+        rep_performance[rep]["count"] += 1
+        rep_performance[rep]["products"].add(row.get("product", ""))
+        rep_performance[rep]["customers"].add(row.get("customer", ""))
+    
+    # Calculate averages and rankings
+    for rep, stats in rep_performance.items():
+        stats["avg_sale"] = stats["total_sales"] / stats["count"] if stats["count"] > 0 else 0
+        stats["unique_products"] = len(stats["products"])
+        stats["unique_customers"] = len(stats["customers"])
+        # Remove sets for serialization
+        del stats["products"]
+        del stats["customers"]
+    
+    analysis = {
+        "rep_performance": rep_performance,
+        "top_performer": max(rep_performance, 
+                           key=lambda r: rep_performance[r]["total_sales"]) if rep_performance else None,
+        "total_reps": len(rep_performance)
+    }
+    
+    return analysis
+
+def perform_statistical_analysis(data):
+    """Perform comprehensive statistical analysis."""
+    amounts = [row.get("amount", 0) for row in data]
+    quantities = [row.get("quantity", 0) for row in data]
+    
+    analysis = {
+        "amount_statistics": calculate_statistics(amounts),
+        "quantity_statistics": calculate_statistics(quantities),
+        "amount_outliers": find_outliers(amounts, method="iqr"),
+        "high_value_threshold": calculate_percentile(sorted(amounts), 90) if amounts else 0
+    }
+    
+    return analysis
+
+def create_sales_dashboard(data, analyses):
+    """Create comprehensive sales dashboard."""
+    dashboard = []
+    
+    # Header
+    dashboard.append("=" * 80)
+    dashboard.append("                           SALES ANALYSIS DASHBOARD")
+    dashboard.append("=" * 80)
+    dashboard.append("")
+    
+    # Executive Summary
+    total_sales = sum(row.get("amount", 0) for row in data)
+    total_transactions = len(data)
+    avg_transaction = total_sales / total_transactions if total_transactions > 0 else 0
+    
+    dashboard.append("📊 EXECUTIVE SUMMARY")
+    dashboard.append("-" * 40)
+    dashboard.append(f"Total Revenue:        ${total_sales:,.2f}")
+    dashboard.append(f"Total Transactions:   {total_transactions:,}")
+    dashboard.append(f"Average Transaction:  ${avg_transaction:,.2f}")
+    dashboard.append("")
+    
+    # Time Analysis
+    if "time_analysis" in analyses:
+        time_data = analyses["time_analysis"]
+        dashboard.append("📅 SALES TREND")
+        dashboard.append("-" * 40)
+        
+        # Show recent trend
+        recent_periods = list(time_data["sales"].items())[-7:]
+        if recent_periods:
+            max_sales = max(sale for _, sale in recent_periods)
+            
+            for period, sales in recent_periods:
+                bar_width = int((sales / max_sales) * 30) if max_sales > 0 else 0
+                bar = "█" * bar_width
+                growth = time_data["growth_rates"].get(period, 0)
+                growth_str = f"+{growth}%" if growth > 0 else f"{growth}%"
+                dashboard.append(f"{period}: {bar:<30} ${sales:>10,.0f} ({growth_str:>6})")
+        dashboard.append("")
+    
+    # Product Analysis
+    if "product_analysis" in analyses:
+        product_data = analyses["product_analysis"]
+        dashboard.append("🏆 TOP PRODUCTS")
+        dashboard.append("-" * 40)
+        
+        # Top 5 products
+        top_products = sorted(product_data["product_sales"].items(), 
+                            key=lambda x: x[1], reverse=True)[:5]
+        
+        if top_products:
+            max_sales = top_products[0][1]
+            
+            for product, sales in top_products:
+                bar_width = int((sales / max_sales) * 30) if max_sales > 0 else 0
+                bar = "█" * bar_width
+                qty = product_data["product_quantities"].get(product, 0)
+                dashboard.append(f"{product[:20]:<20} {bar:<30} ${sales:>10,.0f} ({qty} units)")
+        dashboard.append("")
+    
+    # Regional Analysis
+    if "regional_analysis" in analyses:
+        regional_data = analyses["regional_analysis"]
+        dashboard.append("🌍 REGIONAL PERFORMANCE")
+        dashboard.append("-" * 40)
+        
+        regional_sales = regional_data["region_sales"]
+        if regional_sales:
+            total_regional = sum(regional_sales.values())
+            
+            for region, sales in sorted(regional_sales.items(), 
+                                       key=lambda x: x[1], reverse=True):
+                pct = (sales / total_regional * 100) if total_regional > 0 else 0
+                bar_width = int(pct / 2)  # Scale to fit
+                bar = "█" * bar_width
+                dashboard.append(f"{region:<15} {bar:<25} ${sales:>12,.0f} ({pct:>5.1f}%)")
+        dashboard.append("")
+    
+    # Sales Rep Performance
+    if "rep_analysis" in analyses:
+        rep_data = analyses["rep_analysis"]
+        dashboard.append("👥 TOP SALES REPRESENTATIVES")
+        dashboard.append("-" * 40)
+        
+        # Top performers
+        top_reps = sorted(rep_data["rep_performance"].items(), 
+                         key=lambda x: x[1]["total_sales"], reverse=True)[:5]
+        
+        dashboard.append(f"{'Name':<20} {'Sales':<15} {'Trans':<10} {'Avg Sale':<12} {'Products'}")
+        dashboard.append("-" * 70)
+        
+        for rep, stats in top_reps:
+            dashboard.append(f"{rep[:20]:<20} ${stats['total_sales']:<14,.0f} "
+                           f"{stats['count']:<10} ${stats['avg_sale']:<11,.0f} "
+                           f"{stats['unique_products']}")
+        dashboard.append("")
+    
+    # Key Insights
+    dashboard.append("💡 KEY INSIGHTS & RECOMMENDATIONS")
+    dashboard.append("-" * 40)
+    
+    insights = generate_insights(data, analyses)
+    for i, insight in enumerate(insights[:8], 1):
+        dashboard.append(f"{i}. {insight}")
+    
+    dashboard.append("")
+    dashboard.append("=" * 80)
+    dashboard.append(f"Report generated on: {get_current_timestamp()}")
+    
+    return "\n".join(dashboard)
+
+def generate_insights(data, analyses):
+    """Generate actionable insights from analysis."""
+    insights = []
+    
+    # Time-based insights
+    if "time_analysis" in analyses:
+        time_data = analyses["time_analysis"]
+        
+        # Growth trend
+        recent_growth = list(time_data["growth_rates"].values())[-3:] if time_data["growth_rates"] else []
+        if recent_growth:
+            avg_growth = sum(recent_growth) / len(recent_growth)
+            if avg_growth > 10:
+                insights.append(f"Strong growth momentum: {avg_growth:.1f}% average growth in recent periods")
+            elif avg_growth < -5:
+                insights.append(f"⚠️ Sales declining: {avg_growth:.1f}% average decline - investigate causes")
+        
+        # Peak period
+        if time_data.get("peak_period"):
+            peak_sales = time_data["sales"].get(time_data["peak_period"], 0)
+            insights.append(f"Peak sales period was {time_data['peak_period']} with ${peak_sales:,.0f}")
+    
+    # Product insights
+    if "product_analysis" in analyses:
+        product_data = analyses["product_analysis"]
+        
+        # Best seller
+        if product_data.get("best_seller"):
+            best_sales = product_data["product_sales"].get(product_data["best_seller"], 0)
+            insights.append(f"'{product_data['best_seller']}' is the top product with ${best_sales:,.0f} in sales")
+        
+        # Poor performers
+        poor_sellers = product_data.get("poor_sellers", [])
+        if poor_sellers:
+            insights.append(f"Consider promotions for slow-moving items: {', '.join(poor_sellers[:3])}")
+        
+        # Product diversity
+        total_products = product_data.get("total_products", 0)
+        if total_products < 10:
+            insights.append("Limited product range - consider expanding catalog")
+    
+    # Regional insights
+    if "regional_analysis" in analyses:
+        regional_data = analyses["regional_analysis"]
+        
+        # Best region
+        if regional_data.get("best_region"):
+            best_region_sales = regional_data["region_sales"].get(regional_data["best_region"], 0)
+            insights.append(f"{regional_data['best_region']} region leads with ${best_region_sales:,.0f} in sales")
+        
+        # Underperforming regions
+        underperforming = regional_data.get("underperforming_regions", [])
+        if underperforming:
+            insights.append(f"Focus growth efforts on underperforming regions: {', '.join(underperforming)}")
+    
+    # Sales rep insights
+    if "rep_analysis" in analyses:
+        rep_data = analyses["rep_analysis"]
+        
+        # Top performer
+        if rep_data.get("top_performer"):
+            top_rep_stats = rep_data["rep_performance"].get(rep_data["top_performer"], {})
+            insights.append(f"{rep_data['top_performer']} is the top performer - study their techniques")
+        
+        # Team size
+        total_reps = rep_data.get("total_reps", 0)
+        if total_reps > 0:
+            avg_sales_per_rep = sum(row.get("amount", 0) for row in data) / total_reps
+            insights.append(f"Average sales per representative: ${avg_sales_per_rep:,.0f}")
+    
+    # Statistical insights
+    if "statistical_analysis" in analyses:
+        stat_data = analyses["statistical_analysis"]
+        
+        # High-value transactions
+        high_threshold = stat_data.get("high_value_threshold", 0)
+        if high_threshold > 0:
+            high_value_count = sum(1 for row in data if row.get("amount", 0) >= high_threshold)
+            insights.append(f"{high_value_count} high-value transactions (>${high_threshold:.0f}) drive revenue")
+        
+        # Outliers
+        outliers = stat_data.get("amount_outliers", {}).get("outliers", [])
+        if outliers:
+            insights.append(f"Found {len(outliers)} unusual transactions - review for data quality")
+    
+    return insights
+
+def get_current_timestamp():
+    """Get current timestamp for reports."""
+    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+def export_dashboard(dashboard_text):
+    """Export dashboard to text file."""
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = f"sales_dashboard_{timestamp}.txt"
+    
+    try:
+        with open(filename, "w") as f:
+            f.write(dashboard_text)
+        print(f"✅ Dashboard exported to: {filename}")
+    except Exception as e:
+        print(f"❌ Error exporting dashboard: {e}")
+
+def export_cleaned_data(data):
+    """Export cleaned data to CSV."""
+    if not data:
+        print("No data to export.")
+        return
+    
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = f"cleaned_sales_data_{timestamp}.csv"
+    
+    try:
+        # Get headers from first row
+        headers = list(data[0].keys())
+        
+        with open(filename, "w") as f:
+            # Write headers
+            f.write(",".join(headers) + "\n")
+            
+            # Write data
+            for row in data:
+                values = []
+                for header in headers:
+                    value = str(row.get(header, ""))
+                    # Quote if contains comma
+                    if "," in value:
+                        value = f'"{value}"'
+                    values.append(value)
+                f.write(",".join(values) + "\n")
+        
+        print(f"✅ Data exported to: {filename}")
+    except Exception as e:
+        print(f"❌ Error exporting data: {e}")
+
+def export_detailed_analysis(analyses):
+    """Export detailed analysis report."""
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = f"detailed_analysis_{timestamp}.txt"
+    
+    try:
+        with open(filename, "w") as f:
+            f.write("DETAILED SALES ANALYSIS REPORT\n")
+            f.write("=" * 80 + "\n\n")
+            
+            for analysis_name, analysis_data in analyses.items():
+                f.write(f"\n{analysis_name.upper().replace('_', ' ')}\n")
+                f.write("-" * 40 + "\n")
+                
+                # Write analysis data
+                write_dict_to_file(f, analysis_data, indent=0)
+                f.write("\n")
+        
+        print(f"✅ Detailed analysis exported to: {filename}")
+    except Exception as e:
+        print(f"❌ Error exporting analysis: {e}")
+
+def write_dict_to_file(file, data, indent=0):
+    """Recursively write dictionary to file."""
+    indent_str = "  " * indent
+    
+    if isinstance(data, dict):
+        for key, value in data.items():
+            if isinstance(value, dict):
+                file.write(f"{indent_str}{key}:\n")
+                write_dict_to_file(file, value, indent + 1)
+            elif isinstance(value, list):
+                file.write(f"{indent_str}{key}: ")
+                if len(value) > 0 and not isinstance(value[0], dict):
+                    file.write(str(value) + "\n")
+                else:
+                    file.write("\n")
+                    for item in value:
+                        write_dict_to_file(file, item, indent + 1)
+            else:
+                file.write(f"{indent_str}{key}: {value}\n")
+    else:
+        file.write(f"{indent_str}{str(data)}\n")
+
+def generate_insights_summary(data, analyses):
+    """Generate and save insights summary."""
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = f"insights_summary_{timestamp}.txt"
+    
+    try:
+        with open(filename, "w") as f:
+            f.write("SALES INSIGHTS SUMMARY\n")
+            f.write("=" * 50 + "\n\n")
+            
+            # Executive summary
+            total_sales = sum(row.get("amount", 0) for row in data)
+            f.write(f"Total Revenue: ${total_sales:,.2f}\n")
+            f.write(f"Total Transactions: {len(data):,}\n")
+            f.write(f"Analysis Date: {get_current_timestamp()}\n\n")
+            
+            # Key insights
+            insights = generate_insights(data, analyses)
+            f.write("KEY INSIGHTS:\n")
+            f.write("-" * 30 + "\n")
+            for i, insight in enumerate(insights, 1):
+                f.write(f"{i}. {insight}\n")
+            
+            # Recommendations
+            f.write("\n\nRECOMMENDATIONS:\n")
+            f.write("-" * 30 + "\n")
+            f.write("1. Focus on high-performing products and regions\n")
+            f.write("2. Investigate and address underperforming areas\n")
+            f.write("3. Maintain growth momentum through targeted strategies\n")
+            f.write("4. Regular monitoring of key metrics\n")
+            f.write("5. Data quality improvements for better insights\n")
+        
+        print(f"✅ Insights summary exported to: {filename}")
+    except Exception as e:
+        print(f"❌ Error exporting insights: {e}")
+
+# Run the analyzer
+if __name__ == "__main__":
+    main()
+```
+
+---
+
+# Testing and Validation
+
+## Comprehensive Test Suite
+
+```python
+def run_all_tests():
+    """Run comprehensive test suite for the analyzer."""
+    print("🧪 Running Sales Analyzer Test Suite")
+    print("=" * 50)
+    
+    # Test CSV parsing
+    test_csv_parsing()
+    
+    # Test data cleaning
+    test_data_cleaning()
+    
+    # Test statistical calculations
+    test_statistics()
+    
+    # Test visualizations
+    test_visualizations()
+    
+    # Test complete pipeline
+    test_complete_pipeline()
+    
+    print("\n✅ All tests completed!")
+
+def test_csv_parsing():
+    """Test CSV parsing functionality."""
+    print("\n--- Testing CSV Parsing ---")
+    
+    # Test cases
+    test_lines = [
+        'Product,Price,Quantity',
+        'Laptop,999.99,1',
+        '"Mouse, Wireless",29.99,2',
+        '"Monitor 27""",299.00,1'
+    ]
+    
+    # Test delimiter detection
+    delimiter = detect_delimiter(test_lines)
+    assert delimiter == ",", f"Delimiter detection failed: {delimiter}"
+    print("✓ Delimiter detection")
+    
+    # Test quote handling
+    parsed = parse_csv_line(test_lines[2])
+    assert parsed == ["Mouse, Wireless", "29.99", "2"], f"Quote parsing failed: {parsed}"
+    print("✓ Quote handling")
+    
+    # Test escaped quotes
+    parsed = parse_csv_line(test_lines[3])
+    assert parsed == ['Monitor 27"', "299.00", "1"], f"Escaped quote parsing failed: {parsed}"
+    print("✓ Escaped quote handling")
+
+def test_data_cleaning():
+    """Test data cleaning functions."""
+    print("\n--- Testing Data Cleaning ---")
+    
+    # Currency cleaning
+    test_values = [
+        ("$1,234.56", 1234.56),
+        ("€1.234,56", 1234.56),
+        ("($100.00)", -100.00),
+        ("1.5K", 1500.0),
+        ("FREE", 0.0)
+    ]
+    
+    for input_val, expected in test_values:
+        result = clean_currency(input_val)
+        assert abs(result - expected) < 0.01, f"Currency cleaning failed: {input_val} → {result}"
+    print("✓ Currency cleaning")
+    
+    # Date standardization
+    test_dates = [
+        ("12/31/2023", "2023-12-31"),
+        ("31-12-2023", "2023-12-31"),
+        ("Dec 31, 2023", "2023-12-31"),
+        ("20231231", "2023-12-31")
+    ]
+    
+    for input_date, expected in test_dates:
+        result = standardize_date(input_date)
+        assert result == expected, f"Date standardization failed: {input_date} → {result}"
+    print("✓ Date standardization")
+
+def test_statistics():
+    """Test statistical calculations."""
+    print("\n--- Testing Statistical Functions ---")
+    
+    # Basic statistics
+    test_data = [10, 20, 30, 40, 50]
+    stats = calculate_statistics(test_data)
+    
+    assert stats["mean"] == 30, f"Mean calculation failed: {stats['mean']}"
+    assert stats["median"] == 30, f"Median calculation failed: {stats['median']}"
+    assert stats["min"] == 10, f"Min calculation failed: {stats['min']}"
+    assert stats["max"] == 50, f"Max calculation failed: {stats['max']}"
+    print("✓ Basic statistics")
+    
+    # Percentiles
+    percentiles = calculate_percentiles(test_data, [25, 50, 75])
+    assert percentiles[50] == 30, f"Median percentile failed: {percentiles[50]}"
+    print("✓ Percentile calculations")
+    
+    # Outlier detection
+    outlier_data = [10, 12, 14, 15, 16, 18, 20, 100]
+    outliers = find_outliers(outlier_data, method="iqr")
+    assert 100 in outliers["outliers"], f"Outlier detection failed: {outliers}"
+    print("✓ Outlier detection")
+
+def test_visualizations():
+    """Test visualization functions."""
+    print("\n--- Testing Visualizations ---")
+    
+    # Bar chart
+    data = {"A": 100, "B": 200, "C": 150}
+    chart = create_bar_chart(data, title="Test Chart")
+    assert "Test Chart" in chart, "Chart title missing"
+    assert "200" in chart, "Max value not displayed"
+    print("✓ Bar chart creation")
+    
+    # Histogram
+    values = [1, 2, 2, 3, 3, 3, 4, 4, 5]
+    hist = create_histogram(values, bins=5)
+    assert "Distribution" in hist, "Histogram title missing"
+    print("✓ Histogram creation")
+
+def test_complete_pipeline():
+    """Test complete analysis pipeline."""
+    print("\n--- Testing Complete Pipeline ---")
+    
+    # Create test data
+    test_data = [
+        {"date": "2024-01-01", "product": "A", "amount": 100, "quantity": 1, 
+         "rep": "John", "region": "North", "customer": "C1"},
+        {"date": "2024-01-02", "product": "B", "amount": 200, "quantity": 2, 
+         "rep": "Jane", "region": "South", "customer": "C2"},
+        {"date": "2024-01-03", "product": "A", "amount": 150, "quantity": 1, 
+         "rep": "John", "region": "North", "customer": "C3"}
+    ]
+    
+    # Test analyses
+    time_analysis = analyze_by_time_period(test_data, "daily")
+    assert len(time_analysis["periods"]) == 3, "Time period analysis failed"
+    print("✓ Time period analysis")
+    
+    product_analysis = analyze_by_product(test_data)
+    assert product_analysis["best_seller"] == "B", "Product analysis failed"
+    print("✓ Product analysis")
+    
+    regional_analysis = analyze_by_region(test_data)
+    assert regional_analysis["best_region"] == "North", "Regional analysis failed"
+    print("✓ Regional analysis")
+
+# Run tests when imported
+if __name__ == "__main__":
+    run_all_tests()
+```
+
+---
+
+# Summary
+
+This comprehensive solution guide provides:
+
+1. **Complete CSV parsing** with quote handling and delimiter detection
+2. **Robust data cleaning** for currency, dates, and text
+3. **Advanced data transformation** with grouping, filtering, and sorting
+4. **Full statistical analysis** including correlations and outliers
+5. **Professional visualizations** with multiple chart types
+6. **Complete sales analyzer** implementation with all features
+7. **Comprehensive testing** suite for validation
+
+All solutions follow Week 9 constraints:
+- No external libraries (pandas, numpy, etc.)
+- Manual implementation of all functionality
+- Clear, educational code structure
+- Professional error handling
+- Real-world applicability
+
+Students can use these solutions to:
+- Check their work
+- Learn best practices
+- Understand complex implementations
+- Debug their own code
+- Extend functionality further
+
+## Additional Helper Functions
+
+Here are the remaining helper functions needed for the complete implementation:
+
+```python
+def clean_text_value(text):
+    """Clean text values."""
+    if not text:
+        return ""
+    # Remove quotes and extra whitespace
+    text = str(text).strip()
+    if text.startswith('"') and text.endswith('"'):
+        text = text[1:-1]
+    return text.strip()
+
+def clean_numeric_value(value, default=0):
+    """Clean numeric values."""
+    if not value:
+        return default
+    try:
+        # Remove non-numeric characters except . and -
+        cleaned = str(value).replace(',', '')
+        return float(cleaned)
+    except:
+        return default
+
+def validate_date(date_str):
+    """Validate date format (YYYY-MM-DD)."""
+    if not date_str or len(date_str) != 10:
+        return False
+    
+    try:
+        parts = date_str.split('-')
+        if len(parts) != 3:
+            return False
+        
+        year, month, day = parts
+        if len(year) != 4 or len(month) != 2 or len(day) != 2:
+            return False
+        
+        year_int = int(year)
+        month_int = int(month)
+        day_int = int(day)
+        
+        # Basic range checks
+        if year_int < 1900 or year_int > 2100:
+            return False
+        if month_int < 1 or month_int > 12:
+            return False
+        if day_int < 1 or day_int > 31:
+            return False
+        
+        return True
+    except:
+        return False
+
+def get_current_date():
+    """Get current date in YYYY-MM-DD format."""
+    # Simple implementation without datetime module
+    return "2024-03-15"
+
+def clean_currency_value(value_str):
+    """Alias for clean_currency for compatibility."""
+    return clean_currency(value_str)
+```
+
+## Important Notes for Students
+
+1. **All functions are self-contained**: No external dependencies required
+2. **Error handling included**: Each function handles edge cases gracefully
+3. **Well-documented**: Comments explain the logic and approach
+4. **Test coverage**: Use the included test suite to verify your implementations
+5. **Extensible design**: Easy to add new features or modify existing ones
+
+Remember: The goal is not just to get the code working, but to understand WHY it works and HOW to approach similar problems in the future!

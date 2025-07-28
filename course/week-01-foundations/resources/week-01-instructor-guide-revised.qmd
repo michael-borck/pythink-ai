@@ -1,0 +1,405 @@
+---
+title: "Week 1 Instructor Guide - Revised"
+subtitle: "Teaching Computational Thinking with AI Partnership"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Week 1 Instructor Guide: AI-Integrated Approach
+
+## Philosophy and Mindset
+
+### The Paradigm Shift
+We're not teaching students to avoid AI or compete with it. We're teaching them to:
+- Think computationally
+- Use AI as a powerful learning tool
+- Understand what they're building
+- Become architects, not just coders
+
+### Key Messages to Reinforce
+1. "AI can write code, but it can't understand your problem"
+2. "You're the architect, AI is your construction crew"
+3. "Understanding beats memorization every time"
+4. "Every expert was once confused by variables"
+
+## Lecture Guide (1 hour)
+
+### Opening Hook (10 minutes)
+
+**Script**: 
+"Let me show you something interesting. [Open AI tool]
+'Write a temperature converter program.'
+[Show complex result]
+Now, who can tell me where to add Kelvin support? 
+Who can spot if the formula is wrong?
+Who could modify this for a client's specific needs?
+[Few hands]
+That's exactly why you're here. Not to memorize syntax, but to become the architect who designs what AI builds."
+
+**Activity**: Live demonstration
+1. Show AI's complex solution
+2. Try to modify it (struggle publicly)
+3. Ask class what's confusing
+4. Set the stage for new approach
+
+### Computational Thinking (20 minutes)
+
+**Key Concept**: Every program is Input → Process → Output
+
+**Teaching Strategy**:
+1. Start with real-world examples (GPS, coffee maker)
+2. Draw diagrams on board
+3. Map to programming concepts
+4. Use physical props if helpful
+
+**Interactive Elements**:
+- "Turn to partner: Name something that follows Input→Process→Output"
+- "What does a vending machine store?" (money inserted, selection, inventory)
+- "When does your phone make decisions?" (notifications, battery saver)
+
+**Common Misconceptions**:
+- Variables "contain" vs "refer to" values
+- Input always returns strings (demo this live)
+- Programs run sequentially (trace with finger)
+
+### AI Partnership Demo (20 minutes)
+
+**Live Prompt Evolution**:
+Do this live - don't use slides. Students need to see the real process.
+
+1. **Vague prompt**: "temperature converter"
+   - Point out complexity
+   - Ask what's unfamiliar
+   
+2. **Better prompt**: Add requirements
+   - Show improvement
+   - Still too complex?
+   
+3. **Constrained prompt**: Limit features explicitly
+   - Celebrate simplicity
+   - Now we understand!
+   
+4. **Learning prompt**: Ask for explanations
+   - Model good learning behavior
+
+**Key Teaching Moments**:
+- When AI overcomplicates (happens every time)
+- When to push back ("simpler please")
+- How constraints improve output
+- Why understanding matters
+
+### Why Understanding Matters (10 minutes)
+
+**Three Scenarios** (act these out):
+
+1. **Client Change**: 
+   "The boss just called - add wind chill factor!"
+   Without understanding: panic
+   With understanding: "I know exactly where that goes"
+
+2. **Bug Report**:
+   "It shows -0.0 sometimes"
+   Without understanding: random fixes
+   With understanding: "That's a display issue, not math"
+
+3. **Integration Need**:
+   "This needs to work with our weather app"
+   Without understanding: start over
+   With understanding: "I'll need to modify the input/output"
+
+## Lab Management (2 hours)
+
+### Hour 1: AI as Teacher
+
+#### Setup Phase (20 min)
+**Common Issues & Solutions**:
+- Can't access Colab → Have backup Google accounts
+- Confused by interface → Show Colab tour
+- Where's Gemini? → Show sparkle icon
+- Copy-paste problems → Demo proper technique
+
+**Circulate and Check**:
+- Everyone successfully in Colab?
+- Found the AI tools?
+- Created first cell?
+
+#### Prompt Evolution (25 min)
+**Facilitation Tips**:
+- Let them struggle with vague prompts
+- Don't give away the answer
+- Celebrate "aha" moments
+- Share good constraints publicly
+
+**Questions to Ask Students**:
+- "What made that prompt better?"
+- "What's still too complex?"
+- "How would you simplify?"
+
+#### Pattern Recognition (15 min)
+**Group Discussion**:
+- "What patterns do you see?"
+- "Where's the input in each version?"
+- "How do decisions work?"
+- Have students share findings
+
+### Hour 2: Understanding & Application
+
+#### Code Tracing (20 min)
+**Teaching Strategy**:
+1. Do one together on board
+2. Students try individually
+3. Compare with AI's trace
+4. Discuss differences
+
+**Make it Visual**:
+- Use boxes for variables
+- Arrows for flow
+- Different colors for different types
+
+#### Modification Challenge (25 min)
+**The Kelvin Scenario**:
+This is where understanding pays off!
+
+**Guide Their Thinking**:
+- "Where are decisions made?"
+- "What new information do we need?"
+- "How should we modify prompts?"
+- "What formulas do we need?"
+
+**Common Student Approaches**:
+- Just ask AI → Often fails
+- Strategic prompting → Better results
+- Understanding first → Best results
+
+#### Debugging Practice (15 min)
+**Key Principle**: Understanding the bug before fixing it
+
+**Good Facilitation**:
+- "What should happen?"
+- "What actually happens?"
+- "Where might the problem be?"
+- "How can AI help us understand?"
+
+## Managing AI Integration
+
+### Encouraging Good Habits
+
+**Do**:
+- Model good prompting yourself
+- Celebrate strategic AI use
+- Share effective prompts
+- Praise understanding over speed
+
+**Don't**:
+- Shame AI use (it's encouraged!)
+- Accept "it works" without understanding
+- Let complexity creep in
+- Rush to finish
+
+### Common Pitfalls
+
+**Problem**: Students accept first AI output
+**Solution**: Require prompt evolution documentation
+
+**Problem**: AI gives advanced features
+**Solution**: Teach constraint language
+
+**Problem**: Students don't test code
+**Solution**: Provide test cases upfront
+
+**Problem**: Copy-paste without reading
+**Solution**: Random "explain this line" checks
+
+## Assessment Strategies
+
+### During Lecture
+- Poll: "What does input() return?" (always string!)
+- Peer explain: "Tell your neighbor what variables do"
+- Quick check: "Where would errors happen here?"
+
+### During Lab
+- Observe prompt evolution quality
+- Check understanding comments
+- Ask individuals to explain code
+- Look for "aha" moments
+
+### Project Evaluation
+Focus on:
+- Journey documentation (not just result)
+- Understanding demonstration
+- Strategic AI use
+- Reflection quality
+
+## Week 1 Solutions and Examples
+
+### Temperature Converter - Instructor Solution
+
+```python
+# Temperature Converter - Instructor Reference
+# This is what we're building toward
+
+# Welcome message
+print("=== Temperature Converter ===")
+print("I can convert between Celsius and Fahrenheit!")
+print()
+
+# Get temperature value
+# Note: input() ALWAYS returns a string
+temp_string = input("Enter temperature: ")
+temp_value = float(temp_string)  # Convert to number
+
+# Get scale
+scale = input("Is that (C)elsius or (F)ahrenheit? ")
+
+# Make decision based on scale
+if scale.upper() == "C":
+    # Convert Celsius to Fahrenheit
+    # Formula: °F = (°C × 9/5) + 32
+    fahrenheit = (temp_value * 9/5) + 32
+    print(f"{temp_value}°C equals {fahrenheit}°F")
+elif scale.upper() == "F":
+    # Convert Fahrenheit to Celsius  
+    # Formula: °C = (°F - 32) × 5/9
+    celsius = (temp_value - 32) * 5/9
+    print(f"{temp_value}°F equals {celsius}°C")
+else:
+    print("Please enter C or F")
+
+print()
+print("Thanks for using the temperature converter!")
+```
+
+### Common AI Overcomplications to Show
+
+```python
+# What AI might give initially:
+def convert_temperature():
+    """
+    A robust temperature converter with error handling
+    """
+    try:
+        temp = float(input("Enter temperature: "))
+        unit = input("Enter unit (C/F/K): ").upper()
+        
+        if unit == 'C':
+            f = (temp * 9/5) + 32
+            k = temp + 273.15
+            print(f"{temp}°C = {f}°F = {k}K")
+        elif unit == 'F':
+            c = (temp - 32) * 5/9
+            k = (temp - 32) * 5/9 + 273.15
+            print(f"{temp}°F = {c}°C = {k}K")
+        # ... more code ...
+    except ValueError:
+        print("Invalid input!")
+    except Exception as e:
+        print(f"Error: {e}")
+
+if __name__ == "__main__":
+    while True:
+        convert_temperature()
+        if input("Continue? (y/n): ").lower() != 'y':
+            break
+```
+
+Point out everything students don't need to understand yet!
+
+### Debugging Exercise Solutions
+
+```python
+# Bug 1: Swapped formulas
+# Wrong:
+if scale == "C":
+    result = (temp - 32) * 5/9  # This is F to C!
+# Right:
+if scale == "C":
+    result = (temp * 9/5) + 32  # C to F
+
+# Bug 2: String comparison
+# Wrong:
+temperature = input("Temperature: ")
+if temperature > 100:  # Comparing string to number!
+# Right:
+temperature = float(input("Temperature: "))
+if temperature > 100:  # Now comparing numbers
+
+# Bug 3: Output labels swapped
+# Wrong:
+print(f"{temp}°F = {result}°C")  # Says F equals C!
+# Right:
+print(f"{temp}°C = {result}°F")  # Correct labels
+```
+
+## Tips for Success
+
+### Before Class
+1. Test all AI prompts yourself
+2. Have backup examples ready
+3. Prepare for various AI tools
+4. Review common misconceptions
+
+### During Class
+1. Embrace AI mistakes as teaching moments
+2. Keep energy high during prompt evolution
+3. Celebrate understanding breakthroughs
+4. Stay focused on concepts over syntax
+
+### After Class
+1. Review prompt evolution submissions
+2. Note common struggles
+3. Adjust pacing if needed
+4. Share great student examples
+
+## Student Support Strategies
+
+### For Struggling Students
+- Pair with patient peers
+- Provide prompt templates
+- Focus on one concept at a time
+- Extra visual diagrams
+- Celebrate small wins
+
+### For Advanced Students
+- Challenge with Kelvin addition
+- Ask them to help others
+- Explore edge cases
+- Predict AI behavior
+- Design their own constraints
+
+## Looking Ahead
+
+Next week builds on these foundations:
+- More complex decisions
+- Nested logic
+- Continued AI partnership
+- Debugging strategies
+
+Key transition: "This week's simple is next week's building block!"
+
+## Quick Reference
+
+### Timing
+- 0-10 min: Hook and reality check
+- 10-30 min: Computational thinking
+- 30-50 min: AI partnership
+- 50-60 min: Why it matters
+
+### Key Demos
+1. AI overcomplication
+2. Prompt evolution
+3. Code tracing
+4. Bug finding
+
+### Assessment Focus
+- Understanding over syntax
+- Process over product
+- Growth over perfection
+- Reflection over speed
+
+Remember: You're not teaching them to code without AI - you're teaching them to think computationally and use AI as a powerful tool!

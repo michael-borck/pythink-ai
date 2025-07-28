@@ -1,0 +1,865 @@
+---
+title: "Week 10 Assessment: JSON Processing and Data Validation"
+subtitle: "Testing Your Data Handling and Validation Skills"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Assessment Overview
+
+**Duration**: 45 minutes  
+**Objective**: Demonstrate mastery of JSON processing, data validation, and safe data manipulation techniques
+
+## Skills Assessed
+
+- JSON parsing and generation with error handling
+- Data structure validation and type checking
+- Nested data navigation and extraction
+- Data transformation and normalization
+- Safe data access patterns
+
+---
+
+# Task 1: API Response Processor (15 minutes)
+
+## Problem Statement
+
+You're building a system that processes API responses from multiple social media platforms. Each platform returns data in different JSON formats, and you need to normalize them into a consistent structure.
+
+### Sample API Responses
+
+```python
+# Twitter-like API response
+twitter_response = '''
+{
+  "data": {
+    "id": "12345",
+    "text": "Just learned about error handling in Python! #coding",
+    "author": {
+      "username": "alice_codes",
+      "display_name": "Alice Johnson",
+      "followers_count": 1250
+    },
+    "metrics": {
+      "like_count": 42,
+      "retweet_count": 8,
+      "reply_count": 3
+    },
+    "created_at": "2024-01-15T10:30:00Z"
+  }
+}
+'''
+
+# Instagram-like API response
+instagram_response = '''
+{
+  "post": {
+    "id": "abc789",
+    "caption": "Beautiful sunset today! 🌅",
+    "user": {
+      "username": "photographer_bob",
+      "full_name": "Bob Wilson",
+      "follower_count": 5400
+    },
+    "engagement": {
+      "likes": 234,
+      "comments": 18
+    },
+    "timestamp": "2024-01-15T18:45:00Z",
+    "media_type": "image"
+  }
+}
+'''
+
+# LinkedIn-like API response (with missing fields)
+linkedin_response = '''
+{
+  "article": {
+    "id": "xyz456",
+    "content": "5 tips for better API design",
+    "author": {
+      "name": "Charlie Tech",
+      "connections": 890
+    },
+    "stats": {
+      "reactions": 67
+    },
+    "published": "2024-01-14T14:20:00Z"
+  }
+}
+'''
+
+# Malformed response
+broken_response = '''
+{
+  "data": {
+    "id": "broken123",
+    "text": "This JSON is missing a closing brace",
+    "author": {
+      "username": "error_user"
+'''
+```
+
+### Your Task
+
+Create a robust social media post processor that:
+
+1. **Safely parses JSON** from different platforms
+2. **Validates required fields** are present
+3. **Normalizes data** into a consistent format
+4. **Handles missing optional fields** gracefully
+5. **Returns detailed error information** when processing fails
+
+### Expected Output Format
+
+```python
+# Normalized post structure
+{
+    "success": True,
+    "post": {
+        "id": "12345",
+        "content": "Just learned about error handling in Python! #coding",
+        "author": {
+            "username": "alice_codes",
+            "display_name": "Alice Johnson",
+            "follower_count": 1250
+        },
+        "engagement": {
+            "likes": 42,
+            "shares": 8,      # retweets, reposts, etc.
+            "comments": 3
+        },
+        "timestamp": "2024-01-15T10:30:00Z",
+        "platform": "twitter",
+        "media_type": "text"
+    },
+    "warnings": []  # Any non-critical issues
+}
+```
+
+### Implementation Template
+
+```python
+import json
+from datetime import datetime
+
+def process_social_media_post(json_response, platform):
+    """
+    Process social media API response into normalized format.
+    
+    Args:
+        json_response (str): Raw JSON response from API
+        platform (str): Platform name ('twitter', 'instagram', 'linkedin')
+    
+    Returns:
+        dict: Normalized post data with success/error information
+    """
+    try:
+        # Step 1: Parse JSON safely
+        # Your implementation here
+        
+        # Step 2: Extract data based on platform
+        if platform == "twitter":
+            # Process Twitter format
+            pass
+        elif platform == "instagram":
+            # Process Instagram format
+            pass
+        elif platform == "linkedin":
+            # Process LinkedIn format
+            pass
+        else:
+            return {
+                "success": False,
+                "error": f"Unsupported platform: {platform}",
+                "error_type": "invalid_platform"
+            }
+        
+        # Step 3: Validate required fields
+        # Your implementation here
+        
+        # Step 4: Build normalized response
+        # Your implementation here
+        
+    except json.JSONDecodeError as e:
+        return {
+            "success": False,
+            "error": f"Invalid JSON format: {e.msg}",
+            "error_type": "json_parse_error"
+        }
+    except Exception as e:
+        return {
+            "success": False,
+            "error": f"Processing error: {str(e)}",
+            "error_type": "processing_error"
+        }
+
+# Test your implementation:
+test_cases = [
+    (twitter_response, "twitter"),
+    (instagram_response, "instagram"),
+    (linkedin_response, "linkedin"),
+    (broken_response, "twitter"),
+    ('{"empty": "response"}', "twitter"),
+]
+
+for i, (response, platform) in enumerate(test_cases):
+    print(f"\n=== Test Case {i+1}: {platform} ===")
+    result = process_social_media_post(response, platform)
+    print(f"Success: {result['success']}")
+    if result['success']:
+        post = result['post']
+        print(f"Post ID: {post['id']}")
+        print(f"Author: {post['author']['username']}")
+        print(f"Content: {post['content'][:50]}...")
+        print(f"Likes: {post['engagement']['likes']}")
+    else:
+        print(f"Error: {result['error']}")
+        print(f"Type: {result['error_type']}")
+```
+
+---
+
+# Task 2: Nested Data Validator (15 minutes)
+
+## Problem Statement
+
+You're building a configuration system that accepts complex nested JSON configurations. Create a validator that can check deeply nested structures and provide detailed validation reports.
+
+### Configuration Schema
+
+```python
+# Expected configuration structure
+config_schema = {
+    "app": {
+        "name": str,           # required
+        "version": str,        # required
+        "debug": bool          # optional, default False
+    },
+    "database": {
+        "host": str,           # required
+        "port": int,           # required, range 1-65535
+        "name": str,           # required
+        "credentials": {
+            "username": str,   # required
+            "password": str,   # required, min length 8
+        },
+        "pool_size": int,      # optional, default 5, range 1-100
+        "timeout": float       # optional, default 30.0, range 1.0-300.0
+    },
+    "api": {
+        "endpoints": list,     # required, non-empty
+        "rate_limit": int,     # optional, default 1000, min 1
+        "ssl": {
+            "enabled": bool,   # required
+            "cert_path": str,  # required if ssl.enabled is True
+            "key_path": str    # required if ssl.enabled is True
+        }
+    }
+}
+```
+
+### Test Configurations
+
+```python
+# Valid configuration
+valid_config = '''
+{
+    "app": {
+        "name": "MyApp",
+        "version": "1.0.0",
+        "debug": true
+    },
+    "database": {
+        "host": "localhost",
+        "port": 5432,
+        "name": "myapp_db",
+        "credentials": {
+            "username": "dbuser",
+            "password": "securepass123"
+        },
+        "pool_size": 10,
+        "timeout": 60.0
+    },
+    "api": {
+        "endpoints": ["/users", "/posts", "/comments"],
+        "rate_limit": 500,
+        "ssl": {
+            "enabled": true,
+            "cert_path": "/path/to/cert.pem",
+            "key_path": "/path/to/key.pem"
+        }
+    }
+}
+'''
+
+# Configuration with errors
+invalid_config = '''
+{
+    "app": {
+        "name": "MyApp"
+        // Missing version, debug has wrong type
+    },
+    "database": {
+        "host": "localhost",
+        "port": "not_a_number",
+        "name": "myapp_db",
+        "credentials": {
+            "username": "dbuser",
+            "password": "weak"
+        },
+        "pool_size": 150,
+        "timeout": -5.0
+    },
+    "api": {
+        "endpoints": [],
+        "rate_limit": -100,
+        "ssl": {
+            "enabled": true
+            // Missing cert_path and key_path
+        }
+    }
+}
+'''
+
+# Configuration with missing sections
+incomplete_config = '''
+{
+    "app": {
+        "name": "MyApp",
+        "version": "1.0.0"
+    },
+    "database": {
+        "host": "localhost",
+        "port": 5432,
+        "name": "myapp_db"
+    }
+}
+'''
+```
+
+### Your Task
+
+Create a comprehensive configuration validator that:
+
+1. **Validates structure** against the schema
+2. **Checks data types** for all fields
+3. **Validates value ranges** where specified
+4. **Handles conditional requirements** (like SSL certificates)
+5. **Provides detailed error reports** with field paths
+6. **Applies default values** for optional fields
+
+### Implementation Template
+
+```python
+import json
+
+class ConfigValidator:
+    """Comprehensive configuration validator with detailed error reporting."""
+    
+    def __init__(self):
+        self.errors = []
+        self.warnings = []
+        self.defaults_applied = []
+    
+    def validate_config(self, json_config):
+        """
+        Validate configuration against schema.
+        
+        Returns:
+            dict: Validation result with errors, warnings, and processed config
+        """
+        self.errors = []
+        self.warnings = []
+        self.defaults_applied = []
+        
+        try:
+            # Parse JSON
+            config = json.loads(json_config)
+            
+            # Validate structure
+            processed_config = self._validate_structure(config)
+            
+            return {
+                "valid": len(self.errors) == 0,
+                "config": processed_config if len(self.errors) == 0 else None,
+                "errors": self.errors,
+                "warnings": self.warnings,
+                "defaults_applied": self.defaults_applied
+            }
+            
+        except json.JSONDecodeError as e:
+            return {
+                "valid": False,
+                "config": None,
+                "errors": [f"JSON parse error: {e.msg} at line {e.lineno}"],
+                "warnings": [],
+                "defaults_applied": []
+            }
+    
+    def _validate_structure(self, config):
+        """Validate the main configuration structure."""
+        processed = {}
+        
+        # Validate app section
+        processed["app"] = self._validate_app_section(
+            config.get("app", {}), "app"
+        )
+        
+        # Validate database section
+        processed["database"] = self._validate_database_section(
+            config.get("database", {}), "database"
+        )
+        
+        # Validate API section
+        processed["api"] = self._validate_api_section(
+            config.get("api", {}), "api"
+        )
+        
+        return processed
+    
+    def _validate_app_section(self, app_config, path):
+        """Validate app configuration section."""
+        processed = {}
+        
+        # Required: name
+        if "name" not in app_config:
+            self.errors.append(f"{path}.name is required")
+        elif not isinstance(app_config["name"], str):
+            self.errors.append(f"{path}.name must be a string")
+        else:
+            processed["name"] = app_config["name"]
+        
+        # Required: version
+        # Your implementation here
+        
+        # Optional: debug (default False)
+        # Your implementation here
+        
+        return processed
+    
+    def _validate_database_section(self, db_config, path):
+        """Validate database configuration section."""
+        # Your implementation here
+        pass
+    
+    def _validate_api_section(self, api_config, path):
+        """Validate API configuration section."""
+        # Your implementation here
+        pass
+    
+    def _validate_ssl_section(self, ssl_config, path):
+        """Validate SSL configuration section."""
+        # Your implementation here
+        pass
+
+# Test your validator:
+validator = ConfigValidator()
+
+test_configs = [
+    ("Valid Config", valid_config),
+    ("Invalid Config", invalid_config),
+    ("Incomplete Config", incomplete_config),
+]
+
+for name, config in test_configs:
+    print(f"\n=== Testing {name} ===")
+    result = validator.validate_config(config)
+    
+    print(f"Valid: {result['valid']}")
+    
+    if result['errors']:
+        print("Errors:")
+        for error in result['errors']:
+            print(f"  - {error}")
+    
+    if result['warnings']:
+        print("Warnings:")
+        for warning in result['warnings']:
+            print(f"  - {warning}")
+    
+    if result['defaults_applied']:
+        print("Defaults Applied:")
+        for default in result['defaults_applied']:
+            print(f"  - {default}")
+```
+
+---
+
+# Task 3: Data Transformation Pipeline (10 minutes)
+
+## Problem Statement
+
+Create a data transformation pipeline that safely processes user data through multiple transformation stages, handling errors at each stage and providing detailed reports.
+
+### Input Data
+
+```python
+# Raw user data from various sources
+raw_user_data = [
+    {
+        "id": "1",
+        "name": "  Alice Johnson  ",
+        "email": "ALICE@EXAMPLE.COM",
+        "age": "25",
+        "registration_date": "2024-01-15",
+        "preferences": '{"theme": "dark", "notifications": true}',
+        "tags": "python,programming,beginner"
+    },
+    {
+        "id": "2",
+        "name": "Bob Smith",
+        "email": "invalid-email",
+        "age": "not_a_number",
+        "registration_date": "2024-13-45",  # Invalid date
+        "preferences": '{"theme": "light"}',
+        "tags": ""
+    },
+    {
+        "id": "3",
+        "name": "",  # Empty name
+        "email": "charlie@test.com",
+        "age": "-5",  # Invalid age
+        "registration_date": "2024-01-10",
+        "preferences": 'invalid json',
+        "tags": "python,advanced,web-development"
+    },
+    {
+        # Missing required fields
+        "email": "diana@example.com",
+        "age": "30"
+    }
+]
+```
+
+### Your Task
+
+Create a transformation pipeline that:
+
+1. **Validates and cleans** each field
+2. **Transforms data types** appropriately
+3. **Handles missing or invalid data** gracefully
+4. **Tracks transformation errors** and successes
+5. **Provides detailed transformation reports**
+
+### Implementation Template
+
+```python
+import json
+import re
+from datetime import datetime
+
+class UserDataTransformer:
+    """Transform and validate user data with comprehensive error tracking."""
+    
+    def __init__(self):
+        self.transformation_report = {
+            "processed": 0,
+            "successful": 0,
+            "failed": 0,
+            "field_errors": {},
+            "warnings": []
+        }
+    
+    def transform_user_batch(self, user_data_list):
+        """Transform a batch of user data records."""
+        self.transformation_report = {
+            "processed": 0,
+            "successful": 0,
+            "failed": 0,
+            "field_errors": {},
+            "warnings": []
+        }
+        
+        transformed_users = []
+        
+        for user_data in user_data_list:
+            self.transformation_report["processed"] += 1
+            
+            result = self.transform_single_user(user_data)
+            
+            if result["success"]:
+                transformed_users.append(result["user"])
+                self.transformation_report["successful"] += 1
+            else:
+                self.transformation_report["failed"] += 1
+                # Track field-specific errors
+                for field, error in result["field_errors"].items():
+                    if field not in self.transformation_report["field_errors"]:
+                        self.transformation_report["field_errors"][field] = []
+                    self.transformation_report["field_errors"][field].append(error)
+        
+        return {
+            "users": transformed_users,
+            "report": self.transformation_report
+        }
+    
+    def transform_single_user(self, user_data):
+        """Transform a single user record."""
+        transformed = {}
+        field_errors = {}
+        warnings = []
+        
+        # Transform ID
+        try:
+            # Your implementation here
+            pass
+        except Exception as e:
+            field_errors["id"] = str(e)
+        
+        # Transform name
+        try:
+            # Your implementation here
+            pass
+        except Exception as e:
+            field_errors["name"] = str(e)
+        
+        # Transform email
+        try:
+            # Your implementation here
+            pass
+        except Exception as e:
+            field_errors["email"] = str(e)
+        
+        # Transform age
+        try:
+            # Your implementation here
+            pass
+        except Exception as e:
+            field_errors["age"] = str(e)
+        
+        # Transform registration date
+        try:
+            # Your implementation here
+            pass
+        except Exception as e:
+            field_errors["registration_date"] = str(e)
+        
+        # Transform preferences JSON
+        try:
+            # Your implementation here
+            pass
+        except Exception as e:
+            field_errors["preferences"] = str(e)
+        
+        # Transform tags
+        try:
+            # Your implementation here
+            pass
+        except Exception as e:
+            field_errors["tags"] = str(e)
+        
+        # Determine success
+        success = len(field_errors) == 0
+        
+        return {
+            "success": success,
+            "user": transformed if success else None,
+            "field_errors": field_errors,
+            "warnings": warnings
+        }
+    
+    def _validate_email(self, email):
+        """Validate email format."""
+        pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        return re.match(pattern, email) is not None
+    
+    def _parse_date(self, date_string):
+        """Parse date string safely."""
+        try:
+            return datetime.strptime(date_string, "%Y-%m-%d").isoformat()
+        except ValueError:
+            raise ValueError(f"Invalid date format: {date_string}")
+
+# Test your transformer:
+transformer = UserDataTransformer()
+result = transformer.transform_user_batch(raw_user_data)
+
+print("=== Transformation Results ===")
+print(f"Processed: {result['report']['processed']}")
+print(f"Successful: {result['report']['successful']}")
+print(f"Failed: {result['report']['failed']}")
+
+print("\nSuccessfully Transformed Users:")
+for user in result['users']:
+    print(f"  {user['id']}: {user['name']} ({user['email']})")
+
+if result['report']['field_errors']:
+    print("\nField Errors:")
+    for field, errors in result['report']['field_errors'].items():
+        print(f"  {field}: {len(errors)} errors")
+        for error in errors[:2]:  # Show first 2 errors
+            print(f"    - {error}")
+```
+
+---
+
+# Task 4: API Response Aggregator (5 minutes)
+
+## Problem Statement
+
+Create a system that aggregates data from multiple API responses, handling inconsistencies and merging conflicting information intelligently.
+
+### Sample API Responses
+
+```python
+# Weather API responses from different services
+weather_responses = [
+    '''
+    {
+        "service": "WeatherAPI",
+        "location": "Seattle, WA",
+        "temperature": 68,
+        "humidity": 72,
+        "condition": "partly_cloudy",
+        "wind_speed": 8,
+        "timestamp": "2024-01-15T14:30:00Z"
+    }
+    ''',
+    '''
+    {
+        "provider": "OpenWeather",
+        "city": "Seattle",
+        "temp_f": 70,
+        "humidity_percent": 75,
+        "weather": "cloudy",
+        "wind_mph": 7,
+        "updated": "2024-01-15T14:32:00Z"
+    }
+    ''',
+    '''
+    {
+        "source": "NationalWeather",
+        "location_name": "Seattle, Washington",
+        "current_temp": 69,
+        "relative_humidity": 73,
+        "sky_condition": "overcast",
+        "wind_velocity": 8,
+        "observation_time": "2024-01-15T14:31:00Z"
+    }
+    '''
+]
+```
+
+### Your Task
+
+Create an aggregator that:
+1. **Normalizes field names** from different APIs
+2. **Averages numeric values** when multiple sources available
+3. **Handles missing fields** gracefully
+4. **Resolves conflicts** in categorical data
+5. **Tracks data sources** and confidence levels
+
+### Implementation Template
+
+```python
+def aggregate_weather_data(responses):
+    """
+    Aggregate weather data from multiple API sources.
+    
+    Returns aggregated data with confidence metrics.
+    """
+    # Your implementation here
+    pass
+
+# Test your aggregator
+result = aggregate_weather_data(weather_responses)
+print("Aggregated Weather Data:")
+print(json.dumps(result, indent=2))
+```
+
+---
+
+# Assessment Criteria
+
+## Technical Accuracy (50 points)
+
+### JSON Processing (15 points)
+- **Excellent (14-15)**: Safe parsing with comprehensive error handling
+- **Good (11-13)**: Good JSON processing with basic error handling
+- **Satisfactory (8-10)**: Basic JSON processing works
+- **Needs Improvement (0-7)**: Poor or unsafe JSON handling
+
+### Data Validation (15 points)
+- **Excellent (14-15)**: Comprehensive validation with detailed error reporting
+- **Good (11-13)**: Good validation for most scenarios
+- **Satisfactory (8-10)**: Basic validation implemented
+- **Needs Improvement (0-7)**: Limited or missing validation
+
+### Data Transformation (10 points)
+- **Excellent (9-10)**: Robust transformation with error tracking
+- **Good (7-8)**: Good transformation handling
+- **Satisfactory (5-6)**: Basic transformation works
+- **Needs Improvement (0-4)**: Poor transformation logic
+
+### Error Handling (10 points)
+- **Excellent (9-10)**: Comprehensive error handling throughout
+- **Good (7-8)**: Good error handling for most scenarios
+- **Satisfactory (5-6)**: Basic error handling present
+- **Needs Improvement (0-4)**: Poor or missing error handling
+
+## Problem Solving (30 points)
+
+### Algorithm Design (15 points)
+- **Excellent (14-15)**: Efficient, well-designed algorithms
+- **Good (11-13)**: Good algorithmic approach
+- **Satisfactory (8-10)**: Acceptable algorithm design
+- **Needs Improvement (0-7)**: Poor algorithm choices
+
+### Edge Case Handling (15 points)
+- **Excellent (14-15)**: Comprehensive edge case coverage
+- **Good (11-13)**: Good edge case handling
+- **Satisfactory (8-10)**: Basic edge case coverage
+- **Needs Improvement (0-7)**: Missing important edge cases
+
+## Code Quality (20 points)
+
+### Code Organization (10 points)
+- **Excellent (9-10)**: Clean, well-structured code
+- **Good (7-8)**: Well-organized code
+- **Satisfactory (5-6)**: Acceptable organization
+- **Needs Improvement (0-4)**: Poor code structure
+
+### Documentation (10 points)
+- **Excellent (9-10)**: Clear documentation and comments
+- **Good (7-8)**: Good documentation
+- **Satisfactory (5-6)**: Basic documentation
+- **Needs Improvement (0-4)**: Poor or missing documentation
+
+---
+
+# Success Tips
+
+## JSON Processing Best Practices
+
+1. **Always use try/except** around `json.loads()` and `json.dumps()`
+2. **Check data types** after parsing JSON
+3. **Use `.get()` method** for optional fields with defaults
+4. **Validate structure** before processing nested data
+5. **Handle Unicode** and encoding issues
+
+## Data Validation Strategies
+
+1. **Check required fields first** before processing
+2. **Validate data types** explicitly
+3. **Use ranges and patterns** for value validation
+4. **Provide specific error messages** with field paths
+5. **Collect all errors** rather than failing on first error
+
+## Common Pitfalls to Avoid
+
+1. **Assuming JSON structure** without validation
+2. **Not handling missing fields** gracefully
+3. **Using generic error handling** instead of specific validation
+4. **Ignoring data type mismatches**
+5. **Not providing user-friendly error messages**
+
+Remember: Real-world JSON data is messy, inconsistent, and full of surprises. Your code should expect and handle these gracefully!

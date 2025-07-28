@@ -1,0 +1,760 @@
+---
+title: "Project 10: Weather Information App"
+subtitle: "Building a Professional Connected Application"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Project Overview
+
+**Objective**: Build a complete weather information application that demonstrates professional error handling, API integration, and user experience design.
+
+**Duration**: Complete over 1-2 weeks  
+**Skills**: Error handling, JSON processing, HTTP requests, caching, user interface design
+
+## Learning Outcomes
+
+By completing this project, you will demonstrate:
+
+1. **Professional Error Handling**
+   - Implement comprehensive try/except patterns
+   - Handle network, data, and service failures gracefully
+   - Provide meaningful feedback to users
+
+2. **External API Integration** 
+   - Connect to real weather services
+   - Process JSON responses safely
+   - Handle authentication and rate limiting
+
+3. **Application Resilience**
+   - Implement caching for offline functionality
+   - Create fallback strategies when services fail
+   - Build retry logic with exponential backoff
+
+4. **User Experience Excellence**
+   - Design intuitive command-line interface
+   - Provide clear status updates and error messages
+   - Support multiple display formats and preferences
+
+5. **AI-Assisted Development**
+   - Use AI effectively for debugging connection issues
+   - Collaborate with AI on optimization strategies
+   - Document AI collaboration process
+
+---
+
+# Project Requirements
+
+## Core Features (Required)
+
+### 1. Weather Data Retrieval
+- Connect to a real weather API service
+- Support multiple cities and locations
+- Handle different weather data formats
+- Implement proper authentication
+
+### 2. Comprehensive Error Handling
+- Network connection failures
+- Invalid API responses
+- Missing or corrupted data
+- Authentication errors
+- Rate limiting scenarios
+
+### 3. Data Caching System
+- Cache recent weather data locally
+- Implement cache expiration logic
+- Use cached data when API is unavailable
+- Provide cache management commands
+
+### 4. User Interface
+- Interactive command-line interface
+- Multiple display format options
+- Clear status and error messages
+- Help and usage information
+
+### 5. Configuration Management
+- API key configuration
+- User preferences storage
+- Cache settings management
+- Error logging options
+
+## Enhanced Features (Optional)
+
+### 6. Multi-City Support
+- Favorite cities list
+- Bulk weather retrieval
+- Location auto-detection
+- Geographic search capabilities
+
+### 7. Advanced Display Options
+- Detailed vs summary views
+- Historical data comparison
+- Weather alerts and warnings
+- ASCII art weather icons
+
+### 8. Data Export
+- Save weather data to files
+- Export in multiple formats (JSON, CSV, TXT)
+- Generate weather reports
+- Data visualization options
+
+---
+
+# Technical Specifications
+
+## API Integration Requirements
+
+### Weather Service APIs
+You may use any of these free weather APIs:
+
+**OpenWeatherMap (Recommended)**
+- Free tier: 1000 calls/day
+- Good documentation
+- Reliable service
+- Multiple data formats
+
+**WeatherAPI**
+- Free tier: 1 million calls/month
+- Real-time and forecast data
+- JSON responses
+- Easy authentication
+
+**National Weather Service (US)**
+- Completely free
+- No API key required
+- US locations only
+- Government-maintained
+
+### HTTP Client Implementation
+```python
+# Required libraries (built-in only)
+import urllib.request
+import urllib.parse
+import json
+import time
+
+# Example API client structure:
+class WeatherAPIClient:
+    def __init__(self, api_key=None, base_url=None):
+        self.api_key = api_key
+        self.base_url = base_url
+        self.timeout = 10
+        
+    def get_current_weather(self, location):
+        """Get current weather with error handling."""
+        # Implementation required
+        pass
+        
+    def get_forecast(self, location, days=5):
+        """Get forecast with error handling."""
+        # Implementation required
+        pass
+```
+
+## Data Storage Requirements
+
+### Cache Structure
+```python
+# Cache file format (JSON)
+{
+    "locations": {
+        "seattle_wa": {
+            "data": {...},
+            "timestamp": 1234567890,
+            "expires": 1234567890
+        }
+    },
+    "settings": {
+        "cache_duration": 300,
+        "default_units": "imperial",
+        "display_format": "detailed"
+    }
+}
+```
+
+### Configuration File
+```python
+# config.json structure
+{
+    "api": {
+        "service": "openweathermap",
+        "key": "your_api_key_here",
+        "base_url": "https://api.openweathermap.org/data/2.5"
+    },
+    "cache": {
+        "enabled": true,
+        "duration": 300,
+        "max_entries": 50
+    },
+    "display": {
+        "units": "imperial",
+        "format": "detailed",
+        "show_timestamps": true
+    }
+}
+```
+
+## Error Handling Requirements
+
+### Exception Categories
+```python
+# Custom exceptions for weather app
+class WeatherAppError(Exception):
+    """Base exception for weather app."""
+    pass
+
+class APIConnectionError(WeatherAppError):
+    """API connection failed."""
+    pass
+
+class APIAuthenticationError(WeatherAppError):
+    """API authentication failed."""
+    pass
+
+class InvalidLocationError(WeatherAppError):
+    """Location not found or invalid."""
+    pass
+
+class DataProcessingError(WeatherAppError):
+    """Error processing weather data."""
+    pass
+```
+
+### Recovery Strategies
+```python
+# Error recovery patterns to implement
+def resilient_weather_fetch(location):
+    """Multi-strategy weather data retrieval."""
+    strategies = [
+        lambda: fetch_from_primary_api(location),
+        lambda: fetch_from_cache(location),
+        lambda: fetch_from_backup_api(location),
+        lambda: get_default_weather_message(location)
+    ]
+    
+    errors = []
+    for strategy in strategies:
+        try:
+            result = strategy()
+            if result["success"]:
+                return result
+        except Exception as e:
+            errors.append(str(e))
+    
+    return {"success": False, "errors": errors}
+```
+
+---
+
+# Implementation Guide
+
+## Phase 1: Basic Structure (Week 1)
+
+### Day 1: Project Setup
+1. Create project directory structure
+2. Set up configuration management
+3. Choose and configure weather API
+4. Implement basic HTTP client
+
+### Day 2: Core API Integration
+1. Build weather API client class
+2. Implement current weather retrieval
+3. Add basic error handling
+4. Test with various locations
+
+### Day 3: Data Processing
+1. Create JSON response parser
+2. Implement data validation
+3. Add data normalization
+4. Build weather data model
+
+## Phase 2: Resilience Features (Week 1)
+
+### Day 4: Error Handling
+1. Implement comprehensive exception handling
+2. Add retry logic with backoff
+3. Create user-friendly error messages
+4. Test failure scenarios
+
+### Day 5: Caching System
+1. Design cache data structure
+2. Implement cache read/write operations
+3. Add cache expiration logic
+4. Create cache management commands
+
+### Day 6: User Interface
+1. Build command-line interface
+2. Add interactive menu system
+3. Implement help and usage display
+4. Create status and error feedback
+
+## Phase 3: Enhancement and Polish (Week 2)
+
+### Day 7: Advanced Features
+1. Add forecast data support
+2. Implement multiple display formats
+3. Create favorites management
+4. Add bulk operations
+
+### Day 8: Testing and Optimization
+1. Test all error scenarios
+2. Optimize API usage patterns
+3. Improve cache efficiency
+4. Enhance user experience
+
+### Day 9: Documentation and Refinement
+1. Write comprehensive documentation
+2. Create usage examples
+3. Refine error messages
+4. Optimize performance
+
+---
+
+# AI Collaboration Guidelines
+
+## Strategic AI Partnership
+
+### Phase 1: Understanding and Setup
+```python
+# Effective AI prompts for initial setup:
+
+"""
+I'm building a weather app that needs to integrate with OpenWeatherMap API.
+Here's their API documentation: [paste documentation]
+
+Help me understand:
+1. What's the best way to structure my HTTP requests?
+2. What errors should I prepare for?
+3. How should I handle authentication?
+4. What's the recommended request frequency?
+"""
+
+"""
+I need to design a caching system for weather data that:
+- Stores data locally between app runs
+- Expires data after 5 minutes
+- Handles multiple cities
+- Stays under 1MB total size
+
+What data structure and approach would you recommend?
+"""
+```
+
+### Phase 2: Implementation Support
+```python
+# Debugging and optimization prompts:
+
+"""
+My weather API request is failing with this error:
+[paste exact error message]
+
+My code:
+[paste relevant code]
+
+What's wrong and how should I fix it?
+"""
+
+"""
+I want to implement retry logic for API calls that:
+- Retries on network failures
+- Uses exponential backoff
+- Doesn't retry on authentication errors
+- Gives up after 3 attempts
+
+How should I structure this?
+"""
+```
+
+### Phase 3: Enhancement and Optimization
+```python
+# Advanced collaboration prompts:
+
+"""
+My weather app works but API calls are slow. I want to optimize by:
+- Caching more intelligently
+- Reducing redundant requests
+- Prefetching likely queries
+
+What strategies would you recommend?
+"""
+
+"""
+Users want better error messages. Instead of "API Error 404", 
+what user-friendly messages should I show for different scenarios?
+Help me design error message templates.
+"""
+```
+
+## AI Collaboration Log
+
+**Document your AI interactions**:
+
+```markdown
+### AI Collaboration Log - Weather App Project
+
+#### Session 1: API Integration Planning
+**Date**: [Date]
+**Objective**: Design API client architecture
+**Prompt**: [Exact prompt used]
+**AI Response Summary**: [Key insights provided]
+**Implementation Decision**: [What you decided to implement]
+**Outcome**: [How it worked]
+
+#### Session 2: Error Handling Design
+**Date**: [Date]
+**Objective**: Implement comprehensive error handling
+**Prompt**: [Exact prompt used]
+**AI Response Summary**: [Key insights provided]
+**Implementation Decision**: [What you decided to implement]
+**Outcome**: [How it worked]
+
+[Continue for each major AI collaboration...]
+```
+
+---
+
+# Testing Requirements
+
+## Functionality Testing
+
+### 1. API Integration Tests
+```python
+def test_api_integration():
+    """Test all API integration scenarios."""
+    test_cases = [
+        ("Valid city", "Seattle", True),
+        ("Invalid city", "NonexistentCity123", False),
+        ("Empty input", "", False),
+        ("Special characters", "São Paulo", True),
+        ("Numeric input", "12345", False)
+    ]
+    
+    for description, input_data, expected_success in test_cases:
+        print(f"Testing: {description}")
+        result = weather_client.get_weather(input_data)
+        assert result["success"] == expected_success
+        print(f"✓ {description} - Passed")
+```
+
+### 2. Error Handling Tests
+```python
+def test_error_scenarios():
+    """Test error handling robustness."""
+    # Test network timeout
+    # Test invalid API key
+    # Test malformed JSON response
+    # Test rate limiting
+    # Test server errors (5xx)
+    pass
+```
+
+### 3. Cache System Tests
+```python
+def test_caching_system():
+    """Test cache functionality."""
+    # Test cache storage and retrieval
+    # Test cache expiration
+    # Test cache size limits
+    # Test cache cleanup
+    pass
+```
+
+## User Experience Testing
+
+### 1. Interface Usability
+- Test all menu options
+- Verify clear error messages
+- Check help text accuracy
+- Validate input handling
+
+### 2. Performance Testing
+- Measure API response times
+- Test with slow connections
+- Verify cache performance
+- Check memory usage
+
+### 3. Edge Case Testing
+- Test with no internet connection
+- Test with expired API key
+- Test with corrupted cache files
+- Test with invalid configuration
+
+---
+
+# Submission Requirements
+
+## Code Deliverables
+
+### 1. Source Code Files
+```
+weather_app/
+├── main.py                 # Main application entry point
+├── weather_client.py       # API client implementation
+├── cache_manager.py        # Cache system
+├── config_manager.py       # Configuration handling
+├── ui.py                  # User interface
+├── data_models.py         # Weather data structures
+├── error_handlers.py      # Error handling utilities
+├── config.json            # Configuration file
+└── requirements.txt       # Dependencies (if any)
+```
+
+### 2. Documentation Files
+```
+docs/
+├── README.md              # Project overview and setup
+├── USER_GUIDE.md          # User instructions
+├── API_GUIDE.md           # API integration details
+├── TROUBLESHOOTING.md     # Common issues and solutions
+└── AI_COLLABORATION.md    # AI collaboration log
+```
+
+## Code Quality Standards
+
+### 1. Error Handling
+- Every external operation wrapped in try/except
+- Specific exception types caught when possible
+- User-friendly error messages
+- Logging for debugging purposes
+
+### 2. Code Organization
+- Clear function and class structure
+- Appropriate separation of concerns
+- Consistent naming conventions
+- Comprehensive docstrings
+
+### 3. Configuration Management
+- No hardcoded API keys or URLs
+- User-configurable settings
+- Reasonable default values
+- Easy setup process
+
+## Demonstration Requirements
+
+### 1. Live Demo Scenarios
+Prepare to demonstrate:
+
+1. **Happy Path**: Normal weather lookup for multiple cities
+2. **Error Handling**: Show graceful failure when API is unavailable
+3. **Caching**: Demonstrate cache hit vs API call
+4. **Recovery**: Show fallback strategies in action
+5. **User Experience**: Navigate through error scenarios
+
+### 2. Code Walkthrough
+Be prepared to explain:
+
+1. **Architecture Decisions**: Why you structured code this way
+2. **Error Handling Strategy**: How you handle different failure types
+3. **AI Collaboration**: How AI helped solve specific challenges
+4. **Testing Approach**: How you verified reliability
+5. **Future Improvements**: What you would add next
+
+---
+
+# Assessment Rubric
+
+## Technical Excellence (40 points)
+
+### API Integration (10 points)
+- **Excellent (9-10)**: Robust API client with comprehensive error handling
+- **Good (7-8)**: Working API integration with basic error handling
+- **Satisfactory (5-6)**: Basic API calls work with minimal error handling
+- **Needs Improvement (0-4)**: API integration incomplete or unreliable
+
+### Error Handling (10 points)
+- **Excellent (9-10)**: Comprehensive error handling for all scenarios
+- **Good (7-8)**: Good error handling for most common scenarios
+- **Satisfactory (5-6)**: Basic error handling implemented
+- **Needs Improvement (0-4)**: Limited or missing error handling
+
+### Data Processing (10 points)
+- **Excellent (9-10)**: Safe JSON processing with validation and type checking
+- **Good (7-8)**: Reliable JSON processing with basic validation
+- **Satisfactory (5-6)**: JSON processing works for valid responses
+- **Needs Improvement (0-4)**: JSON processing incomplete or unsafe
+
+### Application Architecture (10 points)
+- **Excellent (9-10)**: Well-organized, modular code with clear separation
+- **Good (7-8)**: Good organization with some modular structure
+- **Satisfactory (5-6)**: Basic organization, mostly functional
+- **Needs Improvement (0-4)**: Poor organization, difficult to understand
+
+## User Experience (25 points)
+
+### Interface Design (10 points)
+- **Excellent (9-10)**: Intuitive, user-friendly interface with clear feedback
+- **Good (7-8)**: Good interface with mostly clear interactions
+- **Satisfactory (5-6)**: Basic interface that works
+- **Needs Improvement (0-4)**: Confusing or incomplete interface
+
+### Error Communication (8 points)
+- **Excellent (7-8)**: Clear, helpful error messages that guide users
+- **Good (5-6)**: Understandable error messages
+- **Satisfactory (3-4)**: Basic error messages
+- **Needs Improvement (0-2)**: Unclear or missing error messages
+
+### Performance and Reliability (7 points)
+- **Excellent (6-7)**: Fast, reliable operation with good caching
+- **Good (4-5)**: Generally reliable with acceptable performance
+- **Satisfactory (2-3)**: Works but may be slow or inconsistent
+- **Needs Improvement (0-1)**: Poor performance or unreliable
+
+## Professional Practices (20 points)
+
+### Code Quality (8 points)
+- **Excellent (7-8)**: Clean, well-documented, professional code
+- **Good (5-6)**: Good code quality with adequate documentation
+- **Satisfactory (3-4)**: Acceptable code quality
+- **Needs Improvement (0-2)**: Poor code quality or documentation
+
+### Testing and Validation (6 points)
+- **Excellent (5-6)**: Comprehensive testing of all scenarios
+- **Good (3-4)**: Good testing coverage
+- **Satisfactory (1-2)**: Basic testing performed
+- **Needs Improvement (0)**: Minimal or no testing
+
+### Configuration and Setup (6 points)
+- **Excellent (5-6)**: Easy setup with clear configuration options
+- **Good (3-4)**: Straightforward setup process
+- **Satisfactory (1-2)**: Setup works but may be unclear
+- **Needs Improvement (0)**: Difficult or broken setup
+
+## AI Collaboration (15 points)
+
+### Strategic AI Use (8 points)
+- **Excellent (7-8)**: Effective AI collaboration for complex problems
+- **Good (5-6)**: Good use of AI for debugging and optimization
+- **Satisfactory (3-4)**: Basic AI assistance utilized
+- **Needs Improvement (0-2)**: Limited or ineffective AI use
+
+### Documentation of AI Process (7 points)
+- **Excellent (6-7)**: Detailed, insightful AI collaboration log
+- **Good (4-5)**: Good documentation of AI interactions
+- **Satisfactory (2-3)**: Basic documentation of AI use
+- **Needs Improvement (0-1)**: Poor or missing AI documentation
+
+---
+
+# Success Tips
+
+## Development Strategy
+
+### 1. Start Simple, Build Up
+- Get basic API call working first
+- Add one error handling scenario at a time
+- Test each feature thoroughly before moving on
+- Keep the interface simple initially
+
+### 2. Test Early, Test Often
+- Test with real API from day one
+- Try to break your code intentionally
+- Test with bad network conditions
+- Verify error messages make sense
+
+### 3. Use AI Strategically
+- Ask specific questions with context
+- Share exact error messages
+- Request code reviews for critical sections
+- Get help with testing strategies
+
+## Common Pitfalls to Avoid
+
+### 1. API Integration Issues
+- Forgetting to handle specific HTTP status codes
+- Not implementing proper timeout handling
+- Hardcoding API keys in source code
+- Ignoring rate limiting requirements
+
+### 2. Error Handling Gaps
+- Using generic Exception catches everywhere
+- Not providing user-friendly error messages
+- Failing to log errors for debugging
+- Missing fallback strategies
+
+### 3. User Experience Problems
+- Unclear or confusing interface
+- Long operations without progress feedback
+- Poor error message design
+- Inconsistent behavior
+
+## Resources and Support
+
+### Weather API Resources
+- **OpenWeatherMap Documentation**: https://openweathermap.org/api
+- **WeatherAPI Documentation**: https://www.weatherapi.com/docs/
+- **National Weather Service API**: https://www.weather.gov/documentation/services-web-api
+
+### Python HTTP Resources
+- **urllib Documentation**: https://docs.python.org/3/library/urllib.html
+- **JSON Module Guide**: https://docs.python.org/3/library/json.html
+- **Error Handling Best Practices**: [Course materials from previous weeks]
+
+### Getting Help
+1. **AI Assistance**: Use strategic prompts with specific context
+2. **Instructor Office Hours**: Schedule time for complex issues
+3. **Peer Collaboration**: Discuss approaches (not solutions)
+4. **Online Resources**: Official documentation and tutorials
+
+---
+
+# Project Extensions (Bonus)
+
+For students who complete the core project early:
+
+## Advanced Features
+
+### 1. Multi-API Support
+- Support multiple weather service APIs
+- Automatic failover between services
+- API performance monitoring
+- Cost optimization strategies
+
+### 2. Advanced Caching
+- Intelligent cache warming
+- Cache compression
+- Distributed cache support
+- Cache analytics and reporting
+
+### 3. Enhanced User Experience
+- Location auto-completion
+- Weather map integration
+- Push notifications for alerts
+- Customizable dashboard layouts
+
+### 4. Data Analysis Features
+- Weather trend analysis
+- Historical data comparison
+- Climate statistics
+- Prediction accuracy tracking
+
+## Integration Challenges
+
+### 1. Web Interface
+- Convert CLI app to web application
+- Add real-time weather updates
+- Implement user accounts and preferences
+- Mobile-responsive design
+
+### 2. Database Integration
+- Store historical weather data
+- User preference management
+- Analytics and reporting
+- Data backup and recovery
+
+### 3. Microservices Architecture
+- Split into multiple services
+- Service discovery implementation
+- Load balancing strategies
+- Monitoring and logging
+
+Remember: The goal is to build a professional-quality application that demonstrates mastery of connected programming concepts. Focus on reliability, user experience, and code quality over feature quantity.
+
+Good luck building your weather application!

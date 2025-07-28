@@ -1,0 +1,112 @@
+---
+title: "Week 1 Exit Survey"
+subtitle: "Reflection and Self-Assessment"
+format:
+  html:
+    toc: false
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: false
+---
+
+# Week 1 Exit Survey
+
+**Name**: ___________________________  
+**Date**: ___________________________
+
+## Learning Reflection
+
+### 1. Key Concept Learned
+What's the most important thing you learned this week? (Be specific)
+
+_______________________________________________________________
+_______________________________________________________________
+_______________________________________________________________
+
+### 2. Biggest Challenge
+What was the most difficult part of this week's material?
+
+_______________________________________________________________
+_______________________________________________________________
+_______________________________________________________________
+
+### 3. AI Learning Experience
+
+How did AI help your learning this week? Give a specific example:
+
+_______________________________________________________________
+_______________________________________________________________
+_______________________________________________________________
+
+How did AI potentially hinder or confuse your learning? Give an example:
+
+_______________________________________________________________
+_______________________________________________________________
+_______________________________________________________________
+
+### 4. Confidence Assessment
+
+Rate your confidence level (1-5, where 5 is very confident):
+
+| Concept | Rating | Why this rating? |
+|---------|---------|------------------|
+| Using Google Colab | ___/5 | |
+| Understanding variables | ___/5 | |
+| Using print() and input() | ___/5 | |
+| Converting data types | ___/5 | |
+| Writing if/elif statements | ___/5 | |
+| Debugging simple errors | ___/5 | |
+| Using AI appropriately | ___/5 | |
+
+### 5. Code Understanding
+
+Can you explain what this code does? (Write your explanation below)
+
+```python
+user_name = input("Enter your name: ")
+user_age = input("Enter your age: ")
+user_age = int(user_age)
+next_year_age = user_age + 1
+print(f"Hi {user_name}! Next year you'll be {next_year_age}")
+```
+
+Your explanation:
+_______________________________________________________________
+_______________________________________________________________
+_______________________________________________________________
+
+### 6. Debugging Practice
+
+This code has an error. Can you identify it? (Don't fix it, just explain the problem)
+
+```python
+temperature = input("Enter temperature: ")
+if temperature > 100:
+    print("That's really hot!")
+else:
+    print("That's not too hot.")
+```
+
+The error is:
+_______________________________________________________________
+_______________________________________________________________
+
+### 7. Looking Ahead
+
+What's one question you have going into next week?
+
+_______________________________________________________________
+_______________________________________________________________
+
+What's one thing you want to practice more?
+
+_______________________________________________________________
+_______________________________________________________________
+
+## For Instructor Use
+
+**Participation**: ___/10  
+**Lab Completion**: ___/10  
+**Understanding Demonstrated**: ___/10  
+**Comments**: _________________________________________________

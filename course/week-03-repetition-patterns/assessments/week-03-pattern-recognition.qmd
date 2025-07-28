@@ -1,0 +1,262 @@
+---
+title: "Week 3 Assessment: Pattern Recognition"
+subtitle: "Choosing the Right Loop for the Job"
+format:
+  html:
+    toc: true
+    code-fold: false
+  pdf:
+    toc: true
+---
+
+# Pattern Recognition Assessment
+
+**Name:** _________________________ **Date:** _____________
+
+**Instructions:** For each scenario, identify the type of loop needed and explain your reasoning.
+
+---
+
+## Part 1: Identifying Loop Types (40 points)
+
+For each task, circle the best loop type and explain why:
+
+### Task 1
+"Print 'Hello' exactly 10 times"
+
+**Best loop type:** `while` / `for with range` / `for with list`
+
+**Explanation:** ________________________________________________
+
+_____________________________________________________________
+
+### Task 2
+"Keep asking for a password until it's correct"
+
+**Best loop type:** `while` / `for with range` / `for with list`
+
+**Explanation:** ________________________________________________
+
+_____________________________________________________________
+
+### Task 3
+"Calculate the total price of all items in a shopping cart"
+
+**Best loop type:** `while` / `for with range` / `for with list`
+
+**Explanation:** ________________________________________________
+
+_____________________________________________________________
+
+### Task 4
+"Count down from 50 to 0"
+
+**Best loop type:** `while` / `for with range` / `for with list`
+
+**Explanation:** ________________________________________________
+
+_____________________________________________________________
+
+### Task 5
+"Keep playing a game until the player chooses to quit"
+
+**Best loop type:** `while` / `for with range` / `for with list`
+
+**Explanation:** ________________________________________________
+
+_____________________________________________________________
+
+### Task 6
+"Send an email to each person in a contact list"
+
+**Best loop type:** `while` / `for with range` / `for with list`
+
+**Explanation:** ________________________________________________
+
+_____________________________________________________________
+
+### Task 7
+"Generate the first 20 even numbers"
+
+**Best loop type:** `while` / `for with range` / `for with list`
+
+**Explanation:** ________________________________________________
+
+_____________________________________________________________
+
+### Task 8
+"Process user commands until they type 'exit'"
+
+**Best loop type:** `while` / `for with range` / `for with list`
+
+**Explanation:** ________________________________________________
+
+_____________________________________________________________
+
+---
+
+## Part 2: Pattern Matching (30 points)
+
+Match each code pattern to its purpose:
+
+### Code Patterns:
+```python
+# Pattern A
+total = 0
+for num in numbers:
+    total = total + num
+
+# Pattern B
+found = False
+for item in items:
+    if item == target:
+        found = True
+        break
+
+# Pattern C
+valid = False
+while not valid:
+    value = input("Enter positive number: ")
+    if int(value) > 0:
+        valid = True
+
+# Pattern D
+results = []
+for i in range(5):
+    value = input(f"Enter value {i+1}: ")
+    results.append(value)
+
+# Pattern E
+count = 0
+for item in items:
+    if condition:
+        count = count + 1
+
+# Pattern F
+index = 0
+while index < len(items):
+    print(items[index])
+    index = index + 1
+```
+
+### Purposes (write the pattern letter):
+1. _____ Accumulation/Sum pattern
+2. _____ Search pattern  
+3. _____ Input validation pattern
+4. _____ Building a collection pattern
+5. _____ Counting pattern
+6. _____ Index-based iteration pattern
+
+---
+
+## Part 3: Converting Between Loop Types (30 points)
+
+### Question 1: Convert while to for
+Convert this while loop to a for loop:
+```python
+# Original while loop
+i = 0
+while i < 5:
+    print(f"Number: {i}")
+    i = i + 1
+```
+
+**Your for loop version:**
+```python
+
+
+
+
+```
+
+### Question 2: Convert for to while
+Convert this for loop to a while loop:
+```python
+# Original for loop
+names = ["Alice", "Bob", "Charlie"]
+for name in names:
+    print(f"Hello, {name}!")
+```
+
+**Your while loop version:**
+```python
+
+
+
+
+
+
+
+```
+
+### Question 3: Choose the Better Option
+Task: "Display all scores above 70 from a list of test scores"
+
+**Option A:**
+```python
+scores = [65, 82, 70, 91, 58, 85]
+i = 0
+while i < len(scores):
+    if scores[i] > 70:
+        print(scores[i])
+    i = i + 1
+```
+
+**Option B:**
+```python
+scores = [65, 82, 70, 91, 58, 85]
+for score in scores:
+    if score > 70:
+        print(score)
+```
+
+**Which option is better?** A / B
+
+**Why?** _____________________________________________________
+
+_____________________________________________________________
+
+---
+
+## Part 4: Problem Solving (Bonus - 10 points)
+
+Design a loop structure (don't write code, just describe):
+
+**Problem:** You need to ensure a user enters exactly 5 valid email addresses. An email is valid if it contains '@'.
+
+**Describe your approach:**
+- What type of loop would you use? ______________________
+- What would be your loop condition? ____________________
+- How would you track progress? _________________________
+- How would you validate each email? ____________________
+
+---
+
+## Grading Rubric
+
+| Section | Points | Your Score |
+|---------|---------|------------|
+| Part 1: Loop Type Selection | 40 |   |
+| Part 2: Pattern Matching | 30 |   |
+| Part 3: Loop Conversion | 30 |   |
+| Part 4: Problem Solving (Bonus) | 10 |   |
+| **Total** | **100** (+10 bonus) |   |
+
+**Grade:** _______
+
+---
+
+## Answer Guidelines (For Instructor Use)
+
+### Part 1 Expected Answers:
+1. for with range - known count
+2. while - unknown iterations
+3. for with list - process each item
+4. for with range - known count
+5. while - condition-based
+6. for with list - process collection
+7. for with range - known count
+8. while - sentinel value
+
+### Part 2 Answers:
+1. A, 2. B, 3. C, 4. D, 5. E, 6. F

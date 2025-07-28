@@ -1,0 +1,1761 @@
+---
+title: "Week 8 Lab: Building Complete Applications"
+subtitle: "From Code to Professional Software"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Lab Overview
+
+This lab transforms you from a code writer to a software developer. You'll learn to organize code professionally, implement robust error handling, create comprehensive tests, and build complete integrated applications.
+
+**Duration:** 2 hours  
+**Goals:**
+1. Refactor messy code into organized functions
+2. Implement comprehensive error handling
+3. Create test suites for validation
+4. Build complete integrated applications
+5. Apply professional development practices
+
+---
+
+# Hour 1: Code Organization and Testing
+
+## Part 1: Function Decomposition (20 minutes)
+
+### Exercise 1.1: Refactoring Messy Code
+
+Here's a working but poorly organized grade calculator. Your job: make it professional!
+
+```python
+# MESSY VERSION - Works but needs organization
+print("Grade Calculator")
+grades = []
+while True:
+    print("1=add grade 2=show grades 3=average 4=save 5=load 6=quit")
+    choice = input("? ")
+    if choice == "1":
+        try:
+            grade = float(input("Grade: "))
+            if grade < 0 or grade > 100:
+                print("Invalid grade")
+            else:
+                grades.append(grade)
+        except:
+            print("Bad input")
+    elif choice == "2":
+        if len(grades) == 0:
+            print("No grades")
+        else:
+            for i, g in enumerate(grades):
+                print(f"{i+1}: {g}")
+    elif choice == "3":
+        if len(grades) == 0:
+            print("No grades to average")
+        else:
+            avg = sum(grades) / len(grades)
+            print(f"Average: {avg}")
+    elif choice == "4":
+        try:
+            with open("grades.txt", "w") as f:
+                for g in grades:
+                    f.write(str(g) + "\n")
+            print("Saved")
+        except:
+            print("Save failed")
+    elif choice == "5":
+        try:
+            grades = []
+            with open("grades.txt", "r") as f:
+                for line in f:
+                    grades.append(float(line.strip()))
+            print("Loaded")
+        except:
+            print("Load failed")
+    elif choice == "6":
+        break
+    else:
+        print("Invalid choice")
+
+# YOUR TASK: Reorganize this into well-structured functions
+```
+
+**Step 1**: Break into logical functions:
+
+```python
+def load_grades(filename="grades.txt"):
+    """Load grades from file, return empty list if file missing."""
+    grades = []
+    try:
+        with open(filename, "r") as file:
+            for line in file:
+                grade = float(line.strip())
+                if 0 <= grade <= 100:  # Validate loaded grades
+                    grades.append(grade)
+    except FileNotFoundError:
+        print("No saved grades found. Starting fresh.")
+    except Exception as e:
+        print(f"Error loading grades: {e}")
+    
+    return grades
+
+def save_grades(grades, filename="grades.txt"):
+    """Save grades to file with error handling."""
+    try:
+        with open(filename, "w") as file:
+            for grade in grades:
+                file.write(f"{grade}\n")
+        print(f"✓ Saved {len(grades)} grades to {filename}")
+        return True
+    except Exception as e:
+        print(f"Error saving grades: {e}")
+        return False
+
+def add_grade(grades):
+    """Add a new grade with validation."""
+    while True:
+        try:
+            grade = float(input("Enter grade (0-100): "))
+            if 0 <= grade <= 100:
+                grades.append(grade)
+                print(f"✓ Added grade: {grade}")
+                return
+            else:
+                print("Grade must be between 0 and 100.")
+        except ValueError:
+            print("Please enter a valid number.")
+
+def display_grades(grades):
+    """Display all grades in organized format."""
+    if not grades:
+        print("No grades recorded yet.")
+        return
+    
+    print(f"\n=== Your Grades ({len(grades)} total) ===")
+    for i, grade in enumerate(grades, 1):
+        print(f"{i:2}. {grade:5.1f}")
+
+def calculate_statistics(grades):
+    """Calculate and display grade statistics."""
+    if not grades:
+        print("No grades to analyze.")
+        return
+    
+    average = sum(grades) / len(grades)
+    highest = max(grades)
+    lowest = min(grades)
+    
+    print(f"\n=== Grade Statistics ===")
+    print(f"Average: {average:.1f}")
+    print(f"Highest: {highest:.1f}")
+    print(f"Lowest: {lowest:.1f}")
+    print(f"Count: {len(grades)}")
+    
+    # Grade distribution
+    a_count = sum(1 for g in grades if g >= 90)
+    b_count = sum(1 for g in grades if 80 <= g < 90)
+    c_count = sum(1 for g in grades if 70 <= g < 80)
+    d_count = sum(1 for g in grades if 60 <= g < 70)
+    f_count = sum(1 for g in grades if g < 60)
+    
+    print(f"\nGrade Distribution:")
+    print(f"A (90-100): {a_count}")
+    print(f"B (80-89):  {b_count}")
+    print(f"C (70-79):  {c_count}")
+    print(f"D (60-69):  {d_count}")
+    print(f"F (0-59):   {f_count}")
+
+def display_menu():
+    """Show main menu options."""
+    print("\n" + "="*35)
+    print("      GRADE CALCULATOR")
+    print("="*35)
+    print("1. Add Grade")
+    print("2. View All Grades")
+    print("3. Grade Statistics")
+    print("4. Save Grades")
+    print("5. Load Grades")
+    print("6. Exit")
+    print("="*35)
+
+def get_menu_choice():
+    """Get valid menu choice from user."""
+    valid_choices = ["1", "2", "3", "4", "5", "6"]
+    while True:
+        choice = input("Your choice (1-6): ").strip()
+        if choice in valid_choices:
+            return choice
+        print("Please enter a number from 1 to 6.")
+
+def main():
+    """Main application coordinator."""
+    print("Welcome to the Professional Grade Calculator!")
+    
+    # Load existing grades
+    grades = load_grades()
+    if grades:
+        print(f"Loaded {len(grades)} grades from file.")
+    
+    # Main application loop
+    while True:
+        display_menu()
+        choice = get_menu_choice()
+        
+        if choice == "1":
+            add_grade(grades)
+        elif choice == "2":
+            display_grades(grades)
+        elif choice == "3":
+            calculate_statistics(grades)
+        elif choice == "4":
+            save_grades(grades)
+        elif choice == "5":
+            grades = load_grades()
+        elif choice == "6":
+            # Auto-save on exit
+            save_grades(grades)
+            print("Goodbye!")
+            break
+
+# Run the application
+if __name__ == "__main__":
+    main()
+```
+
+### Exercise 1.2: Your Turn - Refactor This Code
+
+Now you try! Here's a messy inventory system:
+
+```python
+# MESSY INVENTORY CODE - Fix this!
+inventory = {}
+while True:
+    print("i=add item, s=show items, u=update, r=remove, q=quit")
+    cmd = input()
+    if cmd == "i":
+        name = input("Item: ")
+        qty = int(input("Quantity: "))
+        price = float(input("Price: "))
+        inventory[name] = {"qty": qty, "price": price}
+    elif cmd == "s":
+        for item, data in inventory.items():
+            print(f"{item}: {data['qty']} @ ${data['price']}")
+    elif cmd == "u":
+        name = input("Item to update: ")
+        if name in inventory:
+            qty = int(input("New quantity: "))
+            inventory[name]["qty"] = qty
+    elif cmd == "r":
+        name = input("Item to remove: ")
+        if name in inventory:
+            del inventory[name]
+    elif cmd == "q":
+        break
+
+# YOUR TASK: Create organized functions for:
+# - add_item()
+# - display_inventory()
+# - update_item()
+# - remove_item()
+# - display_menu()
+# - get_menu_choice()
+# - main()
+
+def add_item(inventory):
+    """Add new item to inventory with validation."""
+    # Your code here
+    
+    
+
+def display_inventory(inventory):
+    """Display inventory in organized format."""
+    # Your code here
+    
+    
+
+# Continue with other functions...
+```
+
+## Part 2: Testing Strategies (20 minutes)
+
+### Exercise 2.1: Building a Test Framework
+
+Create a simple testing system using assert statements:
+
+```python
+def test_function(func, test_cases, description=""):
+    """
+    Test a function with multiple test cases.
+    
+    Args:
+        func: Function to test
+        test_cases: List of (input, expected_output) tuples
+        description: Description of what we're testing
+    """
+    print(f"\n=== Testing {description or func.__name__} ===")
+    
+    passed = 0
+    failed = 0
+    
+    for i, (test_input, expected) in enumerate(test_cases, 1):
+        try:
+            # Handle single input vs multiple inputs
+            if isinstance(test_input, tuple):
+                result = func(*test_input)
+            else:
+                result = func(test_input)
+            
+            if result == expected:
+                print(f"✓ Test {i}: PASSED")
+                passed += 1
+            else:
+                print(f"✗ Test {i}: FAILED")
+                print(f"  Input: {test_input}")
+                print(f"  Expected: {expected}")
+                print(f"  Got: {result}")
+                failed += 1
+        
+        except Exception as e:
+            print(f"✗ Test {i}: ERROR - {e}")
+            failed += 1
+    
+    print(f"\nResults: {passed} passed, {failed} failed")
+    if failed == 0:
+        print("🎉 All tests passed!")
+    
+    return failed == 0
+
+# Example: Test a grade calculation function
+def calculate_letter_grade(score):
+    """Convert numeric score to letter grade."""
+    if score >= 97:
+        return "A+"
+    elif score >= 93:
+        return "A"
+    elif score >= 90:
+        return "A-"
+    elif score >= 87:
+        return "B+"
+    elif score >= 83:
+        return "B"
+    elif score >= 80:
+        return "B-"
+    elif score >= 77:
+        return "C+"
+    elif score >= 73:
+        return "C"
+    elif score >= 70:
+        return "C-"
+    elif score >= 67:
+        return "D+"
+    elif score >= 65:
+        return "D"
+    else:
+        return "F"
+
+# Test cases for letter grade function
+grade_tests = [
+    (98, "A+"),     # High A+
+    (95, "A"),      # Mid A
+    (90, "A-"),     # Low A-
+    (85, "B+"),     # Mid B+
+    (80, "B-"),     # Low B-
+    (75, "C+"),     # Mid C+
+    (70, "C-"),     # Low C-
+    (65, "D"),      # Low D
+    (50, "F"),      # Clear F
+    (0, "F"),       # Minimum F
+]
+
+# Run the tests
+test_function(calculate_letter_grade, grade_tests, "Letter Grade Calculator")
+```
+
+### Exercise 2.2: Testing Your Functions
+
+Create comprehensive tests for the grade calculator functions:
+
+```python
+def test_grade_calculator():
+    """Test all grade calculator functions."""
+    
+    print("🧪 Running Grade Calculator Test Suite")
+    
+    # Test 1: Grade validation function
+    def is_valid_grade(grade):
+        """Check if grade is valid (0-100)."""
+        return 0 <= grade <= 100
+    
+    grade_validation_tests = [
+        (85, True),      # Normal grade
+        (100, True),     # Maximum
+        (0, True),       # Minimum
+        (-5, False),     # Too low
+        (105, False),    # Too high
+        (50.5, True),    # Decimal
+    ]
+    
+    test_function(is_valid_grade, grade_validation_tests, "Grade Validation")
+    
+    # Test 2: Average calculation
+    def calculate_average(grades):
+        """Calculate average of grades list."""
+        if not grades:
+            return 0
+        return sum(grades) / len(grades)
+    
+    average_tests = [
+        ([90, 80, 70], 80),           # Normal case
+        ([100], 100),                 # Single grade
+        ([], 0),                      # Empty list
+        ([95, 85], 90),              # Two grades
+        ([100, 0, 50], 50),          # Wide range
+    ]
+    
+    test_function(calculate_average, average_tests, "Average Calculation")
+    
+    # Test 3: Grade statistics
+    def get_grade_stats(grades):
+        """Get basic statistics for grades."""
+        if not grades:
+            return {"count": 0, "average": 0, "min": 0, "max": 0}
+        
+        return {
+            "count": len(grades),
+            "average": sum(grades) / len(grades),
+            "min": min(grades),
+            "max": max(grades)
+        }
+    
+    stats_tests = [
+        ([90, 80, 70], {"count": 3, "average": 80, "min": 70, "max": 90}),
+        ([100], {"count": 1, "average": 100, "min": 100, "max": 100}),
+        ([], {"count": 0, "average": 0, "min": 0, "max": 0}),
+    ]
+    
+    test_function(get_grade_stats, stats_tests, "Grade Statistics")
+
+# Run all tests
+test_grade_calculator()
+```
+
+### Exercise 2.3: Input Validation Testing
+
+Create and test robust input validation:
+
+```python
+def safe_input_int(prompt, min_val=None, max_val=None):
+    """Get integer input with range validation."""
+    while True:
+        try:
+            value = int(input(prompt))
+            
+            if min_val is not None and value < min_val:
+                print(f"Value must be at least {min_val}")
+                continue
+            
+            if max_val is not None and value > max_val:
+                print(f"Value must be at most {max_val}")
+                continue
+            
+            return value
+        
+        except ValueError:
+            print("Please enter a valid integer.")
+
+def safe_input_string(prompt, min_length=1, max_length=None):
+    """Get string input with length validation."""
+    while True:
+        value = input(prompt).strip()
+        
+        if len(value) < min_length:
+            print(f"Input must be at least {min_length} characters.")
+            continue
+        
+        if max_length and len(value) > max_length:
+            print(f"Input must be at most {max_length} characters.")
+            continue
+        
+        return value
+
+# Create test scenarios for input validation
+# (Note: These would need manual testing since they require user input)
+
+def test_validation_logic():
+    """Test the validation logic without user input."""
+    
+    def validate_integer(value, min_val=None, max_val=None):
+        """Test version of integer validation."""
+        try:
+            int_val = int(value)
+            if min_val is not None and int_val < min_val:
+                return False, f"Value must be at least {min_val}"
+            if max_val is not None and int_val > max_val:
+                return False, f"Value must be at most {max_val}"
+            return True, int_val
+        except ValueError:
+            return False, "Not a valid integer"
+    
+    validation_tests = [
+        (("85", 0, 100), (True, 85)),           # Valid grade
+        (("150", 0, 100), (False, "Value must be at most 100")),  # Too high
+        (("-5", 0, 100), (False, "Value must be at least 0")),    # Too low
+        (("abc", 0, 100), (False, "Not a valid integer")),        # Not a number
+        (("75", None, None), (True, 75)),       # No limits
+    ]
+    
+    test_function(validate_integer, validation_tests, "Input Validation Logic")
+
+test_validation_logic()
+```
+
+## Part 3: Error Handling Patterns (20 minutes)
+
+### Exercise 3.1: Comprehensive Error Handling
+
+Build robust error handling for common operations:
+
+```python
+def safe_file_operation(operation, filename, data=None):
+    """
+    Perform file operations with comprehensive error handling.
+    
+    Returns: (success, result_or_error_message)
+    """
+    try:
+        if operation == "read":
+            with open(filename, "r") as file:
+                content = file.read()
+                return True, content
+        
+        elif operation == "write":
+            with open(filename, "w") as file:
+                file.write(data)
+                return True, f"Successfully wrote to {filename}"
+        
+        elif operation == "append":
+            with open(filename, "a") as file:
+                file.write(data)
+                return True, f"Successfully appended to {filename}"
+        
+        else:
+            return False, f"Unknown operation: {operation}"
+    
+    except FileNotFoundError:
+        if operation == "read":
+            return False, f"File '{filename}' not found"
+        else:
+            return False, f"Cannot create file '{filename}'"
+    
+    except PermissionError:
+        return False, f"Permission denied accessing '{filename}'"
+    
+    except Exception as e:
+        return False, f"Unexpected error: {e}"
+
+def safe_data_conversion(value, target_type, default=None):
+    """
+    Safely convert data to target type.
+    
+    Returns: (success, converted_value_or_default)
+    """
+    try:
+        if target_type == int:
+            return True, int(value)
+        elif target_type == float:
+            return True, float(value)
+        elif target_type == str:
+            return True, str(value)
+        else:
+            return False, default
+    
+    except (ValueError, TypeError):
+        return False, default
+
+def safe_dictionary_access(data_dict, key, default=None):
+    """
+    Safely access dictionary with nested key support.
+    
+    Args:
+        data_dict: Dictionary to access
+        key: Key or list of keys for nested access
+        default: Default value if key not found
+    
+    Returns: Value or default
+    """
+    try:
+        if isinstance(key, list):
+            # Nested access: ["level1", "level2", "level3"]
+            current = data_dict
+            for k in key:
+                current = current[k]
+            return current
+        else:
+            # Simple access
+            return data_dict[key]
+    
+    except (KeyError, TypeError):
+        return default
+
+# Test error handling functions
+def test_error_handling():
+    """Test error handling functions."""
+    
+    print("🛡️ Testing Error Handling")
+    
+    # Test file operations
+    print("\n--- File Operation Tests ---")
+    
+    # Test writing and reading
+    success, msg = safe_file_operation("write", "test.txt", "Hello, World!")
+    print(f"Write test: {success} - {msg}")
+    
+    success, content = safe_file_operation("read", "test.txt")
+    print(f"Read test: {success} - {'Got content' if success else content}")
+    
+    # Test reading non-existent file
+    success, msg = safe_file_operation("read", "nonexistent.txt")
+    print(f"Missing file test: {success} - {msg}")
+    
+    # Test data conversion
+    print("\n--- Data Conversion Tests ---")
+    
+    conversion_tests = [
+        ("123", int, "Integer conversion"),
+        ("12.5", float, "Float conversion"),
+        ("abc", int, "Invalid integer"),
+        ("", int, "Empty string"),
+    ]
+    
+    for value, target_type, description in conversion_tests:
+        success, result = safe_data_conversion(value, target_type, "FAILED")
+        print(f"{description}: {success} - {result}")
+    
+    # Test dictionary access
+    print("\n--- Dictionary Access Tests ---")
+    
+    test_data = {
+        "user": {
+            "name": "Alice",
+            "settings": {
+                "theme": "dark",
+                "notifications": True
+            }
+        },
+        "version": "1.0"
+    }
+    
+    access_tests = [
+        ("version", "Simple key access"),
+        (["user", "name"], "Nested access"),
+        (["user", "settings", "theme"], "Deep nested access"),
+        ("missing_key", "Missing key"),
+        (["user", "missing", "key"], "Missing nested key"),
+    ]
+    
+    for key, description in access_tests:
+        result = safe_dictionary_access(test_data, key, "NOT_FOUND")
+        print(f"{description}: {result}")
+
+# Run error handling tests
+test_error_handling()
+```
+
+### Exercise 3.2: User-Friendly Error Messages
+
+Create a system that provides helpful error messages:
+
+```python
+class ErrorHandler:
+    """Centralized error handling with user-friendly messages."""
+    
+    @staticmethod
+    def handle_file_error(error, filename, operation):
+        """Convert file errors to user-friendly messages."""
+        if isinstance(error, FileNotFoundError):
+            if operation == "read":
+                return f"📁 The file '{filename}' doesn't exist yet."
+            else:
+                return f"📁 Cannot create file '{filename}'. Check the folder permissions."
+        
+        elif isinstance(error, PermissionError):
+            return f"🔒 You don't have permission to {operation} '{filename}'."
+        
+        elif isinstance(error, IsADirectoryError):
+            return f"📂 '{filename}' is a folder, not a file."
+        
+        else:
+            return f"💥 Unexpected error with '{filename}': {error}"
+    
+    @staticmethod
+    def handle_input_error(error, expected_type):
+        """Convert input errors to helpful messages."""
+        type_names = {
+            int: "whole number",
+            float: "number",
+            str: "text"
+        }
+        
+        type_name = type_names.get(expected_type, "valid input")
+        
+        if isinstance(error, ValueError):
+            return f"🤔 Please enter a {type_name}. For example: {ErrorHandler._get_example(expected_type)}"
+        else:
+            return f"❌ Invalid input. Expected a {type_name}."
+    
+    @staticmethod
+    def _get_example(data_type):
+        """Get example input for data type."""
+        examples = {
+            int: "42",
+            float: "3.14",
+            str: "Hello"
+        }
+        return examples.get(data_type, "valid input")
+
+def get_user_input_safe(prompt, data_type, validator=None):
+    """Get user input with comprehensive error handling."""
+    while True:
+        try:
+            raw_input = input(prompt).strip()
+            
+            # Convert to requested type
+            if data_type == int:
+                value = int(raw_input)
+            elif data_type == float:
+                value = float(raw_input)
+            else:
+                value = raw_input
+            
+            # Apply custom validation if provided
+            if validator:
+                is_valid, error_msg = validator(value)
+                if not is_valid:
+                    print(f"⚠️  {error_msg}")
+                    continue
+            
+            return value
+        
+        except ValueError as e:
+            message = ErrorHandler.handle_input_error(e, data_type)
+            print(message)
+        except KeyboardInterrupt:
+            print("\n👋 Operation cancelled by user.")
+            return None
+
+# Example validators
+def grade_validator(grade):
+    """Validate grade is between 0 and 100."""
+    if 0 <= grade <= 100:
+        return True, ""
+    else:
+        return False, "Grade must be between 0 and 100."
+
+def name_validator(name):
+    """Validate name is not empty and reasonable length."""
+    if not name:
+        return False, "Name cannot be empty."
+    elif len(name) > 50:
+        return False, "Name is too long (maximum 50 characters)."
+    else:
+        return True, ""
+
+# Test the user-friendly error system
+def test_user_friendly_errors():
+    """Demonstrate user-friendly error handling."""
+    print("🎯 Testing User-Friendly Error Messages")
+    
+    # Simulate various error scenarios
+    errors_to_test = [
+        (FileNotFoundError("No such file"), "data.txt", "read"),
+        (PermissionError("Access denied"), "protected.txt", "write"),
+        (ValueError("invalid literal"), int),
+        (ValueError("could not convert"), float),
+    ]
+    
+    print("\n--- File Error Messages ---")
+    for error, filename, operation in errors_to_test[:2]:
+        message = ErrorHandler.handle_file_error(error, filename, operation)
+        print(f"Error: {message}")
+    
+    print("\n--- Input Error Messages ---")
+    for error, data_type in errors_to_test[2:]:
+        message = ErrorHandler.handle_input_error(error, data_type)
+        print(f"Error: {message}")
+
+test_user_friendly_errors()
+```
+
+---
+
+# Hour 2: Complete Application Building
+
+## Part 4: Application Architecture (20 minutes)
+
+### Exercise 4.1: Planning Your Application
+
+Before coding, let's design a complete task management system:
+
+```python
+# TASK MANAGEMENT SYSTEM - Architecture Planning
+
+"""
+APPLICATION REQUIREMENTS:
+1. Add tasks with priority levels
+2. Mark tasks as complete
+3. View tasks by status or priority
+4. Save/load tasks persistently
+5. Generate productivity reports
+6. Search and filter tasks
+
+DATA STRUCTURE DESIGN:
+- Each task: {"id": unique_id, "title": str, "priority": str, "completed": bool, "created": date}
+- All tasks: List of task dictionaries
+- File format: One task per line, pipe-separated
+
+FUNCTION ARCHITECTURE:
+- Data Layer: load_tasks(), save_tasks(), validate_task()
+- Logic Layer: add_task(), complete_task(), search_tasks(), get_statistics()
+- Interface Layer: display_menu(), get_user_input(), show_tasks()
+- Main Layer: main(), run_application()
+"""
+
+from datetime import datetime
+
+# =====================================
+# DATA LAYER - File and data management
+# =====================================
+
+def load_tasks(filename="tasks.txt"):
+    """Load tasks from file with error handling."""
+    tasks = []
+    try:
+        with open(filename, "r") as file:
+            for line_num, line in enumerate(file, 1):
+                line = line.strip()
+                if not line:
+                    continue
+                
+                try:
+                    # Parse: id|title|priority|completed|created
+                    parts = line.split("|")
+                    if len(parts) >= 5:
+                        task = {
+                            "id": int(parts[0]),
+                            "title": parts[1],
+                            "priority": parts[2],
+                            "completed": parts[3].lower() == "true",
+                            "created": parts[4]
+                        }
+                        tasks.append(task)
+                except (ValueError, IndexError):
+                    print(f"⚠️  Skipping invalid task on line {line_num}")
+        
+        print(f"📋 Loaded {len(tasks)} tasks from file")
+    
+    except FileNotFoundError:
+        print("📝 No saved tasks found. Starting fresh!")
+    
+    return tasks
+
+def save_tasks(tasks, filename="tasks.txt"):
+    """Save tasks to file with backup."""
+    try:
+        # Create backup of existing file
+        try:
+            with open(filename, "r") as original:
+                backup_content = original.read()
+            with open(filename + ".backup", "w") as backup:
+                backup.write(backup_content)
+        except FileNotFoundError:
+            pass  # No existing file to backup
+        
+        # Save current tasks
+        with open(filename, "w") as file:
+            for task in tasks:
+                line = f"{task['id']}|{task['title']}|{task['priority']}|{task['completed']}|{task['created']}\n"
+                file.write(line)
+        
+        print(f"💾 Saved {len(tasks)} tasks to file")
+        return True
+    
+    except Exception as e:
+        print(f"❌ Error saving tasks: {e}")
+        return False
+
+def validate_task(task_data):
+    """Validate task data before adding."""
+    title, priority = task_data
+    
+    errors = []
+    
+    # Check title
+    if not title or not title.strip():
+        errors.append("Task title cannot be empty")
+    elif len(title) > 100:
+        errors.append("Task title too long (max 100 characters)")
+    
+    # Check priority
+    valid_priorities = ["low", "medium", "high", "urgent"]
+    if priority.lower() not in valid_priorities:
+        errors.append(f"Priority must be one of: {', '.join(valid_priorities)}")
+    
+    return len(errors) == 0, errors
+
+# =====================================
+# LOGIC LAYER - Business operations
+# =====================================
+
+def generate_task_id(tasks):
+    """Generate unique task ID."""
+    if not tasks:
+        return 1
+    return max(task["id"] for task in tasks) + 1
+
+def add_task(tasks, title, priority="medium"):
+    """Add new task with validation."""
+    # Validate input
+    is_valid, errors = validate_task((title, priority))
+    if not is_valid:
+        return False, errors
+    
+    # Create new task
+    new_task = {
+        "id": generate_task_id(tasks),
+        "title": title.strip(),
+        "priority": priority.lower(),
+        "completed": False,
+        "created": datetime.now().strftime("%Y-%m-%d %H:%M")
+    }
+    
+    tasks.append(new_task)
+    return True, f"✅ Added task: {title}"
+
+def complete_task(tasks, task_id):
+    """Mark task as completed."""
+    for task in tasks:
+        if task["id"] == task_id:
+            if task["completed"]:
+                return False, "Task is already completed"
+            
+            task["completed"] = True
+            return True, f"✅ Completed: {task['title']}"
+    
+    return False, f"Task with ID {task_id} not found"
+
+def delete_task(tasks, task_id):
+    """Delete task by ID."""
+    for i, task in enumerate(tasks):
+        if task["id"] == task_id:
+            deleted_task = tasks.pop(i)
+            return True, f"🗑️  Deleted: {deleted_task['title']}"
+    
+    return False, f"Task with ID {task_id} not found"
+
+def search_tasks(tasks, search_term, filter_completed=None):
+    """Search tasks by title or filter by completion status."""
+    results = []
+    search_lower = search_term.lower()
+    
+    for task in tasks:
+        # Text search
+        if search_term and search_lower not in task["title"].lower():
+            continue
+        
+        # Completion filter
+        if filter_completed is not None and task["completed"] != filter_completed:
+            continue
+        
+        results.append(task)
+    
+    return results
+
+def get_task_statistics(tasks):
+    """Calculate task statistics."""
+    if not tasks:
+        return {
+            "total": 0,
+            "completed": 0,
+            "pending": 0,
+            "by_priority": {},
+            "completion_rate": 0
+        }
+    
+    completed = sum(1 for task in tasks if task["completed"])
+    pending = len(tasks) - completed
+    
+    # Count by priority
+    priority_counts = {}
+    for task in tasks:
+        priority = task["priority"]
+        if priority not in priority_counts:
+            priority_counts[priority] = {"total": 0, "completed": 0}
+        
+        priority_counts[priority]["total"] += 1
+        if task["completed"]:
+            priority_counts[priority]["completed"] += 1
+    
+    return {
+        "total": len(tasks),
+        "completed": completed,
+        "pending": pending,
+        "by_priority": priority_counts,
+        "completion_rate": (completed / len(tasks)) * 100
+    }
+
+# =====================================
+# INTERFACE LAYER - User interaction
+# =====================================
+
+def display_main_menu():
+    """Show main application menu."""
+    print("\n" + "="*50)
+    print("              TASK MANAGER")
+    print("="*50)
+    print("1. Add Task")
+    print("2. View Tasks")
+    print("3. Complete Task")
+    print("4. Delete Task") 
+    print("5. Search Tasks")
+    print("6. Task Statistics")
+    print("7. Save & Exit")
+    print("="*50)
+
+def get_menu_choice():
+    """Get valid menu choice."""
+    valid_choices = ["1", "2", "3", "4", "5", "6", "7"]
+    while True:
+        choice = input("Your choice (1-7): ").strip()
+        if choice in valid_choices:
+            return choice
+        print("Please enter a number from 1 to 7.")
+
+def display_tasks(tasks, title="Tasks"):
+    """Display tasks in organized format."""
+    if not tasks:
+        print(f"\n📝 No {title.lower()} found.")
+        return
+    
+    print(f"\n=== {title} ({len(tasks)} total) ===")
+    
+    # Sort by priority and completion status
+    priority_order = {"urgent": 0, "high": 1, "medium": 2, "low": 3}
+    
+    sorted_tasks = sorted(tasks, key=lambda t: (
+        t["completed"],  # Incomplete tasks first
+        priority_order.get(t["priority"], 4),  # Then by priority
+        t["created"]  # Then by creation time
+    ))
+    
+    for task in sorted_tasks:
+        status = "✅" if task["completed"] else "⏳"
+        priority_icons = {
+            "urgent": "🔥",
+            "high": "⚡",
+            "medium": "📝",
+            "low": "💭"
+        }
+        
+        priority_icon = priority_icons.get(task["priority"], "📝")
+        
+        print(f"{status} [{task['id']:3}] {priority_icon} {task['title']}")
+        print(f"     Priority: {task['priority'].title()} | Created: {task['created']}")
+
+def get_task_input():
+    """Get task information from user."""
+    print("\n--- Add New Task ---")
+    
+    # Get title
+    while True:
+        title = input("Task title: ").strip()
+        if title:
+            break
+        print("Task title cannot be empty.")
+    
+    # Get priority
+    print("Priority levels: low, medium, high, urgent")
+    while True:
+        priority = input("Priority (default: medium): ").strip().lower()
+        if not priority:
+            priority = "medium"
+        
+        if priority in ["low", "medium", "high", "urgent"]:
+            break
+        print("Please enter: low, medium, high, or urgent")
+    
+    return title, priority
+
+def get_task_id_input(tasks, action="select"):
+    """Get valid task ID from user."""
+    if not tasks:
+        print(f"No tasks available to {action}.")
+        return None
+    
+    # Show available tasks
+    display_tasks(tasks)
+    
+    while True:
+        try:
+            task_id = int(input(f"\nEnter task ID to {action}: "))
+            
+            # Check if ID exists
+            if any(task["id"] == task_id for task in tasks):
+                return task_id
+            else:
+                print(f"Task ID {task_id} not found. Please try again.")
+        
+        except ValueError:
+            print("Please enter a valid task ID number.")
+
+# =====================================
+# MAIN LAYER - Application coordination
+# =====================================
+
+def main():
+    """Main task manager application."""
+    print("🚀 Welcome to Professional Task Manager!")
+    
+    # Load existing tasks
+    tasks = load_tasks()
+    
+    # Main application loop
+    while True:
+        display_main_menu()
+        choice = get_menu_choice()
+        
+        if choice == "1":
+            # Add task
+            title, priority = get_task_input()
+            success, message = add_task(tasks, title, priority)
+            print(message)
+            if not success and isinstance(message, list):
+                for error in message:
+                    print(f"  ❌ {error}")
+        
+        elif choice == "2":
+            # View tasks
+            print("\nView options:")
+            print("1. All tasks")
+            print("2. Pending tasks")
+            print("3. Completed tasks")
+            
+            view_choice = input("Choice (1-3): ").strip()
+            
+            if view_choice == "1":
+                display_tasks(tasks, "All Tasks")
+            elif view_choice == "2":
+                pending = search_tasks(tasks, "", filter_completed=False)
+                display_tasks(pending, "Pending Tasks")
+            elif view_choice == "3":
+                completed = search_tasks(tasks, "", filter_completed=True)
+                display_tasks(completed, "Completed Tasks")
+        
+        elif choice == "3":
+            # Complete task
+            task_id = get_task_id_input(tasks, "complete")
+            if task_id:
+                success, message = complete_task(tasks, task_id)
+                print(message)
+        
+        elif choice == "4":
+            # Delete task
+            task_id = get_task_id_input(tasks, "delete")
+            if task_id:
+                confirm = input("Are you sure? (yes/no): ").lower()
+                if confirm == "yes":
+                    success, message = delete_task(tasks, task_id)
+                    print(message)
+                else:
+                    print("Deletion cancelled.")
+        
+        elif choice == "5":
+            # Search tasks
+            search_term = input("Search term (or press Enter for all): ").strip()
+            results = search_tasks(tasks, search_term)
+            display_tasks(results, f"Search Results: '{search_term}'" if search_term else "All Tasks")
+        
+        elif choice == "6":
+            # Statistics
+            stats = get_task_statistics(tasks)
+            
+            print(f"\n📊 Task Statistics")
+            print(f"Total Tasks: {stats['total']}")
+            print(f"Completed: {stats['completed']}")
+            print(f"Pending: {stats['pending']}")
+            print(f"Completion Rate: {stats['completion_rate']:.1f}%")
+            
+            if stats['by_priority']:
+                print(f"\nBy Priority:")
+                for priority, counts in stats['by_priority'].items():
+                    print(f"  {priority.title()}: {counts['completed']}/{counts['total']} completed")
+        
+        elif choice == "7":
+            # Save and exit
+            if save_tasks(tasks):
+                print("💾 All tasks saved successfully!")
+            print("👋 Thank you for using Task Manager!")
+            break
+
+# Run the application
+if __name__ == "__main__":
+    main()
+```
+
+### Exercise 4.2: Testing the Complete Application
+
+Create comprehensive tests for your task manager:
+
+```python
+def test_task_manager():
+    """Comprehensive test suite for task manager."""
+    
+    print("🧪 Running Task Manager Test Suite")
+    
+    # Test 1: Task validation
+    print("\n--- Testing Task Validation ---")
+    
+    validation_tests = [
+        (("Buy groceries", "medium"), (True, [])),           # Valid task
+        (("", "high"), (False, ["Task title cannot be empty"])),    # Empty title
+        (("Task", "invalid"), (False, ["Priority must be one of: low, medium, high, urgent"])),  # Invalid priority
+        (("x" * 101, "low"), (False, ["Task title too long (max 100 characters)"])),  # Too long
+    ]
+    
+    for (title, priority), expected in validation_tests:
+        result = validate_task((title, priority))
+        if result == expected:
+            print(f"✅ Validation test passed: '{title}', '{priority}'")
+        else:
+            print(f"❌ Validation test failed: '{title}', '{priority}'")
+            print(f"   Expected: {expected}")
+            print(f"   Got: {result}")
+    
+    # Test 2: Task operations
+    print("\n--- Testing Task Operations ---")
+    
+    test_tasks = []
+    
+    # Test adding tasks
+    success, msg = add_task(test_tasks, "Test task 1", "high")
+    assert success, "Should successfully add valid task"
+    assert len(test_tasks) == 1, "Should have one task"
+    assert test_tasks[0]["title"] == "Test task 1", "Title should match"
+    
+    # Test completing task
+    task_id = test_tasks[0]["id"]
+    success, msg = complete_task(test_tasks, task_id)
+    assert success, "Should successfully complete task"
+    assert test_tasks[0]["completed"], "Task should be marked completed"
+    
+    # Test completing already completed task
+    success, msg = complete_task(test_tasks, task_id)
+    assert not success, "Should not complete already completed task"
+    
+    print("✅ All task operation tests passed!")
+    
+    # Test 3: Search functionality
+    print("\n--- Testing Search Functionality ---")
+    
+    # Add more test tasks
+    add_task(test_tasks, "Buy groceries", "medium")
+    add_task(test_tasks, "Study Python", "high")
+    add_task(test_tasks, "Call mom", "low")
+    
+    # Test search
+    results = search_tasks(test_tasks, "buy")
+    assert len(results) == 1, "Should find one task with 'buy'"
+    assert results[0]["title"] == "Buy groceries", "Should find grocery task"
+    
+    # Test filter by completion
+    pending = search_tasks(test_tasks, "", filter_completed=False)
+    completed = search_tasks(test_tasks, "", filter_completed=True)
+    
+    assert len(pending) == 3, "Should have 3 pending tasks"
+    assert len(completed) == 1, "Should have 1 completed task"
+    
+    print("✅ All search tests passed!")
+    
+    # Test 4: Statistics
+    print("\n--- Testing Statistics ---")
+    
+    stats = get_task_statistics(test_tasks)
+    
+    assert stats["total"] == 4, "Should have 4 total tasks"
+    assert stats["completed"] == 1, "Should have 1 completed task"
+    assert stats["pending"] == 3, "Should have 3 pending tasks"
+    assert stats["completion_rate"] == 25.0, "Should have 25% completion rate"
+    
+    print("✅ All statistics tests passed!")
+    
+    print("\n🎉 All Task Manager tests completed successfully!")
+
+# Run the test suite
+test_task_manager()
+```
+
+## Part 5: Integration and Polish (20 minutes)
+
+### Exercise 5.1: Adding Advanced Features
+
+Add sophisticated features to your task manager:
+
+```python
+# ADVANCED FEATURES FOR TASK MANAGER
+
+def export_tasks_report(tasks, filename="task_report.txt"):
+    """Export detailed task report to file."""
+    try:
+        with open(filename, "w") as file:
+            # Header
+            file.write("TASK MANAGEMENT REPORT\n")
+            file.write("=" * 50 + "\n")
+            file.write(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
+            
+            # Statistics
+            stats = get_task_statistics(tasks)
+            file.write("SUMMARY STATISTICS\n")
+            file.write("-" * 20 + "\n")
+            file.write(f"Total Tasks: {stats['total']}\n")
+            file.write(f"Completed: {stats['completed']}\n")
+            file.write(f"Pending: {stats['pending']}\n")
+            file.write(f"Completion Rate: {stats['completion_rate']:.1f}%\n\n")
+            
+            # Priority breakdown
+            if stats['by_priority']:
+                file.write("PRIORITY BREAKDOWN\n")
+                file.write("-" * 20 + "\n")
+                for priority, counts in stats['by_priority'].items():
+                    rate = (counts['completed'] / counts['total']) * 100 if counts['total'] > 0 else 0
+                    file.write(f"{priority.title()}: {counts['completed']}/{counts['total']} ({rate:.1f}%)\n")
+                file.write("\n")
+            
+            # Task details
+            file.write("TASK DETAILS\n")
+            file.write("-" * 20 + "\n")
+            
+            # Group by status
+            pending_tasks = [t for t in tasks if not t['completed']]
+            completed_tasks = [t for t in tasks if t['completed']]
+            
+            if pending_tasks:
+                file.write("\nPENDING TASKS:\n")
+                for task in sorted(pending_tasks, key=lambda t: t['priority']):
+                    file.write(f"  [{task['id']:3}] {task['title']}\n")
+                    file.write(f"       Priority: {task['priority'].title()} | Created: {task['created']}\n")
+            
+            if completed_tasks:
+                file.write("\nCOMPLETED TASKS:\n")
+                for task in completed_tasks:
+                    file.write(f"  [{task['id']:3}] {task['title']}\n")
+                    file.write(f"       Priority: {task['priority'].title()} | Created: {task['created']}\n")
+        
+        print(f"📄 Report exported to {filename}")
+        return True
+    
+    except Exception as e:
+        print(f"❌ Error exporting report: {e}")
+        return False
+
+def bulk_operations_menu(tasks):
+    """Handle bulk operations on tasks."""
+    print("\n--- Bulk Operations ---")
+    print("1. Mark all high priority tasks as complete")
+    print("2. Delete all completed tasks")
+    print("3. Change priority for multiple tasks")
+    print("4. Back to main menu")
+    
+    choice = input("Choice (1-4): ").strip()
+    
+    if choice == "1":
+        # Mark high priority as complete
+        count = 0
+        for task in tasks:
+            if task["priority"] == "high" and not task["completed"]:
+                task["completed"] = True
+                count += 1
+        print(f"✅ Marked {count} high priority tasks as complete")
+    
+    elif choice == "2":
+        # Delete completed tasks
+        completed_tasks = [t for t in tasks if t["completed"]]
+        if not completed_tasks:
+            print("No completed tasks to delete")
+            return
+        
+        print(f"Found {len(completed_tasks)} completed tasks:")
+        for task in completed_tasks:
+            print(f"  - {task['title']}")
+        
+        confirm = input("Delete all completed tasks? (yes/no): ").lower()
+        if confirm == "yes":
+            tasks[:] = [t for t in tasks if not t["completed"]]
+            print(f"🗑️  Deleted {len(completed_tasks)} completed tasks")
+        else:
+            print("Deletion cancelled")
+    
+    elif choice == "3":
+        # Change priority for multiple tasks
+        display_tasks(tasks)
+        print("\nEnter task IDs to update (separated by spaces):")
+        try:
+            task_ids = [int(x) for x in input().split()]
+            
+            print("New priority (low/medium/high/urgent):")
+            new_priority = input().lower().strip()
+            
+            if new_priority not in ["low", "medium", "high", "urgent"]:
+                print("Invalid priority")
+                return
+            
+            count = 0
+            for task in tasks:
+                if task["id"] in task_ids:
+                    task["priority"] = new_priority
+                    count += 1
+            
+            print(f"✅ Updated priority for {count} tasks")
+        
+        except ValueError:
+            print("Invalid task IDs")
+
+def productivity_insights(tasks):
+    """Generate productivity insights."""
+    if not tasks:
+        print("No tasks to analyze")
+        return
+    
+    print("\n📈 Productivity Insights")
+    print("=" * 30)
+    
+    # Completion patterns
+    completed_tasks = [t for t in tasks if t["completed"]]
+    
+    if completed_tasks:
+        # Most productive priority level
+        priority_completions = {}
+        for task in completed_tasks:
+            priority = task["priority"]
+            priority_completions[priority] = priority_completions.get(priority, 0) + 1
+        
+        most_productive = max(priority_completions.items(), key=lambda x: x[1])
+        print(f"🎯 Most productive priority level: {most_productive[0].title()} ({most_productive[1]} completed)")
+        
+        # Task completion rate by priority
+        print(f"\n📊 Completion rates by priority:")
+        stats = get_task_statistics(tasks)
+        for priority, counts in stats['by_priority'].items():
+            rate = (counts['completed'] / counts['total']) * 100
+            print(f"   {priority.title()}: {rate:.1f}% ({counts['completed']}/{counts['total']})")
+    
+    # Task load analysis
+    pending_by_priority = {}
+    for task in tasks:
+        if not task["completed"]:
+            priority = task["priority"]
+            pending_by_priority[priority] = pending_by_priority.get(priority, 0) + 1
+    
+    if pending_by_priority:
+        print(f"\n⏳ Current workload:")
+        for priority in ["urgent", "high", "medium", "low"]:
+            count = pending_by_priority.get(priority, 0)
+            if count > 0:
+                print(f"   {priority.title()}: {count} tasks")
+        
+        # Workload recommendations
+        urgent_count = pending_by_priority.get("urgent", 0)
+        high_count = pending_by_priority.get("high", 0)
+        
+        print(f"\n💡 Recommendations:")
+        if urgent_count > 0:
+            print(f"   🔥 Focus on {urgent_count} urgent task(s) first")
+        elif high_count > 3:
+            print(f"   ⚡ Consider breaking down some high priority tasks")
+        elif sum(pending_by_priority.values()) > 10:
+            print(f"   📝 Large task load - consider prioritizing or delegating")
+        else:
+            print(f"   ✅ Manageable workload - keep up the good work!")
+
+# Add these features to your main menu by expanding the menu options
+def enhanced_main_menu():
+    """Enhanced main menu with advanced features."""
+    print("\n" + "="*60)
+    print("                  ADVANCED TASK MANAGER")
+    print("="*60)
+    print("1. Add Task                    6. Task Statistics")
+    print("2. View Tasks                  7. Export Report")
+    print("3. Complete Task               8. Bulk Operations")
+    print("4. Delete Task                 9. Productivity Insights")
+    print("5. Search Tasks               10. Save & Exit")
+    print("="*60)
+
+# Your task: Integrate these features into the main() function
+```
+
+### Exercise 5.2: Final Polish and Testing
+
+Add final touches to make your application production-ready:
+
+```python
+def create_help_system():
+    """Create comprehensive help system."""
+    
+    help_content = {
+        "general": """
+🆘 TASK MANAGER HELP
+
+GETTING STARTED:
+- Use the numbered menu to navigate
+- Tasks are automatically saved when you exit
+- Your data is stored in 'tasks.txt'
+
+TASK PRIORITIES:
+- Urgent: 🔥 Critical tasks that must be done immediately
+- High: ⚡ Important tasks with clear deadlines
+- Medium: 📝 Regular tasks to complete soon
+- Low: 💭 Tasks to do when time allows
+
+TIPS:
+- Keep task titles clear and specific
+- Review your task list regularly
+- Use bulk operations for efficiency
+- Export reports to track progress
+        """,
+        
+        "adding": """
+📝 ADDING TASKS
+
+1. Choose 'Add Task' from main menu
+2. Enter a clear, specific title
+3. Select priority level:
+   - urgent: For critical/emergency tasks
+   - high: For important deadlines
+   - medium: For regular work (default)
+   - low: For when-possible tasks
+
+EXAMPLES:
+Good: "Finish project proposal by Friday"
+Poor: "Work stuff"
+
+Good: "Buy groceries for dinner party"
+Poor: "Shopping"
+        """,
+        
+        "managing": """
+⚙️ MANAGING TASKS
+
+COMPLETING TASKS:
+- Select task by ID number
+- Task moves to completed list
+- Cannot un-complete (delete and re-add if needed)
+
+DELETING TASKS:
+- Use for tasks no longer needed
+- Requires confirmation
+- Cannot be undone
+
+SEARCHING:
+- Enter any text to find matching tasks
+- Search looks in task titles
+- Case-insensitive search
+        """,
+        
+        "reports": """
+📊 REPORTS AND INSIGHTS
+
+STATISTICS:
+- Shows completion rates
+- Breaks down by priority
+- Calculates overall progress
+
+EXPORT REPORTS:
+- Creates detailed text file
+- Includes all task details
+- Good for sharing or archiving
+
+PRODUCTIVITY INSIGHTS:
+- Analyzes your completion patterns
+- Identifies most productive priority levels
+- Provides workload recommendations
+        """
+    }
+    
+    return help_content
+
+def show_help(help_system, topic="general"):
+    """Display help information."""
+    if topic in help_system:
+        print(help_system[topic])
+    else:
+        print("Help topic not found. Available topics:")
+        for topic_name in help_system.keys():
+            print(f"  - {topic_name}")
+
+def startup_wizard():
+    """First-time user setup wizard."""
+    print("👋 Welcome to Task Manager!")
+    print("\nIt looks like this is your first time using the application.")
+    print("Would you like a quick tutorial? (yes/no): ", end="")
+    
+    if input().lower().startswith('y'):
+        print("\n🎯 QUICK TUTORIAL")
+        print("=" * 30)
+        print("1. Tasks have four priority levels: urgent, high, medium, low")
+        print("2. Add tasks with clear, specific titles")
+        print("3. Mark tasks complete when finished")
+        print("4. Use search to find specific tasks")
+        print("5. Check statistics to track your progress")
+        print("6. Export reports to share or archive")
+        print("\n💡 TIP: Start by adding a few tasks to get familiar!")
+        input("\nPress Enter to continue...")
+
+def application_info():
+    """Display application information."""
+    print("\n" + "="*50)
+    print("              TASK MANAGER v2.0")
+    print("="*50)
+    print("A professional task management application")
+    print("Built with Python for learning and productivity")
+    print("")
+    print("Features:")
+    print("  ✅ Task creation with priority levels")
+    print("  ✅ Completion tracking and statistics")
+    print("  ✅ Search and filtering capabilities")
+    print("  ✅ Data persistence and backup")
+    print("  ✅ Productivity insights and reporting")
+    print("  ✅ Bulk operations for efficiency")
+    print("")
+    print("Created by: [Your Name]")
+    print("Course: AI-Integrated Python Programming")
+    print("Week 8: Integration and Complete Applications")
+    print("="*50)
+
+# Final integrated application with all features
+def professional_main():
+    """Professional main function with all features."""
+    # Check if first run
+    import os
+    if not os.path.exists("tasks.txt"):
+        startup_wizard()
+    
+    # Show application info
+    application_info()
+    
+    # Load tasks
+    tasks = load_tasks()
+    help_system = create_help_system()
+    
+    while True:
+        enhanced_main_menu()
+        
+        try:
+            choice = input("Your choice (1-10): ").strip()
+            
+            if choice == "1":
+                title, priority = get_task_input()
+                success, message = add_task(tasks, title, priority)
+                print(message)
+                if not success and isinstance(message, list):
+                    for error in message:
+                        print(f"  ❌ {error}")
+            
+            elif choice == "2":
+                # Enhanced view with filtering
+                print("\nView options:")
+                print("1. All tasks")
+                print("2. Pending tasks")
+                print("3. Completed tasks")
+                print("4. By priority level")
+                
+                view_choice = input("Choice (1-4): ").strip()
+                
+                if view_choice == "4":
+                    print("Priority (urgent/high/medium/low): ", end="")
+                    priority = input().lower().strip()
+                    priority_tasks = [t for t in tasks if t["priority"] == priority]
+                    display_tasks(priority_tasks, f"{priority.title()} Priority Tasks")
+                else:
+                    # Handle other view options as before
+                    pass
+            
+            elif choice == "7":
+                export_tasks_report(tasks)
+            
+            elif choice == "8":
+                bulk_operations_menu(tasks)
+            
+            elif choice == "9":
+                productivity_insights(tasks)
+            
+            elif choice == "10":
+                if save_tasks(tasks):
+                    print("💾 All tasks saved successfully!")
+                print("👋 Thank you for using Task Manager!")
+                print("Keep up the great work on your productivity journey! 🚀")
+                break
+            
+            else:
+                print("Please enter a number from 1 to 10.")
+                print("Type 'help' for assistance.")
+        
+        except KeyboardInterrupt:
+            print("\n\n👋 Goodbye! Don't forget to save your tasks!")
+            break
+        except Exception as e:
+            print(f"❌ An unexpected error occurred: {e}")
+            print("The application will continue running.")
+
+# Run the professional application
+if __name__ == "__main__":
+    professional_main()
+```
+
+---
+
+# Lab Submission
+
+## What to Submit
+
+1. **Refactored Grade Calculator** - Well-organized version of the messy code
+2. **Complete Task Manager** - Fully functional application with all features
+3. **Test Suite** - Comprehensive tests for all functions
+4. **Documentation** - User guide and technical documentation
+5. **Reflection** (5-7 sentences):
+   - What was most challenging about organizing code?
+   - How did testing help you find bugs?
+   - What makes software "professional quality"?
+   - How will you apply these practices to future projects?
+
+## Grading Rubric
+
+| Component | Points | Criteria |
+|-----------|---------|----------|
+| Code Organization | 25 | Functions have single responsibilities, clear names |
+| Error Handling | 20 | Comprehensive and user-friendly |
+| Testing | 20 | Good coverage with meaningful test cases |
+| Integration | 20 | All components work together seamlessly |
+| User Experience | 15 | Intuitive interface and helpful messages |
+
+---
+
+# Professional Development Checklist
+
+By the end of this lab, you should be able to:
+
+✅ **Organize** code into logical, single-purpose functions  
+✅ **Handle** errors gracefully with user-friendly messages  
+✅ **Test** functions systematically with assert statements  
+✅ **Design** complete application architectures  
+✅ **Create** professional user interfaces  
+✅ **Implement** data persistence reliably  
+✅ **Document** code clearly for future maintainers  
+✅ **Debug** complex multi-function applications  
+
+Congratulations! You've transformed from a code writer to a software developer! 🎉

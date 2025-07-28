@@ -1,0 +1,625 @@
+---
+title: "Week 11 Assessment: Game Mechanics and Progression"
+format: 
+  html:
+    toc: true
+    code-fold: show
+execute:
+  eval: false
+---
+
+# Assessment: Game Mechanics and Progression
+**Week 11 - Interactive Applications**
+
+## Overview
+
+This assessment evaluates your ability to implement game mechanics, progression systems, and dynamic content generation using Week 11 concepts including randomness, state management, and interactive design.
+
+**Time Limit**: 60 minutes  
+**Points**: 100 points  
+**Format**: Practical implementation tasks
+
+---
+
+## Task 1: Character Progression System (35 points)
+
+### Problem Statement
+
+Implement a comprehensive character progression system for a role-playing game that includes experience points, leveling, stat allocation, and skill development.
+
+### Requirements
+
+Create a character system with the following features:
+- Experience-based leveling (exponential curve)
+- Four core stats: Strength, Intelligence, Dexterity, Constitution
+- Stat points awarded on level up
+- Skill system with usage-based progression
+- Character display and management functions
+
+### Implementation Tasks
+
+#### Part A: Core Progression (20 points)
+
+```python
+import math
+
+def calculate_experience_for_level(level):
+    """
+    Calculate total experience required to reach a specific level.
+    Use exponential growth: 100 * (level^1.5)
+    
+    Args:
+        level (int): Target level (1-50)
+    
+    Returns:
+        int: Total experience required
+    """
+    # TODO: Implement exponential experience formula
+    pass
+
+def calculate_level_from_experience(experience):
+    """
+    Calculate character level based on total experience.
+    
+    Args:
+        experience (int): Total experience points
+    
+    Returns:
+        int: Current character level
+    """
+    # TODO: Implement reverse level calculation
+    pass
+
+def create_character(name):
+    """
+    Create a new character with starting stats.
+    
+    Args:
+        name (str): Character name
+    
+    Returns:
+        dict: Character data structure
+    """
+    # TODO: Create character with:
+    # - Name, level 1, 0 experience
+    # - Stats: all start at 10
+    # - Available stat points: 0
+    # - Skills dictionary (empty)
+    # - Health/mana derived from stats
+    pass
+
+def gain_experience(character, amount, source=""):
+    """
+    Add experience and handle level progression.
+    
+    Args:
+        character (dict): Character data
+        amount (int): Experience to add
+        source (str): Source of experience
+    
+    Returns:
+        bool: True if character leveled up
+    """
+    # TODO: Implement experience gain with level up handling
+    # Award 2 stat points per level gained
+    # Update derived stats (health from constitution, mana from intelligence)
+    # Print level up messages
+    pass
+
+def allocate_stat_point(character, stat_name):
+    """
+    Allocate one stat point to a specific stat.
+    
+    Args:
+        character (dict): Character data
+        stat_name (str): Name of stat to increase
+    
+    Returns:
+        bool: Success/failure of allocation
+    """
+    # TODO: Implement stat point allocation
+    # Validate stat name and available points
+    # Update derived stats after allocation
+    pass
+```
+
+#### Part B: Skill System (15 points)
+
+```python
+def increase_skill(character, skill_name, amount):
+    """
+    Increase a skill and check for milestones.
+    
+    Args:
+        character (dict): Character data
+        skill_name (str): Name of skill to increase
+        amount (int): Amount to increase
+    
+    Returns:
+        list: Any milestones reached
+    """
+    # TODO: Implement skill progression
+    # Track skill levels in character['skills']
+    # Check for milestones at levels 25, 50, 75, 100
+    # Return list of milestone messages
+    pass
+
+def get_skill_bonus(character, skill_name):
+    """
+    Calculate bonus provided by a skill level.
+    
+    Args:
+        character (dict): Character data
+        skill_name (str): Name of skill
+    
+    Returns:
+        int: Bonus from skill (level // 10)
+    """
+    # TODO: Calculate skill bonus
+    pass
+
+def display_character_sheet(character):
+    """
+    Display comprehensive character information.
+    
+    Args:
+        character (dict): Character data
+    """
+    # TODO: Create formatted character display
+    # Include: name, level, experience, stats, skills, health/mana
+    pass
+```
+
+### Test Requirements
+
+Create a test function that demonstrates:
+- Character creation
+- Experience gain with multiple level ups
+- Stat point allocation
+- Skill progression with milestones
+- Character sheet display
+
+### Evaluation Criteria
+
+- **Progression Logic** (15 points): Correct experience/level calculations
+- **Stat System** (10 points): Proper stat allocation and derived stats
+- **Skill System** (8 points): Working skill progression and bonuses
+- **Code Quality** (2 points): Clean, documented implementation
+
+---
+
+## Task 2: Random Event Generation (30 points)
+
+### Problem Statement
+
+Create a sophisticated random event system that generates varied encounters with appropriate difficulty scaling and meaningful consequences.
+
+### Requirements
+
+Design an event system that:
+- Generates events appropriate to character level
+- Provides meaningful choices with consequences
+- Uses weighted randomness for variety
+- Tracks event history to avoid repetition
+
+### Implementation Tasks
+
+#### Part A: Event Pool Design (15 points)
+
+```python
+import random
+
+def create_event_pool():
+    """
+    Create a comprehensive pool of random events.
+    
+    Returns:
+        dict: Event definitions organized by difficulty
+    """
+    # TODO: Create events in three difficulty tiers:
+    # - Beginner (levels 1-5): Simple choices, low risk/reward
+    # - Intermediate (levels 6-15): Moderate complexity and risk
+    # - Advanced (levels 16+): Complex choices, high stakes
+    
+    # Each event should have:
+    # - Description
+    # - Minimum level requirement
+    # - 2-3 meaningful choices
+    # - Outcomes with consequences (health, experience, items)
+    pass
+
+def select_appropriate_events(event_pool, character_level, event_history):
+    """
+    Filter events appropriate for character level, avoiding recent repeats.
+    
+    Args:
+        event_pool (dict): All available events
+        character_level (int): Character's current level
+        event_history (list): Recent event IDs (last 5)
+    
+    Returns:
+        list: Appropriate events for this character
+    """
+    # TODO: Filter events by level and history
+    pass
+```
+
+#### Part B: Event Generation and Processing (15 points)
+
+```python
+def generate_random_event(event_pool, character, event_history):
+    """
+    Generate an appropriate random event for the character.
+    
+    Args:
+        event_pool (dict): Available events
+        character (dict): Character data
+        event_history (list): Recent event history
+    
+    Returns:
+        dict: Selected event, or None if no events available
+    """
+    # TODO: Implement weighted event selection
+    # Consider character level, recent history
+    # Apply any level-based modifications to difficulty
+    pass
+
+def present_event_choice(event):
+    """
+    Display event and get player choice.
+    
+    Args:
+        event (dict): Event to present
+    
+    Returns:
+        int: Index of chosen option (0-based)
+    """
+    # TODO: Display event description and choices
+    # Get and validate player input
+    pass
+
+def resolve_event_outcome(event, choice_index, character):
+    """
+    Apply the consequences of a player's choice.
+    
+    Args:
+        event (dict): Current event
+        choice_index (int): Player's choice
+        character (dict): Character data
+    
+    Returns:
+        dict: Outcome results with messages and changes
+    """
+    # TODO: Apply outcome to character
+    # Return detailed results for display
+    pass
+
+def run_event_sequence(character, num_events=3):
+    """
+    Run a sequence of random events for testing.
+    
+    Args:
+        character (dict): Character data
+        num_events (int): Number of events to run
+    """
+    # TODO: Demonstrate complete event system
+    # Show event generation, choice handling, outcomes
+    pass
+```
+
+### Sample Event Structure
+
+Your events should follow this format:
+
+```python
+sample_event = {
+    "id": "mysterious_merchant",
+    "description": "A hooded merchant approaches with rare wares...",
+    "min_level": 3,
+    "choices": [
+        {
+            "text": "Buy the mysterious potion (50 gold)",
+            "requirements": {"gold": 50},
+            "outcome": {
+                "message": "The potion grants you mystical knowledge!",
+                "effects": {"gold": -50, "experience": 100, "skills": {"alchemy": 5}}
+            }
+        },
+        {
+            "text": "Ask about the merchant's travels",
+            "outcome": {
+                "message": "The merchant shares valuable information about the area.",
+                "effects": {"experience": 25}
+            }
+        },
+        {
+            "text": "Walk away suspiciously",
+            "outcome": {
+                "message": "You avoid potential danger but miss an opportunity.",
+                "effects": {"experience": 10}
+            }
+        }
+    ]
+}
+```
+
+### Evaluation Criteria
+
+- **Event Design** (12 points): Creative, varied, well-balanced events
+- **Difficulty Scaling** (8 points): Appropriate level-based event selection
+- **Choice Consequences** (6 points): Meaningful outcomes that affect gameplay
+- **System Integration** (4 points): Proper integration with character system
+
+---
+
+## Task 3: Game Loop and State Management (35 points)
+
+### Problem Statement
+
+Create a complete game loop that integrates character progression, random events, and persistent state management into a playable text adventure.
+
+### Requirements
+
+Implement a game system that:
+- Maintains comprehensive game state
+- Provides intuitive menu navigation
+- Handles save/load functionality
+- Integrates all previous systems seamlessly
+
+### Implementation Tasks
+
+#### Part A: Game State Management (20 points)
+
+```python
+import json
+from datetime import datetime
+
+def create_game_state(character_name):
+    """
+    Initialize a complete game state.
+    
+    Args:
+        character_name (str): Name for new character
+    
+    Returns:
+        dict: Complete game state structure
+    """
+    # TODO: Create comprehensive game state including:
+    # - Character data (from previous tasks)
+    # - Game metadata (creation time, play time, save count)
+    # - Event history
+    # - Game settings (auto-save, difficulty)
+    pass
+
+def save_game_state(game_state, filename):
+    """
+    Save complete game state to JSON file.
+    
+    Args:
+        game_state (dict): Current game state
+        filename (str): Save file name
+    
+    Returns:
+        bool: Success/failure of save operation
+    """
+    # TODO: Implement robust save functionality
+    # Include save timestamp and validation data
+    # Handle file errors gracefully
+    pass
+
+def load_game_state(filename):
+    """
+    Load game state from JSON file.
+    
+    Args:
+        filename (str): Save file name
+    
+    Returns:
+        dict or None: Loaded game state or None if failed
+    """
+    # TODO: Implement robust load functionality
+    # Validate loaded data structure
+    # Handle missing or corrupted files
+    pass
+
+def validate_game_state(game_state):
+    """
+    Validate game state structure and data integrity.
+    
+    Args:
+        game_state (dict): Game state to validate
+    
+    Returns:
+        list: List of validation errors (empty if valid)
+    """
+    # TODO: Check required fields and data consistency
+    pass
+```
+
+#### Part B: Main Game Loop (15 points)
+
+```python
+def display_main_menu(game_state):
+    """
+    Display the main game menu with current status.
+    
+    Args:
+        game_state (dict): Current game state
+    """
+    # TODO: Show character status and menu options
+    # Include: adventure, character sheet, save/load, quit
+    pass
+
+def adventure_mode(game_state):
+    """
+    Handle adventure/exploration gameplay.
+    
+    Args:
+        game_state (dict): Current game state
+    """
+    # TODO: Generate and handle random events
+    # Update character progression
+    # Modify game state based on outcomes
+    pass
+
+def character_management(game_state):
+    """
+    Handle character viewing and stat allocation.
+    
+    Args:
+        game_state (dict): Current game state
+    """
+    # TODO: Display character info
+    # Allow stat point allocation if available
+    # Show progression details
+    pass
+
+def save_load_menu(game_state):
+    """
+    Handle save and load operations.
+    
+    Args:
+        game_state (dict): Current game state
+    
+    Returns:
+        dict or None: New game state if loaded, current state otherwise
+    """
+    # TODO: Provide save/load interface
+    # List available save files
+    # Handle save/load operations
+    pass
+
+def main_game_loop():
+    """
+    Main game loop integrating all systems.
+    """
+    # TODO: Implement complete game loop
+    # Handle new game creation or loading
+    # Manage main menu navigation
+    # Integrate all subsystems
+    # Handle graceful exit with save prompt
+    pass
+```
+
+### Integration Requirements
+
+Your game loop must demonstrate:
+
+1. **Character Creation**: Create new character with name input
+2. **Adventure Gameplay**: Multiple random events with choices
+3. **Character Progression**: Experience gain, leveling, stat allocation
+4. **State Persistence**: Save and load game functionality
+5. **Error Handling**: Graceful handling of all user inputs
+
+### Test Scenario
+
+Create a test that demonstrates:
+- Starting a new game
+- Going on adventures (at least 3 events)
+- Character progression (level up with stat allocation)
+- Saving the game
+- Loading the saved game
+- Continuing gameplay
+
+### Evaluation Criteria
+
+- **Game Loop Design** (10 points): Well-structured, intuitive main loop
+- **System Integration** (8 points): Seamless integration of all components
+- **State Management** (7 points): Proper save/load functionality
+- **User Experience** (6 points): Clear navigation and feedback
+- **Error Handling** (4 points): Robust handling of edge cases
+
+---
+
+## Bonus Challenge: Advanced Features (10 bonus points)
+
+Choose and implement **one** of the following advanced features:
+
+### Option A: Achievement System
+- Define 5+ achievements with unlock conditions
+- Track player progress toward achievements
+- Award bonuses for achievement completion
+- Display achievement progress in character sheet
+
+### Option B: Item System
+- Create item definitions with properties
+- Implement inventory management
+- Add item effects on character stats
+- Include item rewards in events
+
+### Option C: Combat System
+- Design turn-based combat mechanics
+- Create enemy types with different abilities
+- Implement stat-based damage calculations
+- Add combat events to event pool
+
+### Option D: World Exploration
+- Create named locations with descriptions
+- Implement travel between locations
+- Add location-specific events
+- Track exploration progress
+
+---
+
+## Submission Instructions
+
+### Required Files
+
+Submit the following files:
+
+1. `character_system.py` - Character progression implementation
+2. `event_system.py` - Random event generation system
+3. `game_loop.py` - Main game loop and state management
+4. `demo.py` - Demonstration script showing all features
+5. `README.md` - Documentation of your implementation
+
+### Documentation Requirements
+
+Your README.md should include:
+- Description of each system and its features
+- How to run and test your implementation
+- Any design decisions or challenges encountered
+- Instructions for playing your game
+
+### Testing Requirements
+
+Your demo.py should demonstrate:
+- Complete character progression cycle
+- Variety of random events
+- Save/load functionality
+- All menu navigation options
+
+---
+
+## Evaluation Rubric
+
+| Component | Excellent (90-100%) | Good (80-89%) | Satisfactory (70-79%) | Needs Work (<70%) |
+|-----------|-------------------|---------------|---------------------|------------------|
+| **Character System** | Perfect progression logic | Minor calculation issues | Basic functionality | Major problems |
+| **Event System** | Creative, well-balanced | Good variety | Basic events | Limited/broken |
+| **Game Loop** | Seamless integration | Good structure | Basic functionality | Poor integration |
+| **State Management** | Robust save/load | Good persistence | Basic save/load | Unreliable |
+| **Code Quality** | Excellent organization | Good structure | Adequate | Poor quality |
+
+**Total Points: 100 + 10 bonus**
+
+---
+
+## AI Collaboration Guidelines
+
+### Effective AI Usage
+
+For this assessment, AI can help with:
+- Explaining complex mathematical formulas
+- Suggesting data structure designs
+- Helping debug specific functions
+- Reviewing code for potential issues
+
+### What to Document
+
+Include in your submission:
+- Any AI-generated code (with your modifications)
+- AI suggestions you chose not to use (and why)
+- How AI helped solve specific problems
+
+Remember: The goal is to demonstrate your understanding of game mechanics and interactive system design while showing effective collaboration with AI tools.

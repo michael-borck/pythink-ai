@@ -1,0 +1,253 @@
+---
+title: "Week 1 Project: Temperature Converter"
+subtitle: "Your First Complete Python Program"
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    code-fold: false
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Temperature Converter Project
+
+## Project Overview
+
+Create a program that converts temperatures between Celsius and Fahrenheit scales. This project demonstrates all the concepts from Week 1: variables, input/output, type conversion, and conditional logic.
+
+## Learning Objectives
+
+By completing this project, you will:
+- Apply all Week 1 concepts in a real program
+- Practice getting user input and converting types
+- Use conditional statements to control program flow
+- Format output for user readability
+- Document your AI learning process
+
+## Project Requirements
+
+### Core Features (Required)
+
+Your temperature converter must:
+
+1. **Welcome the user** with a friendly greeting
+2. **Get a temperature value** from the user
+3. **Ask which scale** the temperature is in (Celsius or Fahrenheit)
+4. **Convert to the other scale** using the correct formula
+5. **Display the result** with proper formatting
+6. **Thank the user** before ending
+
+### Conversion Formulas
+
+```python
+# Celsius to Fahrenheit
+fahrenheit = (celsius * 9/5) + 32
+
+# Fahrenheit to Celsius  
+celsius = (fahrenheit - 32) * 5/9
+```
+
+### Example Program Run
+
+```
+=== Temperature Converter ===
+Welcome! I can convert temperatures for you.
+
+Enter temperature: 100
+Is that (C)elsius or (F)ahrenheit? C
+
+100.0°C equals 212.0°F
+
+Thanks for using the temperature converter!
+```
+
+Another example:
+```
+=== Temperature Converter ===
+Welcome! I can convert temperatures for you.
+
+Enter temperature: 32
+Is that (C)elsius or (F)ahrenheit? F
+
+32.0°F equals 0.0°C
+
+Thanks for using the temperature converter!
+```
+
+## Implementation Guide
+
+### Step 1: Set Up Your Program Structure
+
+```python
+# Temperature Converter
+# Author: Your Name
+# Date: Today's Date
+
+# Welcome message
+print("=== Temperature Converter ===")
+print("Welcome! I can convert temperatures for you.")
+print()  # Blank line for readability
+
+# Your code continues here...
+```
+
+### Step 2: Get User Input
+
+Remember:
+- `input()` always returns a string
+- Convert to `float` for decimal numbers
+- Use meaningful variable names
+
+### Step 3: Determine the Scale
+
+The user can enter:
+- 'C' or 'c' for Celsius
+- 'F' or 'f' for Fahrenheit
+
+Hint: You can use `.upper()` or `.lower()` to handle both cases
+
+### Step 4: Perform the Conversion
+
+Use if/elif statements to:
+- Check which scale was entered
+- Apply the correct formula
+- Store the result
+
+### Step 5: Display the Result
+
+Format your output nicely:
+- Show both temperatures
+- Include the degree symbol (°)
+- Round to 1 decimal place if needed
+
+## Common Pitfalls to Avoid
+
+### 1. Forgetting Type Conversion
+```python
+# WRONG - temperature is still a string!
+temperature = input("Enter temperature: ")
+result = temperature * 9/5  # ERROR!
+
+# CORRECT
+temperature = input("Enter temperature: ")
+temperature = float(temperature)
+result = temperature * 9/5  # Works!
+```
+
+### 2. Using the Wrong Formula
+Double-check your formulas! Test with known values:
+- 0°C = 32°F
+- 100°C = 212°F
+- -40°C = -40°F (same in both!)
+
+### 3. Overcomplicating with AI Suggestions
+AI might suggest:
+- Exception handling (not yet!)
+- Functions (not yet!)
+- Loops to run multiple times (not yet!)
+
+Keep it simple! Just the basic requirements.
+
+## Testing Your Program
+
+Test with these values to ensure correctness:
+
+| Input | Scale | Expected Output |
+|-------|-------|-----------------|
+| 0     | C     | 32.0°F          |
+| 32    | F     | 0.0°C           |
+| 100   | C     | 212.0°F         |
+| 212   | F     | 100.0°C         |
+| -40   | C     | -40.0°F         |
+| -40   | F     | -40.0°C         |
+
+## AI Usage Documentation
+
+As part of your submission, document how you used AI:
+
+```python
+"""
+AI USAGE LOG
+============
+1. Question: How do I round to 1 decimal place?
+   AI Response: Use round(number, 1) or f"{number:.1f}"
+   What I Used: I chose the f-string method because we learned it in class
+
+2. Question: [Your question]
+   AI Response: [What AI said]
+   What I Used: [What you actually implemented]
+
+[Continue for each AI interaction]
+"""
+```
+
+## Submission Requirements
+
+### Your Colab Notebook Should Include:
+
+1. **Header comment** with your name and date
+2. **The complete program** with comments explaining key parts
+3. **Test runs** showing your program works with different inputs
+4. **AI usage log** documenting your learning process
+5. **Reflection** (see below)
+
+### Reflection Questions (Answer in Text Cell)
+
+1. What was the hardest part of this project?
+2. What's one thing you learned about Python?
+3. How did AI help you? How did it potentially confuse you?
+4. If you were to add one feature, what would it be?
+5. Rate your understanding of the code (1-5) and explain why
+
+## Grading Rubric
+
+### Functionality (40 points)
+- Program runs without errors (10 pts)
+- Correctly converts C to F (10 pts)
+- Correctly converts F to C (10 pts)
+- Handles user input properly (10 pts)
+
+### Code Understanding (30 points)
+- Meaningful variable names (10 pts)
+- Comments explain thinking (10 pts)
+- Can explain code in reflection (10 pts)
+
+### AI Usage Documentation (20 points)
+- Documents AI interactions (10 pts)
+- Shows learning, not copying (10 pts)
+
+### Style and Formatting (10 points)
+- Follows PEP 8 naming (5 pts)
+- Clean, readable output (5 pts)
+
+## Extension Challenges (Optional)
+
+If you finish early and want extra practice:
+
+1. **Add Kelvin**: Include Kelvin scale conversions
+2. **Input validation**: Check if the scale entered is valid
+3. **Multiple conversions**: Let user convert multiple temperatures
+4. **Temperature facts**: Add interesting facts (water freezes at 0°C/32°F)
+
+Remember: Only attempt these AFTER completing the basic requirements!
+
+## Getting Help
+
+- **First**: Re-read the requirements
+- **Second**: Review your class notes and lab work
+- **Third**: Ask AI to EXPLAIN concepts (not write code)
+- **Fourth**: Attend office hours or ask in class forum
+- **Fifth**: Collaborate with classmates (but write your own code!)
+
+## Final Tips
+
+1. Start simple - get basic functionality working first
+2. Test frequently - run your code after each section
+3. Use print() to debug - see what your variables contain
+4. Keep your first attempt - even if it's messy
+5. Remember: Understanding > Perfection
+
+Good luck with your first Python project! 🌡️

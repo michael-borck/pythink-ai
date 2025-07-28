@@ -1,0 +1,534 @@
+---
+title: "Week 4: Solutions Guide"
+subtitle: "Complete Solutions for Lab and Assessments"
+format:
+  html:
+    toc: true
+    code-fold: true
+  pdf:
+    toc: true
+---
+
+# Lab Solutions
+
+## Part 1: String Slicing Mastery
+
+### Exercise 1.1: Basic Slicing
+```python
+text = "Python Programming"
+
+# Solutions:
+first_word = text[0:6]      # "Python"
+second_word = text[7:18]    # "Programming" or text[7:]
+first_three = text[0:3]     # "Pyt" or text[:3]
+last_four = text[14:18]     # "ming" or text[-4:]
+middle_five = text[5:10]    # "n Pro"
+```
+
+### Exercise 1.2: Negative Indexing
+```python
+email = "student@university.edu"
+
+# Solutions:
+domain = email[8:]          # "university.edu" or email[-14:]
+username = email[:7]        # "student" or email[:-15]
+extension = email[-4:]      # ".edu"
+without_ext = email[:-4]    # "student@university"
+```
+
+### Exercise 1.3: Step Parameter
+```python
+alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+# Solutions:
+every_second = alphabet[::2]     # "ACEGIKMOQSUWY"
+every_third = alphabet[::3]      # "ADGJMPSVY"
+reversed_string = alphabet[::-1] # "ZYXWVUTSRQPONMLKJIHGFEDCBA"
+every_second_back = alphabet[::-2] # "ZXVTRPNLJHFDB"
+```
+
+### Exercise 1.4: Practical Slicing
+```python
+# Filename extraction
+filename = "report_2024_final.pdf"
+name = filename[0:17]       # "report_2024_final" or filename[:-4]
+extension = filename[-3:]   # "pdf" or filename[18:]
+year = filename[7:11]       # "2024"
+
+# Phone number extraction
+phone = "(555) 123-4567"
+area_code = phone[1:4]      # "555"
+first_part = phone[6:9]     # "123"
+last_part = phone[10:]     # "4567" or phone[-4:]
+
+# URL extraction
+url = "https://www.example.com/page"
+protocol = url[0:5]         # "https" or url[:5]
+# Find domain dynamically
+start = url.find("//") + 2
+end = url.find("/", start)
+domain = url[start:end]     # "www.example.com"
+```
+
+## Part 2: String Methods Practice
+
+### Exercise 2.1: Case Methods
+```python
+name1 = "john doe"
+name2 = "JANE SMITH"
+name3 = "mArY jOhNsOn"
+
+clean1 = name1.title()              # "John Doe"
+clean2 = name2.lower().title()      # "Jane Smith"
+clean3 = name3.lower().title()      # "Mary Johnson"
+
+# Case-insensitive comparison
+user_input = "YeS"
+if user_input.lower() == "yes":
+    print("User agreed!")
+```
+
+### Exercise 2.2: Whitespace Cleaning
+```python
+input1 = "  hello  "
+input2 = "\tPython\n"
+input3 = "  multiple   spaces  here  "
+
+clean1 = input1.strip()             # "hello"
+clean2 = input2.strip()             # "Python"
+
+# Remove multiple spaces
+clean3 = input3.strip()
+while "  " in clean3:
+    clean3 = clean3.replace("  ", " ")
+# Result: "multiple spaces here"
+```
+
+### Exercise 2.3: Search and Replace
+```python
+text = "I love programming in Java. Java is great!"
+
+# 1. Check if "Java" is in text
+if "Java" in text:
+    print("Found Java")
+
+# 2. Find position
+pos = text.find("Java")             # 22
+
+# 3. Count occurrences
+count = text.count("Java")          # 2
+
+# 4. Replace all
+python_text = text.replace("Java", "Python")
+
+# 5. Replace first only
+first_only = text.replace("Java", "Python", 1)
+```
+
+### Exercise 2.4: Method Chaining
+```python
+# Clean email
+email = "  USER@GMAIL.COM  "
+clean_email = email.strip().lower() # "user@gmail.com"
+
+# Clean name with spaces
+name = "  john    doe  "
+clean_name = " ".join(name.strip().split()).title()  # "John Doe"
+
+# Extract and clean domain
+messy_email = "  Student@UNIVERSITY.EDU  \n"
+domain = messy_email.strip().lower().split("@")[1]  # "university.edu"
+```
+
+## Part 3: Split and Join Operations
+
+### Exercise 3.1: Basic Splitting
+```python
+# CSV data
+csv_data = "John,25,Engineer"
+fields = csv_data.split(",")
+name = fields[0]    # "John"
+age = fields[1]     # "25"
+job = fields[2]     # "Engineer"
+
+# Phone parts
+phone = "555-123-4567"
+parts = phone.split("-")  # ['555', '123', '4567']
+
+# Limited split
+text = "one-two-three-four-five"
+first_three = text.split("-", 2)  # ['one', 'two', 'three-four-five']
+
+# Whitespace split
+sentence = "  Python   is    awesome  "
+words = sentence.split()  # ['Python', 'is', 'awesome']
+```
+
+### Exercise 3.2: Joining Lists
+```python
+words = ["Python", "is", "fun"]
+sentence = " ".join(words)          # "Python is fun"
+
+items = ["apple", "banana", "cherry"]
+comma_list = ",".join(items)        # "apple,banana,cherry"
+nice_list = ", ".join(items)        # "apple, banana, cherry"
+bullet_list = "\n- ".join(items)    # "apple\n- banana\n- cherry"
+
+# Formatted message
+data = ["John", "25", "Engineer"]
+formatted = " | ".join([f"Name: {data[0]}", f"Age: {data[1]}", f"Job: {data[2]}"])
+```
+
+### Exercise 3.3: Parse and Rebuild
+```python
+email_string = "john@GMAIL.com; ALICE@yahoo.COM;bob@HOTMAIL.com"
+
+# Split
+emails = email_string.split(";")
+
+# Clean each
+clean_emails = []
+for email in emails:
+    clean = email.strip().lower()
+    clean_emails.append(clean)
+
+# Join back
+clean_string = "; ".join(clean_emails)
+# Result: "john@gmail.com; alice@yahoo.com; bob@hotmail.com"
+```
+
+---
+
+# Word Game Solutions
+
+## Word Scrambler - Complete Implementation
+
+```python
+"""
+Word Scrambler Game
+A simple word guessing game with scrambled words
+"""
+
+print("=== Word Scrambler Game ===")
+print("Unscramble the words to score points!\n")
+
+# Word list by difficulty
+easy_words = ["cat", "dog", "run", "big", "red"]
+medium_words = ["python", "program", "computer", "science"]
+hard_words = ["algorithm", "development", "application", "technology"]
+
+# Game setup
+score = 0
+rounds = 5
+difficulty = input("Choose difficulty (easy/medium/hard): ").lower()
+
+# Select word list
+if difficulty == "easy":
+    words = easy_words
+elif difficulty == "hard":
+    words = hard_words
+else:
+    words = medium_words
+    difficulty = "medium"
+
+print(f"\nStarting {difficulty} mode with {rounds} rounds...\n")
+
+# Game loop
+for round_num in range(1, rounds + 1):
+    # Get word for round
+    word_index = (round_num - 1) % len(words)
+    original = words[word_index]
+    
+    # Scramble by swapping adjacent pairs
+    scrambled = ""
+    for i in range(0, len(original) - 1, 2):
+        scrambled = scrambled + original[i+1] + original[i]
+    if len(original) % 2 == 1:
+        scrambled = scrambled + original[-1]
+    
+    # If scramble didn't work well, reverse
+    if scrambled == original:
+        scrambled = original[::-1]
+    
+    print(f"Round {round_num}/{rounds}")
+    print(f"Scrambled word: {scrambled}")
+    print(f"Hint: {len(original)} letters")
+    
+    # Get guesses
+    attempts = 3
+    guessed = False
+    
+    while attempts > 0 and not guessed:
+        guess = input(f"\nYour guess ({attempts} attempts left): ").strip().lower()
+        
+        if not guess:
+            print("Please enter a word!")
+            continue
+            
+        if guess == original:
+            points = attempts * 10  # More points for fewer attempts
+            score = score + points
+            print(f"Correct! +{points} points")
+            guessed = True
+        else:
+            attempts = attempts - 1
+            if attempts > 0:
+                print("Wrong! Try again.")
+                # Give hints
+                if attempts == 2:
+                    print(f"Hint: First letter is '{original[0]}'")
+                elif attempts == 1:
+                    print(f"Hint: Last letter is '{original[-1]}'")
+    
+    if not guessed:
+        print(f"Out of attempts! The word was: {original}")
+    
+    print(f"Current score: {score}\n")
+    print("-" * 40)
+
+# Game over
+print(f"\nGame Over!")
+print(f"Final Score: {score}/{rounds * 30} possible points")
+
+# Rating
+percentage = (score / (rounds * 30)) * 100
+if percentage >= 80:
+    print("Excellent! You're a word master!")
+elif percentage >= 60:
+    print("Great job! You did well!")
+elif percentage >= 40:
+    print("Not bad! Keep practicing!")
+else:
+    print("Nice try! Play again to improve!")
+```
+
+## Hangman - Simple Implementation
+
+```python
+"""
+Simple Hangman Game
+Guess the word one letter at a time
+"""
+
+print("=== Hangman Game ===")
+print("Guess the word one letter at a time!\n")
+
+# Word categories
+animals = ["elephant", "giraffe", "penguin", "dolphin"]
+foods = ["pizza", "burger", "pasta", "sushi"]
+
+# Choose category
+print("Categories: animals, food")
+category = input("Choose category: ").lower()
+
+if category == "animals":
+    words = animals
+else:
+    words = foods
+    category = "food"
+
+# Select word
+import random  # Just for word selection
+word = words[0]  # Without random, just use first
+
+# Game setup
+guessed_letters = []
+max_wrong = 6
+wrong_guesses = 0
+
+print(f"\nCategory: {category}")
+print(f"Word has {len(word)} letters")
+
+# Game loop
+while wrong_guesses < max_wrong:
+    # Display word state
+    display = ""
+    for letter in word:
+        if letter in guessed_letters:
+            display = display + letter + " "
+        else:
+            display = display + "_ "
+    
+    print(f"\nWord: {display}")
+    print(f"Guessed: {', '.join(guessed_letters)}")
+    print(f"Wrong guesses: {wrong_guesses}/{max_wrong}")
+    
+    # Check if won
+    if "_" not in display:
+        print("\nCongratulations! You won!")
+        print(f"The word was: {word}")
+        break
+    
+    # Get guess
+    guess = input("\nGuess a letter: ").lower().strip()
+    
+    # Validate
+    if not guess:
+        print("Please enter a letter!")
+        continue
+    if len(guess) != 1:
+        print("One letter at a time!")
+        continue
+    if not guess.isalpha():
+        print("Letters only!")
+        continue
+    if guess in guessed_letters:
+        print("Already guessed that!")
+        continue
+    
+    # Process guess
+    guessed_letters.append(guess)
+    
+    if guess in word:
+        count = word.count(guess)
+        print(f"Good! '{guess}' appears {count} time(s)")
+    else:
+        wrong_guesses = wrong_guesses + 1
+        print(f"Sorry, no '{guess}'")
+        
+        # Show hangman state
+        if wrong_guesses == 1:
+            print("   O")
+        elif wrong_guesses == 2:
+            print("   O\n   |")
+        elif wrong_guesses == 3:
+            print("   O\n  /|")
+        elif wrong_guesses == 4:
+            print("   O\n  /|\\")
+        elif wrong_guesses == 5:
+            print("   O\n  /|\\\n  /")
+        elif wrong_guesses == 6:
+            print("   O\n  /|\\\n  / \\")
+
+# Game over
+if wrong_guesses >= max_wrong:
+    print("\nGame Over! You lose!")
+    print(f"The word was: {word}")
+```
+
+---
+
+# Assessment Solutions
+
+## Slicing Mastery Assessment
+
+### Part 1: Basic String Slicing
+1. `text[0:6]` or `text[:6]`
+2. `text[7:18]` or `text[7:]`
+3. `text[2:6]`
+4. `text[11:15]`
+5. `text[0:4]` or `text[:4]`
+6. `text[13:18]` or `text[-5:]`
+
+### Part 2: Negative Indexing
+1. `email[-4:]`
+2. `email[:-4]`
+3. `email[13:]` or `email[-14:]`
+4. `email[:12]`
+
+### Part 3: Step Parameter
+1. `alphabet[::2]` or `alphabet[0::2]`
+2. `alphabet[::3]` or `alphabet[0::3]`
+3. `alphabet[::-1]`
+4. `alphabet[5:10:2]`
+
+### Part 5: Practical Slicing
+```python
+# Problem 1
+name_part = filename[0:20] or filename[:-4]
+extension = filename[-3:] or filename[21:]
+year = filename[7:11]
+quarter = filename[12:14]
+
+# Problem 2
+area_code = phone[1:4]
+main_number = phone[6:14]
+extension = phone[-3:]
+
+# Problem 3
+protocol = url[0:5]
+domain = url[8:23]
+path = url[23:]
+```
+
+## String Methods Assessment
+
+### Part 1: Method Selection
+1. `.upper()`
+2. `.strip()`
+3. `.find("@")`
+4. `.replace("old", "new")`
+5. `.isalpha()`
+6. `.split(",")`
+7. `.title()` or `.capitalize()`
+8. `.count("a")`
+9. `.startswith("http")`
+10. `"-".join()`
+
+### Part 2: Method Application
+```python
+# Problem 1
+clean_name = name.strip().title()
+final_name = " ".join(clean_name.split())
+
+# Problem 2
+clean_email = email.strip().lower()
+has_at = "@" in clean_email
+has_dot = "." in clean_email
+at_pos = clean_email.find("@")
+dot_after_at = "." in clean_email[at_pos:]
+
+# Problem 3
+long_enough = len(password) >= 8
+has_upper = any(c.isupper() for c in password)
+has_lower = any(c.islower() for c in password)
+has_digit = any(c.isdigit() for c in password)
+```
+
+### Part 5: Error Detection
+```python
+# Fix 1
+name = name.title()
+
+# Fix 2
+if email.lower() == "user@domain.com":
+
+# Fix 3
+clean = text.strip()
+
+# Fix 4
+list = words.split(",")
+```
+
+---
+
+# Teaching Notes
+
+## Common Patterns to Emphasize
+
+1. **Input Cleaning Pipeline**:
+   ```python
+   # Always: strip → lower/title → validate
+   user_input = input("Enter: ").strip().lower()
+   ```
+
+2. **Safe Slicing**:
+   ```python
+   # Check length before slicing
+   if len(text) >= 3:
+       last_three = text[-3:]
+   ```
+
+3. **Method Chaining Order**:
+   ```python
+   # Strip THEN transform
+   clean = text.strip().title()
+   ```
+
+## Debugging Tips for Students
+
+1. Print intermediate results
+2. Check string length before slicing
+3. Remember strings are immutable
+4. Test with edge cases (empty, single char)
+5. Visualize indices on paper

@@ -1,0 +1,521 @@
+---
+title: "Week 11 Assessment: Interactive Systems Design"
+format: 
+  html:
+    toc: true
+    code-fold: show
+execute:
+  eval: false
+---
+
+# Assessment: Interactive Systems Design
+**Week 11 - Interactive Applications**
+
+## Overview
+
+This assessment evaluates your understanding of interactive system design principles, menu-driven interfaces, and user experience considerations in Python applications.
+
+**Time Limit**: 45 minutes  
+**Points**: 100 points  
+**Format**: Practical coding tasks with design questions
+
+---
+
+## Task 1: Menu System Architecture (25 points)
+
+### Problem Statement
+
+Design and implement a comprehensive menu system for a library management application. The system should be intuitive, handle errors gracefully, and provide clear navigation.
+
+### Requirements
+
+Create a menu system with the following structure:
+```
+Library Management System
+1. 📚 Book Management
+   1. Add New Book
+   2. Search Books
+   3. Update Book Info
+   4. Remove Book
+2. 👥 Member Management
+   1. Register Member
+   2. View Member Info
+   3. Update Member
+   4. Deactivate Member
+3. 📖 Lending Operations
+   1. Check Out Book
+   2. Return Book
+   3. View Due Books
+   4. Renew Book
+4. 📊 Reports
+   1. Popular Books
+   2. Member Statistics
+   3. Overdue Report
+0. Exit System
+```
+
+### Implementation Requirements
+
+1. **Menu Display Function** (10 points)
+   - Clear, consistent formatting
+   - Numbered options with descriptive text
+   - Visual separators and headers
+
+2. **Input Handling** (10 points)
+   - Validate user input (numbers only in valid range)
+   - Handle invalid input gracefully
+   - Provide clear error messages
+   - Allow returning to previous menu
+
+3. **Navigation Logic** (5 points)
+   - Implement nested menu navigation
+   - Maintain current menu context
+   - Provide breadcrumb or location indicator
+
+### Starter Code
+
+```python
+def display_menu(title, options, current_path=""):
+    """
+    Display a menu with title and options.
+    
+    Args:
+        title (str): Menu title
+        options (list): List of menu options
+        current_path (str): Current navigation path
+    """
+    # TODO: Implement menu display
+    pass
+
+def get_menu_choice(max_options, allow_zero=True):
+    """
+    Get valid menu choice from user.
+    
+    Args:
+        max_options (int): Maximum valid option number
+        allow_zero (bool): Whether to allow 0 (exit/back)
+    
+    Returns:
+        int: User's choice (0 to max_options)
+    """
+    # TODO: Implement input validation
+    pass
+
+def navigate_menu_system():
+    """
+    Main navigation function for the library system.
+    Handles all menu interactions and navigation.
+    """
+    # TODO: Implement complete navigation logic
+    pass
+
+# Test your implementation
+if __name__ == "__main__":
+    navigate_menu_system()
+```
+
+### Evaluation Criteria
+
+- **Functionality** (15 points): All menu levels work correctly
+- **User Experience** (5 points): Clear, intuitive navigation
+- **Error Handling** (3 points): Graceful handling of invalid inputs
+- **Code Quality** (2 points): Clean, readable implementation
+
+---
+
+## Task 2: State Management Design (30 points)
+
+### Problem Statement
+
+Design a state management system for a simple drawing application that allows users to draw on a grid, save their work, and undo actions.
+
+### Requirements
+
+The drawing application should maintain:
+- A 10x10 grid representing the canvas
+- Drawing history for undo functionality
+- Current tool/brush settings
+- Save/load capabilities
+
+### Data Structure Design (15 points)
+
+Define appropriate data structures for:
+
+```python
+def initialize_drawing_state():
+    """
+    Create the initial state for the drawing application.
+    
+    Returns:
+        dict: Complete application state
+    """
+    # TODO: Design comprehensive state structure
+    # Should include:
+    # - Canvas grid (10x10)
+    # - Drawing history
+    # - Current tool settings (brush, color, size)
+    # - Application metadata
+    pass
+
+def get_empty_canvas():
+    """Create a blank 10x10 canvas."""
+    # TODO: Return appropriate empty canvas structure
+    pass
+```
+
+### State Operations (15 points)
+
+Implement state management operations:
+
+```python
+def draw_point(state, x, y, symbol='*'):
+    """
+    Draw a point on the canvas and update history.
+    
+    Args:
+        state (dict): Current application state
+        x (int): X coordinate (0-9)
+        y (int): Y coordinate (0-9)
+        symbol (str): Symbol to draw
+    
+    Returns:
+        bool: Success/failure of operation
+    """
+    # TODO: Implement drawing with history tracking
+    pass
+
+def undo_last_action(state):
+    """
+    Undo the last drawing action.
+    
+    Args:
+        state (dict): Current application state
+    
+    Returns:
+        bool: Success/failure of undo operation
+    """
+    # TODO: Implement undo functionality
+    pass
+
+def display_canvas(state):
+    """
+    Display the current canvas state.
+    
+    Args:
+        state (dict): Current application state
+    """
+    # TODO: Implement canvas visualization
+    pass
+
+def save_drawing(state, filename):
+    """
+    Save the current drawing to a file.
+    
+    Args:
+        state (dict): Current application state
+        filename (str): Name of save file
+    
+    Returns:
+        bool: Success/failure of save operation
+    """
+    # TODO: Implement save functionality
+    pass
+
+def load_drawing(filename):
+    """
+    Load a drawing from a file.
+    
+    Args:
+        filename (str): Name of save file
+    
+    Returns:
+        dict or None: Loaded state or None if failed
+    """
+    # TODO: Implement load functionality
+    pass
+```
+
+### Evaluation Criteria
+
+- **Data Structure Design** (10 points): Appropriate, efficient structures
+- **State Operations** (10 points): Correct implementation of all operations
+- **History Management** (5 points): Proper undo functionality
+- **Data Persistence** (3 points): Working save/load features
+- **Edge Case Handling** (2 points): Bounds checking, error handling
+
+---
+
+## Task 3: User Experience Analysis (20 points)
+
+### Problem Statement
+
+Analyze and improve the user experience of the following flawed interactive application. Identify issues and propose specific improvements.
+
+### Flawed Application Code
+
+```python
+def bad_calculator():
+    """A poorly designed calculator interface."""
+    print("Calculator")
+    
+    while True:
+        print("Enter operation:")
+        print("1=add 2=subtract 3=multiply 4=divide 5=quit")
+        
+        op = input()
+        if op == "5":
+            break
+            
+        num1 = float(input("Number 1:"))
+        num2 = float(input("Number 2:"))
+        
+        if op == "1":
+            result = num1 + num2
+        elif op == "2":
+            result = num1 - num2
+        elif op == "3":
+            result = num1 * num2
+        elif op == "4":
+            result = num1 / num2
+        else:
+            print("Invalid")
+            continue
+            
+        print("Result:", result)
+```
+
+### Analysis Questions (10 points)
+
+1. **User Interface Issues** (3 points)
+   - List 3 specific problems with the menu presentation
+   - Explain how each issue affects user experience
+
+2. **Input Handling Problems** (4 points)
+   - Identify 4 ways the input handling could fail
+   - Describe the consequences of each failure
+
+3. **User Feedback Issues** (3 points)
+   - What feedback is missing for users?
+   - How could error messages be improved?
+
+### Improvement Implementation (10 points)
+
+Redesign the calculator with improved user experience:
+
+```python
+def improved_calculator():
+    """An improved calculator with better UX."""
+    # TODO: Implement improved version addressing all identified issues
+    # Focus on:
+    # - Clear, formatted menus
+    # - Robust input validation
+    # - Helpful error messages
+    # - Consistent user feedback
+    # - Graceful error recovery
+    pass
+```
+
+### Evaluation Criteria
+
+- **Issue Identification** (5 points): Accurate identification of UX problems
+- **Analysis Quality** (5 points): Clear explanation of impact
+- **Improvement Implementation** (8 points): Effective solutions to identified problems
+- **User-Centered Design** (2 points): Evidence of thinking from user perspective
+
+---
+
+## Task 4: Interactive Event System (25 points)
+
+### Problem Statement
+
+Create an interactive event system for a simple text-based adventure game. The system should generate random events, present choices to the player, and handle outcomes appropriately.
+
+### Requirements
+
+Design and implement an event system with the following features:
+
+1. **Event Definition Structure** (10 points)
+2. **Event Generation Logic** (8 points)
+3. **Choice Handling System** (7 points)
+
+### Implementation Template
+
+```python
+import random
+
+def create_event_pool():
+    """
+    Create a pool of possible events for the adventure game.
+    
+    Returns:
+        dict: Dictionary of event definitions
+    """
+    # TODO: Define at least 5 different events
+    # Each event should have:
+    # - Description
+    # - 2-3 choices
+    # - Outcomes for each choice
+    # - Consequences (health, items, experience)
+    pass
+
+def generate_random_event(event_pool, player_state):
+    """
+    Generate a random event appropriate for the current player state.
+    
+    Args:
+        event_pool (dict): Available events
+        player_state (dict): Current player information
+    
+    Returns:
+        dict: Selected event with choices
+    """
+    # TODO: Implement event selection logic
+    # Consider player level, health, etc.
+    pass
+
+def display_event(event):
+    """
+    Display an event and its choices to the player.
+    
+    Args:
+        event (dict): Event to display
+    """
+    # TODO: Format and display event information
+    pass
+
+def handle_player_choice(event, choice_index, player_state):
+    """
+    Process the player's choice and apply consequences.
+    
+    Args:
+        event (dict): Current event
+        choice_index (int): Player's choice (0-based)
+        player_state (dict): Current player state
+    
+    Returns:
+        dict: Updated player state
+    """
+    # TODO: Apply choice consequences to player state
+    pass
+
+def run_event_demo():
+    """
+    Demonstrate the event system with a sample player.
+    """
+    # TODO: Create demo that shows:
+    # - Event generation
+    # - Player choice handling
+    # - State updates
+    # - Multiple event sequence
+    pass
+
+# Test the event system
+if __name__ == "__main__":
+    run_event_demo()
+```
+
+### Sample Event Structure
+
+Your events should follow this structure:
+
+```python
+sample_event = {
+    "id": "forest_path",
+    "description": "You come to a fork in the forest path...",
+    "choices": [
+        {
+            "text": "Take the left path",
+            "outcome": {
+                "message": "You find a peaceful clearing...",
+                "effects": {"health": +5, "items": ["Herb"]}
+            }
+        },
+        {
+            "text": "Take the right path", 
+            "outcome": {
+                "message": "You encounter a wild animal...",
+                "effects": {"health": -10, "experience": +25}
+            }
+        }
+    ]
+}
+```
+
+### Evaluation Criteria
+
+- **Event Design** (8 points): Creative, varied, well-structured events
+- **Generation Logic** (6 points): Appropriate event selection
+- **Choice Processing** (6 points): Correct handling of player choices
+- **State Management** (3 points): Proper state updates
+- **Code Organization** (2 points): Clean, modular implementation
+
+---
+
+## Submission Instructions
+
+### File Submission
+
+Submit the following files:
+
+1. `task1_menu_system.py` - Menu system implementation
+2. `task2_state_management.py` - State management system
+3. `task3_ux_analysis.md` - User experience analysis (Markdown format)
+4. `task3_improved_calculator.py` - Improved calculator implementation
+5. `task4_event_system.py` - Interactive event system
+
+### Code Quality Requirements
+
+- Include docstrings for all functions
+- Use meaningful variable names
+- Add comments for complex logic
+- Follow consistent formatting
+- Handle edge cases appropriately
+
+### Testing Requirements
+
+Include test cases or demonstration functions that show:
+- All features working correctly
+- Error handling in action
+- Edge cases being handled
+- User experience improvements
+
+---
+
+## Evaluation Rubric
+
+| Criteria | Excellent (A) | Good (B) | Satisfactory (C) | Needs Improvement (D/F) |
+|----------|---------------|----------|------------------|------------------------|
+| **Functionality** | All features work perfectly | Minor issues only | Most features work | Major functionality problems |
+| **User Experience** | Intuitive, polished interface | Good usability | Basic usability | Poor user experience |
+| **Code Quality** | Clean, well-documented | Good structure | Adequate structure | Poor organization |
+| **Error Handling** | Comprehensive error handling | Good error handling | Basic error handling | Little/no error handling |
+| **Design Decisions** | Excellent design choices | Good design choices | Reasonable choices | Poor design decisions |
+
+**Total Points: 100**
+- 90-100: Excellent (A)
+- 80-89: Good (B) 
+- 70-79: Satisfactory (C)
+- 60-69: Needs Improvement (D)
+- Below 60: Failing (F)
+
+---
+
+## Additional Resources
+
+### Helpful Concepts to Review
+
+- Menu-driven programming patterns
+- State management strategies
+- Input validation techniques
+- User experience design principles
+- Error handling best practices
+
+### AI Collaboration Tips
+
+When working with AI on this assessment:
+- Ask for help with specific UX problems
+- Request code review for error handling
+- Get suggestions for menu organization
+- Ask for testing scenario ideas
+
+Remember: The goal is to demonstrate your understanding of interactive system design and your ability to create user-friendly applications that handle real-world usage scenarios gracefully.

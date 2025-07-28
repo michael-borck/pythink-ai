@@ -1,0 +1,576 @@
+---
+title: "Week 5: Solutions Guide"
+subtitle: "Complete Solutions for Lab and Assessments"
+format:
+  html:
+    toc: true
+    code-fold: true
+  pdf:
+    toc: true
+---
+
+# Lab Solutions
+
+## Part 1: Your First Functions
+
+### Exercise 1.1: Basic Functions
+```python
+# 1. Greeting function
+def say_hello():
+    """Print a greeting message."""
+    print("Hello from a function!")
+
+# 2. Personalized greeting
+def greet_person(name):
+    """Print personalized greeting."""
+    print(f"Hello, {name}!")
+
+# 3. Area calculator
+def rectangle_area(length, width):
+    """Calculate area of rectangle."""
+    area = length * width
+    return area
+
+# Test them
+say_hello()
+greet_person("Alice")
+area = rectangle_area(10, 5)
+print(f"Area: {area}")
+```
+
+### Exercise 1.2: Functions with Returns
+```python
+# 1. Temperature converter
+def celsius_to_fahrenheit(celsius):
+    """Convert Celsius to Fahrenheit."""
+    fahrenheit = (celsius * 9/5) + 32
+    return fahrenheit
+
+# 2. Price calculator
+def calculate_total(price, tax_rate):
+    """Calculate total price including tax."""
+    tax = price * tax_rate
+    total = price + tax
+    return total
+
+# 3. String cleaner
+def clean_input(text):
+    """Clean and standardize input text."""
+    cleaned = text.strip().lower()
+    return cleaned
+```
+
+### Exercise 1.3: Multiple Parameters
+```python
+# 1. Full name formatter
+def format_name(first, last):
+    """Format full name properly."""
+    return f"{last}, {first}"
+
+# 2. Grade calculator
+def calculate_grade(score, total):
+    """Calculate percentage grade."""
+    percentage = (score / total) * 100
+    return percentage
+
+# 3. Time converter
+def hours_to_minutes_seconds(hours):
+    """Convert hours to minutes and seconds."""
+    minutes = hours * 60
+    seconds = hours * 3600
+    return minutes, seconds
+```
+
+## Part 2: Default Parameters
+
+### Exercise 2.1: Optional Values
+```python
+# 2. Power function
+def power(base, exponent=2):
+    """Raise base to exponent power (default: square)."""
+    result = base ** exponent
+    return result
+
+# 3. Format currency
+def format_money(amount, currency="$", decimal_places=2):
+    """Format amount as currency string."""
+    formatted = f"{currency}{amount:.{decimal_places}f}"
+    return formatted
+```
+
+## Part 3: Understanding Scope
+
+### Exercise 3.1: Scope Tracing
+```
+Output:
+Before functions: counter=0, message=Global
+Inside function_one: counter=10, message=Local to function_one
+After function_one: counter=0, result=10
+Inside function_two: counter=0, message=Global
+After function_two: counter=0, result=99
+```
+
+### Exercise 3.2: Scope Errors Fixed
+```python
+# Fix 1: Pass tax_rate as parameter
+def calculate_tax_fixed(amount, tax_rate):
+    tax = amount * tax_rate
+    return amount + tax
+
+# Fix 2: Pass counter as parameter
+def increment_counter_fixed(counter):
+    return counter + 1
+
+# Fix 3: Return values from function
+def get_user_info_fixed():
+    username = input("Enter name: ")
+    user_age = int(input("Enter age: "))
+    return username, user_age
+
+# Usage:
+name, age = get_user_info_fixed()
+print(f"Welcome {name}, age {age}")
+```
+
+### Exercise 3.3: Design Clean Functions
+```python
+# Good version without globals
+def register_user_good(name, current_count):
+    """Register user and return new count."""
+    new_count = current_count + 1
+    return f"User {name} registered. Total users: {new_count}", new_count
+
+def update_score(current_score, points_earned):
+    """Update score and return new total."""
+    return current_score + points_earned
+
+def display_score(score):
+    """Display formatted score."""
+    print(f"Current Score: {score} points")
+```
+
+---
+
+# Modular Calculator - Complete Solution
+
+```python
+"""
+Modular Calculator
+A comprehensive calculator using functions for all operations.
+"""
+
+# === BASIC ARITHMETIC FUNCTIONS ===
+def add(a, b):
+    """Add two numbers."""
+    return a + b
+
+def subtract(a, b):
+    """Subtract b from a."""
+    return a - b
+
+def multiply(a, b):
+    """Multiply two numbers."""
+    return a * b
+
+def divide(a, b):
+    """Divide a by b safely."""
+    if b == 0:
+        return None
+    return a / b
+
+# === ADVANCED OPERATIONS ===
+def power(base, exponent=2):
+    """Calculate base raised to exponent."""
+    result = 1
+    for _ in range(int(abs(exponent))):
+        result = result * base
+    
+    if exponent < 0:
+        result = 1 / result
+    
+    return result
+
+def square_root(number):
+    """Calculate square root using Newton's method."""
+    if number < 0:
+        return None
+    if number == 0:
+        return 0
+    
+    # Newton's method
+    guess = number / 2
+    for _ in range(10):
+        guess = (guess + number / guess) / 2
+    
+    return round(guess, 4)
+
+def calculate_percentage(value, percentage):
+    """Calculate percentage of a value."""
+    return value * (percentage / 100)
+
+def modulo(a, b):
+    """Calculate remainder of a divided by b."""
+    if b == 0:
+        return None
+    return a % b
+
+# === CONVERSION FUNCTIONS ===
+def celsius_to_fahrenheit(celsius):
+    """Convert Celsius to Fahrenheit."""
+    return (celsius * 9/5) + 32
+
+def fahrenheit_to_celsius(fahrenheit):
+    """Convert Fahrenheit to Celsius."""
+    return (fahrenheit - 32) * 5/9
+
+def celsius_to_kelvin(celsius):
+    """Convert Celsius to Kelvin."""
+    return celsius + 273.15
+
+def miles_to_kilometers(miles):
+    """Convert miles to kilometers."""
+    return miles * 1.60934
+
+def kilometers_to_miles(kilometers):
+    """Convert kilometers to miles."""
+    return kilometers / 1.60934
+
+def pounds_to_kilograms(pounds):
+    """Convert pounds to kilograms."""
+    return pounds * 0.453592
+
+# === INPUT VALIDATION ===
+def get_number(prompt):
+    """Get a valid number from user."""
+    while True:
+        try:
+            return float(input(prompt))
+        except ValueError:
+            print("Invalid input! Please enter a number.")
+
+def get_positive_number(prompt):
+    """Get a positive number from user."""
+    while True:
+        number = get_number(prompt)
+        if number > 0:
+            return number
+        print("Please enter a positive number!")
+
+def get_menu_choice(options):
+    """Get valid menu choice from user."""
+    while True:
+        choice = input("Enter your choice: ").strip()
+        if choice in options:
+            return choice
+        print(f"Invalid choice! Please choose from: {', '.join(options)}")
+
+# === DISPLAY FUNCTIONS ===
+def display_result(operation, result, decimals=2):
+    """Display calculation result."""
+    if result is None:
+        print(f"Error: {operation} could not be completed!")
+    else:
+        if isinstance(result, float):
+            print(f"{operation} Result: {result:.{decimals}f}")
+        else:
+            print(f"{operation} Result: {result}")
+
+def display_menu(title, options):
+    """Display a formatted menu."""
+    print(f"\n=== {title} ===")
+    for i, option in enumerate(options, 1):
+        print(f"{i}. {option}")
+
+def display_separator():
+    """Display a visual separator."""
+    print("-" * 40)
+
+# === MENU FUNCTIONS ===
+def run_basic_operations():
+    """Run basic arithmetic operations menu."""
+    operations = ["Add", "Subtract", "Multiply", "Divide", "Back"]
+    
+    while True:
+        display_menu("Basic Operations", operations)
+        choice = get_menu_choice(["1", "2", "3", "4", "5"])
+        
+        if choice == "5":
+            break
+        
+        num1 = get_number("Enter first number: ")
+        num2 = get_number("Enter second number: ")
+        
+        if choice == "1":
+            result = add(num1, num2)
+            display_result("Addition", result)
+        elif choice == "2":
+            result = subtract(num1, num2)
+            display_result("Subtraction", result)
+        elif choice == "3":
+            result = multiply(num1, num2)
+            display_result("Multiplication", result)
+        elif choice == "4":
+            result = divide(num1, num2)
+            display_result("Division", result)
+
+def run_advanced_operations():
+    """Run advanced operations menu."""
+    operations = ["Power", "Square Root", "Percentage", "Modulo", "Back"]
+    
+    while True:
+        display_menu("Advanced Operations", operations)
+        choice = get_menu_choice(["1", "2", "3", "4", "5"])
+        
+        if choice == "5":
+            break
+        elif choice == "1":
+            base = get_number("Enter base: ")
+            exp = get_number("Enter exponent: ")
+            result = power(base, exp)
+            display_result("Power", result)
+        elif choice == "2":
+            num = get_positive_number("Enter number: ")
+            result = square_root(num)
+            display_result("Square Root", result, 4)
+        elif choice == "3":
+            value = get_number("Enter value: ")
+            percent = get_number("Enter percentage: ")
+            result = calculate_percentage(value, percent)
+            display_result("Percentage", result)
+        elif choice == "4":
+            num1 = get_number("Enter dividend: ")
+            num2 = get_number("Enter divisor: ")
+            result = modulo(num1, num2)
+            display_result("Modulo", result)
+
+def run_temperature_conversions():
+    """Run temperature conversion menu."""
+    conversions = ["C to F", "F to C", "C to K", "Back"]
+    
+    while True:
+        display_menu("Temperature Conversions", conversions)
+        choice = get_menu_choice(["1", "2", "3", "4"])
+        
+        if choice == "4":
+            break
+        elif choice == "1":
+            temp = get_number("Enter temperature in Celsius: ")
+            result = celsius_to_fahrenheit(temp)
+            display_result("Celsius to Fahrenheit", result, 1)
+        elif choice == "2":
+            temp = get_number("Enter temperature in Fahrenheit: ")
+            result = fahrenheit_to_celsius(temp)
+            display_result("Fahrenheit to Celsius", result, 1)
+        elif choice == "3":
+            temp = get_number("Enter temperature in Celsius: ")
+            result = celsius_to_kelvin(temp)
+            display_result("Celsius to Kelvin", result, 2)
+
+def run_conversions():
+    """Run conversion utilities menu."""
+    categories = ["Temperature", "Length", "Weight", "Back"]
+    
+    while True:
+        display_menu("Conversion Utilities", categories)
+        choice = get_menu_choice(["1", "2", "3", "4"])
+        
+        if choice == "4":
+            break
+        elif choice == "1":
+            run_temperature_conversions()
+        elif choice == "2":
+            # Length conversions (similar structure)
+            print("Length conversions coming soon!")
+        elif choice == "3":
+            # Weight conversions (similar structure)
+            print("Weight conversions coming soon!")
+
+# === MAIN CALCULATOR ===
+def calculator():
+    """Main calculator program."""
+    print("=== Modular Calculator ===")
+    print("A function-based calculator system\n")
+    
+    main_options = [
+        "Basic Operations",
+        "Advanced Operations",
+        "Conversions",
+        "Exit"
+    ]
+    
+    while True:
+        display_menu("Main Menu", main_options)
+        choice = get_menu_choice(["1", "2", "3", "4"])
+        
+        if choice == "1":
+            run_basic_operations()
+        elif choice == "2":
+            run_advanced_operations()
+        elif choice == "3":
+            run_conversions()
+        elif choice == "4":
+            print("\nThank you for using Modular Calculator!")
+            print("Goodbye!")
+            break
+
+# Run the calculator
+if __name__ == "__main__":
+    calculator()
+```
+
+---
+
+# Assessment Solutions
+
+## Function Tracing Assessment
+
+### Problem 1: Basic Function Calls
+- b = 10 (double(5) returns 10)
+- c = 11 (add_one(10) returns 11)
+- d = 22 (double(11) returns 22)
+- Final output: "Final: 22"
+
+### Problem 2: Multiple Parameters
+- Call 1: a=4, b=3, operation="add" → returns 7
+- Call 2: a=3, b=4, operation="multiply" → returns 12
+- Call 3: a=7, b=12, operation="add" → returns 19
+- Output: "Results: 7, 12, 19"
+
+### Problem 3: Default Parameters
+| Call | name | greeting | punctuation | Returns |
+|------|------|----------|-------------|---------|
+| greet("Alice") | "Alice" | "Hello" | "!" | "Hello, Alice!" |
+| greet("Bob", "Hi") | "Bob" | "Hi" | "!" | "Hi, Bob!" |
+| greet("Charlie", "Hey", "?") | "Charlie" | "Hey" | "?" | "Hey, Charlie?" |
+| greet("David", punctuation=".") | "David" | "Hello" | "." | "Hello, David." |
+
+### Problem 4: Scope Tracing
+Key points:
+- Local count (5→6) is different from global count (10)
+- result1 = 9 (3 + 6)
+- result2 = 15 (9 + 6)
+- Global count remains 10 throughout
+
+Output:
+1. "First: 9"
+2. "Second: 15"
+3. "Global count: 10"
+
+### Problem 6: Function Composition
+- complex_calc(3, 7)
+- x = process(3) → add_five(3)=8, double(8)=16 → x=16
+- y = process(7) → add_five(7)=12, double(12)=24 → y=24
+- z = add_five(16+24) → add_five(40)=45
+- Answer: 45
+
+## Function Design Assessment
+
+### Problem 1: Basic Functions
+```python
+def calculate_circumference(radius):
+    """Calculate circumference of a circle.
+    
+    Args:
+        radius: The radius of the circle
+        
+    Returns:
+        The circumference (2 * pi * radius)
+    """
+    pi = 3.14159
+    return 2 * pi * radius
+
+def format_name(first, last):
+    """Format name as Last, First.
+    
+    Args:
+        first: First name
+        last: Last name
+        
+    Returns:
+        Formatted string "Last, First"
+    """
+    return f"{last}, {first}"
+```
+
+### Problem 2: Functions with Validation
+```python
+def safe_divide(dividend, divisor):
+    """Divide two numbers safely.
+    
+    Args:
+        dividend: Number to divide
+        divisor: Number to divide by
+        
+    Returns:
+        Result of division or None if divisor is zero
+    """
+    if divisor == 0:
+        return None
+    return dividend / divisor
+
+def calculate_age(birth_year, current_year=2024):
+    """Calculate age from birth year.
+    
+    Args:
+        birth_year: Year of birth
+        current_year: Current year (default: 2024)
+        
+    Returns:
+        Age in years or None if invalid
+    """
+    if current_year < birth_year:
+        return None
+    return current_year - birth_year
+```
+
+### Problem 4: Refactoring Solution
+```python
+def calculate_weighted_grade(homework, midterm, final):
+    """Calculate weighted grade from components.
+    
+    30% homework, 30% midterm, 40% final
+    """
+    hw_weight = homework * 0.3
+    mid_weight = midterm * 0.3
+    final_weight = final * 0.4
+    return hw_weight + mid_weight + final_weight
+
+def numeric_to_letter_grade(score):
+    """Convert numeric score to letter grade."""
+    if score >= 90:
+        return "A"
+    elif score >= 80:
+        return "B"
+    elif score >= 70:
+        return "C"
+    else:
+        return "F"
+```
+
+---
+
+# Teaching Notes
+
+## Common Patterns to Emphasize
+
+1. **Validator Pattern**: Return True/False
+2. **Transformer Pattern**: Take input, return modified
+3. **Calculator Pattern**: Take numbers, return result
+4. **Display Pattern**: Show output, no return
+5. **Input Pattern**: Get valid input, return it
+
+## Debugging Tips for Students
+
+1. **Always test functions individually**
+2. **Print parameters at start of function**
+3. **Print before return statement**
+4. **Check None cases explicitly**
+5. **Verify parameter types match**
+
+## Refactoring Process
+
+1. Identify repeated code
+2. Extract to function
+3. Parameterize differences
+4. Test thoroughly
+5. Replace original with calls

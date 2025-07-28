@@ -1,0 +1,542 @@
+---
+title: "Week 9 Assessment: CSV Processing and Data Cleaning"
+subtitle: "Real-World Data Handling Skills"
+author: "AI-Integrated Programming Course"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Assessment Overview
+
+**Points:** 25 points  
+**Time Limit:** 45 minutes  
+**Type:** Practical implementation and problem-solving  
+
+This assessment evaluates your ability to parse CSV files, handle various data formats, and clean messy real-world data.
+
+---
+
+# Part A: CSV Parsing (10 points)
+
+## Question 1: Basic CSV Parsing (5 points)
+
+Given the following CSV lines, write code to parse them correctly:
+
+```
+Line 1: John,25,New York
+Line 2: "Smith, Jane",30,"Los Angeles, CA"
+Line 3: Bob,"35","Chicago, IL"
+Line 4: "Alice ""The Great"" Johnson",28,Boston
+```
+
+**Your Task:**
+Complete the parsing function to handle all these cases:
+
+```python
+def parse_csv_line(line, delimiter=","):
+    """
+    Parse a CSV line handling quotes and embedded delimiters.
+    
+    Args:
+        line: String containing one line of CSV data
+        delimiter: Character used to separate values
+    
+    Returns:
+        List of parsed values
+    """
+    values = []
+    current_value = ""
+    in_quotes = False
+    i = 0
+    
+    while i < len(line):
+        char = line[i]
+        
+        # Your implementation here
+        
+        
+        
+        
+        
+        
+        i += 1
+    
+    # Don't forget the last value!
+    
+    
+    return values
+
+# Test your function
+test_lines = [
+    'John,25,New York',
+    '"Smith, Jane",30,"Los Angeles, CA"',
+    'Bob,"35","Chicago, IL"',
+    '"Alice ""The Great"" Johnson",28,Boston'
+]
+
+for line in test_lines:
+    result = parse_csv_line(line)
+    print(f"Input: {line}")
+    print(f"Output: {result}")
+    print()
+```
+
+**Expected Output:**
+```
+Input: John,25,New York
+Output: ['John', '25', 'New York']
+
+Input: "Smith, Jane",30,"Los Angeles, CA"
+Output: ['Smith, Jane', '30', 'Los Angeles, CA']
+
+Input: Bob,"35","Chicago, IL"
+Output: ['Bob', '35', 'Chicago, IL']
+
+Input: "Alice ""The Great"" Johnson",28,Boston
+Output: ['Alice "The Great" Johnson', '28', 'Boston']
+```
+
+## Question 2: Delimiter Detection (5 points)
+
+Write a function that automatically detects the delimiter used in a CSV file:
+
+```python
+def detect_delimiter(sample_lines, possible_delimiters=[',', '\t', '|', ';']):
+    """
+    Detect the most likely delimiter from sample lines.
+    
+    Args:
+        sample_lines: List of first few lines from the file
+        possible_delimiters: List of delimiters to check
+    
+    Returns:
+        Most likely delimiter character
+    """
+    delimiter_counts = {}
+    
+    # Your implementation here
+    
+    
+    
+    
+    
+    
+    
+    
+    return ','  # Default if no clear winner
+
+# Test cases
+test_data = [
+    # Comma-delimited
+    ["Name,Age,City", "John,25,NYC", "Jane,30,LA"],
+    
+    # Tab-delimited
+    ["Name\tAge\tCity", "John\t25\tNYC", "Jane\t30\tLA"],
+    
+    # Pipe-delimited
+    ["Name|Age|City", "John|25|NYC", "Jane|30|LA"],
+]
+
+for i, lines in enumerate(test_data):
+    delimiter = detect_delimiter(lines)
+    print(f"Dataset {i+1}: Detected delimiter: '{delimiter}'")
+```
+
+---
+
+# Part B: Data Cleaning (10 points)
+
+## Question 3: Currency Value Cleaning (5 points)
+
+Create a function that cleans various currency formats:
+
+```python
+def clean_currency(value, default=0.0):
+    """
+    Convert currency string to float, handling various formats.
+    
+    Examples:
+        "$1,234.56" → 1234.56
+        "€1.234,56" → 1234.56 (European format)
+        "($100.00)" → -100.00 (Accounting negative)
+        "1.5K" → 1500.0
+        "2M" → 2000000.0
+    
+    Args:
+        value: String containing currency value
+        default: Value to return if parsing fails
+    
+    Returns:
+        Cleaned float value
+    """
+    if not value or str(value).strip() == "":
+        return default
+    
+    # Your implementation here
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+# Test your function
+test_values = [
+    "$1,234.56",
+    "€1.234,56",
+    "($100.00)",
+    "1.5K",
+    "2.3M",
+    "-$50.00",
+    "FREE",
+    "N/A",
+    "",
+    "$1,234,567.89"
+]
+
+print(f"{'Input':<20} {'Output':>12}")
+print("-" * 35)
+for val in test_values:
+    cleaned = clean_currency(val)
+    print(f"{val:<20} {cleaned:>12,.2f}")
+```
+
+## Question 4: Date Standardization (5 points)
+
+Create a function that standardizes dates to YYYY-MM-DD format:
+
+```python
+def standardize_date(date_str):
+    """
+    Convert various date formats to YYYY-MM-DD.
+    
+    Should handle:
+        "12/31/2023" (US format)
+        "31/12/2023" (EU format - assume if day > 12)
+        "2023-12-31" (Already standard)
+        "Dec 31, 2023"
+        "31-Dec-2023"
+        "20231231" (No separators)
+    
+    Returns:
+        Standardized date string or empty string if invalid
+    """
+    if not date_str or str(date_str).strip() == "":
+        return ""
+    
+    date_str = str(date_str).strip()
+    
+    # Your implementation here
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+# Test your function
+test_dates = [
+    "12/31/2023",
+    "31/12/2023",
+    "2023-12-31",
+    "Dec 31, 2023",
+    "31-Dec-2023",
+    "20231231",
+    "01/05/2023",  # Ambiguous - could be Jan 5 or May 1
+    "Invalid Date",
+    ""
+]
+
+print(f"{'Input':<20} {'Output':<15} {'Note'}")
+print("-" * 55)
+for date in test_dates:
+    result = standardize_date(date)
+    note = ""
+    if date == "01/05/2023":
+        note = "(Assumed US format)"
+    print(f"{date:<20} {result:<15} {note}")
+```
+
+---
+
+# Part C: Data Validation (5 points)
+
+## Question 5: Complete Data Validation Pipeline (5 points)
+
+Create a validation system for sales data:
+
+```python
+def validate_sales_record(record):
+    """
+    Validate a sales record and return cleaned data with any errors.
+    
+    Record should have:
+        - transaction_id: Non-empty string
+        - date: Valid date
+        - product: Non-empty string
+        - quantity: Positive integer
+        - unit_price: Positive float
+        - total: Should equal quantity * unit_price
+    
+    Args:
+        record: Dictionary containing sales data
+    
+    Returns:
+        Tuple of (cleaned_record, errors)
+        where errors is a list of error messages
+    """
+    cleaned = {}
+    errors = []
+    
+    # Validate transaction_id
+    transaction_id = str(record.get("transaction_id", "")).strip()
+    if not transaction_id:
+        errors.append("Missing transaction ID")
+    else:
+        cleaned["transaction_id"] = transaction_id
+    
+    # Your implementation for other fields here
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    return cleaned, errors
+
+# Test your validation
+test_records = [
+    # Valid record
+    {
+        "transaction_id": "T001",
+        "date": "2024-01-15",
+        "product": "Laptop",
+        "quantity": "2",
+        "unit_price": "$999.99",
+        "total": "$1,999.98"
+    },
+    
+    # Invalid record with multiple issues
+    {
+        "transaction_id": "",
+        "date": "Invalid",
+        "product": "Mouse",
+        "quantity": "-1",
+        "unit_price": "29.99",
+        "total": "30.00"  # Wrong total
+    },
+    
+    # Record with missing fields
+    {
+        "transaction_id": "T003",
+        "product": "Keyboard",
+        "quantity": "1"
+    }
+]
+
+for i, record in enumerate(test_records):
+    print(f"\nValidating Record {i+1}:")
+    cleaned, errors = validate_sales_record(record)
+    
+    if errors:
+        print("Errors found:")
+        for error in errors:
+            print(f"  - {error}")
+    else:
+        print("✓ Record is valid")
+    
+    print(f"Cleaned data: {cleaned}")
+```
+
+---
+
+# Bonus Question: Real-World CSV Processing (3 bonus points)
+
+Handle this complex real-world CSV scenario:
+
+```python
+def process_messy_csv(filename):
+    """
+    Process a CSV file that has:
+    - Comments starting with #
+    - Empty lines
+    - Inconsistent quoting
+    - Different number of columns in some rows
+    - Header row that might have extra spaces
+    
+    Returns:
+        List of cleaned dictionaries
+    """
+    # Your implementation here
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+# Test with sample data
+sample_csv_content = """# Sales data export
+# Generated: 2024-01-15
+
+Product  ,  Price  ,  Quantity  ,  Date
+"Laptop, Pro Model" , $1299.99 , 2 , 2024-01-15
+Mouse,29.99,5,2024-01-15
+
+# Mid-file comment
+Keyboard , 79.99 , , 2024-01-16
+"Monitor 27""" , 299.00 , 1 , 2024-01-16
+Cable,9.99,10,2024-01-17,Extra,Column
+"""
+
+# Write test file
+with open("messy_data.csv", "w") as f:
+    f.write(sample_csv_content)
+
+# Process it
+data = process_messy_csv("messy_data.csv")
+print(f"Processed {len(data)} valid records")
+for record in data:
+    print(record)
+```
+
+---
+
+# Grading Rubric
+
+## Part A: CSV Parsing (10 points)
+- **Question 1 (5 points)**
+  - Basic parsing: 2 points
+  - Quote handling: 2 points
+  - Embedded quotes: 1 point
+- **Question 2 (5 points)**
+  - Counting delimiters: 2 points
+  - Consistency check: 2 points
+  - Correct detection: 1 point
+
+## Part B: Data Cleaning (10 points)
+- **Question 3 (5 points)**
+  - Basic currency: 2 points
+  - European format: 1 point
+  - Abbreviations (K, M): 1 point
+  - Negative values: 1 point
+- **Question 4 (5 points)**
+  - US format: 1 point
+  - EU format detection: 1 point
+  - Month names: 1 point
+  - No separator format: 1 point
+  - Error handling: 1 point
+
+## Part C: Data Validation (5 points)
+- **Question 5 (5 points)**
+  - Field validation: 2 points
+  - Type conversion: 1 point
+  - Business logic (total check): 1 point
+  - Error reporting: 1 point
+
+## Bonus (3 points)
+- Comment handling: 1 point
+- Robust parsing: 1 point
+- Column mismatch handling: 1 point
+
+---
+
+# Answer Key (For Instructors)
+
+## Question 1 Solution:
+```python
+def parse_csv_line(line, delimiter=","):
+    values = []
+    current_value = ""
+    in_quotes = False
+    i = 0
+    
+    while i < len(line):
+        char = line[i]
+        
+        if char == '"':
+            if in_quotes and i + 1 < len(line) and line[i + 1] == '"':
+                # Escaped quote
+                current_value += '"'
+                i += 1  # Skip next quote
+            else:
+                # Toggle quote mode
+                in_quotes = not in_quotes
+        elif char == delimiter and not in_quotes:
+            # End of value
+            values.append(current_value.strip())
+            current_value = ""
+        else:
+            current_value += char
+        
+        i += 1
+    
+    # Don't forget the last value!
+    values.append(current_value.strip())
+    
+    return values
+```
+
+## Question 2 Solution:
+```python
+def detect_delimiter(sample_lines, possible_delimiters=[',', '\t', '|', ';']):
+    delimiter_counts = {}
+    
+    for delimiter in possible_delimiters:
+        counts = []
+        for line in sample_lines:
+            count = line.count(delimiter)
+            counts.append(count)
+        
+        # Check consistency
+        if counts and all(c == counts[0] and c > 0 for c in counts):
+            delimiter_counts[delimiter] = counts[0]
+    
+    if delimiter_counts:
+        # Return delimiter with highest consistent count
+        return max(delimiter_counts, key=delimiter_counts.get)
+    
+    return ','  # Default
+```
+
+## Additional Teaching Notes
+
+### Common Student Mistakes
+1. **Forgetting the last value** in CSV parsing
+2. **Not handling escaped quotes** properly
+3. **Assuming date formats** without checking
+4. **Not validating data types** before conversion
+
+### Discussion Points
+- Why is data cleaning important?
+- What percentage of data science is cleaning vs. analysis?
+- How do different countries format numbers and dates?
+- Why do we need validation in data processing?
+
+This assessment tests practical skills that students will use in real data analysis projects!

@@ -1,0 +1,411 @@
+---
+title: "Week 9 Resources: Sample Datasets"
+subtitle: "Real-World Data for Analysis Practice"
+author: "AI-Integrated Programming Course"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Sample Datasets Collection
+
+This resource provides various datasets for students to practice data analysis skills. Each dataset includes realistic messiness and challenges.
+
+---
+
+# Dataset 1: Coffee Shop Sales
+
+## Description
+Daily sales data from a local coffee shop chain, including products, prices, quantities, and timestamps.
+
+## File: coffee_shop_sales.csv
+```csv
+TransactionID,Date,Time,Product,Category,Size,Price,Quantity,PaymentMethod,StoreLocation,EmployeeID
+1001,2024-03-01,08:15:23,Latte,Hot Drinks,Large,$4.50,1,Credit Card,Downtown,E101
+1002,2024-03-01,08:17:45,"Chocolate Muffin",Bakery,Regular,$3.25,2,Cash,Downtown,E101
+1003,2024-03-01,08:23:10,Espresso,Hot Drinks,Small,$2.50,1,Mobile App,Downtown,E102
+1004,2024-03-01,08:45:32,"Iced Coffee, Extra Shot",Cold Drinks,Large,$5.25,1,Credit Card,Downtown,E101
+1005,2024-03-01,09:02:15,Cappuccino,Hot Drinks,Medium,4.00,1,Cash,Downtown,E103
+1006,2024/03/01,09:15:43,Bagel with Cream Cheese,Food,,$4.75,1,Credit Card,Mall,E201
+1007,01-03-2024,09:32:18,Green Tea,Hot Drinks,Large,3.50,2,Mobile App,Mall,E201
+1008,2024-03-01,09:45:00,"Sandwich, Turkey Club",Food,Regular,"$8.95",1,Cash,Mall,E202
+1009,2024-03-01,10:12:34,Latte,Hot Drinks,Medium,€3.75,1,Debit Card,Airport,E301
+1010,2024-03-01,10:25:17,Cookie,Bakery,Regular,2.00,3,Cash,Airport,E301
+# Lunch rush starts
+1011,2024-03-01,12:01:45,Salad Bowl,Food,Large,$9.50,1,Credit Card,Downtown,E101
+1012,2024-03-01,12:05:23,"Soup, Tomato",Food,Regular,$6.25,1,Mobile App,Downtown,E102
+1013,2024-03-01,12:15:00,Iced Latte,Cold Drinks,Large,4.75,2,Cash,Downtown,E103
+1014,,,Americano,Hot Drinks,Small,$2.75,1,Credit Card,Downtown,E101
+1015,2024-03-02,08:00:15,Latte,Hot Drinks,Large,($4.50),1,Return,Downtown,E101
+1016,2024-03-02,08:30:22,Breakfast Burrito,Food,Regular,7.95,1,Credit Card,Mall,E201
+1017,2024-03-02,14:30:18,Smoothie,Cold Drinks,Large,N/A,1,Complimentary,Airport,E301
+1018,2024-03-02,15:45:33,"Cake, Chocolate",Bakery,Slice,$5.50,2,Cash,Mall,E202
+1019,2024-03-02,16:20:10,Tea,Hot Drinks,Small,2.5K,1000,Catering Order,Downtown,E103
+1020,2024-03-02,17:00:00,Various Items,Mixed,,1.2M,1,Special Event,All,E999
+```
+
+## Data Challenges
+- Mixed date formats (YYYY-MM-DD, MM/DD/YYYY, DD-MM-YYYY)
+- Currency symbols ($, €) and abbreviations (K, M)
+- Missing values (empty price, missing date)
+- Quoted values with commas
+- Special entries (returns, complimentary items)
+- Comments in data
+
+## Suggested Analyses
+1. Daily sales totals and trends
+2. Product popularity by category
+3. Peak hours analysis
+4. Store location comparison
+5. Payment method preferences
+6. Employee performance metrics
+
+---
+
+# Dataset 2: Student Grades
+
+## Description
+Academic performance data for a computer science course across multiple assignments.
+
+## File: student_grades.csv
+```csv
+StudentID,Name,Assignment,Type,Score,MaxScore,SubmissionDate,Late,Comments
+S001,"Johnson, Alice",Homework 1,Homework,85,100,2024-01-15,No,Good work
+S001,"Johnson, Alice",Quiz 1,Quiz,18,20,2024-01-20,No,
+S001,"Johnson, Alice",Lab 1,Lab,92,100,2024-01-22,No,Excellent code organization
+S002,Bob Smith,Homework 1,Homework,78,100,2024-01-16,Yes,1 day late
+S002,Bob Smith,Quiz 1,Quiz,15,20,2024-01-20,No,
+S002,Bob Smith,Lab 1,Lab,,100,2024-01-25,Yes,Not submitted
+S003,"Chen, Carol",Homework 1,Homework,95,100,2024-01-15,No,Perfect solution
+S003,"Chen, Carol",Quiz 1,Quiz,20,20,2024-01-20,No,100%!
+S003,"Chen, Carol",Lab 1,Lab,88,100,2024-01-22,No,
+S004,David Lee,Homework 1,Homework,62,100,2024-01-15,No,Needs improvement
+S004,David Lee,Quiz 1,Quiz,12,20,2024-01-20,No,Study more
+S004,David Lee,Lab 1,Lab,70,100,2024-01-23,Yes,
+S005,"Martinez, Eva",Homework 1,Homework,91,100,2024-01-15,No,
+S005,"Martinez, Eva",Quiz 1,Quiz,19,20,2024-01-20,No,
+S005,"Martinez, Eva",Lab 1,Lab,85,100,2024-01-22,No,Good effort
+# Midterm exam results
+S001,"Johnson, Alice",Midterm,Exam,176,200,2024-02-15,No,Strong performance
+S002,Bob Smith,Midterm,Exam,145,200,2024-02-15,No,
+S003,"Chen, Carol",Midterm,Exam,195,200,2024-02-15,No,Outstanding!
+S004,David Lee,Midterm,Exam,118,200,2024-02-15,No,See me for help
+S005,"Martinez, Eva",Midterm,Exam,168,200,2024-02-15,No,
+S006,"Wilson, Frank",Homework 1,Homework,ABSENT,100,,,Dropped course
+S007,Grace Kim,Homework 1,Homework,88,100,2024-01-15,No,
+S007,Grace Kim,Quiz 1,Quiz,17/20,20,2024-01-20,No,Different format
+```
+
+## Data Challenges
+- Names with commas requiring quotes
+- Missing scores (empty, "ABSENT")
+- Different score formats (18, 17/20)
+- Boolean values as text (Yes/No)
+- Comments with special meanings
+- Dropped students
+
+## Suggested Analyses
+1. Grade average by student
+2. Assignment difficulty analysis (average scores)
+3. Late submission patterns
+4. Grade distribution by assignment type
+5. Student performance trends
+6. Identify at-risk students
+
+---
+
+# Dataset 3: Weather Data
+
+## Description
+Daily weather observations from multiple stations with various measurements.
+
+## File: weather_data.csv
+```csv
+Date,Station,TempMax(F),TempMin(F),TempAvg(C),Precipitation(in),Humidity(%),WindSpeed(mph),Conditions
+2024-01-01,Airport,45,32,5.0,0.0,65,12,Clear
+2024-01-01,Downtown,47,35,6.1,0.0,68,8,Clear
+2024-01-01,Harbor,43,38,5.8,0.0,78,15,Partly Cloudy
+2024-01-02,Airport,42,28,2.8,0.15,72,18,Light Rain
+2024-01-02,Downtown,44,31,3.9,0.12,70,14,Light Rain
+2024-01-02,Harbor,41,35,3.3,0.18,82,22,Rain
+2024-01-03,Airport,38,25,0.0,0.5,80,25,Snow
+2024-01-03,Downtown,40,28,1.1,0.3,78,20,Rain/Snow Mix
+2024-01-03,Harbor,39,32,2.2,0.45,85,28,Heavy Rain
+01/04/2024,Airport,35,22,-3.3,1.2,75,30,Snow
+01/04/2024,Downtown,37,25,-1.7,0.8,73,25,Snow
+01/04/2024,Harbor,36,30,0.0,0.6,80,35,Freezing Rain
+2024-01-05,Airport,-999,18,,2.5,70,20,Heavy Snow
+2024-01-05,Downtown,30,20,-5.6,2.2,68,18,Heavy Snow
+2024-01-05,Harbor,32,24,"",1.8,75,25,Snow
+2024/01/06,Airport,28,15,-8.3,0.0,60,32,Clear but Cold
+2024/01/06,Downtown,31,18,-6.7,0.0,58,28,Clear
+2024/01/06,Harbor,29,22,-5.0,0.0,65,40,Windy and Clear
+# Sensor malfunction at Harbor
+2024-01-07,Airport,33,20,-4.4,0.0,55,15,Sunny
+2024-01-07,Downtown,35,23,-3.1,0.0,52,12,Sunny
+2024-01-07,Harbor,ERROR,ERROR,ERROR,ERROR,ERROR,ERROR,Sensor Offline
+2024-01-08,Airport,40,25,0.6,0.0,50,10,Clear
+2024-01-08,Downtown,42,28,2.2,trace,48,8,Clear
+2024-01-08,Harbor,38,30,1.7,T,58,14,Partly Cloudy
+```
+
+## Data Challenges
+- Mixed temperature units (Fahrenheit and Celsius)
+- Mixed date formats
+- Missing data indicators (-999, ERROR, empty)
+- Trace precipitation (trace, T)
+- Mixed numeric and text in conditions
+- Comments and sensor errors
+
+## Suggested Analyses
+1. Temperature trends over time
+2. Station comparison
+3. Precipitation patterns
+4. Extreme weather identification
+5. Correlation between measurements
+6. Data quality report by station
+
+---
+
+# Dataset 4: E-Commerce Sales
+
+## Description
+Online store transaction data with product details, customer information, and shipping.
+
+## File: ecommerce_sales.csv
+```csv
+OrderID,OrderDate,CustomerID,CustomerName,Email,Product,Category,Quantity,UnitPrice,Discount,Total,ShippingMethod,ShippingCost,Status
+10001,2024-02-01,C1001,John Smith,jsmith@email.com,Laptop Pro 15,Electronics,1,$1299.99,10%,$1169.99,Express,$25.00,Delivered
+10002,2024-02-01,C1002,"Anderson, Mary",m.anderson@email.com,Wireless Mouse,Accessories,2,$29.99,0,$59.98,Standard,$5.99,Delivered
+10003,2024-02-01,C1003,Bob Wilson,bwilson@email,Phone Case,Accessories,1,$19.99,,$19.99,Standard,$5.99,Delivered
+10004,2024-02-02,C1001,John Smith,jsmith@email.com,"USB-C Cable, 6ft",Accessories,3,$12.99,0,$38.97,Standard,FREE,Delivered
+10005,2024-02-02,C1004,Alice Chen,achen@email.com,Tablet 10-inch,Electronics,1,799.00,15%,679.15,Express,25,Delivered
+10006,02/03/2024,C1005,David Brown,dbrown@email.com,Headphones Pro,Electronics,1,$249.99,20%,($199.99),Returned,-$15.00,Returned
+10007,2024-02-03,C1006,Eva Martinez,eva.m@email.com,Laptop Bag,Accessories,1,$49.99,5%,$47.49,Standard,$5.99,In Transit
+10008,2024-02-04,C1007,Frank Lee,flee@email.com,Monitor 27",Electronics,2,299.99,0,599.98,Express,35.00,Delivered
+10009,2024-02-04,C1008,Grace Kim,gkim@email.com,Keyboard Mechanical,Accessories,1,$89.99,25%,$67.49,Prime,FREE,Delivered
+10010,2024/02/05,C1009,Henry Zhang,hzhang@email.com,Webcam HD,Electronics,1,79.99,,79.99,Standard,5.99,Processing
+10011,2024-02-05,C1010,Iris Johnson,iris.j@email.com,Multiple Items,Mixed,5,N/A,Various,$245.50,Express,$25.00,Delivered
+10012,2024-02-06,C1003,Bob Wilson,bwilson@email.com,CANCELLED,,,,$0.00,,$0.00,,Cancelled
+10013,2024-02-06,C1011,"Smith, Jane",janes@email.com,Laptop Stand,Accessories,1,34.99,0,34.99,Standard,Ship Free,Delivered
+10014,2024-02-07,C1012,Kevin Brown,kbrown@email.com,SSD 1TB,Electronics,1,129.99,30,90.99,Express,15,Delivered
+10015,2024-02-07,C1001,John Smith,jsmith@email.com,Mouse Pad,Accessories,2,9.99,0,19.98,Standard,3.99,Delivered
+# Valentine's Day Sale
+10016,2024-02-14,C1013,Laura White,lwhite@email.com,Smart Watch,Electronics,1,199.99,50%,99.99,Express,FREE VALENTINE,Delivered
+10017,2024-02-14,C1014,Mike Davis,mdavis@email.com,Fitness Tracker,Electronics,1,79.99,50%,39.99,Express,FREE VALENTINE,Delivered
+```
+
+## Data Challenges
+- Email validation issues
+- Mixed discount formats (10%, 0.10, empty)
+- Return transactions (negative values)
+- Shipping cost variations (FREE, Ship Free, numeric)
+- Cancelled orders
+- Special promotions in shipping
+- Multiple items in single order
+
+## Suggested Analyses
+1. Sales trends over time
+2. Product category performance
+3. Customer purchase patterns
+4. Discount impact on sales
+5. Shipping method preferences
+6. Return rate analysis
+7. Customer lifetime value
+
+---
+
+# Dataset 5: Employee Time Tracking
+
+## Description
+Company employee work hours, projects, and productivity metrics.
+
+## File: employee_timesheet.csv
+```csv
+EmployeeID,Name,Department,Date,ClockIn,ClockOut,BreakMinutes,ProjectCode,HoursWorked,OvertimeHours,Notes
+E001,Alice Johnson,Engineering,2024-03-01,09:00,17:30,30,PROJ-101,8.0,0,Regular day
+E001,Alice Johnson,Engineering,2024-03-02,08:45,18:15,45,PROJ-101,8.5,0.5,Deadline approaching
+E002,Bob Smith,Marketing,2024-03-01,9:15 AM,5:45 PM,60,MKT-201,7.5,0,Client meeting
+E002,Bob Smith,Marketing,2024-03-02,10:00,19:00,30,MKT-201,8.5,0.5,Campaign launch
+E003,"Chen, Carol",Engineering,2024-03-01,08:00,17:00,30,PROJ-102,8.5,0,Code review
+E003,"Chen, Carol",Engineering,2024-03-02,07:30,16:30,30,PROJ-102,8.5,0,Testing
+E004,David Wilson,Sales,03/01/2024,8:30,17:30,60,SALES-Q1,8,0,Customer calls
+E004,David Wilson,Sales,03/02/2024,9:00,20:00,45,SALES-Q1,10.25,2.25,Closing deal
+E005,Eva Brown,HR,2024-03-01,09:00,17:00,30,HR-MISC,7.5,0,Interviews
+E005,Eva Brown,HR,2024-03-02,SICK,SICK,0,N/A,0,0,Sick leave
+E006,Frank Lee,Engineering,2024-03-01,22:00,06:00,0,PROJ-103,8,0,Night shift
+E006,Frank Lee,Engineering,2024-03-02,22:00,06:30,0,PROJ-103,8.5,0.5,Server maintenance
+E007,Grace Kim,Marketing,2024-03-01,08:30,12:30,0,MKT-202,4,0,Half day - doctor
+E007,Grace Kim,Marketing,2024-03-02,08:30,17:00,30,MKT-202,8,0,Regular day
+E008,Henry Zhang,Engineering,2024-03-01,REMOTE,REMOTE,N/A,PROJ-101,8,0,Working from home
+E008,Henry Zhang,Engineering,2024-03-02,09:00,21:00,60,PROJ-101,11,3,Major bug fix
+E009,Iris Davis,Sales,2024-03-01,08:00,16:30,30,SALES-Q1,8,0,Territory visits
+E009,Iris Davis,Sales,2024-03-02,HOLIDAY,HOLIDAY,0,N/A,0,0,Company holiday
+E010,"Johnson, Jack",Engineering,2024-03-01,09:00,ERROR,30,PROJ-104,ERROR,ERROR,System error
+```
+
+## Data Challenges
+- Time format variations (24hr, 12hr with AM/PM)
+- Special entries (SICK, REMOTE, HOLIDAY, ERROR)
+- Break minutes inconsistencies
+- Name format variations
+- Date format variations
+- Calculation errors to detect
+- Night shift calculations
+
+## Suggested Analyses
+1. Total hours by employee
+2. Overtime analysis
+3. Department productivity
+4. Project time allocation
+5. Attendance patterns
+6. Remote work trends
+7. Break time compliance
+
+---
+
+# Dataset 6: Survey Responses
+
+## Description
+Customer satisfaction survey with mixed response types and formats.
+
+## File: customer_survey.csv
+```csv
+ResponseID,Timestamp,Age,Gender,ProductUsed,SatisfactionRating,RecommendLikelihood,Comments,ContactForFollowup
+R001,2024-03-01 10:15:23,25-34,M,Laptop Pro,5,10,Excellent product!,Yes
+R002,2024-03-01 11:32:45,35-44,F,Tablet,4,8,"Good, but expensive",yes
+R003,2024-03-01 14:22:18,18-24,Other,Phone,3,5,Battery life could be better,No
+R004,03/01/2024 3:45 PM,45-54,M,Laptop Pro,5,9,Very satisfied,Y
+R005,2024-03-01 16:18:00,55+,F,Tablet,2,3,Too complicated for me,YES
+R006,2024-03-02 09:00:00,35-44,,Phone,4,7,N/A,n
+R007,2024-03-02 10:30:15,25-34,M,Multiple,4.5,8.5,Use both laptop and tablet,Maybe
+R008,2024.03.02 11:45,18-24,F,Laptop Pro,1 star,0,Arrived damaged!,yes please
+R009,2024-03-02 13:20:00,UNKNOWN,M,Phone,4,8,,FALSE
+R010,2024-03-02 14:00:00,35-44,Prefer not to say,Tablet,Very Good,7,Happy customer,1
+R011,March 2nd 2024,45-54,F,Laptop Pro,10/10,10,LOVE IT!!!,true
+R012,2024-03-02 16:30:00,25-34,M,Phone,3.5,6,It's okay,no thanks
+R013,2024-03-03 08:15:00,55+,M,Tablet,⭐⭐⭐⭐,8,Good for reading,Yes
+R014,2024-03-03 09:45:30,18-24,F,Laptop Pro,Neutral,5,Average product,0
+R015,2024-03-03 11:00:00,35-44,F,All Products,5,10,Brand loyalist!,Definitely
+```
+
+## Data Challenges
+- Timestamp format variations
+- Age ranges vs specific ages
+- Rating scale inconsistencies (1-5, stars, text, x/10)
+- Boolean representations (Yes/No/Y/N/TRUE/FALSE/1/0)
+- Missing values
+- Free text in structured fields
+- Special characters (emoji)
+
+## Suggested Analyses
+1. Satisfaction by product
+2. Age group preferences
+3. Recommendation likelihood factors
+4. Gender-based insights
+5. Text sentiment from comments
+6. Follow-up contact rate
+7. Response quality metrics
+
+---
+
+# Using These Datasets
+
+## For Instructors
+
+### Teaching Approach
+1. Start with cleaner subsets
+2. Gradually introduce messiness
+3. Discuss real-world scenarios
+4. Let students discover issues
+
+### Common Exercises
+- Data quality assessment
+- Cleaning pipeline development
+- Statistical analysis
+- Visualization creation
+- Insight generation
+- Report writing
+
+### Difficulty Progression
+1. **Beginner**: Use first 10 rows, pre-clean some columns
+2. **Intermediate**: Use full dataset with guidance
+3. **Advanced**: Combine multiple datasets
+
+## For Students
+
+### Getting Started
+```python
+# Load any dataset
+filename = "coffee_shop_sales.csv"
+data = read_csv_file(filename)
+
+# Explore the data
+print(f"Loaded {len(data)} records")
+if data:
+    print(f"Columns: {list(data[0].keys())}")
+    print(f"First record: {data[0]}")
+
+# Start cleaning!
+```
+
+### Analysis Ideas
+1. What questions does this data answer?
+2. What patterns can you find?
+3. What data quality issues exist?
+4. How would you present findings?
+
+### Challenge Yourself
+- Handle all edge cases
+- Create comprehensive reports
+- Find unexpected insights
+- Optimize for large files
+
+---
+
+# Creating Your Own Test Data
+
+## Guidelines for Realistic Data
+
+### Add Common Issues
+```python
+def add_realistic_issues(clean_data):
+    """Add real-world messiness to data."""
+    import random
+    
+    messy_data = []
+    for row in clean_data:
+        messy_row = row.copy()
+        
+        # Randomly add issues
+        if random.random() < 0.1:  # 10% chance
+            # Missing value
+            random_key = random.choice(list(messy_row.keys()))
+            messy_row[random_key] = ""
+        
+        if random.random() < 0.05:  # 5% chance
+            # Format variation
+            if "date" in messy_row:
+                # Change date format
+                pass
+        
+        messy_data.append(messy_row)
+    
+    return messy_data
+```
+
+### Industry-Specific Patterns
+- **Retail**: Seasonal patterns, returns, promotions
+- **Education**: Attendance, grades, dropouts
+- **Healthcare**: Missing data, privacy concerns
+- **Finance**: Currency formats, regulations
+- **Technology**: Version numbers, error logs
+
+Remember: Real data is messy, and that's what makes analysis interesting!

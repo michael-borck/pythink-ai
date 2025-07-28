@@ -1,0 +1,175 @@
+---
+title: "Week 2 Flowchart Exercises"
+subtitle: "Visualizing Decision Logic"
+format:
+  html:
+    toc: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Flowchart Practice
+
+## Exercise 1: ATM Withdrawal
+
+Create a flowchart for an ATM withdrawal:
+1. Get withdrawal amount
+2. Check if amount is multiple of $20
+3. Check if amount <= account balance
+4. Check if amount <= daily limit ($500)
+5. If all checks pass: Dispense cash
+6. Otherwise: Show appropriate error
+
+Your flowchart:
+```
+[Space for drawing]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```
+
+## Exercise 2: Grade Calculator Flowchart
+
+Complete this partial flowchart for a grade calculator:
+
+```
+     Start
+       ↓
+   [Get Score]
+       ↓
+   <Valid Score?>
+    ↙ No      ↘ Yes
+[Error Msg]    <Score >= 90?>
+    ↓           ↙ Yes    ↘ No
+    ↓       [Grade = A]   <??>
+    ↓           ↓         ↙  ↘
+    ↓           ↓    [Continue...]
+    
+[Complete the flowchart]
+```
+
+## Exercise 3: Code from Flowchart
+
+Convert this flowchart to Python code:
+
+```
+     Start
+       ↓
+   [Get Age]
+       ↓
+   <Age < 4?>
+    ↙ Yes  ↘ No
+ [Free]    <Age < 12?>
+    ↓       ↙ Yes  ↘ No
+    ↓   [$5.00]   <Age >= 65?>
+    ↓       ↓      ↙ Yes  ↘ No
+    ↓       ↓   [$8.00]  [$10.00]
+    ↓       ↓      ↓        ↓
+    └───────┴──────┴────────┘
+              ↓
+        [Show Price]
+              ↓
+            End
+```
+
+Your code:
+```python
+# Convert flowchart to code:
+
+
+
+
+
+```
+
+## Exercise 4: Parking Meter Logic
+
+Draw a flowchart for parking meter payment:
+- If Sunday: Free parking
+- If before 8am or after 6pm: Free parking  
+- Otherwise: $2 per hour
+- Maximum 3 hours
+- Must pay before parking
+
+Include:
+- Day input
+- Time input
+- Hours needed
+- Payment calculation
+
+Your flowchart:
+```
+[Space for drawing]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```
+
+## Exercise 5: Debug the Flowchart
+
+This flowchart has logic errors. Find and fix them:
+
+```
+     Start
+       ↓
+   [Get Speed]
+       ↓
+   <Speed > 65?>
+    ↙ Yes   ↘ No
+[Ticket]   <Speed > 55?>
+    ↓       ↙ Yes  ↘ No
+    ↓    [Warning] [OK]
+    ↓       ↓       ↓
+    └───────┴───────┘
+            ↓
+          End
+```
+
+Problems found:
+1. ________________________________
+2. ________________________________
+
+Corrected flowchart:
+```
+[Draw corrected version]
+
+
+
+
+
+
+
+```
+
+## Submission
+
+Take photos of your flowcharts or use a digital tool.
+Include:
+- All 5 exercises
+- Clear, readable diagrams
+- Proper flowchart symbols
+- Complete logic paths

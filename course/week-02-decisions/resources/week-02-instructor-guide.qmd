@@ -1,0 +1,543 @@
+---
+title: "Week 2 Instructor Guide"
+subtitle: "Teaching Decision Making Effectively"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Week 2 Instructor Guide: Decision Making
+
+## Week Overview
+
+Week 2 introduces conditional logic, building on Week 1's foundations. Students often find this conceptually easy but technically tricky due to indentation, comparison operators, and logic combinations.
+
+## Pre-Class Preparation
+
+### Review Week 1 Understanding
+- Check that students can use variables
+- Verify comfort with input/output
+- Ensure they understand type conversion
+- Confirm AI partnership approach is working
+
+### Materials Needed
+- Whiteboard for flowcharts
+- Comparison operator reference sheet
+- Buggy code examples ready
+- Grade calculator rubric printed
+
+## Lecture Guide (1 hour)
+
+### Opening Hook: Smart Thermostat (10 min)
+
+**Setup**: Have AI prompt ready to demonstrate
+
+**Script**:
+"Let me show you what happens when we ask AI for help with real problems..."
+
+**Key Points**:
+- Let AI generate overly complex solution
+- Count features students don't understand
+- Simplify to core: hot→cool, cold→heat
+- This sets tone for managing complexity
+
+**If AI Doesn't Overcomplicate**:
+Try: "enterprise-grade smart home climate control system with machine learning"
+
+### Computational Concepts (20 min)
+
+#### Real-World Decisions
+
+**Interactive Opening**:
+"Turn to your neighbor. Name three decisions your phone makes automatically."
+
+Common answers:
+- Screen brightness adjustment
+- Battery saver mode
+- Notification priorities
+- Auto-rotate screen
+
+**Key Teaching Points**:
+
+1. **Single Decisions (if)**
+   - One special case
+   - "If battery < 20%, show warning"
+   - Default is do nothing
+
+2. **Either/Or (if/else)**
+   - Two paths, must take one
+   - "If fingerprint matches, unlock; else stay locked"
+
+3. **Multiple Options (if/elif/else)**
+   - Several possibilities
+   - First match wins
+   - Order matters!
+
+#### Flowchart Introduction
+
+**Live Drawing Exercise**:
+Draw password checker together:
+1. Start with diamond for decision
+2. Add yes/no branches
+3. Show merge points
+4. Emphasize one path through
+
+**Common Student Confusion**:
+- Think all branches execute
+- Don't understand "first match wins"
+- Forget else is optional
+
+### From Concepts to Code (15 min)
+
+#### The Critical Transition
+
+This is where students often struggle. Go slowly!
+
+**Indentation Demo**:
+```python
+# Show this live - type it wrong first!
+if score > 90:
+print("Great job!")  # ERROR - not indented
+
+# Fix it together
+if score > 90:
+    print("Great job!")  # Correct - indented
+```
+
+**Key Demonstrations**:
+
+1. **= vs == Error**
+   ```python
+   # Type this and let it fail
+   if score = 100:  # SyntaxError!
+   
+   # Explain the difference
+   score = 100      # Assignment
+   score == 100     # Comparison that returns True/False
+   ```
+
+2. **Boolean Creation**
+   ```python
+   # Show that comparisons create booleans
+   temperature = 75
+   is_hot = temperature > 80
+   print(is_hot)  # False
+   print(type(is_hot))  # <class 'bool'>
+   ```
+
+3. **elif Order Matters**
+   ```python
+   # Wrong order - demonstrate the problem
+   score = 85
+   if score >= 70:
+       grade = "C"  # This executes!
+   elif score >= 80:
+       grade = "B"  # Never reached
+   ```
+
+### AI Partnership Demo (10 min)
+
+**Live Prompt Evolution**:
+
+Actually type these prompts - don't use slides!
+
+1. Start vague: "grade calculator"
+2. Show overcomplicated result
+3. Add constraints progressively
+4. Celebrate when simple version appears
+
+**Teaching Moments**:
+- Point out dictionary dispatch (too advanced)
+- Show ternary operators (hard to read)
+- Highlight match/case (too new)
+- Emphasize "simpler please" strategy
+
+### Common Student Struggles
+
+**Indentation Issues**:
+- Mix of tabs/spaces
+- Not indenting after colon
+- Inconsistent indentation
+
+**Solution**: Show IDE features for auto-indent
+
+**Logic Errors**:
+- Wrong comparison operators
+- Bad order in elif chains  
+- Missing cases
+- Overlapping conditions
+
+**Solution**: Systematic testing with trace tables
+
+## Lab Management (2 hours)
+
+### Hour 1 Structure
+
+#### Flowcharts First (20 min)
+- Pair students for flowchart drawing
+- Walk around checking logic
+- Common issues:
+  - Missing "No" branches
+  - Not showing merge points
+  - Too complex initially
+
+**Tip**: Have example flowcharts ready to show
+
+#### Basic Practice (20 min)
+- Start with single if statements
+- Build up to if/else
+- Then add elif
+- Test after each addition
+
+**Key Intervention Points**:
+- When students forget colons
+- When indentation is wrong
+- When using = instead of ==
+
+#### Comparison Practice (20 min)
+- Predict outputs before running
+- Use print to show boolean values
+- Practice with strings (case sensitivity!)
+
+**Demo Case Sensitivity**:
+```python
+name = "Alice"
+print(name == "alice")  # False - surprise!
+print(name.lower() == "alice")  # True - solution
+```
+
+### Hour 2 Structure  
+
+#### Complex Conditions (20 min)
+
+**Build Understanding Gradually**:
+1. Single conditions first
+2. Add one AND
+3. Add one OR  
+4. Mix them carefully
+
+**Truth Table Exercise**:
+Draw on board:
+```
+A     B     A and B    A or B
+True  True    True       True
+True  False   False      True
+False True    False      True  
+False False   False      False
+```
+
+#### Debugging Workshop (20 min)
+
+**Provide Buggy Code**:
+Give them the reversed grade calculator
+
+**Guide Discovery**:
+- "What grade does 95 get?"
+- "Why might that happen?"
+- "How can we trace through?"
+- "What's the fix?"
+
+**Key Technique**: Add print statements
+```python
+score = 95
+print(f"Checking score: {score}")
+if score >= 70:
+    print("Entered C branch")
+    grade = "C"
+```
+
+#### Project Start (20 min)
+
+**Requirements Review**:
+- Go through grade scale together
+- Emphasize boundary testing
+- Show example output
+- Discuss user experience
+
+**Get Them Started**:
+```python
+# Scaffold the structure
+print("=== Smart Grade Calculator ===")
+
+# Input
+score = float(input("Enter score: "))
+
+# Validation
+if score < 0 or score > 100:
+    print("Invalid!")
+else:
+    # Grade logic here
+    pass
+```
+
+## Common Week 2 Issues
+
+### Technical Problems
+
+1. **Indentation Errors**
+   - Symptoms: IndentationError
+   - Fix: Show IDE auto-indent
+   - Prevention: Consistent style
+
+2. **Comparison Confusion**
+   - Symptoms: Using = in conditions
+   - Fix: Memory device "= sets, == asks"
+   - Prevention: Lots of practice
+
+3. **Logic Mistakes**
+   - Symptoms: Wrong outputs
+   - Fix: Trace tables
+   - Prevention: Test systematically
+
+### Conceptual Problems
+
+1. **All Branches Execute**
+   - Students think every if runs
+   - Demonstrate with prints
+   - Emphasize "first match wins"
+
+2. **Order Doesn't Matter**
+   - Put high values first
+   - Show counterexample
+   - Practice reordering
+
+3. **Missing Cases**
+   - Gaps in coverage
+   - Use else as catch-all
+   - Test boundaries
+
+## Assessment Strategies
+
+### During Lecture
+- **Quick Poll**: "What's 85 >= 85?" (True)
+- **Think-Pair-Share**: "Order these conditions correctly"
+- **Exit Ticket**: "One thing about elif that surprised you"
+
+### During Lab
+- Check flowcharts for logic
+- Verify systematic testing
+- Look for edge case handling
+- Monitor AI usage appropriateness
+
+### Project Evaluation Focus
+- Correct grade boundaries
+- All cases covered
+- User-friendly interface
+- Good error handling
+- Evidence of testing
+
+## Solutions and Examples
+
+### Grade Calculator Reference
+
+```python
+# Smart Grade Calculator - Instructor Solution
+print("=== Smart Grade Calculator ===")
+print("I'll convert your numerical score to a letter grade.")
+print()
+
+continue_calculating = True
+
+while continue_calculating:
+    # Get and validate input
+    score_string = input("Enter your score (0-100): ")
+    
+    try:
+        score = float(score_string)
+    except ValueError:
+        print("Please enter a valid number!")
+        continue
+    
+    if score < 0 or score > 100:
+        print("\nError: Score must be between 0 and 100!")
+    else:
+        # Determine grade (highest first!)
+        if score >= 97:
+            grade = "A+"
+            feedback = "Outstanding work!"
+        elif score >= 93:
+            grade = "A"
+            feedback = "Excellent performance!"
+        elif score >= 90:
+            grade = "A-"
+            feedback = "Great job!"
+        elif score >= 87:
+            grade = "B+"
+            feedback = "Very good work!"
+        elif score >= 83:
+            grade = "B"
+            feedback = "Good solid performance!"
+        elif score >= 80:
+            grade = "B-"
+            feedback = "Above average work!"
+        elif score >= 77:
+            grade = "C+"
+            feedback = "Satisfactory plus!"
+        elif score >= 73:
+            grade = "C"
+            feedback = "Satisfactory work."
+        elif score >= 70:
+            grade = "C-"
+            feedback = "Adequate performance."
+        elif score >= 67:
+            grade = "D+"
+            feedback = "Below average."
+        elif score >= 63:
+            grade = "D"
+            feedback = "Poor performance."
+        elif score >= 60:
+            grade = "D-"
+            feedback = "Barely passing."
+        else:
+            grade = "F"
+            feedback = "Failing grade. Please seek help!"
+        
+        # Display results
+        print(f"\nResults:")
+        print(f"--------")
+        print(f"Score: {score}%")
+        print(f"Grade: {grade}")
+        print(f"Feedback: {feedback}")
+    
+    # Ask to continue
+    print()
+    again = input("Calculate another grade? (Y/N): ")
+    if again.upper() != "Y":
+        continue_calculating = False
+
+print("\nThanks for using the Smart Grade Calculator!")
+```
+
+Note: This uses try/except and while loops (not learned yet). Simpler version for students:
+
+```python
+# Simple version without loops or exception handling
+print("=== Smart Grade Calculator ===")
+
+score = float(input("Enter your score (0-100): "))
+
+if score < 0 or score > 100:
+    print("Invalid score!")
+else:
+    # Grade determination
+    if score >= 90:
+        grade = "A"
+    elif score >= 80:
+        grade = "B"
+    elif score >= 70:
+        grade = "C"
+    elif score >= 60:
+        grade = "D"
+    else:
+        grade = "F"
+    
+    print(f"Grade: {grade}")
+```
+
+### Common Bugs to Demo
+
+1. **Wrong Order Bug**:
+```python
+# This always gives C for passing grades!
+if score >= 70:
+    grade = "C"
+elif score >= 80:
+    grade = "B"
+elif score >= 90:
+    grade = "A"
+```
+
+2. **Missing Else Bug**:
+```python
+# What if score is 65?
+if score >= 90:
+    grade = "A"
+elif score >= 80:
+    grade = "B"
+elif score >= 70:
+    grade = "C"
+# No else - grade might not be defined!
+```
+
+3. **Boundary Bug**:
+```python
+# Gaps at boundaries!
+if score > 90:  # Misses 90 exactly
+    grade = "A"
+elif score > 80:  # Misses 80 exactly
+    grade = "B"
+```
+
+## Differentiation Strategies
+
+### For Struggling Students
+- Extra flowchart practice
+- Pair with stronger peers
+- Simpler conditions first
+- More trace table work
+- Office hours for indentation
+
+### For Advanced Students  
+- Nested conditions challenge
+- Multiple criteria (attendance + score)
+- Input validation focus
+- Efficiency improvements
+- Early loop preview
+
+## Looking Ahead to Week 3
+
+Preview connections:
+- "These same conditions work in loops"
+- "while score < 0 or score > 100: ask again"
+- "for loops will visit each item in a list"
+
+Plant seeds:
+- "What if we wanted to calculate many grades?"
+- "How could we retry after invalid input?"
+- "What about processing a whole class?"
+
+## Quick Reference Card
+
+### Comparison Operators
+- `==` equals (not =!)
+- `!=` not equal
+- `<` less than
+- `>` greater than
+- `<=` less than or equal
+- `>=` greater than or equal
+
+### Logical Operators
+- `and` - both must be True
+- `or` - at least one must be True  
+- `not` - reverses True/False
+
+### Common Patterns
+```python
+# Range check
+if value >= low and value <= high:
+
+# Multiple valid inputs  
+if answer.upper() in ["Y", "YES"]:  # Oops, lists!
+if answer.upper() == "Y" or answer.upper() == "YES":
+
+# Validation
+if score < 0 or score > 100:
+    # Invalid
+else:
+    # Valid - process
+```
+
+## Final Tips
+
+1. **Go Slow with Syntax** - Indentation is new and critical
+2. **Use Visual Aids** - Flowcharts really help
+3. **Test Everything** - Show systematic testing approach
+4. **Embrace Errors** - They're learning opportunities
+5. **Keep It Simple** - Resist AI's complexity push
+
+Remember: This week builds critical thinking skills that apply beyond programming!

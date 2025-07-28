@@ -1,0 +1,475 @@
+---
+title: "Week 7 Assessment: File Operations"
+subtitle: "Testing Your File I/O Skills"
+format:
+  html:
+    toc: true
+    code-fold: false
+    embed-resources: true
+  pdf:
+    toc: true
+---
+
+# Assessment Overview
+
+This assessment tests your understanding of file operations, including reading, writing, and data persistence. Complete each section to demonstrate your mastery of Python file handling.
+
+**Time Limit:** 45 minutes  
+**Points:** 100 total  
+**Resources Allowed:** Python environment, no external help
+
+---
+
+# Part 1: Basic File Operations (30 points)
+
+## Question 1.1: File Modes (10 points)
+
+Select the correct file mode for each operation:
+
+```python
+# A. Read an existing configuration file
+with open("config.txt", "___") as file:
+    settings = file.read()
+
+# B. Create a new log file (overwrite if exists)
+with open("app.log", "___") as file:
+    file.write("Application started\n")
+
+# C. Add entries to an existing log file
+with open("app.log", "___") as file:
+    file.write("New user logged in\n")
+
+# D. Read user data (handle if file doesn't exist)
+try:
+    with open("users.txt", "___") as file:
+        users = file.read()
+except FileNotFoundError:
+    users = ""
+```
+
+## Question 1.2: Reading Files (10 points)
+
+Complete these file reading operations:
+
+```python
+# Sample file content (grades.txt):
+# Alice: 92
+# Bob: 85  
+# Carol: 88
+# Dave: 91
+
+# A. Read entire file at once
+with open("grades.txt", "r") as file:
+    content = _______________
+    print(f"File contains {len(content)} characters")
+
+# B. Read line by line and process
+total_grade = 0
+student_count = 0
+
+with open("grades.txt", "r") as file:
+    for line in file:
+        name, grade = _______________
+        total_grade += _______________
+        student_count += 1
+
+average = total_grade / student_count
+print(f"Class average: {average}")
+
+# C. Read all lines into a list
+with open("grades.txt", "r") as file:
+    lines = _______________
+    print(f"File has {len(lines)} lines")
+```
+
+## Question 1.3: Writing Files (10 points)
+
+Write code to create these files:
+
+```python
+# A. Write a shopping list
+shopping_items = ["Milk", "Bread", "Eggs", "Cheese"]
+
+with open("shopping.txt", "w") as file:
+    file.write("Shopping List\n")
+    file.write("=============\n")
+    for item in shopping_items:
+        _______________
+
+# B. Write formatted grade report
+student_grades = {
+    "Alice": 92,
+    "Bob": 85,
+    "Carol": 88
+}
+
+with open("report.txt", "w") as file:
+    file.write("Grade Report\n")
+    for name, grade in student_grades.items():
+        _______________
+
+# C. Append new scores to existing file
+new_scores = [("Dave", 91), ("Eve", 89)]
+
+with open("report.txt", "___") as file:
+    for name, grade in new_scores:
+        _______________
+```
+
+---
+
+# Part 2: Data Persistence (35 points)
+
+## Question 2.1: Saving Data Structures (15 points)
+
+Implement functions to save and load program data:
+
+```python
+# Save a list of high scores
+high_scores = [("Alice", 1200), ("Bob", 1050), ("Carol", 980)]
+
+def save_high_scores(scores, filename):
+    """Save high scores to a file."""
+    with open(filename, "w") as file:
+        file.write("High Scores\n")
+        for _______________:
+            _______________
+
+# Load high scores back
+def load_high_scores(filename):
+    """Load high scores from file."""
+    scores = []
+    try:
+        with open(filename, "r") as file:
+            file.readline()  # Skip header
+            for line in file:
+                parts = _______________
+                if len(parts) == 2:
+                    name = _______________
+                    score = _______________
+                    scores.append((name, score))
+    except FileNotFoundError:
+        print("No saved scores found")
+    return scores
+
+# Test the functions
+save_high_scores(high_scores, "scores.txt")
+loaded_scores = load_high_scores("scores.txt")
+print(f"Loaded {len(loaded_scores)} scores")
+```
+
+## Question 2.2: Configuration System (10 points)
+
+Create a settings save/load system:
+
+```python
+def save_settings(settings_dict, filename="settings.txt"):
+    """Save program settings to file."""
+    with open(filename, "w") as file:
+        file.write("# Program Settings\n")
+        for key, value in settings_dict.items():
+            _______________
+
+def load_settings(filename="settings.txt"):
+    """Load settings from file."""
+    settings = {}
+    try:
+        with open(filename, "r") as file:
+            for line in file:
+                line = line.strip()
+                if line and not line.startswith("#"):
+                    if "=" in line:
+                        key, value = _______________
+                        settings[key.strip()] = value.strip()
+    except FileNotFoundError:
+        # Return default settings
+        settings = {
+            "volume": "50",
+            "difficulty": "medium",
+            "player_name": "Player1"
+        }
+    return settings
+
+# Test the system
+my_settings = {
+    "volume": "75",
+    "difficulty": "hard",
+    "player_name": "Alice"
+}
+
+save_settings(my_settings)
+loaded = load_settings()
+print(f"Loaded settings: {loaded}")
+```
+
+## Question 2.3: Contact Book Persistence (10 points)
+
+Add file operations to a contact book:
+
+```python
+def save_contacts(contacts, filename="contacts.txt"):
+    """Save contacts dictionary to file."""
+    with open(filename, "w") as file:
+        file.write("CONTACTS_V1\n")  # Format version
+        for name, info in contacts.items():
+            phone = info.get("phone", "")
+            email = info.get("email", "")
+            # Use | as delimiter
+            line = f"{name}|{phone}|{email}\n"
+            _______________
+
+def load_contacts(filename="contacts.txt"):
+    """Load contacts from file."""
+    contacts = {}
+    try:
+        with open(filename, "r") as file:
+            version = file.readline().strip()
+            if version != "CONTACTS_V1":
+                print("Unknown file format")
+                return contacts
+            
+            for line in file:
+                parts = _______________
+                if len(parts) >= 3:
+                    name, phone, email = parts[:3]
+                    contacts[name] = {
+                        "phone": phone,
+                        "email": email
+                    }
+    except FileNotFoundError:
+        print("No saved contacts found")
+    
+    return contacts
+
+# Test with sample data
+test_contacts = {
+    "Alice": {"phone": "555-1234", "email": "alice@email.com"},
+    "Bob": {"phone": "555-5678", "email": "bob@email.com"}
+}
+
+save_contacts(test_contacts)
+loaded_contacts = load_contacts()
+print(f"Loaded {len(loaded_contacts)} contacts")
+```
+
+---
+
+# Part 3: File Processing (25 points)
+
+## Question 3.1: Log File Analysis (10 points)
+
+Process a log file and extract information:
+
+```python
+# Sample log.txt content:
+# 2024-03-15 09:00 INFO User login: alice
+# 2024-03-15 09:15 ERROR Failed login: hacker
+# 2024-03-15 09:30 INFO User login: bob
+# 2024-03-15 10:00 INFO User logout: alice
+
+def analyze_log(filename):
+    """Analyze log file and return statistics."""
+    stats = {
+        "total_lines": 0,
+        "info_count": 0,
+        "error_count": 0,
+        "users": set()
+    }
+    
+    try:
+        with open(filename, "r") as file:
+            for line in file:
+                stats["total_lines"] += 1
+                
+                parts = line.strip().split()
+                if len(parts) >= 4:
+                    level = _______________  # INFO or ERROR
+                    
+                    if level == "INFO":
+                        _______________
+                    elif level == "ERROR":
+                        _______________
+                    
+                    # Extract username if present
+                    if "login:" in line or "logout:" in line:
+                        username = _______________
+                        stats["users"].add(username)
+    
+    except FileNotFoundError:
+        print("Log file not found")
+    
+    return stats
+
+# Create sample log and test
+with open("log.txt", "w") as file:
+    file.write("2024-03-15 09:00 INFO User login: alice\n")
+    file.write("2024-03-15 09:15 ERROR Failed login: hacker\n")
+    file.write("2024-03-15 09:30 INFO User login: bob\n")
+    file.write("2024-03-15 10:00 INFO User logout: alice\n")
+
+results = analyze_log("log.txt")
+print(f"Total lines: {results['total_lines']}")
+print(f"INFO messages: {results['info_count']}")
+print(f"ERROR messages: {results['error_count']}")
+print(f"Unique users: {len(results['users'])}")
+```
+
+## Question 3.2: Data File Processing (8 points)
+
+Process a data file and generate a summary:
+
+```python
+# Create sample sales data
+with open("sales.txt", "w") as file:
+    file.write("Product,Quantity,Price\n")
+    file.write("Apples,10,2.50\n")
+    file.write("Bananas,15,1.99\n")
+    file.write("Oranges,8,3.00\n")
+    file.write("Apples,5,2.50\n")
+
+def process_sales(filename):
+    """Process sales data and return summary."""
+    products = {}
+    total_revenue = 0
+    
+    try:
+        with open(filename, "r") as file:
+            file.readline()  # Skip header
+            
+            for line in file:
+                parts = _______________
+                if len(parts) == 3:
+                    product = _______________
+                    quantity = _______________
+                    price = _______________
+                    revenue = quantity * price
+                    
+                    # Update product totals
+                    if product in products:
+                        products[product]["quantity"] += quantity
+                        products[product]["revenue"] += revenue
+                    else:
+                        products[product] = {
+                            "quantity": quantity,
+                            "revenue": revenue
+                        }
+                    
+                    total_revenue += revenue
+    
+    except FileNotFoundError:
+        print("Sales file not found")
+    
+    return products, total_revenue
+
+# Test the function
+product_data, total = process_sales("sales.txt")
+print(f"Total revenue: ${total:.2f}")
+for product, data in product_data.items():
+    print(f"{product}: {data['quantity']} units, ${data['revenue']:.2f}")
+```
+
+## Question 3.3: Report Generation (7 points)
+
+Generate a formatted report file:
+
+```python
+def generate_report(data, filename="report.txt"):
+    """Generate a formatted sales report."""
+    with open(filename, "w") as file:
+        file.write("SALES SUMMARY REPORT\n")
+        file.write("=" * 40 + "\n\n")
+        
+        # Product details
+        file.write("Product Breakdown:\n")
+        file.write("-" * 30 + "\n")
+        
+        for product, info in sorted(data.items()):
+            _______________
+        
+        # Calculate totals
+        total_items = sum(info["quantity"] for info in data.values())
+        total_revenue = sum(info["revenue"] for info in data.values())
+        
+        file.write("-" * 30 + "\n")
+        file.write(f"Total Items: {total_items}\n")
+        file.write(f"Total Revenue: ${total_revenue:.2f}\n")
+        
+        # Best seller
+        best_seller = max(data.items(), key=lambda x: x[1]["quantity"])
+        file.write(f"Best Seller: {best_seller[0]}\n")
+
+# Generate report using the sales data
+product_data, _ = process_sales("sales.txt")
+generate_report(product_data)
+print("Report generated in report.txt")
+```
+
+---
+
+# Part 4: Error Handling (10 points)
+
+## Question 4.1: Safe File Operations (10 points)
+
+Implement robust file handling:
+
+```python
+def safe_file_copy(source_file, dest_file):
+    """Safely copy file contents with error handling."""
+    try:
+        # Read source file
+        with open(source_file, "r") as source:
+            content = source.read()
+        
+        # Write to destination
+        with open(dest_file, "w") as dest:
+            dest.write(content)
+        
+        print(f"Successfully copied {source_file} to {dest_file}")
+        return True
+        
+    except FileNotFoundError:
+        print(f"Error: {source_file} not found")
+        return False
+    except _______________:  # What other error might occur?
+        print(f"Error: Permission denied writing to {dest_file}")
+        return False
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        return False
+
+def backup_file(filename):
+    """Create a backup copy of a file."""
+    backup_name = filename + ".backup"
+    return safe_file_copy(filename, backup_name)
+
+def safe_append_log(filename, message):
+    """Safely append to log file."""
+    try:
+        _______________  # Append the message with timestamp
+        return True
+    except Exception as e:
+        print(f"Failed to write log: {e}")
+        return False
+
+# Test error handling
+safe_file_copy("existing.txt", "copy.txt")  # Should work if file exists
+safe_file_copy("missing.txt", "copy.txt")   # Should handle error
+```
+
+---
+
+# Submission Instructions
+
+1. Complete all sections in order
+2. Test your code before submitting
+3. Include comments explaining your approach
+4. Submit as `file_operations_assessment.py`
+
+## Grading Notes
+
+- Partial credit available for correct approach
+- Proper file mode usage is critical
+- Error handling will be evaluated
+- Efficient file operations earn bonus points
+
+Good luck with your file operations!

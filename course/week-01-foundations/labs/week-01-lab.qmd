@@ -1,0 +1,498 @@
+---
+title: "Week 1 Lab: Hands-on Python Foundations"
+subtitle: "Setting Up, Exploring, and Building"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Week 1 Lab: Python Foundations & AI Partnership
+
+## Lab Overview
+
+**Duration**: 2 hours  
+**Goals**: 
+- Set up your Python environment in Google Colab
+- Experience AI limitations firsthand
+- Practice basic Python concepts
+- Start your first project
+
+## Hour 1: Environment Setup and AI Reality Check
+
+### Part 1: Google Colab Setup (20 minutes)
+
+#### Step 1: Access Google Colab
+
+1. Go to [colab.research.google.com](https://colab.research.google.com)
+2. Sign in with your Google account
+3. Click "New Notebook"
+
+#### Step 2: Organize Your Work
+
+1. Rename your notebook: Click "Untitled0.ipynb" → "week_01_lab_yourname"
+2. Create a folder structure in Google Drive:
+   ```
+   My Drive/
+   └── python_course/
+       └── week_01/
+           └── week_01_lab_yourname.ipynb
+   ```
+
+#### Step 3: Understanding Colab Basics
+
+Try these in separate cells:
+
+```python
+# Cell 1: Basic output
+print("Hello from Colab!")
+```
+
+```python
+# Cell 2: Variables persist between cells
+my_name = "Alice"  # Replace with your name
+print(f"My name is {my_name}")
+```
+
+```python
+# Cell 3: Using the previous variable
+print(f"{my_name} is learning Python!")
+```
+
+**Key Points**:
+- Click "Run" or press Shift+Enter to execute a cell
+- Variables persist between cells in the same session
+- If runtime disconnects, variables are lost
+
+#### Step 4: Connect to GitHub (Optional but Recommended)
+
+1. In Colab: File → Save a copy in GitHub
+2. Authorize Colab to access your GitHub
+3. Create a new repository: `python_with_ai_course`
+4. Save your notebook there
+
+### Part 2: AI Reality Check Exercise (25 minutes)
+
+This exercise demonstrates why understanding matters more than just "getting code that works."
+
+#### The Challenge
+
+Ask your preferred AI (Colab's Gemini, ChatGPT, Claude, etc.) this prompt:
+
+> "Write a Python program that acts as a simple calculator. It should ask the user for two numbers and an operation (+, -, *, /) and show the result."
+
+#### Step 1: Copy the AI's Solution
+
+Copy the AI's code into a new cell. It might look something like this:
+
+```python
+# AI's solution (example - yours may differ)
+def calculator():
+    while True:
+        try:
+            num1 = float(input("Enter first number: "))
+            num2 = float(input("Enter second number: "))
+            operation = input("Enter operation (+, -, *, /): ")
+            
+            if operation == '+':
+                result = num1 + num2
+            elif operation == '-':
+                result = num1 - num2
+            elif operation == '*':
+                result = num1 * num2
+            elif operation == '/':
+                if num2 != 0:
+                    result = num1 / num2
+                else:
+                    print("Error: Division by zero!")
+                    continue
+            else:
+                print("Invalid operation!")
+                continue
+                
+            print(f"Result: {result}")
+            
+            if input("Continue? (y/n): ").lower() != 'y':
+                break
+                
+        except ValueError:
+            print("Invalid input! Please enter numbers.")
+
+calculator()
+```
+
+#### Step 2: Try to Modify It
+
+Now try these modifications:
+1. Change it to show "The answer is:" instead of "Result:"
+2. Add a modulo (%) operation
+3. Make it calculate three numbers instead of two
+
+**What you'll discover**: Without understanding the code, even simple changes are hard!
+
+#### Step 3: Start Over with Understanding
+
+Let's build a SIMPLE calculator we actually understand:
+
+```python
+# Our simple calculator - we understand every line!
+first_number = input("Enter first number: ")
+first_number = float(first_number)
+
+second_number = input("Enter second number: ")
+second_number = float(second_number)
+
+operation = input("Enter operation (+, -, *, /): ")
+
+if operation == "+":
+    result = first_number + second_number
+    print("The answer is:", result)
+elif operation == "-":
+    result = first_number - second_number
+    print("The answer is:", result)
+elif operation == "*":
+    result = first_number * second_number
+    print("The answer is:", result)
+elif operation == "/":
+    result = first_number / second_number
+    print("The answer is:", result)
+else:
+    print("Unknown operation!")
+```
+
+**Reflection Questions**:
+1. Which version could you modify more easily?
+2. Which version could you explain to a classmate?
+3. What extra features did the AI add that we don't need yet?
+
+### Part 3: Basic Programming Practice (15 minutes)
+
+#### Exercise 1: Hello World Variations
+
+Create these variations, understanding each change:
+
+```python
+# Basic version
+print("Hello, World!")
+
+# Using a variable
+greeting_message = "Hello, World!"
+print(greeting_message)
+
+# Combining strings
+first_part = "Hello"
+second_part = "World"
+full_greeting = first_part + ", " + second_part + "!"
+print(full_greeting)
+
+# Using f-strings (formatted strings)
+name = "Python"
+print(f"Hello, {name}!")
+```
+
+#### Exercise 2: Variable Experiments
+
+```python
+# Meaningful variable names (PEP 8 style)
+student_age = 20
+course_name = "Python with AI"
+is_enjoying_class = True
+average_grade = 85.5
+
+# Print with descriptions
+print("Age:", student_age)
+print("Course:", course_name)
+print("Enjoying?", is_enjoying_class)
+print("Average:", average_grade)
+```
+
+#### Exercise 3: Type Exploration
+
+```python
+# Check types of different values
+test_integer = 42
+test_float = 3.14
+test_string = "Python"
+test_boolean = True
+
+print(f"42 is type: {type(test_integer)}")
+print(f"3.14 is type: {type(test_float)}")
+print(f'"Python" is type: {type(test_string)}')
+print(f"True is type: {type(test_boolean)}")
+
+# Type conversion examples
+string_number = "123"
+print(f"'{string_number}' is type: {type(string_number)}")
+
+converted_number = int(string_number)
+print(f"After int(): {converted_number} is type: {type(converted_number)}")
+```
+
+## Hour 2: Integration and Project Start
+
+### Part 1: Interactive Programs (30 minutes)
+
+#### Exercise 4: Personal Information Collector
+
+Build this step-by-step:
+
+```python
+# Step 1: Get the user's name
+user_name = input("What's your name? ")
+print(f"Nice to meet you, {user_name}!")
+
+# Step 2: Get their age
+user_age = input("How old are you? ")
+user_age = int(user_age)  # Convert to integer
+print(f"Wow, {user_age} is a great age!")
+
+# Step 3: Calculate birth year (approximate)
+current_year = 2024
+birth_year = current_year - user_age
+print(f"You were born around {birth_year}")
+
+# Step 4: Get their favorite color
+favorite_color = input("What's your favorite color? ")
+print(f"{favorite_color} is a lovely color!")
+
+# Step 5: Create a summary
+print("\n--- Your Profile ---")
+print(f"Name: {user_name}")
+print(f"Age: {user_age}")
+print(f"Born: Around {birth_year}")
+print(f"Favorite Color: {favorite_color}")
+```
+
+#### Exercise 5: Simple Two-Number Calculator
+
+Improve our calculator with better formatting:
+
+```python
+print("=== Simple Calculator ===")
+
+# Get first number
+first_input = input("Enter first number: ")
+first_number = float(first_input)
+
+# Get second number  
+second_input = input("Enter second number: ")
+second_number = float(second_input)
+
+# Show operations menu
+print("\nAvailable operations:")
+print("+ for addition")
+print("- for subtraction")
+print("* for multiplication")
+print("/ for division")
+
+# Get operation choice
+operation = input("\nChoose operation: ")
+
+# Calculate and display result
+print("\n--- Result ---")
+if operation == "+":
+    result = first_number + second_number
+    print(f"{first_number} + {second_number} = {result}")
+elif operation == "-":
+    result = first_number - second_number
+    print(f"{first_number} - {second_number} = {result}")
+elif operation == "*":
+    result = first_number * second_number
+    print(f"{first_number} * {second_number} = {result}")
+elif operation == "/":
+    result = first_number / second_number
+    print(f"{first_number} / {second_number} = {result}")
+else:
+    print("Sorry, I don't know that operation!")
+```
+
+#### Exercise 6: Type Conversion Practice
+
+Create a program that demonstrates why type conversion matters:
+
+```python
+# The Problem Demo
+print("=== Why Type Conversion Matters ===\n")
+
+# Without conversion - STRING MULTIPLICATION!
+age_string = input("Enter your age: ")
+print(f"In 10 years, you'll be: {age_string}0")  # Oops!
+
+# With conversion - ACTUAL MATH!
+print("\nLet's try that again...")
+age_string = input("Enter your age: ")
+age_number = int(age_string)
+future_age = age_number + 10
+print(f"In 10 years, you'll be: {future_age}")  # Correct!
+
+# More conversion practice
+print("\n=== Price Calculator ===")
+price_string = input("Enter item price: $")
+price_float = float(price_string)
+quantity_string = input("How many items? ")
+quantity_int = int(quantity_string)
+
+total_cost = price_float * quantity_int
+print(f"Total cost: ${total_cost:.2f}")  # .2f means 2 decimal places
+```
+
+### Part 2: Debugging Workshop (20 minutes)
+
+#### Finding and Fixing Common Errors
+
+Fix each of these buggy programs. Use AI to EXPLAIN the error, not fix it!
+
+**Buggy Program 1**:
+```python
+# What's wrong here?
+print(Hello World)
+```
+
+**Buggy Program 2**:
+```python
+# Find the error
+name = input("What's your name? )
+print("Hello, " + name)
+```
+
+**Buggy Program 3**:
+```python
+# Type error hiding here
+age = input("How old are you? ")
+next_birthday = age + 1
+print(f"You'll be {next_birthday} on your next birthday!")
+```
+
+**Buggy Program 4**:
+```python
+# Case sensitivity issue
+userName = "Alice"
+print("Welcome, " + username)
+```
+
+**Buggy Program 5**:
+```python
+# Indentation matters!
+temperature = 75
+if temperature > 70:
+print("It's warm today!")  # This line needs indentation
+```
+
+#### Create Your Debugging Checklist
+
+Based on the errors above, create your personal debugging checklist:
+
+```python
+"""
+MY DEBUGGING CHECKLIST
+======================
+1. Check quotes - do all strings have matching quotes?
+2. Check variable names - are they spelled consistently?
+3. Check types - am I trying to math with strings?
+4. Check indentation - is everything aligned properly?
+5. Read error messages - what line is the problem on?
+6. Test with print() - what are my variable values?
+"""
+```
+
+### Part 3: Project Introduction (10 minutes)
+
+#### Temperature Converter Project
+
+Your project for this week is to create a temperature converter. Let's plan it together:
+
+**Project Requirements**:
+1. Ask user for a temperature value
+2. Ask if it's in Celsius or Fahrenheit
+3. Convert to the other scale
+4. Display the result nicely
+
+**Planning with Pseudocode**:
+```python
+"""
+TEMPERATURE CONVERTER PLAN
+==========================
+1. Greet the user
+2. Get temperature value (remember to convert to float!)
+3. Ask for the scale (C or F)
+4. If Celsius:
+   - Convert to Fahrenheit: (C * 9/5) + 32
+   - Show result
+5. If Fahrenheit:
+   - Convert to Celsius: (F - 32) * 5/9
+   - Show result
+6. Thank the user
+"""
+```
+
+**Starter Code**:
+```python
+print("=== Temperature Converter ===")
+
+# Get temperature from user
+temp_string = input("Enter temperature: ")
+temp_value = float(temp_string)
+
+# Get scale
+scale = input("Is that (C)elsius or (F)ahrenheit? ")
+
+# Your code here...
+```
+
+## Lab Submission
+
+### What to Submit
+
+1. **Your completed Colab notebook** containing:
+   - All exercises from today
+   - Comments explaining your understanding
+   - Your debugging checklist
+   - Temperature converter project start
+
+2. **AI Interaction Log** (in a text cell):
+   ```
+   AI INTERACTION LOG
+   ==================
+   1. Asked about: [error message]
+      AI explained: [summary]
+      What I learned: [your understanding]
+   
+   2. Asked about: [concept]
+      AI explained: [summary]
+      What I learned: [your understanding]
+   ```
+
+3. **Reflection** (in a text cell):
+   - What was the biggest challenge today?
+   - What's one thing AI helped you understand?
+   - What's one thing you figured out yourself?
+
+### How to Submit
+
+1. Save your notebook (File → Save)
+2. Download as .ipynb (File → Download → Download .ipynb)
+3. Submit to your course LMS
+4. If using GitHub, include the repository link
+
+## Peer Review Activity
+
+Exchange notebooks with a partner and check:
+1. Can you understand their code?
+2. Are variable names meaningful?
+3. Do they have comments explaining their thinking?
+4. Give one compliment and one suggestion
+
+## Looking Ahead
+
+Next week, we'll:
+- Learn about making decisions with if/elif/else
+- Build more complex interactive programs
+- Continue developing our AI partnership skills
+
+Remember: The goal isn't to finish first - it's to understand deeply!

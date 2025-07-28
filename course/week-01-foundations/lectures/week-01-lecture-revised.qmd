@@ -1,0 +1,425 @@
+---
+title: "Week 1: Computational Thinking & AI Partnership"
+subtitle: "Learning to Program WITH AI, Not Despite It"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Welcome to the New Era of Programming
+
+## The Reality Check (10 minutes)
+
+### Let's Be Honest
+
+Watch this demonstration:
+
+**Me**: "Hey AI, write a temperature converter program"
+
+**AI will probably give something like**:
+```python
+def temperature_converter():
+    while True:
+        print("\nTemperature Converter")
+        print("1. Celsius to Fahrenheit")
+        print("2. Fahrenheit to Celsius")
+        print("3. Exit")
+        
+        choice = input("Enter your choice (1-3): ")
+        
+        if choice == '1':
+            celsius = float(input("Enter temperature in Celsius: "))
+            fahrenheit = (celsius * 9/5) + 32
+            print(f"{celsius}°C = {fahrenheit}°F")
+        elif choice == '2':
+            fahrenheit = float(input("Enter temperature in Fahrenheit: "))
+            celsius = (fahrenheit - 32) * 5/9
+            print(f"{fahrenheit}°F = {celsius}°C")
+        elif choice == '3':
+            print("Goodbye!")
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+if __name__ == "__main__":
+    temperature_converter()
+```
+
+**Now let me ask you**: 
+- Who can explain what `while True:` does?
+- What about `if __name__ == "__main__":`?
+- If I asked you to add Kelvin support, where would it go?
+- What if the formula is wrong - would you know?
+
+### The Truth About AI and Programming
+
+AI can write code. That's a fact. But here's what AI CAN'T do:
+- Understand what your client actually wants
+- Know if the business logic is correct
+- Decide which features are important
+- Debug when requirements change
+- Integrate with existing systems without guidance
+
+### Your Role: The Architect
+
+Think of it this way:
+- **AI** is like a very fast construction crew
+- **You** are the architect who designs the building
+- Without good plans, even the best crew builds the wrong thing
+
+This course teaches you to be the architect.
+
+## Computational Thinking: How Programs Work (25 minutes)
+
+### The Universal Pattern: Input → Process → Output
+
+Every program follows this pattern. EVERY. SINGLE. ONE.
+
+#### Real-World Examples
+
+**Making Coffee**:
+- **Input**: Water, coffee grounds, your preferences
+- **Process**: Heat water, extract coffee
+- **Output**: Hot coffee
+
+**GPS Navigation**:
+- **Input**: Current location, destination
+- **Process**: Calculate best route
+- **Output**: Turn-by-turn directions
+
+**Temperature Converter**:
+- **Input**: Temperature value and scale
+- **Process**: Apply conversion formula
+- **Output**: Temperature in other scale
+
+### The Five Building Blocks
+
+#### 1. Input
+Programs get information from the outside world:
+```python
+user_response = input("What's your name? ")
+```
+
+#### 2. Storage (Variables)
+Programs need to remember things:
+```python
+user_name = "Alice"          # Storing text
+temperature = 98.6           # Storing a number
+is_celsius = True           # Storing yes/no
+```
+
+Think of variables as labeled boxes where you keep information.
+
+#### 3. Processing (Calculations)
+Programs transform and manipulate data:
+```python
+celsius = 100
+fahrenheit = (celsius * 9/5) + 32  # Mathematical operations
+```
+
+#### 4. Output
+Programs communicate results:
+```python
+print("The result is", result)
+```
+
+#### 5. Decisions
+Programs make choices (we'll explore this deeply in Week 2):
+```python
+if temperature > 100:
+    print("That's boiling!")
+```
+
+#### 6. Repetition
+Programs repeat tasks (we'll master this in Week 3):
+```python
+# Do something multiple times
+for count in range(5):
+    print("Hello!")
+```
+
+### From Concepts to Code: Python's Way
+
+Now let's see how Python implements these concepts:
+
+#### Why Data Types Matter
+Programming languages need to know what kind of data they're working with:
+- **Memory**: Different types need different amounts of space
+- **Operations**: You can multiply numbers but not text
+- **Safety**: Prevents nonsensical operations
+
+#### Python's Basic Data Types
+
+**Text → Strings (`str`)**
+```python
+name = "Alice"              # String (text)
+message = 'Hello there!'    # Single or double quotes
+```
+
+**Numbers → Integers and Floats**
+```python
+age = 25                    # Integer (whole number)
+temperature = 98.6          # Float (decimal number)
+pi = 3.14159               # Another float
+```
+
+**Yes/No → Booleans (`bool`)**
+```python
+is_hot = True               # Boolean
+is_cold = False            # Only True or False
+```
+
+#### The Critical Detail: Type Conversion
+
+Here's something crucial: `input()` ALWAYS returns text (a string), even if the user types numbers!
+
+```python
+# This is ALWAYS a string, even if user types "42"
+user_input = input("Enter a number: ")
+
+# To do math, we must convert:
+number = int(user_input)    # Convert to integer
+number = float(user_input)  # Convert to decimal
+
+# That's why we need these conversion functions!
+```
+
+This is why our constrained prompt mentions `float()` - we need it to convert text to numbers for calculations.
+
+### Drawing Mental Models
+
+Before coding, we draw what we're building:
+
+```
+[Temperature Converter Flow]
+
+User Input → "Enter temp: 32"
+    ↓
+Store in Variable → temperature = 32
+    ↓
+User Input → "C or F?: F"
+    ↓
+Decision → Is it F?
+    ↓ Yes        ↓ No
+Convert F→C   Convert C→F
+    ↓            ↓
+Output Result → "32°F = 0°C"
+```
+
+## AI as Your Learning Partner (15 minutes)
+
+### The Power of Progressive Prompting
+
+Let's build a temperature converter using AI intelligently:
+
+#### Attempt 1: Vague Prompt
+**You**: "temperature converter"
+
+**AI gives**: Complex solution with functions, error handling, menu system
+
+**Problem**: Too much! We don't understand it.
+
+#### Attempt 2: Adding Constraints
+**You**: "Simple temperature converter that asks user for temperature and converts between C and F"
+
+**AI gives**: Better, but might still have functions or try/except
+
+**Problem**: Still using concepts we haven't learned.
+
+#### Attempt 3: Specific Constraints
+**You**: "Temperature converter using ONLY:
+- print() for output
+- input() to get user data  
+- float() to convert strings to numbers
+- if/else for decisions
+- Basic math operators
+No functions, no loops, no error handling"
+
+**AI gives**: 
+```python
+print("Temperature Converter")
+
+temperature = input("Enter temperature: ")
+temperature = float(temperature)
+
+scale = input("Is that (C)elsius or (F)ahrenheit? ")
+
+if scale.upper() == "C":
+    fahrenheit = (temperature * 9/5) + 32
+    print(temperature, "°C equals", fahrenheit, "°F")
+else:
+    celsius = (temperature - 32) * 5/9
+    print(temperature, "°F equals", celsius, "°C")
+```
+
+**Better!** Now we can understand every line.
+
+#### Attempt 4: Learning Prompt
+**You**: "Explain this temperature converter line by line, especially why we need float()"
+
+**AI becomes teacher**: Explains each concept in detail.
+
+### Using AI Tools Effectively
+
+#### Google Colab's Built-in Gemini
+- Click the Gemini icon in Colab
+- Ask questions directly
+- Use "Insert code" button
+- Always review before running
+
+#### External AI (Claude, ChatGPT, etc.)
+- Copy-paste your code
+- Ask specific questions
+- Bring answers back to Colab
+- Compare different AI responses
+
+### The Critical Skill: Verification
+
+AI makes mistakes! Always verify:
+
+1. **Test with known values**:
+   - 0°C should equal 32°F
+   - 100°C should equal 212°F
+   - -40°C should equal -40°F
+
+2. **Check the formulas**:
+   - C to F: (C × 9/5) + 32
+   - F to C: (F - 32) × 5/9
+
+3. **Trace the execution**:
+   - Follow the program step by step
+   - Check variable values
+   - Verify the logic flow
+
+## Why Understanding Matters (10 minutes)
+
+### Scenario 1: The Specification Change
+
+Your client calls: "We need to add Kelvin support!"
+
+**Without understanding**: "AI, add Kelvin to this code" → Where? How? Confusion.
+
+**With understanding**: You know exactly where decisions are made and can guide AI precisely.
+
+### Scenario 2: The Integration Challenge
+
+"This needs to work with our weather app"
+
+**Without understanding**: No idea how to connect the pieces
+
+**With understanding**: You know what inputs/outputs are needed
+
+### Scenario 3: The Debugging Mystery
+
+User reports: "It says 0°C = 32°F but 32°F = -0.0°C"
+
+**Without understanding**: Random guessing, asking AI to "fix it"
+
+**With understanding**: You recognize a display issue vs. calculation error
+
+### The Foundation Principle
+
+You can't build a skyscraper on sand. Every complex program is built from these simple concepts. Master them now, build anything later.
+
+## Your Learning Journey
+
+### Week 1 Goals
+- Understand Input → Process → Output
+- Use AI as a learning tool
+- Build mental models before coding
+- Recognize patterns in programs
+
+### This Course's Promise
+By the end, you won't memorize every Python detail - that's what AI is for. Instead, you'll:
+- Think computationally about problems
+- Design solutions before coding
+- Guide AI to build what you envision
+- Debug and verify AI's work
+- Be ready for real-world programming
+
+### The Mindset Shift
+- ❌ Old Way: "How do I write this code?"
+- ✅ New Way: "What needs to happen, and how can AI help me build it?"
+
+## Preparing for Lab
+
+In today's lab, you'll:
+1. Use AI to understand Google Colab
+2. Build a temperature converter through prompt evolution
+3. Create flowcharts of your program
+4. Debug code by understanding, not guessing
+
+Remember: The goal isn't to avoid AI - it's to use AI intelligently!
+
+### Textbook Connection
+
+**Before next class, read**:
+- Chapter 0: "Your AI Learning Partner" - Philosophy and approach
+- Chapter 1: "First Steps" - print() and basic output
+- Chapter 2: "Variables" - Storage concepts
+- Chapter 3: "Input" - Getting data from users
+- Chapter 4: "Numbers" - Data types and conversion
+
+These chapters reinforce today's concepts with additional examples and exercises.
+
+---
+
+# Instructor Notes
+
+## Opening Hook Script
+1. Show the complex AI solution
+2. Ask who understands it (few hands)
+3. Ask who could modify it (fewer hands)
+4. "That's why we're here - to be architects, not copy-pasters"
+
+## Key Demonstrations
+
+### Demo 1: Prompt Evolution (Live)
+Actually type these prompts and show the progression. Students need to see this isn't theoretical.
+
+### Demo 2: AI Making Mistakes
+Show a case where AI gives wrong formula or logic error. Have students spot it.
+
+### Demo 3: The Power of Constraints
+Show how adding constraints to prompts gives more appropriate solutions.
+
+## Common Student Reactions
+
+**"Why learn if AI can do it?"**
+- Response: Show a real specification change scenario
+- Emphasize: You're learning to think, not just type
+
+**"This seems too simple"**
+- Response: Every expert started here
+- Today's simple is tomorrow's building block
+
+**"I'm confused about variables"**
+- Response: Use physical props (actual boxes with labels)
+- Draw lots of diagrams
+
+## Pacing Guide
+- 0:00-0:10 - Reality check and hook
+- 0:10-0:35 - Computational thinking + Python specifics
+- 0:35-0:50 - AI partnership demo
+- 0:50-1:00 - Why it matters, preview
+
+## Teaching the "From Concepts to Code" Section
+
+This bridges the gap between abstract concepts and Python implementation:
+
+1. **Emphasize the WHY**: Students need to understand why languages have types
+2. **Keep it simple**: Don't dive into memory management details
+3. **Focus on practical**: The key insight is that input() returns strings
+4. **Make it concrete**: Show actual type errors when they forget to convert
+
+## Assessment During Lecture
+- Poll: "What does every program need?" (Input/Process/Output)
+- Think-Pair-Share: "Where would you add Kelvin support?"
+- Exit Question: "What's one way AI helped today?"

@@ -1,0 +1,505 @@
+---
+title: "Week 6 Project: Contact Book System"
+subtitle: "Building Real-World Applications with Dictionaries"
+author: "AI-Integrated Programming Course"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Project Overview
+
+Create a fully functional contact book system using dictionaries to store and manage personal contacts. This project demonstrates practical use of data structures for real-world applications.
+
+**Estimated Time:** 4-6 hours  
+**Difficulty:** Intermediate  
+**Key Concepts:** Dictionaries, nested data, user interface design, data validation
+
+---
+
+# Learning Objectives
+
+By completing this project, you will:
+
+1. Design appropriate data structures for contact information
+2. Implement CRUD operations (Create, Read, Update, Delete)
+3. Build a user-friendly menu system
+4. Handle edge cases and validation
+5. Practice data organization and retrieval
+
+---
+
+# Project Requirements
+
+## Core Features (Required)
+
+Your contact book must include:
+
+### 1. Data Structure Design
+- Store contacts in a dictionary structure
+- Each contact should have at minimum:
+  - Name (required)
+  - Phone number (required)
+  - Email address (optional)
+  - Physical address (optional)
+- Choose an appropriate key for the main dictionary
+
+### 2. Basic Operations
+
+#### Add Contact
+```
+Enter name: Alice Johnson
+Enter phone: 555-1234
+Enter email (press Enter to skip): alice@email.com
+Enter address (press Enter to skip): 123 Main St
+
+Contact added successfully!
+```
+
+#### View All Contacts
+```
+=== All Contacts ===
+1. Alice Johnson - 555-1234
+2. Bob Smith - 555-5678
+3. Carol Davis - 555-9012
+
+Total contacts: 3
+```
+
+#### Search Contact
+```
+Search by (1-Name, 2-Phone): 1
+Enter name to search: alice
+
+Found contact:
+Name: Alice Johnson
+Phone: 555-1234
+Email: alice@email.com
+Address: 123 Main St
+```
+
+#### Update Contact
+```
+Enter contact name to update: Alice Johnson
+What to update? (1-Phone, 2-Email, 3-Address): 1
+Enter new phone: 555-4321
+Contact updated successfully!
+```
+
+#### Delete Contact
+```
+Enter contact name to delete: Bob Smith
+Are you sure you want to delete Bob Smith? (yes/no): yes
+Contact deleted successfully!
+```
+
+### 3. User Interface
+- Clear menu system
+- Input validation
+- Error messages for invalid operations
+- Confirmation for destructive actions
+
+### 4. Data Validation
+- Names cannot be empty
+- Phone numbers cannot be empty
+- Duplicate name handling
+- Case-insensitive search
+
+## Enhanced Features (Optional)
+
+If you complete the core features, add these enhancements:
+
+### 1. Advanced Search
+- Search by partial name
+- Search by phone number
+- Search by email domain
+
+### 2. Contact Groups
+- Add tags or categories to contacts
+- Filter by group
+- Display grouped contacts
+
+### 3. Export/Import
+- Save contacts to a text file
+- Load contacts from a file
+- Simple format (no JSON yet)
+
+### 4. Statistics
+- Total number of contacts
+- Contacts with/without email
+- Most common area codes
+
+---
+
+# Implementation Guide
+
+## Step 1: Plan Your Data Structure
+
+Consider these options:
+
+```python
+# Option A: Name as key
+contacts = {
+    "Alice Johnson": {
+        "phone": "555-1234",
+        "email": "alice@email.com",
+        "address": "123 Main St"
+    }
+}
+
+# Option B: Phone as key
+contacts = {
+    "555-1234": {
+        "name": "Alice Johnson",
+        "email": "alice@email.com",
+        "address": "123 Main St"
+    }
+}
+
+# Option C: Generated ID as key
+contacts = {
+    "C001": {
+        "name": "Alice Johnson",
+        "phone": "555-1234",
+        "email": "alice@email.com",
+        "address": "123 Main St"
+    }
+}
+```
+
+Think about the trade-offs of each approach!
+
+## Step 2: Build Core Functions
+
+Start with these function signatures:
+
+```python
+def add_contact(contacts):
+    """Add a new contact to the book."""
+    # Get user input
+    # Validate data
+    # Check for duplicates
+    # Add to dictionary
+
+def view_all_contacts(contacts):
+    """Display all contacts in a formatted list."""
+    # Check if empty
+    # Sort by name
+    # Display formatted list
+
+def search_contact(contacts):
+    """Search for a contact by name or phone."""
+    # Get search criteria
+    # Find matches
+    # Display results
+
+def update_contact(contacts):
+    """Update existing contact information."""
+    # Find contact
+    # Show current info
+    # Get updates
+    # Apply changes
+
+def delete_contact(contacts):
+    """Delete a contact with confirmation."""
+    # Find contact
+    # Confirm deletion
+    # Remove from dictionary
+```
+
+## Step 3: Create the Menu System
+
+```python
+def display_menu():
+    """Display the main menu."""
+    print("\n=== Contact Book ===")
+    print("1. Add Contact")
+    print("2. View All Contacts")
+    print("3. Search Contact")
+    print("4. Update Contact")
+    print("5. Delete Contact")
+    print("6. Exit")
+
+def main():
+    """Run the contact book application."""
+    contacts = {}  # or load from file
+    
+    while True:
+        display_menu()
+        choice = input("\nEnter choice (1-6): ")
+        
+        if choice == "1":
+            add_contact(contacts)
+        elif choice == "2":
+            view_all_contacts(contacts)
+        # ... etc
+        elif choice == "6":
+            print("Goodbye!")
+            break
+        else:
+            print("Invalid choice!")
+```
+
+## Step 4: Handle Edge Cases
+
+Consider these scenarios:
+- Empty contact book
+- Duplicate names
+- Case sensitivity
+- Invalid input
+- Missing optional fields
+
+---
+
+# Testing Your Contact Book
+
+## Test Cases
+
+1. **Empty Book**
+   - View all when empty
+   - Search when empty
+   - Delete when empty
+
+2. **Adding Contacts**
+   - Add with all fields
+   - Add with only required fields
+   - Try to add duplicate
+
+3. **Searching**
+   - Exact name match
+   - Case variations
+   - Non-existent contact
+
+4. **Updating**
+   - Update each field type
+   - Update non-existent contact
+   - Cancel update
+
+5. **Deleting**
+   - Delete existing contact
+   - Delete non-existent
+   - Cancel deletion
+
+## Sample Test Data
+
+Use these contacts for testing:
+
+```python
+test_contacts = {
+    "Alice Johnson": {
+        "phone": "555-1234",
+        "email": "alice@email.com",
+        "address": "123 Main St"
+    },
+    "Bob Smith": {
+        "phone": "555-5678",
+        "email": "bob@email.com",
+        "address": "456 Oak Ave"
+    },
+    "Carol Davis": {
+        "phone": "555-9012",
+        "email": "",
+        "address": ""
+    }
+}
+```
+
+---
+
+# AI Usage Guidelines
+
+## Recommended AI Prompts
+
+### For Structure Design:
+> "Help me design a dictionary structure for a contact book using only Python features from weeks 1-6. I need to store name, phone, email, and address."
+
+### For Function Implementation:
+> "Write a function to search contacts by name in a dictionary. Use only basic Python features: dictionaries, loops, if statements, and functions. No imports or advanced features."
+
+### For Error Handling:
+> "How do I check if a contact already exists before adding it? Show me using only dictionaries and if statements."
+
+### For User Interface:
+> "Create a simple text menu for a contact book using only print() and input(). No special formatting libraries."
+
+## AI Constraints Template
+
+When asking AI for help, include:
+```
+Using ONLY these Python features:
+- Variables, if/elif/else, loops (for/while)
+- Lists and dictionaries
+- Functions with parameters and return
+- String methods: lower(), upper(), strip()
+- No imports, no classes, no try/except
+```
+
+---
+
+# Submission Requirements
+
+## What to Submit
+
+1. **Python file** (`contact_book.py`) containing:
+   - All required functions
+   - Main menu system
+   - Clear comments
+   - Test data (optional)
+
+2. **Documentation** (`contact_book_docs.txt`) including:
+   - Your data structure design decisions
+   - Challenges faced and solutions
+   - AI prompts used and what you learned
+   - Future enhancements you'd add
+
+3. **Test results** showing:
+   - Adding multiple contacts
+   - Searching for contacts
+   - Updating a contact
+   - Deleting a contact
+   - Handling edge cases
+
+## Code Organization
+
+Your code should follow this structure:
+
+```python
+# Contact Book System
+# Author: Your Name
+# Date: Current Date
+
+# Data structure design
+contacts = {}  # Explain your choice
+
+# Core functions
+def add_contact(contacts):
+    """Add a new contact."""
+    # Implementation
+
+def view_all_contacts(contacts):
+    """Display all contacts."""
+    # Implementation
+
+# ... other functions ...
+
+# Main program
+def main():
+    """Run the contact book."""
+    # Implementation
+
+# Run the program
+if __name__ == "__main__":
+    main()
+```
+
+---
+
+# Grading Rubric
+
+## Core Functionality (60%)
+
+| Feature | Points | Criteria |
+|---------|---------|----------|
+| Add Contact | 12 | Correctly adds with validation |
+| View All | 12 | Displays formatted list |
+| Search | 12 | Finds contacts accurately |
+| Update | 12 | Modifies existing data |
+| Delete | 12 | Removes with confirmation |
+
+## Code Quality (20%)
+
+| Aspect | Points | Criteria |
+|--------|---------|----------|
+| Structure | 5 | Well-organized functions |
+| Comments | 5 | Clear documentation |
+| Naming | 5 | Descriptive variables |
+| Efficiency | 5 | Good use of dictionaries |
+
+## User Experience (10%)
+
+| Element | Points | Criteria |
+|---------|---------|----------|
+| Menu | 3 | Clear and intuitive |
+| Validation | 4 | Handles bad input |
+| Messages | 3 | Helpful feedback |
+
+## Documentation (10%)
+
+| Component | Points | Criteria |
+|-----------|---------|----------|
+| Design Decisions | 5 | Explains structure choice |
+| AI Learning | 5 | Documents AI usage |
+
+---
+
+# Tips for Success
+
+## Design First
+- Sketch your data structure on paper
+- Plan your functions before coding
+- Consider edge cases early
+
+## Start Simple
+- Get basic add/view working first
+- Add features incrementally
+- Test each function thoroughly
+
+## User-Friendly Design
+- Clear prompts and messages
+- Handle empty inputs gracefully
+- Confirm destructive actions
+
+## Common Mistakes to Avoid
+- Forgetting to check if contact exists
+- Case-sensitive name matching
+- Not handling empty contact book
+- Modifying dictionary while iterating
+
+---
+
+# Extension Ideas
+
+Once core features work:
+
+1. **Birthday Tracking**
+   - Add birthday field
+   - Show upcoming birthdays
+   - Calculate age
+
+2. **Contact History**
+   - Track when added
+   - Last modified date
+   - Call/email history
+
+3. **Smart Features**
+   - Auto-format phone numbers
+   - Validate email format
+   - Address standardization
+
+4. **Bulk Operations**
+   - Import multiple contacts
+   - Delete multiple at once
+   - Export to formatted text
+
+Remember: Focus on core features first. A working basic version is better than a broken advanced one!
+
+---
+
+# Getting Help
+
+If you're stuck:
+
+1. Review the Week 6 lecture on dictionaries
+2. Check the lab exercises for similar patterns
+3. Use AI with the constraints template
+4. Break the problem into smaller pieces
+5. Test with print statements
+
+Good luck building your contact book!

@@ -1,0 +1,238 @@
+---
+title: "Week 1 Understanding Check"
+subtitle: "Computational Thinking & AI Partnership"
+format:
+  html:
+    toc: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Week 1 Understanding Check
+
+**Time**: 30 minutes  
+**Instructions**: This check helps us ensure you're building the right mental models. You may use AI to help explain concepts, but document what you ask.
+
+## Part 1: Computational Thinking (20 points)
+
+### Question 1: Program Components (5 points)
+Label each line with the computational thinking concept it represents:
+- **I** = Input
+- **P** = Processing
+- **S** = Storage
+- **D** = Decision
+- **O** = Output
+
+```python
+temperature = input("Enter temperature: ")     # ____
+temperature = float(temperature)               # ____
+scale = input("C or F? ")                     # ____
+if scale == "C":                              # ____
+    result = (temperature * 9/5) + 32          # ____
+    print(f"{temperature}°C = {result}°F")     # ____
+```
+
+### Question 2: Flow Prediction (5 points)
+What will this program output if the user enters "100" then "C"?
+
+```python
+temp = input("Temperature: ")
+temp = float(temp)
+scale = input("Scale: ")
+if scale.upper() == "C":
+    f = (temp * 9/5) + 32
+    print(f"Result: {f}°F")
+else:
+    c = (temp - 32) * 5/9
+    print(f"Result: {c}°C")
+```
+
+Your answer: ________________________
+
+### Question 3: Pattern Recognition (10 points)
+Here are three different programs. What pattern do they ALL follow?
+
+**Program A**: Calculator
+```python
+num1 = input("First number: ")
+num2 = input("Second number: ")
+result = float(num1) + float(num2)
+print("Sum:", result)
+```
+
+**Program B**: Greeting
+```python
+name = input("Your name: ")
+age = input("Your age: ")
+print(f"Hello {name}, age {age}!")
+```
+
+**Program C**: Converter
+```python
+miles = input("Enter miles: ")
+km = float(miles) * 1.60934
+print(f"{miles} miles = {km} km")
+```
+
+The pattern all three follow: ________________________________
+
+## Part 2: AI Partnership (30 points)
+
+### Question 4: Prompt Evolution (10 points)
+You want AI to help you build a simple calculator. Rank these prompts from worst (1) to best (4) and explain why:
+
+___ "calculator"
+___ "write a calculator program for me"
+___ "simple calculator using only print, input, and basic math"
+___ "explain how to build a calculator that adds two numbers"
+
+Best prompt because: ________________________________
+
+### Question 5: AI Response Analysis (10 points)
+An AI gave you this code for a "simple greeting program":
+
+```python
+def get_greeting(name: str, time_of_day: str = None) -> str:
+    """Generate personalized greeting based on time"""
+    import datetime
+    
+    if time_of_day is None:
+        hour = datetime.datetime.now().hour
+        if hour < 12:
+            time_of_day = "morning"
+        elif hour < 18:
+            time_of_day = "afternoon"
+        else:
+            time_of_day = "evening"
+    
+    return f"Good {time_of_day}, {name}!"
+
+if __name__ == "__main__":
+    user_name = input("Enter your name: ")
+    print(get_greeting(user_name))
+```
+
+List 3 concepts here that are too advanced for Week 1:
+1. ________________________________
+2. ________________________________
+3. ________________________________
+
+### Question 6: Verification Strategy (10 points)
+AI gave you this temperature converter formula:
+```python
+celsius = (fahrenheit + 32) * 5/9
+```
+
+How would you verify if this is correct? List 3 specific steps:
+1. ________________________________
+2. ________________________________
+3. ________________________________
+
+## Part 3: Code Understanding (25 points)
+
+### Question 7: Trace the Code (15 points)
+Trace through this code when user enters "50" then "F":
+
+```python
+print("Temperature Converter")          # Output: ________________
+temp = input("Enter temp: ")           # temp = ________________
+temp = float(temp)                     # temp = ________________
+unit = input("C or F? ")               # unit = ________________
+
+if unit == "F":                        # Condition is: ________________
+    celsius = (temp - 32) * 5/9        # celsius = ________________
+    print(f"{celsius}°C")              # Output: ________________
+else:
+    fahr = (temp * 9/5) + 32
+    print(f"{fahr}°F")
+```
+
+### Question 8: Find the Bug (10 points)
+This code has a logic error. The formulas are correct, but the output is wrong. What's the bug?
+
+```python
+temp = float(input("Temperature: "))
+scale = input("C or F? ")
+
+if scale == "C":
+    result = (temp * 9/5) + 32
+    print(f"{temp}°F = {result}°C")  
+else:
+    result = (temp - 32) * 5/9
+    print(f"{temp}°C = {result}°F")
+```
+
+The bug is: ________________________________
+
+## Part 4: Reflection (25 points)
+
+### Question 9: Learning Process (10 points)
+Describe how you would use AI to help you understand this error message:
+
+```
+TypeError: can't multiply sequence by non-int of type 'float'
+```
+
+Your approach:
+1. ________________________________
+2. ________________________________
+3. ________________________________
+
+### Question 10: Mental Models (15 points)
+Draw or describe a flowchart for a program that:
+- Asks for the user's age
+- If under 18: says "You're a minor"
+- If 18-65: says "You're an adult"  
+- If over 65: says "You're a senior"
+
+Your flowchart/description:
+```
+[Draw or write your flowchart here]
+```
+
+## Bonus Question (5 points)
+
+What's one thing about using AI for learning that surprised you this week?
+
+_________________________________________________
+
+---
+
+## AI Usage Documentation
+
+If you used AI to help with this check, document it here:
+
+**Question #**: ____  
+**What you asked**: ________________________________  
+**How it helped**: ________________________________
+
+---
+
+## Answer Key (Instructor Use)
+
+### Part 1
+1. I, P, I, D, P, O
+2. Result: 212.0°F
+3. Input → Process → Output pattern
+
+### Part 2
+4. Best order: 1, 2, 3, 4 (4 is best - asks for understanding)
+5. Functions, imports, type hints, datetime, etc.
+6. Test with known values, check formula online, reverse calculation
+
+### Part 3
+7. Trace: "Temperature Converter", "50", 50.0, "F", True, 10.0, "10.0°C"
+8. Bug: Output labels are swapped (says °F = °C when should be °C = °F)
+
+### Part 4
+9. Good approach: Ask AI to explain the error, identify what causes it, show simple example
+10. Should show: Start → Input age → Three-way decision → Three outputs → End
+
+## Grading Scale
+- 90-100: Excellent understanding of concepts
+- 80-89: Good grasp of material
+- 70-79: Satisfactory progress
+- 60-69: Need additional support
+- Below 60: Requires significant review

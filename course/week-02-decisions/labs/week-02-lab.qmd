@@ -1,0 +1,511 @@
+---
+title: "Week 2 Lab: Building Decision Logic"
+subtitle: "From Flowcharts to Smart Programs"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Week 2 Lab: Decision Making in Action
+
+## Lab Overview
+
+**Duration**: 2 hours  
+**Goals**: 
+- Master flowchart thinking before coding
+- Build conditional logic systematically
+- Debug logic errors effectively
+- Create a smart grade calculator
+
+## Hour 1: Understanding Decisions
+
+### Part 1: Flowchart First (20 minutes)
+
+#### The Power of Visual Thinking
+
+Before writing any code, let's think visually. Flowcharts help us:
+- See all possible paths
+- Identify missing cases
+- Spot logic errors
+- Communicate our design
+
+#### Flowchart Symbols
+- **Oval**: Start/End
+- **Rectangle**: Process/Action
+- **Diamond**: Decision
+- **Arrows**: Flow direction
+
+#### Exercise 1: Temperature Advisor
+
+Draw a flowchart for this logic:
+- If temperature < 32°F: "Freezing! Bundle up!"
+- If 32-50°F: "Cold, wear a jacket"
+- If 51-70°F: "Nice weather, light jacket"
+- If 71-85°F: "Warm, t-shirt weather"
+- If > 85°F: "Hot! Stay hydrated"
+
+Your flowchart:
+```
+Start
+  ↓
+[Get temp]
+  ↓
+<temp < 32?>
+ Y/    \N
+  ↓      ↓
+[Freezing] <temp <= 50?>
+  ↓         Y/    \N
+  ↓          ↓      ↓
+  ↓    [Cold]    <temp <= 70?>
+  ↓          ↓     Y/    \N
+  ↓          ↓      ↓      ↓
+  ↓          ↓  [Nice]  <temp <= 85?>
+  ↓          ↓      ↓    Y/    \N
+  ↓          ↓      ↓     ↓      ↓
+  ↓          ↓      ↓  [Warm]  [Hot]
+  ↓          ↓      ↓     ↓      ↓
+  └─────────→└─────→└────→└─────→┘
+                    ↓
+                   End
+```
+
+#### Exercise 2: Password Strength Checker
+
+Create a flowchart for:
+- If length < 8: "Too short"
+- If no numbers: "Add numbers"
+- If no uppercase: "Add uppercase"
+- Otherwise: "Strong password"
+
+Think about:
+- What order to check?
+- Can we have multiple problems?
+- How to give helpful feedback?
+
+### Part 2: Basic Conditionals (20 minutes)
+
+#### From Flowchart to Code
+
+Let's implement our temperature advisor:
+
+```python
+# Temperature Advisor
+print("=== Temperature Advisor ===")
+
+# Get temperature from user
+temp_string = input("Enter temperature (°F): ")
+temperature = float(temp_string)
+
+# Make decisions based on temperature
+if temperature < 32:
+    print("Freezing! Bundle up!")
+elif temperature <= 50:
+    print("Cold, wear a jacket")
+elif temperature <= 70:
+    print("Nice weather, light jacket")
+elif temperature <= 85:
+    print("Warm, t-shirt weather")
+else:
+    print("Hot! Stay hydrated")
+```
+
+#### Exercise 3: Test Your Code
+
+Test with these values:
+- 25 (Should say "Freezing!")
+- 32 (Edge case - what happens?)
+- 45 (Should say "Cold")
+- 72 (Should say "Warm")
+- 90 (Should say "Hot")
+
+#### Exercise 4: Simple If Statements
+
+Write these single decisions:
+
+```python
+# 1. Voting eligibility
+age_string = input("Enter your age: ")
+age = int(age_string)
+
+# Your code here - if age >= 18, print "You can vote!"
+
+
+# 2. Free shipping
+order_total_string = input("Order total: $")
+order_total = float(order_total_string)
+
+# Your code here - if order >= 50, print "Free shipping!"
+
+
+# 3. Password length check
+password = input("Create password: ")
+
+# Your code here - if length < 8, print "Too short!"
+# Hint: len(password) gives the length
+```
+
+### Part 3: Comparison Practice (20 minutes)
+
+#### Understanding Comparisons
+
+Each comparison returns True or False:
+
+```python
+# Let's see what comparisons produce
+score = 85
+
+print(f"score = {score}")
+print(f"score > 80: {score > 80}")      # True
+print(f"score >= 85: {score >= 85}")    # True
+print(f"score == 85: {score == 85}")    # True
+print(f"score != 100: {score != 100}")  # True
+print(f"score < 90: {score < 90}")      # True
+```
+
+#### Exercise 5: Comparison Predictions
+
+Before running, predict True or False:
+
+```python
+x = 10
+y = 20
+
+# Predict each result:
+print(x == y)          # Your prediction: _____
+print(x != y)          # Your prediction: _____
+print(x < y)           # Your prediction: _____
+print(x + 10 == y)     # Your prediction: _____
+print(x * 2 >= y)      # Your prediction: _____
+```
+
+#### Exercise 6: String Comparisons
+
+Strings compare alphabetically:
+
+```python
+name = "Alice"
+
+# Case matters!
+print(name == "alice")     # False
+print(name == "Alice")     # True
+
+# Using upper/lower to ignore case
+user_input = input("Enter 'yes' to continue: ")
+
+# Problem: user might type Yes, YES, yes, etc.
+if user_input == "yes":
+    print("Continuing...")  # Misses "Yes" or "YES"
+
+# Solution: Convert to same case
+if user_input.lower() == "yes":
+    print("Continuing...")  # Works for any case!
+```
+
+#### Common Mistake: = vs ==
+
+```python
+# THIS IS WRONG - Uses assignment (=) instead of comparison (==)
+score = 85
+if score = 100:  # SyntaxError!
+    print("Perfect score!")
+
+# THIS IS RIGHT - Uses comparison (==)
+if score == 100:
+    print("Perfect score!")
+```
+
+## Hour 2: Integration and Project
+
+### Part 1: Complex Conditions (20 minutes)
+
+#### Using AND, OR, NOT
+
+Sometimes we need to check multiple things:
+
+```python
+# AND - Both conditions must be true
+age = 16
+has_permit = True
+
+if age >= 16 and has_permit:
+    print("You can practice driving")
+else:
+    print("Not ready to drive yet")
+
+# OR - At least one condition must be true
+day = input("What day is it? ")
+
+if day == "Saturday" or day == "Sunday":
+    print("It's the weekend!")
+else:
+    print("It's a weekday")
+
+# NOT - Reverses the condition
+is_raining = input("Is it raining? (yes/no): ")
+
+if not is_raining == "yes":
+    print("No umbrella needed")
+```
+
+#### Exercise 7: Range Checking
+
+Check if values fall within ranges:
+
+```python
+# Temperature comfort zone (68-76°F)
+temp = float(input("Room temperature: "))
+
+if temp >= 68 and temp <= 76:
+    print("Comfortable temperature")
+else:
+    print("Adjust thermostat")
+
+# Grade ranges
+score = float(input("Enter score: "))
+
+# Check for B grade (80-89)
+if score >= 80 and score < 90:
+    print("B grade")
+
+# Is it passing? (60 or above)
+if score >= 60:
+    print("Passing grade")
+else:
+    print("Failing grade")
+```
+
+#### Exercise 8: Multiple Valid Inputs
+
+Accept different variations of user input:
+
+```python
+# Simple yes/no question
+answer = input("Continue? (Y/N): ")
+
+# Accept multiple versions
+if answer == "Y" or answer == "y" or answer == "yes" or answer == "YES":
+    print("Continuing...")
+
+# Cleaner approach
+if answer.upper() == "Y" or answer.upper() == "YES":
+    print("Continuing...")
+
+# Even cleaner
+if answer.upper() in ["Y", "YES"]:  # Oops! Lists not learned yet!
+# So stick with the OR approach for now
+```
+
+### Part 2: AI-Assisted Debugging (20 minutes)
+
+#### Finding Logic Errors
+
+Your instructor provides this buggy code:
+
+```python
+# Buggy Grade Calculator
+score = float(input("Enter score (0-100): "))
+
+# Find the bugs!
+if score >= 70:
+    grade = "C"
+elif score >= 80:
+    grade = "B"
+elif score >= 90:
+    grade = "A"
+elif score >= 60:
+    grade = "D"
+else:
+    grade = "F"
+
+print(f"Score: {score}, Grade: {grade}")
+```
+
+**Exercise 9: Debug with AI**
+
+Use these prompts to understand the bug:
+1. "Trace through this code when score is 85"
+2. "Why does a score of 95 give 'C'?"
+3. "What's wrong with the order of conditions?"
+
+**Fix**: Check highest scores first!
+
+#### Exercise 10: Missing Cases
+
+Find what's missing:
+
+```python
+# Login system
+username = input("Username: ")
+password = input("Password: ")
+
+if username == "admin" and password == "secret123":
+    print("Admin access granted")
+elif username == "guest":
+    print("Guest access granted")
+# What if username is correct but password is wrong?
+# What if username doesn't exist?
+```
+
+#### Testing Edge Cases
+
+Always test:
+- Exact boundary values (80, 90, etc.)
+- Just above boundaries (80.1, 90.1)
+- Just below boundaries (79.9, 89.9)
+- Invalid inputs (negative, > 100)
+
+### Part 3: Project Start (20 minutes)
+
+#### Smart Grade Calculator Design
+
+Let's plan our grade calculator:
+
+**Requirements**:
+1. Accept score (0-100)
+2. Validate input is in range
+3. Convert to letter grade with +/- modifiers
+4. Provide encouraging feedback
+5. Allow multiple calculations
+
+**Grade Scale**:
+- 97-100: A+
+- 93-96: A
+- 90-92: A-
+- 87-89: B+
+- 83-86: B
+- 80-82: B-
+- (continue pattern...)
+
+**Flowchart First!**
+
+Draw your flowchart before coding:
+- Input validation
+- Grade determination
+- Feedback selection
+- Continue option
+
+#### Starting Code
+
+```python
+print("=== Smart Grade Calculator ===")
+print("Convert your numerical score to a letter grade")
+print()
+
+# Get score from user
+score_string = input("Enter your score (0-100): ")
+score = float(score_string)
+
+# Validate input
+if score < 0 or score > 100:
+    print("Invalid score! Must be between 0 and 100.")
+else:
+    # Determine letter grade
+    if score >= 97:
+        grade = "A+"
+        feedback = "Outstanding work!"
+    elif score >= 93:
+        grade = "A"
+        feedback = "Excellent performance!"
+    elif score >= 90:
+        grade = "A-"
+        feedback = "Great job!"
+    # Continue the pattern...
+    
+    # Display results
+    print(f"\nScore: {score}%")
+    print(f"Grade: {grade}")
+    print(f"Feedback: {feedback}")
+```
+
+## Lab Submission
+
+### Required Deliverables
+
+1. **Flowcharts** (photo or digital):
+   - Temperature advisor
+   - Password checker
+   - Grade calculator
+
+2. **Completed Exercises**:
+   - All practice problems
+   - Debugging exercises
+   - Test results documented
+
+3. **Grade Calculator Progress**:
+   - Working validation
+   - At least A/B/C/D/F grades
+   - Some feedback messages
+
+4. **AI Learning Log**:
+   ```markdown
+   ## AI Interactions
+   
+   ### Debugging Help
+   What I asked: [your prompt]
+   What I learned: [key insight]
+   
+   ### Logic Questions
+   What I asked: [your prompt]
+   What I learned: [key insight]
+   ```
+
+### Testing Checklist
+
+For your grade calculator, verify:
+- [ ] Score of 100 → A+ 
+- [ ] Score of 95 → A
+- [ ] Score of 91 → A-
+- [ ] Score of 85 → B
+- [ ] Score of 75 → C
+- [ ] Score of 65 → D
+- [ ] Score of 55 → F
+- [ ] Score of -5 → Invalid message
+- [ ] Score of 105 → Invalid message
+
+## Debugging Tips
+
+### When Your Code Doesn't Work
+
+1. **Add Print Statements**:
+   ```python
+   score = 85
+   print(f"DEBUG: score = {score}")  # See actual value
+   
+   if score >= 90:
+       print("DEBUG: Entered A branch")  # Trace execution
+       grade = "A"
+   ```
+
+2. **Check Your Comparisons**:
+   - Did you use == instead of =?
+   - Is your > vs >= correct?
+   - Are you checking in the right order?
+
+3. **Test One Condition at a Time**:
+   - Comment out complex parts
+   - Get simple version working
+   - Add complexity gradually
+
+### Common Logic Errors
+
+1. **Wrong Order**: Always check highest values first with elif
+2. **Gaps**: Make sure every value is covered
+3. **Overlaps**: Use elif to avoid multiple matches
+4. **Edge Cases**: Test exact boundary values
+
+## Looking Ahead
+
+Next week we'll add loops to our decision-making:
+- Repeat until condition is met
+- Validate input until it's correct
+- Process multiple items
+- Build interactive programs
+
+The conditions you learned today are the same ones used in loops!

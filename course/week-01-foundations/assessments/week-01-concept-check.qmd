@@ -1,0 +1,221 @@
+---
+title: "Week 1 Concept Check"
+subtitle: "Quick Assessment of Understanding"
+format:
+  html:
+    toc: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Week 1 Concept Check
+
+**Time Limit**: 20 minutes  
+**Instructions**: Answer all questions without using AI assistance. This helps us identify areas where you need more support.
+
+## Part 1: Multiple Choice (2 points each)
+
+### Question 1
+What type of data does the `input()` function always return?
+- a) Integer
+- b) Float  
+- c) String
+- d) It depends on what the user types
+
+### Question 2
+Which of these is the correct way to convert a string to an integer?
+- a) `number = integer("42")`
+- b) `number = int("42")`
+- c) `number = "42".to_int()`
+- d) `number = convert("42", int)`
+
+### Question 3
+What will this code print?
+```python
+age = "25"
+print(age * 2)
+```
+- a) 50
+- b) 27
+- c) "2525"
+- d) Error
+
+### Question 4
+Which variable name follows PEP 8 style guidelines?
+- a) `StudentAge`
+- b) `studentAge`
+- c) `student_age`
+- d) `STUDENTAGE`
+
+### Question 5
+What's the main reason we say "AI is a tutor, not a ghostwriter"?
+- a) AI makes too many mistakes
+- b) We need to understand the code we write
+- c) AI is too expensive to use frequently
+- d) Teachers don't allow AI use
+
+## Part 2: Code Reading (5 points each)
+
+### Question 6
+What will this program output if the user enters "5"?
+```python
+number = input("Enter a number: ")
+result = number + number
+print(result)
+```
+
+Answer: _______________________________
+
+### Question 7
+Explain what each line does:
+```python
+temperature_celsius = 25.0
+temperature_fahrenheit = (temperature_celsius * 9/5) + 32
+print(f"{temperature_celsius}°C = {temperature_fahrenheit}°F")
+```
+
+Line 1: _______________________________  
+Line 2: _______________________________  
+Line 3: _______________________________
+
+## Part 3: Error Identification (5 points each)
+
+### Question 8
+Identify the error in this code (don't fix it, just explain):
+```python
+user_name = input("What's your name? )
+print("Hello, " + user_name)
+```
+
+Error: _______________________________
+
+### Question 9
+What's wrong with this code?
+```python
+age = input("How old are you? ")
+if age > 18:
+    print("You're an adult!")
+```
+
+Error: _______________________________
+
+## Part 4: Code Writing (10 points each)
+
+### Question 10
+Write a program that:
+1. Asks the user for their favorite number
+2. Converts it to an integer
+3. Adds 10 to it
+4. Prints the result with a message
+
+```python
+# Your code here:
+
+
+
+
+```
+
+### Question 11
+Write code that asks for the user's first name and last name separately, then prints their full name.
+
+```python
+# Your code here:
+
+
+
+
+```
+
+## Part 5: Short Answer (10 points)
+
+### Question 12
+Your friend asks an AI to "write a Python program that calculates the area of a circle." The AI provides this code:
+
+```python
+import math
+
+def calculate_circle_area(radius):
+    """Calculate the area of a circle given its radius."""
+    if radius < 0:
+        raise ValueError("Radius cannot be negative")
+    return math.pi * radius ** 2
+
+try:
+    r = float(input("Enter the radius: "))
+    area = calculate_circle_area(r)
+    print(f"The area of a circle with radius {r} is {area:.2f}")
+except ValueError as e:
+    print(f"Error: {e}")
+```
+
+Explain why this code is too advanced for Week 1, and rewrite it using only concepts we've learned:
+
+Why it's too advanced:
+_______________________________
+_______________________________
+
+Simpler version:
+```python
+# Your simpler code here:
+
+
+
+
+```
+
+## Answer Key (For Instructor Use)
+
+### Part 1: Multiple Choice
+1. c) String
+2. b) `number = int("42")`
+3. c) "2525"
+4. c) `student_age`
+5. b) We need to understand the code we write
+
+### Part 2: Code Reading
+6. "55" (string concatenation, not addition)
+7. - Line 1: Creates variable with Celsius temperature
+   - Line 2: Converts to Fahrenheit using formula
+   - Line 3: Prints both temperatures with formatting
+
+### Part 3: Error Identification
+8. Missing closing quote on the input string
+9. Comparing string to integer (age is string, 18 is int)
+
+### Part 4: Code Writing
+10. Sample solution:
+```python
+favorite_number = input("What's your favorite number? ")
+favorite_number = int(favorite_number)
+new_number = favorite_number + 10
+print(f"Your number plus 10 is {new_number}")
+```
+
+11. Sample solution:
+```python
+first_name = input("Enter your first name: ")
+last_name = input("Enter your last name: ")
+full_name = first_name + " " + last_name
+print("Your full name is:", full_name)
+```
+
+### Part 5: Short Answer
+Too advanced because: Uses functions, imports, exception handling, advanced formatting
+
+Simpler version:
+```python
+radius_string = input("Enter the radius: ")
+radius = float(radius_string)
+area = 3.14159 * radius * radius
+print("The area is:", area)
+```
+
+## Grading Scale
+- 90-100: Excellent understanding
+- 80-89: Good understanding  
+- 70-79: Satisfactory understanding
+- 60-69: Needs additional support
+- Below 60: Requires significant review

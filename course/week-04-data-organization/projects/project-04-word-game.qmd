@@ -1,0 +1,572 @@
+---
+title: "Week 4 Project: Word Game"
+subtitle: "Building an Interactive Text-Based Game"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Project Overview
+
+Create an engaging word game that demonstrates your mastery of string manipulation. This project combines string slicing, methods, and data transformation to create an interactive experience.
+
+**Learning Objectives:**
+- Apply string operations in a practical context
+- Handle various text input formats
+- Create engaging user interactions
+- Implement game logic with strings and lists
+- Design for edge cases and errors
+
+---
+
+# Game Options
+
+Choose ONE of these four games to implement:
+
+## Option 1: Word Scrambler
+
+**Concept**: Scramble words and have players guess the original.
+
+**Core Features**:
+- Scramble words in an interesting way (not just reverse)
+- Accept player guesses
+- Provide helpful hints
+- Track score across rounds
+- Increase difficulty progressively
+
+**Example Gameplay**:
+```
+=== Word Scrambler ===
+
+Round 1 of 5
+Scrambled: "htnoyp"
+Hint: 6 letters, starts with 'p'
+
+Your guess: python
+Correct! +10 points
+
+Round 2 of 5  
+Scrambled: "rgompra"
+Hint: 7 letters, starts with 'p'
+
+Your guess: program
+Correct! +10 points
+
+Current Score: 20
+```
+
+## Option 2: Hangman
+
+**Concept**: Classic letter-guessing game.
+
+**Core Features**:
+- Display word as blanks
+- Reveal correct letter guesses
+- Track wrong guesses
+- Show remaining attempts visually
+- Category-based words
+
+**Example Gameplay**:
+```
+=== Hangman ===
+Category: Animals
+
+Word: _ _ _ _ _ _ _
+Guessed: 
+Remaining attempts: 6
+
+Guess a letter: e
+Good guess!
+
+Word: e _ e _ _ _ _ _
+Guessed: e
+Remaining attempts: 6
+
+Guess a letter: x
+Wrong!
+
+Word: e _ e _ _ _ _ _  
+Guessed: e, x
+Remaining attempts: 5
+```
+
+## Option 3: Word Chain
+
+**Concept**: Each word must start with the last letter of the previous word.
+
+**Core Features**:
+- Validate word connections
+- Prevent repeated words
+- Score based on word length
+- Show valid starting letters
+- Optional: categories or themes
+
+**Example Gameplay**:
+```
+=== Word Chain ===
+
+Starting word: python
+Your word must start with: n
+
+Your word: network
+Good! +7 points
+
+Current chain: python → network
+Your word must start with: k
+
+Your word: keyboard  
+Good! +8 points
+
+Current chain: python → network → keyboard
+Total score: 15
+```
+
+## Option 4: Word Builder
+
+**Concept**: Make as many words as possible from given letters.
+
+**Core Features**:
+- Provide set of letters
+- Validate words use only available letters
+- Track found words
+- Score by word length
+- Show possible words remaining
+
+**Example Gameplay**:
+```
+=== Word Builder ===
+
+Your letters: p r o g a m
+Make words using only these letters!
+
+Your word: prom
+Valid! +4 points
+
+Your word: gram
+Valid! +4 points
+
+Your word: rap
+Valid! +3 points
+
+Found words: prom, gram, rap
+Total score: 11
+```
+
+---
+
+# Technical Requirements
+
+## Core Features (Required for All Games)
+
+### 1. Game Setup
+- Title screen with game name
+- Instructions for how to play
+- Option to start or quit
+- Clear interface design
+
+### 2. Input Handling  
+- Clean all user input (strip, lower)
+- Validate input format
+- Handle empty input gracefully
+- Provide clear error messages
+
+### 3. Game Logic
+- Implement core game rules correctly
+- Track game state (score, rounds, etc.)
+- Provide appropriate feedback
+- End game conditions
+
+### 4. Scoring System
+- Points for correct answers
+- Bonus opportunities
+- Running score display
+- Final score summary
+
+### 5. User Experience
+- Clear prompts
+- Helpful hints/feedback
+- Option to play again
+- Graceful exit
+
+## Required String Operations
+
+Your game MUST demonstrate use of:
+- String slicing (extract parts)
+- String methods (upper, lower, strip, etc.)
+- Split/join operations
+- String validation (isalpha, isdigit)
+- String searching (in, find)
+- String building/modification
+
+## Code Structure
+
+```python
+# Game header
+print("=== Game Title ===")
+print("Instructions...")
+
+# Game variables
+score = 0
+playing = True
+# Game-specific variables
+
+# Main game loop
+while playing:
+    # Round/turn logic
+    # Get player input
+    # Validate input
+    # Update game state
+    # Check win/lose conditions
+    # Display feedback
+    
+# End game summary
+print(f"Final Score: {score}")
+print("Thanks for playing!")
+```
+
+---
+
+# Implementation Guidelines
+
+## Step-by-Step Approach
+
+### 1. Start Simple
+- Get basic input/output working
+- Implement core game mechanic
+- Add one feature at a time
+- Test after each addition
+
+### 2. Input Validation
+```python
+# Always clean input
+user_input = input("Enter word: ").strip().lower()
+
+# Validate before using
+if not user_input:
+    print("Please enter something!")
+elif not user_input.isalpha():
+    print("Letters only please!")
+else:
+    # Process valid input
+```
+
+### 3. String Manipulation Examples
+
+**Scrambling without random:**
+```python
+# Method 1: Reverse
+scrambled = word[::-1]
+
+# Method 2: Swap pairs
+scrambled = ""
+for i in range(0, len(word)-1, 2):
+    scrambled = scrambled + word[i+1] + word[i]
+if len(word) % 2 == 1:
+    scrambled = scrambled + word[-1]
+
+# Method 3: Take every other letter first
+part1 = word[::2]
+part2 = word[1::2]
+scrambled = part2 + part1
+```
+
+**Hiding letters (Hangman):**
+```python
+word = "python"
+guessed = ['p', 't']
+display = ""
+
+for letter in word:
+    if letter in guessed:
+        display = display + letter + " "
+    else:
+        display = display + "_ "
+        
+print(display)  # "p _ t _ _ _ "
+```
+
+**Checking word connections:**
+```python
+last_word = "python"
+new_word = "network"
+
+if new_word[0] == last_word[-1]:
+    print("Valid connection!")
+else:
+    print(f"Must start with '{last_word[-1]}'")
+```
+
+### 4. Game State Management
+
+```python
+# Track game data
+rounds_played = 0
+max_rounds = 5
+words_used = []  # Prevent repeats
+score = 0
+streak = 0  # Bonus for consecutive correct
+
+# Check game end
+if rounds_played >= max_rounds:
+    playing = False
+elif score >= winning_score:
+    playing = False
+    print("You win!")
+```
+
+---
+
+# Testing Requirements
+
+Test these scenarios thoroughly:
+
+## Input Testing
+- [ ] Empty input (just Enter)
+- [ ] Single character
+- [ ] Very long input
+- [ ] Numbers mixed with letters
+- [ ] Special characters
+- [ ] All uppercase/lowercase
+- [ ] Leading/trailing spaces
+
+## Game Logic Testing
+- [ ] First round works correctly
+- [ ] Score updates properly
+- [ ] Game ends at right time
+- [ ] Can play multiple rounds
+- [ ] Can replay after game ends
+- [ ] All features work together
+
+## Edge Cases
+- [ ] What if word list runs out?
+- [ ] What if player enters same word twice?
+- [ ] What if no valid moves remain?
+- [ ] What if score goes negative?
+
+---
+
+# Grading Rubric
+
+## Functionality (60 points)
+
+| Feature | Points | Criteria |
+|---------|---------|----------|
+| Core Game Logic | 20 | Game rules implemented correctly |
+| Input Handling | 10 | Clean, validated, error-free |
+| String Operations | 15 | Uses required string features |
+| Scoring System | 10 | Accurate, displayed clearly |
+| Game Flow | 5 | Start, play, end work properly |
+
+## Code Quality (20 points)
+
+| Aspect | Points | Criteria |
+|--------|---------|----------|
+| Organization | 8 | Clear structure, good flow |
+| Variable Names | 4 | Descriptive, consistent |
+| Comments | 4 | Key sections explained |
+| Efficiency | 4 | No unnecessary repetition |
+
+## User Experience (20 points)
+
+| Aspect | Points | Criteria |
+|--------|---------|----------|
+| Instructions | 5 | Clear how to play |
+| Feedback | 5 | Helpful messages |
+| Polish | 5 | Professional feel |
+| Creativity | 5 | Engaging gameplay |
+
+---
+
+# Enhancement Ideas
+
+## Basic Enhancements
+1. **Difficulty Levels**
+   - Easy: More hints, simpler words
+   - Hard: Fewer hints, longer words
+   
+2. **Categories**
+   - Animals, foods, countries
+   - Player selects category
+
+3. **High Score Tracking**
+   - Best score this session
+   - Winning streak counter
+
+## Advanced Enhancements
+1. **Smart Hints**
+   - Reveal vowels first
+   - Show letter frequency
+   - Give definition clues
+
+2. **Word Validation**
+   - Check against common words
+   - Reject made-up words
+   - Accept alternate spellings
+
+3. **Multiplayer**
+   - Take turns
+   - Competitive scoring
+   - Shared word pool
+
+## Creative Features
+1. **Themed Versions**
+   - Holiday words
+   - Programming terms
+   - School subjects
+
+2. **Progressive Difficulty**
+   - Words get longer
+   - Less common words
+   - Fewer hints
+
+3. **Bonus Rounds**
+   - Speed challenges
+   - Perfect score bonuses
+   - Special word categories
+
+---
+
+# Common Mistakes to Avoid
+
+## String Manipulation Errors
+```python
+# WRONG: Trying to modify string
+word[0] = word[0].upper()  # Error!
+
+# RIGHT: Build new string
+word = word[0].upper() + word[1:]
+```
+
+## Input Validation Issues
+```python
+# WRONG: Not handling empty input
+guess = input("Guess: ").lower()  # Crashes if empty!
+
+# RIGHT: Check first
+guess = input("Guess: ").strip()
+if guess:
+    guess = guess.lower()
+    # Process...
+```
+
+## Game Logic Problems
+```python
+# WRONG: Checking word after adding to used list
+words_used.append(word)
+if word in words_used:  # Always True!
+    print("Already used!")
+
+# RIGHT: Check first, then add
+if word in words_used:
+    print("Already used!")
+else:
+    words_used.append(word)
+```
+
+---
+
+# Submission Requirements
+
+## What to Submit
+
+1. **Python file**: `word_game.py`
+2. **Game Documentation**:
+   - Which game you chose
+   - Special features added
+   - Known limitations
+3. **Test Results**: 
+   - Screenshot of gameplay
+   - Evidence of testing edge cases
+4. **AI Usage Report**
+5. **Reflection**: 1 paragraph about challenges and learning
+
+## Code Header
+
+```python
+"""
+Word Game: [Your Game Choice]
+Author: [Your Name]
+Date: [Date]
+
+Description: [Brief description of your game]
+
+Features:
+- [List key features]
+- [List enhancements]
+
+How to Play:
+[Clear instructions]
+"""
+```
+
+## AI Usage Documentation
+
+```python
+"""
+AI Usage:
+1. Used AI to: understand string slicing syntax
+   Prompt: "explain Python string slicing with examples"
+   
+2. Used AI to: debug infinite loop
+   Prompt: "why does this while loop never end?"
+   
+[Document all AI assistance]
+"""
+```
+
+---
+
+# Tips for Success
+
+1. **Start with the Simplest Version**
+   - Get basic gameplay working
+   - Add features incrementally
+   - Test constantly
+
+2. **Focus on User Experience**
+   - Clear instructions
+   - Helpful error messages
+   - Smooth gameplay flow
+
+3. **Use String Methods Wisely**
+   - Chain methods when logical
+   - Store results in variables
+   - Don't repeat operations
+
+4. **Plan Your Game State**
+   - What variables track progress?
+   - When does the game end?
+   - How do you prevent cheating?
+
+5. **Make It Fun!**
+   - Add personality to messages
+   - Celebrate successes
+   - Encourage trying again
+
+---
+
+# Getting Help
+
+## Good Questions to Ask
+
+✅ "How can I scramble letters without using random?"  
+✅ "What's the best way to hide letters in Hangman?"  
+✅ "How do I prevent duplicate words in my list?"  
+✅ "Why does my string comparison fail sometimes?"  
+
+## Don't Ask For
+
+❌ "Write my game for me"  
+❌ "Give me the complete scrambling algorithm"  
+❌ "Debug my entire program"  
+
+---
+
+Good luck creating your word game! Remember: A simple game that works well is better than a complex game that's buggy. Focus on solid fundamentals and a smooth player experience.

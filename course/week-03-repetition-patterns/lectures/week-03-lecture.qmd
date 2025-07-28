@@ -1,0 +1,610 @@
+---
+title: "Week 3: Repetition & Patterns"
+subtitle: "Teaching Programs to Repeat Tasks"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# The Power of Repetition
+
+## The Playlist Problem (10 minutes)
+
+### AI's Music Player Madness
+
+Let me show you what happens when we ask AI for a "music playlist program":
+
+**Me**: "Create a music playlist manager"
+
+**AI might give**:
+```python
+import random
+import json
+from datetime import datetime
+
+class Song:
+    def __init__(self, title, artist, duration, genre, year):
+        self.title = title
+        self.artist = artist
+        self.duration = duration
+        self.genre = genre
+        self.play_count = 0
+        self.last_played = None
+        
+class Playlist:
+    def __init__(self, name):
+        self.name = name
+        self.songs = []
+        self.shuffle_mode = False
+        self.repeat_mode = 'none'
+        
+    def add_song(self, song):
+        if not isinstance(song, Song):
+            raise TypeError("Only Song objects can be added")
+        self.songs.append(song)
+        
+    def shuffle(self):
+        random.shuffle(self.songs)
+        
+    def get_recommendations(self, user_history):
+        # ML-based recommendation algorithm
+        pass
+        
+    def export_to_spotify(self):
+        # API integration
+        pass
+```
+
+**Let's be honest**:
+- Do you understand classes and objects?
+- What about imports and modules?
+- Can you modify the recommendation algorithm?
+- What does a playlist REALLY need to do?
+
+### The Core Truth
+
+A playlist needs to:
+1. Store multiple songs (that's why we need lists!)
+2. Play each song in order (that's why we need loops!)
+3. Maybe let you skip or repeat (basic control)
+
+That's it. Let's learn to build this simply.
+
+### Today's Journey
+
+We'll discover:
+1. Why repetition is fundamental to programming
+2. How to store collections of data
+3. When to use different types of loops
+4. How to process data systematically
+
+## Why Programs Need to Repeat (20 minutes)
+
+### Repetition in Real Life
+
+Think about repetitive tasks:
+
+**ATM Machine**:
+```
+REPEAT while PIN incorrect:
+    Ask for PIN
+    Check if valid
+    IF incorrect:
+        Increment attempts
+        IF attempts >= 3:
+            Keep card
+```
+
+**Playlist**:
+```
+FOR each song in playlist:
+    Play current song
+    Wait for it to finish
+    Move to next song
+```
+
+**Game**:
+```
+WHILE player has lives left:
+    Play one round
+    Update score
+    Check if game over
+```
+
+### The Three Patterns of Repetition
+
+#### 1. Counted Repetition (FOR loops)
+"Do something exactly N times"
+
+Real examples:
+- Print 10 labels
+- Deal 5 cards to each player
+- Show 20 search results
+
+#### 2. Conditional Repetition (WHILE loops)
+"Keep doing while condition is true"
+
+Real examples:
+- Keep asking for password until correct
+- Keep playing game until lives = 0
+- Keep adding items until user says stop
+
+#### 3. Collection Processing (FOR with lists)
+"Do something for each item"
+
+Real examples:
+- Send email to each subscriber
+- Calculate grade for each student
+- Display each photo in album
+
+### Why Collections Matter
+
+Imagine tracking student scores WITHOUT lists:
+```python
+score1 = 85
+score2 = 90
+score3 = 78
+score4 = 92
+score5 = 88
+# What if you have 30 students? 300?
+```
+
+With lists:
+```python
+scores = [85, 90, 78, 92, 88]  # Can have any number!
+```
+
+Collections enable repetition at scale!
+
+## From Concepts to Code: Python's Implementation (20 minutes)
+
+### While Loops: Conditional Repetition
+
+The basic structure:
+```python
+while condition:
+    # Code to repeat
+    # Must eventually make condition False!
+```
+
+**Example 1: Password Validation**
+```python
+password = ""
+while password != "secret123":
+    password = input("Enter password: ")
+    if password != "secret123":
+        print("Wrong password, try again!")
+print("Access granted!")
+```
+
+**Example 2: Input Validation**
+```python
+age = -1  # Start with invalid value
+while age < 0 or age > 120:
+    age_string = input("Enter your age (0-120): ")
+    age = int(age_string)
+    if age < 0 or age > 120:
+        print("Please enter a valid age!")
+print(f"Your age is {age}")
+```
+
+**WARNING: Infinite Loops!**
+```python
+# DON'T DO THIS!
+count = 1
+while count > 0:
+    print(count)
+    count = count + 1  # Gets bigger forever!
+    
+# To stop in Colab: Runtime → Interrupt execution
+```
+
+### For Loops: Counted Repetition
+
+Using `range()` to count:
+```python
+# Count from 0 to 4
+for number in range(5):
+    print(f"Count: {number}")  # 0, 1, 2, 3, 4
+
+# Count from 1 to 5
+for number in range(1, 6):
+    print(f"Number: {number}")  # 1, 2, 3, 4, 5
+
+# Count by 2s
+for number in range(0, 10, 2):
+    print(f"Even: {number}")  # 0, 2, 4, 6, 8
+```
+
+**Common Pattern: Repeat N Times**
+```python
+how_many = int(input("How many stars? "))
+for i in range(how_many):
+    print("⭐", end=" ")  # end=" " keeps on same line
+print()  # New line at the end
+```
+
+### Lists: Storing Collections
+
+Creating and using lists:
+```python
+# Empty list
+shopping_list = []
+
+# List with initial values
+temperatures = [72, 75, 68, 80, 77]
+
+# Adding items
+shopping_list.append("Milk")
+shopping_list.append("Bread")
+shopping_list.append("Eggs")
+print(shopping_list)  # ['Milk', 'Bread', 'Eggs']
+
+# Accessing items (indexing starts at 0!)
+first_item = shopping_list[0]  # 'Milk'
+last_item = shopping_list[-1]   # 'Eggs'
+
+# Getting list length
+num_items = len(shopping_list)  # 3
+```
+
+**CRITICAL: Indices Start at 0!**
+```python
+scores = [85, 90, 78]
+# Index:  0   1   2
+
+print(scores[0])  # First item: 85
+print(scores[1])  # Second item: 90
+print(scores[2])  # Third item: 78
+print(scores[3])  # IndexError! No fourth item
+```
+
+### For Loops with Lists
+
+Processing each item:
+```python
+shopping_list = ["Milk", "Bread", "Eggs"]
+
+# Simple way - process each item
+print("Shopping List:")
+for item in shopping_list:
+    print(f"- {item}")
+
+# Using index - when position matters
+print("\nNumbered List:")
+for i in range(len(shopping_list)):
+    print(f"{i+1}. {shopping_list[i]}")
+```
+
+### Control Flow in Loops
+
+**Break: Exit loop early**
+```python
+# Find an item
+shopping_list = ["Milk", "Bread", "Eggs", "Cheese"]
+search_item = "Eggs"
+
+for item in shopping_list:
+    if item == search_item:
+        print(f"Found {search_item}!")
+        break  # Stop looking
+else:  # Special for loops - runs if no break
+    print(f"{search_item} not found")
+```
+
+**Continue: Skip to next iteration**
+```python
+# Print only passing scores
+scores = [45, 82, 67, 90, 55, 88]
+
+print("Passing scores:")
+for score in scores:
+    if score < 70:
+        continue  # Skip this one
+    print(f"- {score}")
+```
+
+### Common Patterns
+
+**Accumulation Pattern**:
+```python
+numbers = [10, 20, 30, 40, 50]
+total = 0
+
+for num in numbers:
+    total = total + num
+
+print(f"Sum: {total}")  # 150
+print(f"Average: {total / len(numbers)}")  # 30.0
+```
+
+**Building Lists**:
+```python
+# Get 5 scores from user
+scores = []  # Start empty
+
+for i in range(5):
+    score = int(input(f"Enter score {i+1}: "))
+    scores.append(score)
+
+print(f"You entered: {scores}")
+```
+
+## AI Partnership: Smart Iteration (7 minutes)
+
+### Progressive Prompt Evolution
+
+Let's build a shopping list manager intelligently:
+
+#### Attempt 1: Too Vague
+**You**: "shopping list program"
+
+**AI gives**: Database connections, web interface, user accounts...
+
+#### Attempt 2: Adding Focus  
+**You**: "Simple shopping list that adds and displays items"
+
+**AI might give**: Still uses functions, file storage, or classes
+
+#### Attempt 3: Clear Constraints
+**You**: "Shopping list manager using ONLY:
+- Lists to store items
+- Loops (while and for)
+- Basic input/output
+- if/elif/else for menu
+No functions, no files, no imports"
+
+**AI gives**:
+```python
+print("=== Shopping List Manager ===")
+
+shopping_list = []
+running = True
+
+while running:
+    print("\n1. Add item")
+    print("2. View list")
+    print("3. Exit")
+    
+    choice = input("\nChoose option: ")
+    
+    if choice == "1":
+        item = input("Enter item: ")
+        shopping_list.append(item)
+        print(f"'{item}' added!")
+    elif choice == "2":
+        if len(shopping_list) == 0:
+            print("List is empty!")
+        else:
+            print("\nYour list:")
+            for i in range(len(shopping_list)):
+                print(f"{i+1}. {shopping_list[i]}")
+    elif choice == "3":
+        running = False
+        print("Goodbye!")
+    else:
+        print("Invalid choice!")
+```
+
+Now we understand every line!
+
+### Using AI for Loop Debugging
+
+**Good Debugging Prompts**:
+> "Why does this while loop never stop?" [paste code]
+
+> "Trace through this for loop when the list is ['a', 'b', 'c']"
+
+> "What causes IndexError: list index out of range?"
+
+> "How do I check if a list is empty before accessing items?"
+
+### Common AI Overcomplications
+
+1. **List Comprehensions** (too advanced):
+   ```python
+   squares = [x**2 for x in range(10)]
+   ```
+
+2. **Enumerate Function** (not learned yet):
+   ```python
+   for i, item in enumerate(shopping_list):
+   ```
+
+3. **Complex Data Structures**:
+   ```python
+   shopping_list = {'dairy': [], 'produce': []}
+   ```
+
+Keep asking for simpler versions using only what we've learned!
+
+## Building on Previous Weeks (3 minutes)
+
+### Integration Points
+
+Loops combine perfectly with what we know:
+- **Conditions in loops**: Same as if statements!
+- **Input validation**: Finally possible with loops
+- **Menu systems**: Combine loops with if/elif/else
+- **Data processing**: Store inputs, process with loops
+
+### Foundation for the Future
+
+This week enables:
+- Processing any amount of data
+- Creating interactive programs
+- Building real applications
+- Handling user mistakes gracefully
+
+## Preparing for Lab
+
+In today's lab, you'll:
+1. Practice both types of loops
+2. Master list operations
+3. Build a shopping list manager
+4. Debug common loop errors
+
+Key advice:
+- Always ensure loops can end
+- Test with empty lists
+- Check boundaries (0 items, 1 item, many items)
+- Use print() to trace execution
+
+### Textbook Connection
+
+**Read for next class**:
+- Chapter 9: "While Loops" - Conditional repetition
+- Chapter 10: "Loop Control" - Break and continue
+- Chapter 11: "Lists" - Collections of data
+- Chapter 12: "For Loops" - Processing collections
+
+---
+
+# Instructor Notes
+
+## Hook Management
+
+The playlist example works because:
+1. Everyone understands the need
+2. AI massively overcomplicates
+3. Core need is simple
+4. Sets tone for simplification
+
+If AI doesn't overcomplicate enough, try "Spotify clone" or "music streaming service"!
+
+## Key Teaching Points
+
+### Loop Conceptual Challenges
+
+**While vs For Decision**:
+- While: When you don't know how many times
+- For: When you know the count OR have a collection
+- Show same problem solved both ways
+
+**Infinite Loop Safety**:
+- Always demonstrate how to stop
+- Show Runtime → Interrupt execution
+- Common causes: forgot to update, wrong condition
+
+**Off-by-One Errors**:
+- range(5) is 0,1,2,3,4 (not 1-5)
+- List of 3 items has indices 0,1,2
+- Draw on board frequently
+
+### Common Confusions
+
+**Index Starting at 0**:
+- Historical reason: memory offsets
+- Draw lists as boxes numbered from 0
+- Show fence-post problem
+
+**Range Parameters**:
+- range(5) → 0 to 4
+- range(1,6) → 1 to 5  
+- range(0,10,2) → 0,2,4,6,8
+
+**List Modification During Iteration**:
+- Generally avoid
+- Show what goes wrong
+- Save for advanced course
+
+## Live Coding Strategy
+
+### Build Incrementally
+
+1. Start with single print in loop
+2. Add counter/accumulator
+3. Add list operations
+4. Combine concepts gradually
+
+### Debugging Demo
+
+Common errors to show:
+1. Infinite while loop
+2. Index out of bounds
+3. Empty list operations
+4. Off-by-one in range
+
+### Testing Patterns
+
+After each loop:
+- Empty case (0 iterations)
+- Single case (1 iteration)
+- Normal case (multiple iterations)
+- Boundary cases
+
+## Assessment Ideas
+
+**Quick Checks**:
+- "How many times does this loop run?"
+- "What's the output of this code?"
+- "Find the bug in this loop"
+
+**Peer Activities**:
+- Trace loops together
+- Debug each other's code
+- Explain why chose while vs for
+
+## Common Student Issues
+
+1. **Forgetting Initialization**
+   ```python
+   # Forgot to set total = 0
+   for num in numbers:
+       total = total + num  # NameError!
+   ```
+
+2. **Wrong Loop Type**
+   - Using while for counted repetition
+   - Using for when count unknown
+
+3. **Index Errors**
+   ```python
+   items = [1, 2, 3]
+   print(items[3])  # IndexError!
+   ```
+
+4. **Modifying Loop Variable**
+   ```python
+   for i in range(5):
+       i = i + 1  # Doesn't affect loop!
+       print(i)
+   ```
+
+## Differentiation
+
+**For Struggling Students**:
+- More tracing practice
+- Simpler patterns first
+- Pair programming
+- Visual loop representations
+
+**For Advanced Students**:
+- Nested loops preview
+- Efficiency considerations
+- Multiple exit conditions
+- Pattern variations
+
+## Time Management
+- 0:00-0:10 - Hook with playlist
+- 0:10-0:30 - Concepts and patterns
+- 0:30-0:50 - Python implementation
+- 0:50-0:57 - AI partnership
+- 0:57-1:00 - Wrap up and preview
+
+## Week 3 Specific Tips
+
+1. **Emphasize Pattern Recognition** - Not just syntax
+2. **Many Small Examples** - Better than few complex ones
+3. **Trace Everything** - Make mental model visible
+4. **Connect to Real Uses** - Why this matters
+5. **Safety First** - How to stop runaway loops
+
+Remember: Loops are where programming becomes powerful!

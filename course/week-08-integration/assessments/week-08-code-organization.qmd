@@ -1,0 +1,397 @@
+---
+title: "Week 8 Assessment: Code Organization and Structure"
+subtitle: "Professional Software Development Practices"
+author: "AI-Integrated Programming Course"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Assessment Overview
+
+**Points:** 25 points  
+**Time Limit:** 45 minutes  
+**Type:** Code analysis and implementation  
+
+This assessment evaluates your understanding of professional code organization, function design, error handling, and testing practices.
+
+---
+
+# Part A: Code Analysis (10 points)
+
+## Question 1: Function Organization (5 points)
+
+Analyze the following unorganized code and answer the questions:
+
+```python
+# Student record system - messy version
+students = {}
+while True:
+    print("1-add 2-grades 3-report 4-quit")
+    choice = input()
+    if choice == "1":
+        name = input("Name: ")
+        age = int(input("Age: "))
+        students[name] = {"age": age, "grades": []}
+        f = open("students.txt", "w")
+        for n, data in students.items():
+            f.write(n + "|" + str(data["age"]) + "|" + ",".join(str(g) for g in data["grades"]) + "\n")
+        f.close()
+    elif choice == "2":
+        name = input("Student: ")
+        grade = float(input("Grade: "))
+        students[name]["grades"].append(grade)
+        f = open("students.txt", "w")
+        for n, data in students.items():
+            f.write(n + "|" + str(data["age"]) + "|" + ",".join(str(g) for g in data["grades"]) + "\n")
+        f.close()
+    elif choice == "3":
+        for name, data in students.items():
+            avg = sum(data["grades"]) / len(data["grades"]) if data["grades"] else 0
+            print(f"{name}: {avg:.1f}")
+    elif choice == "4":
+        break
+```
+
+**Questions:**
+
+1. **List 3 specific problems with this code's organization:** (3 points)
+   - Problem 1: _________________________
+   - Problem 2: _________________________
+   - Problem 3: _________________________
+
+2. **What functions should this code be broken into?** (2 points)
+   List at least 4 function names and their purposes:
+   - Function 1: _________________________
+   - Function 2: _________________________
+   - Function 3: _________________________
+   - Function 4: _________________________
+
+## Question 2: Error Handling Analysis (5 points)
+
+Look at this function and identify potential problems:
+
+```python
+def calculate_final_grade(assignments, exams, participation):
+    assignment_avg = sum(assignments) / len(assignments)
+    exam_avg = sum(exams) / len(exams)
+    final_grade = (assignment_avg * 0.4) + (exam_avg * 0.5) + (participation * 0.1)
+    return final_grade
+```
+
+**Questions:**
+
+1. **What errors could this function encounter?** (3 points)
+   - Error 1: _________________________
+   - Error 2: _________________________
+   - Error 3: _________________________
+
+2. **Write an improved version with error handling:** (2 points)
+
+```python
+def calculate_final_grade_safe(assignments, exams, participation):
+    # Your improved implementation here
+    
+    
+    
+    
+    
+```
+
+---
+
+# Part B: Function Design (8 points)
+
+## Question 3: Input Validation Function (4 points)
+
+Write a function that safely gets an integer from the user within a specified range:
+
+```python
+def get_integer_in_range(prompt, min_value, max_value):
+    """
+    Get integer input from user within specified range.
+    
+    Args:
+        prompt: Message to display to user
+        min_value: Minimum acceptable value (inclusive)
+        max_value: Maximum acceptable value (inclusive)
+    
+    Returns:
+        Integer within the specified range
+    """
+    # Your implementation here
+    
+    
+    
+    
+    
+
+# Example usage should work like this:
+# age = get_integer_in_range("Enter your age: ", 0, 120)
+# score = get_integer_in_range("Enter score (0-100): ", 0, 100)
+```
+
+## Question 4: File Operation Function (4 points)
+
+Write a function that safely reads data from a file with error handling:
+
+```python
+def safe_read_file(filename, default_content=""):
+    """
+    Read file contents with comprehensive error handling.
+    
+    Args:
+        filename: Name of file to read
+        default_content: What to return if file can't be read
+    
+    Returns:
+        File contents as string, or default_content if error
+    """
+    # Your implementation here
+    
+    
+    
+    
+    
+
+# Example usage:
+# data = safe_read_file("config.txt", "default_config")
+# scores = safe_read_file("scores.txt", "")
+```
+
+---
+
+# Part C: Testing Implementation (7 points)
+
+## Question 5: Write Test Functions (7 points)
+
+For each function below, write comprehensive test cases using assert statements:
+
+### Function to Test:
+```python
+def calculate_letter_grade(percentage):
+    """Convert percentage to letter grade."""
+    if percentage >= 90:
+        return "A"
+    elif percentage >= 80:
+        return "B"
+    elif percentage >= 70:
+        return "C"
+    elif percentage >= 60:
+        return "D"
+    else:
+        return "F"
+
+def count_words_in_text(text):
+    """Count number of words in text string."""
+    if not text or not text.strip():
+        return 0
+    words = text.strip().split()
+    return len(words)
+
+def find_student_by_id(students, student_id):
+    """Find student in list by ID."""
+    for student in students:
+        if student.get("id") == student_id:
+            return student
+    return None
+```
+
+### Your Test Functions:
+
+**1. Test calculate_letter_grade (2 points):**
+```python
+def test_calculate_letter_grade():
+    """Test letter grade calculation."""
+    # Test each grade boundary
+    
+    # Test edge cases
+    
+    # Test typical values
+    
+    print("Letter grade tests passed!")
+
+# Call your test function
+test_calculate_letter_grade()
+```
+
+**2. Test count_words_in_text (2 points):**
+```python
+def test_count_words_in_text():
+    """Test word counting function."""
+    # Test normal cases
+    
+    # Test edge cases
+    
+    # Test special cases
+    
+    print("Word count tests passed!")
+
+test_count_words_in_text()
+```
+
+**3. Test find_student_by_id (3 points):**
+```python
+def test_find_student_by_id():
+    """Test student finding function."""
+    # Create test data
+    test_students = [
+        {"id": 101, "name": "Alice", "grade": 90},
+        {"id": 102, "name": "Bob", "grade": 85},
+        {"id": 103, "name": "Carol", "grade": 92}
+    ]
+    
+    # Test finding existing students
+    
+    # Test finding non-existent student
+    
+    # Test edge cases
+    
+    print("Student finder tests passed!")
+
+test_find_student_by_id()
+```
+
+---
+
+# Bonus Question: Application Architecture (2 bonus points)
+
+Design the function structure for a simple library book management system. List the functions you would need and their responsibilities:
+
+**Core Functions Needed:**
+
+1. **Data Management Functions:**
+   - Function: _________________________
+   - Purpose: _________________________
+
+2. **Book Operations Functions:**
+   - Function: _________________________
+   - Purpose: _________________________
+
+3. **User Interface Functions:**
+   - Function: _________________________
+   - Purpose: _________________________
+
+4. **Main Coordination Function:**
+   - Function: _________________________
+   - Purpose: _________________________
+
+**How would these functions work together?**
+_________________________________________________
+_________________________________________________
+_________________________________________________
+
+---
+
+# Grading Rubric
+
+## Part A: Code Analysis (10 points)
+- **Question 1 (5 points)**
+  - Problems identified: 3 points (1 each)
+  - Function breakdown: 2 points
+- **Question 2 (5 points)**
+  - Error identification: 3 points (1 each)
+  - Improved implementation: 2 points
+
+## Part B: Function Design (8 points)
+- **Question 3 (4 points)**
+  - Correct loop structure: 1 point
+  - Input validation: 1 point
+  - Range checking: 1 point
+  - Error handling: 1 point
+- **Question 4 (4 points)**
+  - Try/except structure: 2 points
+  - Appropriate error handling: 1 point
+  - Default value usage: 1 point
+
+## Part C: Testing (7 points)
+- **Each test function (2-3 points each)**
+  - Covers normal cases: 1 point
+  - Covers edge cases: 1 point
+  - Uses assert correctly: 1 point
+  - (Student finder gets extra point for completeness)
+
+## Bonus (2 points)
+- Logical function breakdown: 1 point
+- Clear understanding of coordination: 1 point
+
+---
+
+# Answer Key (For Instructors)
+
+## Part A Answers
+
+### Question 1:
+**Problems:**
+1. Code repetition (file saving logic repeated)
+2. No error handling (crashes on invalid input)
+3. No function organization (everything in main loop)
+4. No input validation
+5. No separation of concerns
+
+**Functions needed:**
+1. `load_students()` - Load data from file
+2. `save_students()` - Save data to file
+3. `add_student()` - Add new student
+4. `add_grade()` - Add grade to student
+5. `generate_report()` - Show grade report
+6. `display_menu()` - Show menu options
+7. `get_menu_choice()` - Get valid menu choice
+
+### Question 2:
+**Errors:**
+1. Division by zero if lists are empty
+2. TypeError if non-numeric values in lists
+3. Invalid participation value (should be 0-100)
+
+**Improved version:**
+```python
+def calculate_final_grade_safe(assignments, exams, participation):
+    if not assignments or not exams:
+        return 0
+    
+    if not (0 <= participation <= 100):
+        return 0
+    
+    try:
+        assignment_avg = sum(assignments) / len(assignments)
+        exam_avg = sum(exams) / len(exams)
+        final_grade = (assignment_avg * 0.4) + (exam_avg * 0.5) + (participation * 0.1)
+        return final_grade
+    except (TypeError, ValueError):
+        return 0
+```
+
+## Additional Teaching Notes
+
+### Common Student Mistakes
+1. **Over-complicated solutions** - Students often try to implement advanced features
+2. **Missing edge cases** - Forgetting to test empty inputs, boundary conditions
+3. **Poor error messages** - Generic or unhelpful error feedback
+4. **Function naming** - Unclear or inconsistent function names
+
+### Assessment Tips
+- Encourage students to test their functions before submitting
+- Remind them to handle edge cases
+- Emphasize clear, readable code over clever solutions
+- Point out that professional code prioritizes maintainability
+
+### Time Management
+- Part A: 15 minutes
+- Part B: 20 minutes  
+- Part C: 10 minutes
+- Bonus: 5 minutes if time permits
+
+### Follow-up Discussion
+Use this assessment to discuss:
+- Why code organization matters
+- How testing saves debugging time
+- Professional development practices
+- Real-world software quality standards

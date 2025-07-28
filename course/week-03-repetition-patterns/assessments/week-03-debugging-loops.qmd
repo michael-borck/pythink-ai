@@ -1,0 +1,303 @@
+---
+title: "Week 3 Assessment: Debugging Loops"
+subtitle: "Finding and Fixing Common Loop Errors"
+format:
+  html:
+    toc: true
+    code-fold: false
+  pdf:
+    toc: true
+---
+
+# Loop Debugging Assessment
+
+**Name:** _________________________ **Date:** _____________
+
+**Instructions:** Each problem contains buggy code. Identify the error, explain the issue, and provide the corrected code.
+
+---
+
+## Problem 1: Infinite Loop (15 points)
+
+```python
+# This code should count from 1 to 5
+count = 1
+while count <= 5:
+    print(count)
+    # Something is missing here!
+```
+
+**What's wrong?** ________________________________________________
+
+_____________________________________________________________
+
+**Why does this cause a problem?** _______________________________
+
+_____________________________________________________________
+
+**Corrected code:**
+```python
+
+
+
+
+```
+
+---
+
+## Problem 2: Off-by-One Error (15 points)
+
+```python
+# This should print numbers 1 through 5
+for i in range(5):
+    print(i)
+```
+
+**What's wrong?** ________________________________________________
+
+_____________________________________________________________
+
+**What will it actually print?** __________________________________
+
+**Corrected code:**
+```python
+
+
+```
+
+---
+
+## Problem 3: Index Out of Range (15 points)
+
+```python
+# This should print all items in the list
+fruits = ["apple", "banana", "orange"]
+for i in range(4):
+    print(fruits[i])
+```
+
+**What error will occur?** _______________________________________
+
+**On which iteration?** __________________________________________
+
+**Why?** ________________________________________________________
+
+_____________________________________________________________
+
+**Corrected code:**
+```python
+
+
+
+```
+
+---
+
+## Problem 4: Empty List Handling (15 points)
+
+```python
+# This should find the highest score
+scores = []  # Might be empty!
+highest = scores[0]
+for score in scores:
+    if score > highest:
+        highest = score
+print(f"Highest: {highest}")
+```
+
+**What error will occur?** _______________________________________
+
+**When will it occur?** __________________________________________
+
+**Corrected code with proper handling:**
+```python
+
+
+
+
+
+
+
+```
+
+---
+
+## Problem 5: Logic Error in Loop (15 points)
+
+```python
+# This should remove all scores below 70
+scores = [85, 65, 90, 55, 75, 60, 80]
+for i in range(len(scores)):
+    if scores[i] < 70:
+        scores.remove(scores[i])
+print(scores)
+```
+
+**What's wrong with this approach?** _____________________________
+
+_____________________________________________________________
+
+_____________________________________________________________
+
+**What unexpected behavior occurs?** ______________________________
+
+_____________________________________________________________
+
+**Better approach:**
+```python
+
+
+
+
+
+
+```
+
+---
+
+## Problem 6: Wrong Loop Variable (10 points)
+
+```python
+# This should count how many numbers are > 50
+numbers = [45, 67, 32, 89, 51, 44, 78]
+count = 0
+for count in numbers:
+    if count > 50:
+        count = count + 1
+print(f"Count: {count}")
+```
+
+**What's wrong?** ________________________________________________
+
+_____________________________________________________________
+
+**What will it print?** __________________________________________
+
+**Corrected code:**
+```python
+
+
+
+
+
+
+```
+
+---
+
+## Problem 7: Break Statement Issue (15 points)
+
+```python
+# This should find if ANY score is passing (>= 70)
+scores = [65, 68, 72, 69, 71]
+all_passing = True
+
+for score in scores:
+    if score < 70:
+        all_passing = False
+        break
+    
+if all_passing:
+    print("All scores pass!")
+else:
+    print("Not all scores pass")
+```
+
+**What's the logic error?** ______________________________________
+
+_____________________________________________________________
+
+**What will it incorrectly report?** _____________________________
+
+_____________________________________________________________
+
+**Fixed version (or explain the fix):**
+```python
+
+
+
+
+
+
+
+
+
+```
+
+---
+
+## Bonus Problem: Complex Debugging (10 points)
+
+```python
+# This should build a list of unique items
+items = ["apple", "banana", "apple", "orange", "banana", "grape"]
+unique = []
+
+for item in items:
+    found = False
+    for unique_item in unique:
+        if item == unique_item:
+            found = True
+    if found == False:
+        unique.append(item)
+        
+print(unique)
+```
+
+**This code actually works! But it's inefficient. What's a better approach?**
+
+**Explain the inefficiency:** ____________________________________
+
+_____________________________________________________________
+
+**Better approach (describe or code):**
+```python
+
+
+
+
+```
+
+---
+
+## Debugging Strategies Checklist
+
+Rate your use of these strategies (1-5, where 5 is "always use"):
+
+- [ ] Add print statements to trace values: _____
+- [ ] Check loop conditions carefully: _____
+- [ ] Verify list bounds before access: _____
+- [ ] Test with empty inputs: _____
+- [ ] Test with single item: _____
+- [ ] Test with many items: _____
+- [ ] Consider edge cases: _____
+
+**Which strategy helped most today?** _____________________________
+
+---
+
+## Grading Rubric
+
+| Problem | Points | Your Score |
+|---------|---------|------------|
+| Problem 1: Infinite Loop | 15 |   |
+| Problem 2: Off-by-One | 15 |   |
+| Problem 3: Index Error | 15 |   |
+| Problem 4: Empty List | 15 |   |
+| Problem 5: Logic Error | 15 |   |
+| Problem 6: Wrong Variable | 10 |   |
+| Problem 7: Break Logic | 15 |   |
+| Bonus Problem | 10 |   |
+| **Total** | **100** (+10) |   |
+
+**Grade:** _______
+
+---
+
+## Reflection
+
+**Most challenging error type:** __________________________________
+
+**Key lesson learned:** __________________________________________
+
+_____________________________________________________________

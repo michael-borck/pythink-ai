@@ -1,0 +1,339 @@
+---
+title: "Week 5 Assessment: Function Design"
+subtitle: "Creating Well-Designed Functions"
+format:
+  html:
+    toc: true
+    code-fold: false
+  pdf:
+    toc: true
+---
+
+# Function Design Assessment
+
+**Name:** _________________________ **Date:** _____________
+
+**Instructions:** Design functions according to specifications. Focus on clear interfaces, proper parameters, and good documentation.
+
+---
+
+## Problem 1: Design Basic Functions (20 points)
+
+For each task, write a complete function with docstring:
+
+### Task A: Circle Calculator
+Design a function that calculates the circumference of a circle given its radius.
+
+```python
+def ________________(________):
+    """
+    _________________________________
+    
+    Args:
+        _______: ____________________
+        
+    Returns:
+        _____________________________
+    """
+    # Your implementation
+    
+    
+    
+```
+
+### Task B: Name Formatter
+Design a function that takes first and last name and returns them in "Last, First" format.
+
+```python
+def ________________(________, ________):
+    """
+    _________________________________
+    
+    Args:
+        _______: ____________________
+        _______: ____________________
+        
+    Returns:
+        _____________________________
+    """
+    # Your implementation
+    
+    
+    
+```
+
+---
+
+## Problem 2: Functions with Validation (20 points)
+
+Design these functions with proper error handling:
+
+### Task A: Safe Division
+Create a function that divides two numbers but handles division by zero.
+
+Requirements:
+- Take two parameters: dividend and divisor
+- Return the quotient if valid
+- Return None if division by zero
+- Include helpful docstring
+
+```python
+# Your complete function here
+
+
+
+
+
+```
+
+### Task B: Age Calculator
+Create a function that calculates age given birth year and current year.
+
+Requirements:
+- Validate that current year >= birth year
+- Return age if valid
+- Return None if invalid (future birth year)
+- Default current year to 2024
+
+```python
+# Your complete function here
+
+
+
+
+
+
+
+```
+
+---
+
+## Problem 3: Functions with Multiple Returns (15 points)
+
+Design a function that analyzes a list of temperatures:
+
+Requirements:
+- Parameter: list of temperature values
+- Returns: (lowest, highest, average) as a tuple
+- Handle empty list by returning (None, None, None)
+- Round average to 1 decimal place
+
+```python
+def analyze_temperatures(________):
+    """
+    _________________________________
+    
+    Args:
+        _______: ____________________
+        
+    Returns:
+        _____________________________
+        _____________________________
+    """
+    # Your implementation
+    
+    
+    
+    
+    
+    
+    
+    
+```
+
+Test your function:
+```python
+# Should return (10, 30, 20.0)
+print(analyze_temperatures([10, 20, 30]))
+
+# Should return (None, None, None)
+print(analyze_temperatures([]))
+```
+
+---
+
+## Problem 4: Refactoring into Functions (25 points)
+
+Refactor this repetitive code into clean functions:
+
+### Original Code:
+```python
+# Calculate student 1 final grade
+homework1 = 85
+midterm1 = 78
+final1 = 92
+hw_weight1 = homework1 * 0.3
+mid_weight1 = midterm1 * 0.3
+final_weight1 = final1 * 0.4
+total1 = hw_weight1 + mid_weight1 + final_weight1
+if total1 >= 90:
+    letter1 = "A"
+elif total1 >= 80:
+    letter1 = "B"
+elif total1 >= 70:
+    letter1 = "C"
+else:
+    letter1 = "F"
+print(f"Student 1: {total1:.1f} ({letter1})")
+
+# Calculate student 2 final grade
+homework2 = 92
+midterm2 = 88
+final2 = 85
+hw_weight2 = homework2 * 0.3
+mid_weight2 = midterm2 * 0.3
+final_weight2 = final2 * 0.4
+total2 = hw_weight2 + mid_weight2 + final_weight2
+if total2 >= 90:
+    letter2 = "A"
+elif total2 >= 80:
+    letter2 = "B"
+elif total2 >= 70:
+    letter2 = "C"
+else:
+    letter2 = "F"
+print(f"Student 2: {total2:.1f} ({letter2})")
+```
+
+### Your Refactored Version:
+
+Create at least TWO functions to eliminate repetition:
+
+```python
+# Function 1: Calculate weighted grade
+def ________________(________, ________, ________):
+    """
+    _________________________________
+    """
+    
+    
+    
+
+# Function 2: Convert numeric to letter grade
+def ________________(________):
+    """
+    _________________________________
+    """
+    
+    
+    
+    
+
+# Using your functions:
+# Student 1
+total1 = ________________(85, 78, 92)
+letter1 = ________________(total1)
+print(f"Student 1: {total1:.1f} ({letter1})")
+
+# Student 2
+total2 = ________________(92, 88, 85)
+letter2 = ________________(total2)
+print(f"Student 2: {total2:.1f} ({letter2})")
+```
+
+---
+
+## Problem 5: Function Interface Design (20 points)
+
+Design function signatures (name, parameters, docstring) for these scenarios. You don't need to implement them, just design good interfaces:
+
+### Scenario A: Password Strength Checker
+Design a function that checks if a password is strong.
+
+Considerations:
+- What parameters does it need?
+- What should it return?
+- Should anything have defaults?
+
+```python
+def ________________(________, ________=____):
+    """
+    Check if a password meets strength requirements.
+    
+    Args:
+        _______: ____________________
+        _______: ____________________ (default: ____)
+        
+    Returns:
+        _____________________________
+        
+    Example:
+        >>> ________________("MyPass123", ________)
+        True
+    """
+    pass  # Just the interface, no implementation needed
+```
+
+### Scenario B: Temperature Converter
+Design a function that converts between temperature scales.
+
+Considerations:
+- How to specify which conversion?
+- What about invalid conversions?
+- Good parameter names?
+
+```python
+def ________________(________, ________, ________):
+    """
+    _________________________________
+    
+    Args:
+        _______: ____________________
+        _______: ____________________
+        _______: ____________________
+        
+    Returns:
+        _____________________________
+        
+    Example:
+        >>> ________________(32, "F", "C")
+        0.0
+    """
+    pass  # Just the interface, no implementation needed
+```
+
+---
+
+## Bonus Challenge: Composition (10 points)
+
+Design a set of small functions that work together to solve this problem:
+"Calculate the total cost of items including tax and discount"
+
+Requirements:
+- One function to calculate tax
+- One function to apply discount
+- One function that uses both to get final price
+- All functions should be reusable independently
+
+```python
+# Your function designs here:
+
+
+
+
+```
+
+---
+
+## Grading Rubric
+
+| Section | Points | Your Score |
+|---------|---------|------------|
+| Problem 1: Basic Functions | 20 |   |
+| Problem 2: Validation | 20 |   |
+| Problem 3: Multiple Returns | 15 |   |
+| Problem 4: Refactoring | 25 |   |
+| Problem 5: Interface Design | 20 |   |
+| Bonus: Composition | 10 |   |
+| **Total** | **100** (+10) |   |
+
+**Grade:** _______
+
+## Key Grading Criteria
+
+1. **Function Names**: Clear, descriptive, follow conventions
+2. **Parameters**: Appropriate types and names
+3. **Docstrings**: Complete and helpful
+4. **Return Values**: Appropriate for the task
+5. **Error Handling**: Edge cases considered
+6. **Single Purpose**: Each function does one thing well

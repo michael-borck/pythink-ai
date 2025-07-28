@@ -1,0 +1,372 @@
+---
+title: "Week 6 Assessment: Dictionary Operations"
+subtitle: "Testing Your Understanding of Key-Value Data"
+format:
+  html:
+    toc: true
+    code-fold: false
+    embed-resources: true
+  pdf:
+    toc: true
+---
+
+# Assessment Overview
+
+This assessment tests your understanding of dictionary creation, access, modification, and methods. Complete each section to demonstrate your mastery of Python dictionaries.
+
+**Time Limit:** 45 minutes  
+**Points:** 100 total  
+**Resources Allowed:** Python environment, no external help
+
+---
+
+# Part 1: Dictionary Basics (30 points)
+
+## Question 1.1: Creating Dictionaries (10 points)
+
+Create dictionaries based on these requirements:
+
+```python
+# A. Create a product dictionary with:
+#    - name: "Laptop"
+#    - price: 999.99
+#    - in_stock: True
+#    - quantity: 15
+
+product = _______________
+
+
+# B. Create an empty dictionary two different ways
+
+empty1 = _______________
+empty2 = _______________
+
+
+# C. Create a student dictionary with mixed data types:
+#    - id: "S123" (string)
+#    - age: 20 (integer)
+#    - gpa: 3.75 (float)
+#    - courses: ["Math", "CS", "Physics"] (list)
+#    - graduated: False (boolean)
+
+student = _______________
+```
+
+## Question 1.2: Accessing Values (10 points)
+
+Given this dictionary, complete the access operations:
+
+```python
+person = {
+    "name": "Alice Johnson",
+    "age": 28,
+    "city": "New York",
+    "skills": ["Python", "JavaScript", "SQL"]
+}
+
+# A. Get the person's name
+name = _______________
+
+# B. Get the person's age
+age = _______________
+
+# C. Get the second skill (JavaScript)
+second_skill = _______________
+
+# D. Safely get phone number (doesn't exist) with default "No phone"
+phone = _______________
+
+# E. Check if "email" key exists in the dictionary
+has_email = _______________
+```
+
+## Question 1.3: Modifying Dictionaries (10 points)
+
+Modify the dictionary as requested:
+
+```python
+book = {
+    "title": "Python Basics",
+    "author": "Jane Doe",
+    "year": 2020,
+    "pages": 300
+}
+
+# A. Change the year to 2024
+_______________
+
+# B. Add a new key "isbn" with value "978-1234567890"
+_______________
+
+# C. Add a "reviews" key with an empty list
+_______________
+
+# D. Delete the "pages" key
+_______________
+
+# E. Update the author to "Jane M. Doe"
+_______________
+```
+
+---
+
+# Part 2: Dictionary Methods (25 points)
+
+## Question 2.1: Using Dictionary Methods (15 points)
+
+Complete these operations using dictionary methods:
+
+```python
+inventory = {
+    "apples": 50,
+    "bananas": 30,
+    "oranges": 25,
+    "grapes": 40,
+    "pears": 35
+}
+
+# A. Get a list of all fruit names
+fruits = _______________
+
+# B. Get a list of all quantities
+quantities = _______________
+
+# C. Get a list of all key-value pairs
+pairs = _______________
+
+# D. Calculate total fruit count using values
+total = 0
+for _______________:
+    total = total + _______________
+print(f"Total fruits: {total}")
+
+# E. Find fruits with quantity > 30
+high_stock = []
+for _______________:
+    if _______________:
+        high_stock.append(_______________)
+```
+
+## Question 2.2: Safe Access Patterns (10 points)
+
+Rewrite these to handle missing keys safely:
+
+```python
+config = {
+    "debug": True,
+    "port": 8080,
+    "host": "localhost"
+}
+
+# A. Unsafe (fix this):
+# timeout = config["timeout"]  # This will cause KeyError!
+timeout = _______________
+
+# B. Get max_connections with default 100
+max_conn = _______________
+
+# C. Check and get database settings
+if _______________:
+    db_settings = config["database"]
+else:
+    db_settings = {"type": "sqlite", "name": "default.db"}
+
+# D. Update timeout only if it doesn't exist
+if _______________:
+    config["timeout"] = 30
+```
+
+---
+
+# Part 3: Dictionary Patterns (25 points)
+
+## Question 3.1: Counting Pattern (10 points)
+
+Complete this word frequency counter:
+
+```python
+def count_words(text):
+    """Count frequency of each word in text."""
+    word_count = {}
+    words = text.lower().split()
+    
+    for word in words:
+        # If word exists, increment count
+        if _______________:
+            _______________
+        # Otherwise, set count to 1
+        else:
+            _______________
+    
+    return word_count
+
+# Test your function
+text = "the cat and the dog and the cat"
+result = count_words(text)
+print(result)  # Should show: {'the': 3, 'cat': 2, 'and': 2, 'dog': 1}
+```
+
+## Question 3.2: Grouping Pattern (7 points)
+
+Group students by their grade level:
+
+```python
+students = [
+    {"name": "Alice", "grade": "A"},
+    {"name": "Bob", "grade": "B"},
+    {"name": "Carol", "grade": "A"},
+    {"name": "Dave", "grade": "B"},
+    {"name": "Eve", "grade": "C"}
+]
+
+# Group students by grade
+grade_groups = {}
+
+for student in students:
+    grade = _______________
+    name = _______________
+    
+    # If grade group exists, append student
+    if _______________:
+        _______________
+    # Otherwise, create new group with student
+    else:
+        _______________
+
+print(grade_groups)
+# Should show: {'A': ['Alice', 'Carol'], 'B': ['Bob', 'Dave'], 'C': ['Eve']}
+```
+
+## Question 3.3: Lookup Table (8 points)
+
+Create and use a lookup table:
+
+```python
+# A. Create a month number to name lookup
+months = {
+    1: "January",
+    2: "February",
+    3: "March",
+    # Complete for all 12 months...
+    _______________
+}
+
+# B. Create reverse lookup (name to number)
+month_numbers = {}
+for _______________:
+    _______________
+
+# C. Use the lookup safely
+month_num = 13  # Invalid month
+month_name = _______________  # Should handle invalid number
+print(f"Month {month_num}: {month_name}")
+```
+
+---
+
+# Part 4: Problem Solving (20 points)
+
+## Question 4.1: Menu Pricing System (10 points)
+
+Create a restaurant menu system:
+
+```python
+# Menu with items and prices
+menu = {
+    "burger": 8.99,
+    "pizza": 12.99,
+    "salad": 6.99,
+    "fries": 3.99,
+    "soda": 2.99
+}
+
+def calculate_order_total(menu, order_items):
+    """
+    Calculate total price for ordered items.
+    order_items is a list of item names.
+    """
+    total = 0
+    
+    for item in order_items:
+        # Add price if item exists in menu
+        _______________
+        _______________
+        _______________
+    
+    return total
+
+# Test order
+order = ["burger", "fries", "soda", "ice cream"]  # ice cream not on menu
+total = calculate_order_total(menu, order)
+print(f"Order total: ${total:.2f}")  # Should handle missing item
+```
+
+## Question 4.2: Grade Book System (10 points)
+
+Build a simple grade tracking system:
+
+```python
+def create_gradebook():
+    """Create and manage a gradebook."""
+    gradebook = {}
+    
+    # Add students with their grades
+    def add_student(name, grades_dict):
+        """Add a student with their subject grades."""
+        _______________
+    
+    # Calculate student average
+    def get_student_average(name):
+        """Calculate average grade for a student."""
+        if _______________:
+            grades = _______________
+            total = _______________
+            count = _______________
+            return _______________
+        return 0
+    
+    # Get class average for a subject
+    def get_class_average(subject):
+        """Calculate class average for a subject."""
+        total = 0
+        count = 0
+        
+        for _______________:
+            if _______________:
+                _______________
+                _______________
+        
+        if count > 0:
+            return _______________
+        return 0
+    
+    # Test the system
+    add_student("Alice", {"Math": 92, "Science": 88, "English": 95})
+    add_student("Bob", {"Math": 85, "Science": 90, "English": 82})
+    
+    print(f"Alice's average: {get_student_average('Alice')}")
+    print(f"Math class average: {get_class_average('Math')}")
+    
+    return gradebook
+
+# Run the gradebook system
+my_gradebook = create_gradebook()
+```
+
+---
+
+# Submission Instructions
+
+1. Complete all sections in order
+2. Test your code before submitting
+3. Include comments explaining your approach
+4. Submit as `dictionary_assessment.py`
+
+## Grading Notes
+
+- Partial credit available for correct approach
+- Syntax errors will reduce points
+- Efficient solutions earn bonus consideration
+- Clear variable names are important
+
+Good luck!

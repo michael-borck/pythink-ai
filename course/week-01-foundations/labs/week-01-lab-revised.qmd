@@ -1,0 +1,432 @@
+---
+title: "Week 1 Lab: AI Partnership in Action"
+subtitle: "Building Understanding Through Strategic AI Use"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Week 1 Lab: Computational Thinking & AI Partnership
+
+## Lab Overview
+
+**Duration**: 2 hours  
+**Goals**: 
+- Master using AI as a learning tool
+- Build a temperature converter through prompt evolution
+- Create mental models of program flow
+- Learn to verify and debug AI-generated code
+
+## Hour 1: AI as Your Teacher
+
+### Part 1: Understanding Your Environment (20 minutes)
+
+#### Using AI to Learn About Colab
+
+Let's start by using AI to understand our tools. Try these prompts:
+
+**Prompt 1**: 
+> "Explain Google Colab for someone who has never programmed before"
+
+Copy AI's response here:
+```
+[Your AI's response]
+```
+
+**Prompt 2**: 
+> "What's the difference between code cells and text cells in Google Colab?"
+
+**Prompt 3**: 
+> "How do I save my work in Google Colab and share it with others?"
+
+#### Hands-on Colab Practice
+
+1. Create a new code cell (click + Code)
+2. Type and run:
+```python
+print("Hello from Colab!")
+```
+
+3. Create a text cell (click + Text)
+4. Write: "This is my first Colab notebook!"
+
+5. Try Colab's built-in AI:
+   - Look for the Gemini icon (sparkle ✨)
+   - Ask: "How do I run a code cell in Colab?"
+   - Try the "Generate" button
+
+#### Key Discoveries
+Document what you learned:
+- Code cells run Python code
+- Text cells use Markdown formatting
+- Variables persist between cells in the same session
+- Colab saves to Google Drive automatically
+
+### Part 2: Prompt Evolution Exercise (25 minutes)
+
+#### Building a Temperature Converter Through Better Prompts
+
+Let's build the same program with increasingly better prompts:
+
+##### Round 1: The Vague Prompt
+
+**Your Prompt**: 
+```
+temperature converter
+```
+
+**What AI Gave You**:
+```python
+[Paste AI's response here]
+```
+
+**Problems Identified**:
+- Too complex?
+- Uses concepts we don't know?
+- Hard to modify?
+- List them: ________________
+
+##### Round 2: Adding Basic Requirements
+
+**Your Prompt**: 
+```
+Write a simple temperature converter that:
+- Asks the user for a temperature
+- Asks if it's Celsius or Fahrenheit  
+- Converts to the other scale
+- Shows the result
+```
+
+**What AI Gave You**:
+```python
+[Paste AI's response here]
+```
+
+**Improvements**:
+- What got better? ________________
+- Still too complex? ________________
+- What concepts are unfamiliar? ________________
+
+##### Round 3: Adding Constraints
+
+**Your Prompt**: 
+```
+Write a temperature converter using ONLY these Python features:
+- print() for output
+- input() to get user data
+- float() to convert strings to numbers  
+- if/elif/else for decisions
+- Basic math operators (+, -, *, /)
+- No functions, no loops, no try/except, no imports
+Keep it as simple as possible.
+```
+
+**What AI Gave You**:
+```python
+[Paste AI's response here]
+```
+
+**Analysis**:
+- Is this understandable? ________________
+- Can you explain each line? ________________
+- Where would you add features? ________________
+
+##### Round 4: Understanding Focus
+
+**Your Prompt**: 
+```
+Explain this temperature converter code line by line:
+[Paste your Round 3 code here]
+
+Focus on:
+- Why we need float()
+- How if/elif/else works
+- What happens when the user inputs data
+```
+
+**Key Learnings**:
+Write 3 things you learned from AI's explanation:
+1. ________________________________
+2. ________________________________
+3. ________________________________
+
+### Part 3: Pattern Recognition (15 minutes)
+
+#### Identifying Common Patterns
+
+Look at all the temperature converter versions. Find these patterns:
+
+**Input Pattern**:
+- Where does the program get information from the user?
+- What functions are used?
+- Pattern: ________________________________
+
+**Storage Pattern**:
+- Where does the program store user inputs?
+- What are the variable names?
+- Pattern: ________________________________
+
+**Decision Pattern**:
+- Where does the program make choices?
+- What's being compared?
+- Pattern: ________________________________
+
+**Output Pattern**:
+- Where does the program show results?
+- How is the output formatted?
+- Pattern: ________________________________
+
+#### Creating a Flow Diagram
+
+Draw the flow of your simplest temperature converter:
+
+```
+Start
+  ↓
+[Get temperature] → Store in: ____________
+  ↓
+[Get scale] → Store in: ____________
+  ↓
+Decision: Is it Celsius?
+  ↓ Yes              ↓ No
+[Convert C→F]     [Convert F→C]
+  ↓                  ↓
+[Show result] ← ← ← ←
+  ↓
+End
+```
+
+## Hour 2: Understanding and Application
+
+### Part 1: Code Tracing with AI (20 minutes)
+
+#### Manual Trace Exercise
+
+Take your simple temperature converter and trace through it:
+
+**Test Case 1**: User enters "0" and "C"
+```
+Line 1: print("Temperature Converter") → Output: "Temperature Converter"
+Line 2: temperature = input("Enter temperature: ") → User types: "0"
+Line 3: temperature = float(temperature) → temperature becomes: 0.0
+Line 4: [Continue tracing...]
+```
+
+**Test Case 2**: User enters "32" and "F"
+```
+[Trace through the execution]
+```
+
+#### AI-Assisted Verification
+
+**Prompt to AI**: 
+```
+Trace through this code step by step when the user enters "100" and "C":
+[Your code here]
+Show the value of each variable after each line.
+```
+
+Compare AI's trace with yours. Did you miss anything?
+
+### Part 2: The Modification Challenge (25 minutes)
+
+#### Scenario: Client Request
+
+Your client just called with new requirements:
+1. Add support for Kelvin temperature scale
+2. Show the conversion formula being used
+3. Add a friendly message if it's freezing (below 0°C or 32°F)
+
+#### Strategy Session
+
+Before coding, plan with AI:
+
+**Prompt 1**: 
+```
+I have this temperature converter:
+[Your code]
+
+I need to add Kelvin support. Where in the code structure would this go?
+Don't write the code yet, just explain where and why.
+```
+
+**AI's Guidance**: ________________
+
+**Prompt 2**: 
+```
+What are the formulas for Kelvin conversions?
+K to C: ?
+C to K: ?
+K to F: ?
+F to K: ?
+```
+
+**Prompt 3**: 
+```
+Help me modify my temperature converter to add Kelvin. 
+Keep the same simple style - no functions or complex features.
+```
+
+#### Implementation
+
+Work with AI to implement the changes:
+
+```python
+# Your modified code with Kelvin support
+```
+
+#### Reflection Questions
+1. Which prompt approach worked best?
+2. How did understanding the original structure help?
+3. What would have been harder without AI?
+4. What would have been harder without understanding?
+
+### Part 3: Debugging Practice (15 minutes)
+
+#### Finding Logic Errors
+
+Your instructor provides this buggy temperature converter:
+
+```python
+print("Temperature Converter")
+
+temp = input("Enter temperature: ")
+temp = float(temp)
+
+scale = input("Is that (C)elsius or (F)ahrenheit? ")
+
+if scale == "C":
+    result = (temp - 32) * 5/9  # Bug: Wrong formula!
+    print(f"{temp}°C equals {result}°F")
+elif scale == "F":
+    result = (temp * 9/5) + 32  # Bug: Wrong formula!
+    print(f"{temp}°F equals {result}°C")
+else:
+    print("Please enter C or F")
+```
+
+#### Debugging Strategy
+
+1. **Test with known values**:
+   - 0°C should = 32°F (Does it?)
+   - 212°F should = 100°C (Does it?)
+
+2. **Use AI to understand, not fix**:
+   
+   **Good Prompt**: 
+   > "The formula for converting Celsius to Fahrenheit is (C * 9/5) + 32. This code uses (temp - 32) * 5/9. What's wrong?"
+
+   **Bad Prompt**: 
+   > "Fix this code"
+
+3. **Fix based on understanding**:
+   ```python
+   # Your corrected version
+   ```
+
+## Lab Submission Requirements
+
+### 1. Prompt Evolution Document
+
+Create a text cell with:
+```markdown
+# My Prompt Evolution Journey
+
+## Round 1: Vague Prompt
+**Prompt**: [what you asked]
+**Result**: [what AI gave]
+**Problems**: [what was wrong]
+
+## Round 2: Better Prompt
+**Prompt**: [what you asked]
+**Result**: [what AI gave]
+**Improvements**: [what got better]
+
+## Round 3: Constrained Prompt
+**Prompt**: [what you asked]
+**Result**: [what AI gave]
+**Why this worked**: [your analysis]
+
+## Key Learning
+The most important thing I learned about prompting: ___________
+```
+
+### 2. Final Temperature Converter
+
+Include your final code with YOUR comments explaining each section:
+```python
+# Temperature Converter with Student Comments
+# [Your commented code]
+```
+
+### 3. Flow Diagram
+
+Draw or describe your program flow:
+```
+[Your flowchart or description]
+```
+
+### 4. Debugging Reflection
+
+Write about your debugging experience:
+- What error did you find?
+- How did AI help you understand it?
+- What's your debugging strategy now?
+
+### 5. AI Learning Log
+
+Document at least 3 AI interactions:
+```markdown
+## AI Interaction 1
+**What I Asked**: ___________
+**What I Learned**: ___________
+**How I Applied It**: ___________
+
+[Continue for 3+ interactions]
+```
+
+## Peer Review Activity
+
+Exchange notebooks with a partner:
+
+**Check for**:
+1. Can you follow their prompt evolution?
+2. Do their comments show understanding?
+3. Is their flowchart accurate?
+4. Did they use AI for learning, not just answers?
+
+**Provide**:
+- One thing they did well
+- One suggestion for improvement
+- One thing you learned from their approach
+
+## Reflection Questions
+
+Before submitting, answer these:
+
+1. **Biggest Surprise**: What surprised you most about working with AI?
+
+2. **Main Challenge**: What was the hardest part of today's lab?
+
+3. **Key Learning**: What's the most important thing you learned?
+
+4. **Future Use**: How will you use AI differently going forward?
+
+5. **Understanding Check**: Could you build this temperature converter without AI now? What parts would be hard?
+
+## Looking Ahead
+
+Next week, we'll explore decision-making in more depth:
+- Complex conditions
+- Nested decisions  
+- Using AI to visualize logic flow
+- Debugging logical errors
+
+Remember: You're learning to be the architect. AI is just one of your tools!

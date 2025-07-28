@@ -1,0 +1,624 @@
+---
+title: "Week 7 Project: Personal Journal Application"
+subtitle: "Building a Persistent Digital Journal"
+author: "AI-Integrated Programming Course"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Project Overview
+
+Create a personal journal application that saves entries to files, allowing users to write, read, search, and reflect on their thoughts over time. This project demonstrates practical file operations and data persistence.
+
+**Estimated Time:** 4-6 hours  
+**Difficulty:** Intermediate  
+**Key Concepts:** File I/O, data persistence, text processing, user interface design
+
+---
+
+# Learning Objectives
+
+By completing this project, you will:
+
+1. Design a file format for storing journal entries
+2. Implement save and load functionality
+3. Build search and filtering features
+4. Handle dates and timestamps
+5. Create a user-friendly text interface
+
+---
+
+# Project Requirements
+
+## Core Features (Required)
+
+Your journal must include:
+
+### 1. Entry Management
+- Create new journal entries
+- Each entry should have:
+  - Date (automatic)
+  - Time (automatic)
+  - Title (optional)
+  - Content (required)
+  - Mood/tag (optional)
+- Save entries to a file immediately
+
+### 2. View Entries
+```
+=== Journal Entries ===
+1. 2024-03-15 09:30 - Morning Thoughts
+2. 2024-03-14 20:15 - Great Day!
+3. 2024-03-13 18:45 - Project Ideas
+
+Enter number to read (0 to go back): 
+```
+
+### 3. Search Functionality
+- Search by date
+- Search by keyword in content
+- Search by title
+- Display matching entries
+
+### 4. File Organization
+- All entries in one file OR
+- One file per day/month
+- Human-readable format
+- Handle corrupted data gracefully
+
+### 5. User Interface
+```
+=== Personal Journal ===
+1. New Entry
+2. View All Entries
+3. Search Entries
+4. Today's Entries
+5. Journal Statistics
+6. Export Journal
+7. Exit
+
+Your choice: 
+```
+
+## Enhanced Features (Optional)
+
+If you complete the core features, add:
+
+### 1. Advanced Organization
+- Multiple journals (Work, Personal, etc.)
+- Entry categories/tags
+- Favorite entries
+- Archive old entries
+
+### 2. Statistics
+- Total entries
+- Entries per day/week/month
+- Longest/shortest entry
+- Most common words
+- Mood tracking
+
+### 3. Export Options
+- Export to readable text file
+- Export date range
+- Export search results
+- Format for printing
+
+### 4. Security
+- Simple password protection
+- Encrypted entries (basic)
+- Private vs shared entries
+
+---
+
+# Implementation Guide
+
+## Step 1: Design Your File Format
+
+Consider these options:
+
+### Option A: Single File with Delimiters
+```
+===ENTRY===
+DATE: 2024-03-15
+TIME: 09:30
+TITLE: Morning Thoughts
+MOOD: Happy
+Today was amazing! I learned about file operations...
+===END===
+===ENTRY===
+DATE: 2024-03-14
+TIME: 20:15
+TITLE: Great Day!
+MOOD: Excited
+Finally understood how to save data...
+===END===
+```
+
+### Option B: Structured Format
+```
+2024-03-15|09:30|Morning Thoughts|Happy|Today was amazing...
+2024-03-14|20:15|Great Day!|Excited|Finally understood...
+```
+
+### Option C: Separate Files
+```
+journal/
+  2024-03-15_0930.txt
+  2024-03-14_2015.txt
+  index.txt
+```
+
+## Step 2: Core Functions
+
+Start with these function signatures:
+
+```python
+from datetime import datetime
+
+def create_entry():
+    """Create a new journal entry."""
+    # Get current date/time
+    date = datetime.now().strftime("%Y-%m-%d")
+    time = datetime.now().strftime("%H:%M")
+    
+    # Get entry details
+    title = input("Entry title (optional): ")
+    if not title:
+        title = "Untitled"
+    
+    print("Write your entry (type 'DONE' on new line when finished):")
+    content = []
+    while True:
+        line = input()
+        if line == "DONE":
+            break
+        content.append(line)
+    
+    # Join content
+    entry_text = "\n".join(content)
+    
+    # Save entry
+    save_entry(date, time, title, entry_text)
+
+def save_entry(date, time, title, content):
+    """Save entry to journal file."""
+    with open("journal.txt", "a") as file:
+        file.write("===ENTRY===\n")
+        file.write(f"DATE: {date}\n")
+        file.write(f"TIME: {time}\n")
+        file.write(f"TITLE: {title}\n")
+        file.write(f"{content}\n")
+        file.write("===END===\n")
+    
+    print("Entry saved!")
+
+def load_entries():
+    """Load all entries from journal."""
+    entries = []
+    
+    try:
+        with open("journal.txt", "r") as file:
+            current_entry = {}
+            content_lines = []
+            reading_content = False
+            
+            for line in file:
+                line = line.strip()
+                
+                if line == "===ENTRY===":
+                    current_entry = {}
+                    content_lines = []
+                    reading_content = False
+                elif line == "===END===":
+                    if current_entry:
+                        current_entry["content"] = "\n".join(content_lines)
+                        entries.append(current_entry)
+                elif line.startswith("DATE: "):
+                    current_entry["date"] = line[6:]
+                elif line.startswith("TIME: "):
+                    current_entry["time"] = line[6:]
+                elif line.startswith("TITLE: "):
+                    current_entry["title"] = line[7:]
+                    reading_content = True
+                elif reading_content:
+                    content_lines.append(line)
+    
+    except FileNotFoundError:
+        print("No journal file found. Starting new journal!")
+    
+    return entries
+
+def view_entries(entries):
+    """Display list of entries."""
+    if not entries:
+        print("No entries yet!")
+        return
+    
+    print("\n=== Journal Entries ===")
+    for i, entry in enumerate(entries, 1):
+        print(f"{i}. {entry['date']} {entry['time']} - {entry['title']}")
+    
+    # Allow reading specific entry
+    choice = input("\nEnter number to read (0 to go back): ")
+    if choice.isdigit() and 0 < int(choice) <= len(entries):
+        display_entry(entries[int(choice) - 1])
+
+def display_entry(entry):
+    """Display a single entry."""
+    print("\n" + "=" * 50)
+    print(f"Date: {entry['date']} at {entry['time']}")
+    print(f"Title: {entry['title']}")
+    print("=" * 50)
+    print(entry['content'])
+    print("=" * 50)
+    input("\nPress Enter to continue...")
+
+def search_entries(entries):
+    """Search through entries."""
+    if not entries:
+        print("No entries to search!")
+        return
+    
+    search_term = input("Search for: ").lower()
+    matches = []
+    
+    for entry in entries:
+        # Search in title and content
+        if (search_term in entry['title'].lower() or 
+            search_term in entry['content'].lower()):
+            matches.append(entry)
+    
+    if matches:
+        print(f"\nFound {len(matches)} matching entries:")
+        view_entries(matches)
+    else:
+        print("No matching entries found.")
+```
+
+## Step 3: Main Application Loop
+
+```python
+def journal_menu():
+    """Main journal application."""
+    print("Welcome to Your Personal Journal!")
+    
+    while True:
+        print("\n=== Personal Journal ===")
+        print("1. New Entry")
+        print("2. View All Entries")
+        print("3. Search Entries")
+        print("4. Today's Entries")
+        print("5. Journal Statistics")
+        print("6. Exit")
+        
+        choice = input("\nYour choice: ")
+        
+        if choice == "1":
+            create_entry()
+        elif choice == "2":
+            entries = load_entries()
+            view_entries(entries)
+        elif choice == "3":
+            entries = load_entries()
+            search_entries(entries)
+        elif choice == "4":
+            entries = load_entries()
+            today = datetime.now().strftime("%Y-%m-%d")
+            today_entries = [e for e in entries if e['date'] == today]
+            view_entries(today_entries)
+        elif choice == "5":
+            show_statistics()
+        elif choice == "6":
+            print("Goodbye! Keep writing!")
+            break
+        else:
+            print("Invalid choice!")
+
+def show_statistics():
+    """Display journal statistics."""
+    entries = load_entries()
+    
+    if not entries:
+        print("No entries yet!")
+        return
+    
+    print("\n=== Journal Statistics ===")
+    print(f"Total entries: {len(entries)}")
+    
+    # Find date range
+    dates = [e['date'] for e in entries]
+    print(f"First entry: {min(dates)}")
+    print(f"Last entry: {max(dates)}")
+    
+    # Calculate more stats
+    # Your code here...
+```
+
+## Step 4: Error Handling
+
+```python
+def safe_load_entries():
+    """Load entries with error handling."""
+    try:
+        return load_entries()
+    except Exception as e:
+        print(f"Error loading journal: {e}")
+        print("Creating backup and starting fresh...")
+        
+        # Create backup
+        try:
+            with open("journal.txt", "r") as source:
+                with open("journal_backup.txt", "w") as backup:
+                    backup.write(source.read())
+        except:
+            pass
+        
+        return []
+```
+
+---
+
+# Testing Your Journal
+
+## Test Cases
+
+1. **Empty Journal**
+   - Start fresh
+   - Create first entry
+   - View when empty
+
+2. **Multiple Entries**
+   - Add 5+ entries
+   - Different dates
+   - Various lengths
+
+3. **Search Function**
+   - Search existing words
+   - Search missing words
+   - Case sensitivity
+
+4. **Special Characters**
+   - Entries with quotes
+   - Multi-line entries
+   - Special symbols
+
+5. **Edge Cases**
+   - Very long entries
+   - Empty entries
+   - Corrupted file
+
+## Sample Entries for Testing
+
+```python
+# Test data generator
+def create_sample_entries():
+    """Create sample journal entries for testing."""
+    samples = [
+        ("2024-03-10", "08:00", "First Day", "Started learning Python today!"),
+        ("2024-03-11", "19:30", "Progress", "Functions make sense now."),
+        ("2024-03-12", "21:00", "Breakthrough", "Finally understood dictionaries!"),
+        ("2024-03-13", "10:15", "Challenge", "Files are tricky but getting there."),
+        ("2024-03-14", "20:00", "Success!", "My programs can save data now!")
+    ]
+    
+    for date, time, title, content in samples:
+        save_entry(date, time, title, content)
+    
+    print("Sample entries created!")
+```
+
+---
+
+# AI Usage Guidelines
+
+## Recommended AI Prompts
+
+### For Design Help:
+> "Design a simple text file format for journal entries using only basic Python file operations"
+
+### For Date Handling:
+> "How do I get current date and time in Python without complex imports? Format as YYYY-MM-DD"
+
+### For Search Implementation:
+> "Write a function to search through a list of dictionaries by text content using only basic Python"
+
+### For File Safety:
+> "How do I check if a file exists before reading it in Python without using os module?"
+
+## AI Constraints Template
+
+When asking AI for help:
+```
+Using ONLY these Python features:
+- Basic file operations (open, read, write, close)
+- with statement for files
+- datetime for current date/time
+- Basic string operations
+- Lists and dictionaries
+- No os module, no pathlib, no json
+```
+
+---
+
+# Submission Requirements
+
+## What to Submit
+
+1. **Python file** (`journal.py`) containing:
+   - All required functions
+   - Main menu system
+   - Clear comments
+   - Error handling
+
+2. **Sample journal file** (`journal.txt`) with:
+   - At least 5 entries
+   - Different dates
+   - Variety of content
+
+3. **Documentation** (`journal_readme.txt`) including:
+   - Your file format design explanation
+   - Instructions for using the journal
+   - Any special features added
+   - Challenges and solutions
+
+4. **Test results** showing:
+   - Creating entries
+   - Viewing entries
+   - Searching entries
+   - Statistics display
+
+## Code Organization
+
+```python
+# Personal Journal Application
+# Author: Your Name
+# Date: Current Date
+
+from datetime import datetime
+
+# File handling functions
+def save_entry(date, time, title, content):
+    """Save a journal entry to file."""
+    # Implementation
+
+def load_entries():
+    """Load all entries from file."""
+    # Implementation
+
+# Display functions
+def view_entries(entries):
+    """Display list of entries."""
+    # Implementation
+
+def display_entry(entry):
+    """Show single entry details."""
+    # Implementation
+
+# Feature functions
+def search_entries(entries):
+    """Search through entries."""
+    # Implementation
+
+def show_statistics():
+    """Display journal statistics."""
+    # Implementation
+
+# Main application
+def journal_menu():
+    """Run the journal application."""
+    # Implementation
+
+# Run the program
+if __name__ == "__main__":
+    journal_menu()
+```
+
+---
+
+# Grading Rubric
+
+## Core Functionality (60%)
+
+| Feature | Points | Criteria |
+|---------|---------|----------|
+| Create Entry | 15 | Saves with date/time/content |
+| View Entries | 10 | Lists and displays correctly |
+| Search | 15 | Finds entries by keyword |
+| File Format | 10 | Consistent and readable |
+| Load/Save | 10 | Persistent data storage |
+
+## Code Quality (20%)
+
+| Aspect | Points | Criteria |
+|--------|---------|----------|
+| Structure | 5 | Well-organized functions |
+| Comments | 5 | Clear documentation |
+| Error Handling | 5 | Handles missing files |
+| Efficiency | 5 | Good use of operations |
+
+## User Experience (10%)
+
+| Element | Points | Criteria |
+|---------|---------|----------|
+| Interface | 5 | Clear menus and prompts |
+| Feedback | 3 | Helpful messages |
+| Validation | 2 | Handles bad input |
+
+## Documentation (10%)
+
+| Component | Points | Criteria |
+|-----------|---------|----------|
+| Format Design | 5 | Explains file structure |
+| Usage Guide | 5 | Clear instructions |
+
+---
+
+# Tips for Success
+
+## Design Considerations
+- Keep file format simple and readable
+- Use clear delimiters between entries
+- Include all necessary metadata
+- Plan for future features
+
+## Implementation Tips
+- Test file operations separately first
+- Start with create and view, then add search
+- Use print statements for debugging
+- Handle the "no entries" case everywhere
+
+## Common Pitfalls
+- Forgetting to close files (use 'with')
+- Not handling newlines properly
+- Losing data on errors
+- Complex formats that break easily
+
+---
+
+# Extension Ideas
+
+Once core features work:
+
+1. **Mood Tracking**
+   - Add mood field to entries
+   - Show mood statistics
+   - Mood-based search
+
+2. **Templates**
+   - Daily prompts
+   - Gratitude journal format
+   - Goal tracking template
+
+3. **Backup System**
+   - Automatic daily backups
+   - Export to dated files
+   - Restore from backup
+
+4. **Rich Features**
+   - Word count per entry
+   - Reading time estimates
+   - Entry streaks (consecutive days)
+
+Remember: A working basic journal is better than a broken complex one!
+
+---
+
+# Getting Help
+
+If stuck:
+
+1. Review Week 7 lecture on file operations
+2. Check lab exercises for patterns
+3. Use AI with proper constraints
+4. Break problems into smaller pieces
+5. Test each function separately
+
+Good luck creating your personal journal!

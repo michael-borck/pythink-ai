@@ -1,0 +1,1107 @@
+---
+title: "Week 10 Assessment: API Integration and Connected Systems"
+subtitle: "Testing Your External Service Integration Skills"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Assessment Overview
+
+**Duration**: 60 minutes  
+**Objective**: Demonstrate mastery of API integration, HTTP communication, and building resilient connected applications
+
+## Skills Assessed
+
+- HTTP request handling with urllib
+- API authentication and parameter management
+- Response processing and error handling
+- Caching and performance optimization
+- Building fault-tolerant connected systems
+
+---
+
+# Task 1: Build a News API Client (20 minutes)
+
+## Problem Statement
+
+Create a professional news API client that integrates with a news service, handles various error conditions, and provides a clean interface for retrieving articles.
+
+### API Specification
+
+```python
+# News API Endpoints (Mock specification)
+BASE_URL = "https://api.newsservice.com/v1"
+
+# GET /articles
+# Parameters:
+#   - query (string): Search query
+#   - category (string): news category (optional)
+#   - limit (int): Number of articles (1-100, default 10)
+#   - api_key (string): Authentication key
+#
+# Response format:
+{
+    "status": "success",
+    "articles": [
+        {
+            "id": "12345",
+            "title": "Article Title",
+            "summary": "Article summary...",
+            "author": "Author Name",
+            "published_at": "2024-01-15T10:30:00Z",
+            "source": "News Source",
+            "url": "https://example.com/article",
+            "category": "technology"
+        }
+    ],
+    "total_results": 150,
+    "page": 1,
+    "has_more": true
+}
+
+# Error responses:
+# 401: {"error": "Invalid API key"}
+# 400: {"error": "Invalid query parameter"}
+# 429: {"error": "Rate limit exceeded", "retry_after": 60}
+# 500: {"error": "Internal server error"}
+```
+
+### Your Task
+
+Build a complete news API client with the following features:
+
+1. **HTTP request handling** with proper error management
+2. **Authentication** with API key
+3. **Parameter validation** and encoding
+4. **Response processing** with error handling
+5. **Rate limiting** and retry logic
+6. **Caching** for performance optimization
+
+### Implementation Template
+
+```python
+import urllib.request
+import urllib.parse
+import json
+import time
+from datetime import datetime, timedelta
+
+class NewsAPIClient:
+    """Professional news API client with comprehensive error handling."""
+    
+    def __init__(self, api_key, base_url="https://api.newsservice.com/v1"):
+        self.api_key = api_key
+        self.base_url = base_url
+        self.cache = {}
+        self.cache_duration = 300  # 5 minutes
+        self.rate_limit_reset = None
+        self.request_count = 0
+        self.max_requests_per_hour = 1000
+    
+    def search_articles(self, query, category=None, limit=10):
+        """
+        Search for news articles.
+        
+        Args:
+            query (str): Search query
+            category (str): Article category (optional)
+            limit (int): Number of articles to return (1-100)
+        
+        Returns:
+            dict: API response with articles or error information
+        """
+        try:
+            # Validate parameters
+            validation_result = self._validate_search_params(query, category, limit)
+            if not validation_result["valid"]:
+                return {
+                    "success": False,
+                    "error": validation_result["error"],
+                    "error_type": "validation_error"
+                }
+            
+            # Check cache first
+            cache_key = self._generate_cache_key(query, category, limit)
+            cached_result = self._get_cached_result(cache_key)
+            if cached_result:
+                cached_result["from_cache"] = True
+                return cached_result
+            
+            # Check rate limiting
+            if not self._check_rate_limit():
+                return {
+                    "success": False,
+                    "error": "Rate limit exceeded",
+                    "error_type": "rate_limit",
+                    "retry_after": self._get_retry_delay()
+                }
+            
+            # Build request
+            params = {
+                "query": query,
+                "limit": limit,
+                "api_key": self.api_key
+            }
+            if category:
+                params["category"] = category
+            
+            # Make API request
+            result = self._make_api_request("/articles", params)
+            
+            # Process response
+            if result["success"]:
+                # Cache successful results
+                self._cache_result(cache_key, result)
+                result["from_cache"] = False
+            
+            return result
+            
+        except Exception as e:
+            return {
+                "success": False,
+                "error": f"Unexpected error: {str(e)}",
+                "error_type": "client_error"
+            }
+    
+    def _validate_search_params(self, query, category, limit):
+        """Validate search parameters."""
+        # Your implementation here
+        pass
+    
+    def _make_api_request(self, endpoint, params, max_retries=3):
+        """Make HTTP request to API with retry logic."""
+        url = f"{self.base_url}{endpoint}"
+        
+        for attempt in range(max_retries):
+            try:
+                # Encode parameters
+                query_string = urllib.parse.urlencode(params)
+                full_url = f"{url}?{query_string}"
+                
+                # Make request
+                request = urllib.request.Request(full_url)
+                request.add_header('User-Agent', 'NewsClient/1.0')
+                
+                with urllib.request.urlopen(request, timeout=10) as response:
+                    status_code = response.getcode()
+                    content = response.read().decode('utf-8')
+                    
+                    # Track rate limiting
+                    self.request_count += 1
+                    
+                    # Handle response
+                    return self._handle_api_response(status_code, content)
+            
+            except urllib.error.HTTPError as e:
+                error_content = e.read().decode('utf-8')
+                
+                # Handle specific HTTP errors
+                if e.code == 429:  # Rate limited
+                    retry_after = self._extract_retry_after(e.headers)
+                    if attempt < max_retries - 1:
+                        print(f"Rate limited, waiting {retry_after} seconds...")
+                        time.sleep(retry_after)
+                        continue
+                    return {
+                        "success": False,
+                        "error": "Rate limit exceeded",
+                        "error_type": "rate_limit",
+                        "retry_after": retry_after
+                    }
+                
+                elif e.code == 401:
+                    return {
+                        "success": False,
+                        "error": "Invalid API key",
+                        "error_type": "authentication_error"
+                    }
+                
+                elif e.code == 400:
+                    try:
+                        error_data = json.loads(error_content)
+                        return {
+                            "success": False,
+                            "error": error_data.get("error", "Bad request"),
+                            "error_type": "bad_request"
+                        }
+                    except json.JSONDecodeError:
+                        return {
+                            "success": False,
+                            "error": "Bad request",
+                            "error_type": "bad_request"
+                        }
+                
+                elif e.code >= 500:
+                    if attempt < max_retries - 1:
+                        wait_time = 2 ** attempt  # Exponential backoff
+                        print(f"Server error, retrying in {wait_time} seconds...")
+                        time.sleep(wait_time)
+                        continue
+                    return {
+                        "success": False,
+                        "error": "Server error",
+                        "error_type": "server_error"
+                    }
+                
+                else:
+                    return {
+                        "success": False,
+                        "error": f"HTTP {e.code}: {e.reason}",
+                        "error_type": "http_error"
+                    }
+            
+            except urllib.error.URLError as e:
+                if attempt < max_retries - 1:
+                    wait_time = 2 ** attempt
+                    print(f"Connection failed, retrying in {wait_time} seconds...")
+                    time.sleep(wait_time)
+                    continue
+                return {
+                    "success": False,
+                    "error": f"Connection failed: {e.reason}",
+                    "error_type": "connection_error"
+                }
+            
+            except Exception as e:
+                return {
+                    "success": False,
+                    "error": f"Request failed: {str(e)}",
+                    "error_type": "request_error"
+                }
+        
+        return {
+            "success": False,
+            "error": "Max retries exceeded",
+            "error_type": "retry_exhausted"
+        }
+    
+    def _handle_api_response(self, status_code, content):
+        """Process API response content."""
+        try:
+            data = json.loads(content)
+            
+            if status_code == 200:
+                # Validate response structure
+                if "articles" not in data:
+                    return {
+                        "success": False,
+                        "error": "Invalid response format: missing articles",
+                        "error_type": "response_format_error"
+                    }
+                
+                # Process articles
+                processed_articles = []
+                for article in data["articles"]:
+                    processed_article = self._process_article(article)
+                    if processed_article:
+                        processed_articles.append(processed_article)
+                
+                return {
+                    "success": True,
+                    "articles": processed_articles,
+                    "total_results": data.get("total_results", len(processed_articles)),
+                    "has_more": data.get("has_more", False)
+                }
+            else:
+                return {
+                    "success": False,
+                    "error": data.get("error", "Unknown error"),
+                    "error_type": "api_error"
+                }
+        
+        except json.JSONDecodeError:
+            return {
+                "success": False,
+                "error": "Invalid JSON response",
+                "error_type": "json_error"
+            }
+    
+    def _process_article(self, article_data):
+        """Process and validate individual article data."""
+        try:
+            # Required fields validation
+            required_fields = ["id", "title", "summary", "published_at"]
+            for field in required_fields:
+                if field not in article_data:
+                    return None  # Skip invalid articles
+            
+            # Process and clean data
+            processed = {
+                "id": str(article_data["id"]),
+                "title": article_data["title"].strip(),
+                "summary": article_data["summary"].strip(),
+                "author": article_data.get("author", "Unknown").strip(),
+                "source": article_data.get("source", "Unknown").strip(),
+                "category": article_data.get("category", "general").lower(),
+                "url": article_data.get("url", ""),
+                "published_at": article_data["published_at"]
+            }
+            
+            return processed
+            
+        except Exception:
+            return None  # Skip articles that can't be processed
+    
+    def _generate_cache_key(self, query, category, limit):
+        """Generate cache key for request."""
+        # Your implementation here
+        pass
+    
+    def _get_cached_result(self, cache_key):
+        """Get cached result if still valid."""
+        # Your implementation here
+        pass
+    
+    def _cache_result(self, cache_key, result):
+        """Cache API result."""
+        # Your implementation here
+        pass
+    
+    def _check_rate_limit(self):
+        """Check if we're within rate limits."""
+        # Your implementation here
+        pass
+    
+    def _extract_retry_after(self, headers):
+        """Extract retry-after value from headers."""
+        # Your implementation here
+        return 60  # Default fallback
+
+# Test your implementation:
+def test_news_client():
+    """Test the news API client with various scenarios."""
+    # Note: This would use a mock API for testing
+    client = NewsAPIClient("test_api_key")
+    
+    # Test cases
+    test_cases = [
+        {
+            "name": "Valid search",
+            "query": "python programming",
+            "category": "technology",
+            "limit": 5
+        },
+        {
+            "name": "Invalid query",
+            "query": "",
+            "category": None,
+            "limit": 10
+        },
+        {
+            "name": "Invalid limit",
+            "query": "news",
+            "category": None,
+            "limit": 150
+        }
+    ]
+    
+    for test_case in test_cases:
+        print(f"\n=== Testing: {test_case['name']} ===")
+        result = client.search_articles(
+            test_case["query"], 
+            test_case["category"], 
+            test_case["limit"]
+        )
+        
+        print(f"Success: {result['success']}")
+        if result["success"]:
+            print(f"Articles found: {len(result['articles'])}")
+            print(f"From cache: {result.get('from_cache', False)}")
+            if result["articles"]:
+                first_article = result["articles"][0]
+                print(f"First article: {first_article['title'][:50]}...")
+        else:
+            print(f"Error: {result['error']}")
+            print(f"Error type: {result['error_type']}")
+
+# Run tests
+test_news_client()
+```
+
+---
+
+# Task 2: Multi-Service Data Aggregator (20 minutes)
+
+## Problem Statement
+
+Build a system that aggregates data from multiple external services, handles service failures gracefully, and provides consolidated results with reliability metrics.
+
+### Services to Integrate
+
+```python
+# Service specifications for a social media dashboard
+services_config = {
+    "twitter": {
+        "base_url": "https://api.twitter.com/v2",
+        "endpoint": "/users/by/username/{username}",
+        "auth_header": "Bearer",
+        "rate_limit": 300,  # requests per 15 minutes
+        "timeout": 5
+    },
+    "github": {
+        "base_url": "https://api.github.com",
+        "endpoint": "/users/{username}",
+        "auth_header": None,  # No auth required
+        "rate_limit": 60,   # requests per hour
+        "timeout": 10
+    },
+    "linkedin": {
+        "base_url": "https://api.linkedin.com/v2",
+        "endpoint": "/people/(vanityName:{username})",
+        "auth_header": "Bearer",
+        "rate_limit": 500,  # requests per day
+        "timeout": 8
+    }
+}
+
+# Expected response formats (simplified)
+sample_responses = {
+    "twitter": {
+        "data": {
+            "id": "12345",
+            "username": "johndoe",
+            "name": "John Doe",
+            "public_metrics": {
+                "followers_count": 1250,
+                "following_count": 350,
+                "tweet_count": 5430
+            },
+            "description": "Software developer"
+        }
+    },
+    "github": {
+        "login": "johndoe",
+        "id": 98765,
+        "name": "John Doe",
+        "company": "Tech Corp",
+        "public_repos": 42,
+        "followers": 89,
+        "following": 23,
+        "bio": "Full-stack developer"
+    },
+    "linkedin": {
+        "vanityName": "johndoe",
+        "firstName": {"localized": {"en_US": "John"}},
+        "lastName": {"localized": {"en_US": "Doe"}},
+        "headline": {"localized": {"en_US": "Senior Software Engineer"}},
+        "industry": "Computer Software"
+    }
+}
+```
+
+### Your Task
+
+Create a multi-service aggregator that:
+
+1. **Fetches data** from multiple services concurrently
+2. **Handles service failures** without breaking the entire operation
+3. **Normalizes responses** into a consistent format
+4. **Tracks reliability metrics** for each service
+5. **Provides fallback strategies** when services are unavailable
+6. **Optimizes performance** with caching and smart retry logic
+
+### Implementation Template
+
+```python
+import urllib.request
+import urllib.parse
+import json
+import time
+import threading
+from datetime import datetime, timedelta
+
+class SocialMediaAggregator:
+    """Multi-service social media data aggregator."""
+    
+    def __init__(self, api_keys=None):
+        self.api_keys = api_keys or {}
+        self.services_config = services_config
+        self.cache = {}
+        self.service_health = {}
+        self.request_history = {}
+        
+        # Initialize service health tracking
+        for service in self.services_config:
+            self.service_health[service] = {
+                "available": True,
+                "last_success": None,
+                "last_failure": None,
+                "failure_count": 0,
+                "success_rate": 1.0
+            }
+    
+    def get_user_profile(self, username, services=None, timeout=15):
+        """
+        Aggregate user profile data from multiple services.
+        
+        Args:
+            username (str): Username to search for
+            services (list): List of services to query (default: all)
+            timeout (int): Maximum time to wait for all services
+        
+        Returns:
+            dict: Aggregated profile data with service reliability info
+        """
+        if services is None:
+            services = list(self.services_config.keys())
+        
+        start_time = time.time()
+        results = {}
+        errors = {}
+        
+        # Prepare threading for concurrent requests
+        threads = []
+        thread_results = {}
+        
+        def fetch_from_service(service_name):
+            """Fetch data from a single service."""
+            try:
+                result = self._fetch_service_data(service_name, username)
+                thread_results[service_name] = result
+            except Exception as e:
+                thread_results[service_name] = {
+                    "success": False,
+                    "error": str(e),
+                    "error_type": "thread_error"
+                }
+        
+        # Start threads for each service
+        for service in services:
+            if self._should_query_service(service):
+                thread = threading.Thread(target=fetch_from_service, args=(service,))
+                thread.start()
+                threads.append(thread)
+            else:
+                errors[service] = "Service temporarily unavailable"
+        
+        # Wait for all threads to complete or timeout
+        for thread in threads:
+            remaining_time = timeout - (time.time() - start_time)
+            if remaining_time > 0:
+                thread.join(timeout=remaining_time)
+        
+        # Collect results
+        for service in services:
+            if service in thread_results:
+                result = thread_results[service]
+                if result["success"]:
+                    results[service] = result["data"]
+                    self._update_service_health(service, success=True)
+                else:
+                    errors[service] = result["error"]
+                    self._update_service_health(service, success=False)
+            elif service not in errors:
+                errors[service] = "Request timeout"
+                self._update_service_health(service, success=False)
+        
+        # Aggregate successful results
+        aggregated_profile = self._aggregate_profile_data(results, username)
+        
+        return {
+            "profile": aggregated_profile,
+            "services_queried": len(services),
+            "services_successful": len(results),
+            "services_failed": len(errors),
+            "errors": errors,
+            "service_health": self._get_service_health_summary(),
+            "query_time": time.time() - start_time
+        }
+    
+    def _fetch_service_data(self, service_name, username):
+        """Fetch data from a specific service."""
+        config = self.services_config[service_name]
+        
+        try:
+            # Check rate limiting
+            if not self._check_service_rate_limit(service_name):
+                return {
+                    "success": False,
+                    "error": "Rate limit exceeded",
+                    "error_type": "rate_limit"
+                }
+            
+            # Build URL
+            endpoint = config["endpoint"].format(username=username)
+            url = f"{config['base_url']}{endpoint}"
+            
+            # Create request
+            request = urllib.request.Request(url)
+            
+            # Add authentication if required
+            if config["auth_header"] and service_name in self.api_keys:
+                auth_value = f"{config['auth_header']} {self.api_keys[service_name]}"
+                request.add_header('Authorization', auth_value)
+            
+            request.add_header('User-Agent', 'SocialAggregator/1.0')
+            
+            # Make request
+            with urllib.request.urlopen(request, timeout=config["timeout"]) as response:
+                if response.getcode() == 200:
+                    content = response.read().decode('utf-8')
+                    data = json.loads(content)
+                    
+                    # Normalize data format
+                    normalized_data = self._normalize_service_response(service_name, data)
+                    
+                    self._record_service_request(service_name, success=True)
+                    
+                    return {
+                        "success": True,
+                        "data": normalized_data
+                    }
+                else:
+                    return {
+                        "success": False,
+                        "error": f"HTTP {response.getcode()}",
+                        "error_type": "http_error"
+                    }
+        
+        except urllib.error.HTTPError as e:
+            self._record_service_request(service_name, success=False)
+            
+            if e.code == 404:
+                return {
+                    "success": False,
+                    "error": "User not found",
+                    "error_type": "user_not_found"
+                }
+            elif e.code == 401:
+                return {
+                    "success": False,
+                    "error": "Authentication failed",
+                    "error_type": "auth_error"
+                }
+            elif e.code == 429:
+                return {
+                    "success": False,
+                    "error": "Rate limit exceeded",
+                    "error_type": "rate_limit"
+                }
+            else:
+                return {
+                    "success": False,
+                    "error": f"HTTP {e.code}: {e.reason}",
+                    "error_type": "http_error"
+                }
+        
+        except Exception as e:
+            self._record_service_request(service_name, success=False)
+            return {
+                "success": False,
+                "error": str(e),
+                "error_type": "connection_error"
+            }
+    
+    def _normalize_service_response(self, service_name, raw_data):
+        """Normalize service response to common format."""
+        if service_name == "twitter":
+            data = raw_data.get("data", {})
+            return {
+                "username": data.get("username"),
+                "display_name": data.get("name"),
+                "bio": data.get("description"),
+                "followers": data.get("public_metrics", {}).get("followers_count"),
+                "following": data.get("public_metrics", {}).get("following_count"),
+                "posts": data.get("public_metrics", {}).get("tweet_count"),
+                "service": "twitter"
+            }
+        
+        elif service_name == "github":
+            return {
+                "username": raw_data.get("login"),
+                "display_name": raw_data.get("name"),
+                "bio": raw_data.get("bio"),
+                "followers": raw_data.get("followers"),
+                "following": raw_data.get("following"),
+                "posts": raw_data.get("public_repos"),  # Using repos as "posts"
+                "company": raw_data.get("company"),
+                "service": "github"
+            }
+        
+        elif service_name == "linkedin":
+            first_name = raw_data.get("firstName", {}).get("localized", {}).get("en_US", "")
+            last_name = raw_data.get("lastName", {}).get("localized", {}).get("en_US", "")
+            headline = raw_data.get("headline", {}).get("localized", {}).get("en_US", "")
+            
+            return {
+                "username": raw_data.get("vanityName"),
+                "display_name": f"{first_name} {last_name}".strip(),
+                "bio": headline,
+                "industry": raw_data.get("industry"),
+                "service": "linkedin"
+            }
+        
+        return {"service": service_name, "raw_data": raw_data}
+    
+    def _aggregate_profile_data(self, service_results, username):
+        """Aggregate data from multiple services into unified profile."""
+        # Your implementation here - combine data intelligently
+        pass
+    
+    def _should_query_service(self, service_name):
+        """Check if service should be queried based on health."""
+        health = self.service_health[service_name]
+        
+        # Don't query if service has been failing recently
+        if health["failure_count"] >= 5:
+            last_failure = health["last_failure"]
+            if last_failure and (datetime.now() - last_failure).seconds < 300:  # 5 minutes
+                return False
+        
+        return health["available"]
+    
+    def _check_service_rate_limit(self, service_name):
+        """Check if service is within rate limits."""
+        # Your implementation here
+        return True  # Simplified for now
+    
+    def _record_service_request(self, service_name, success):
+        """Record service request for rate limiting and health tracking."""
+        now = datetime.now()
+        
+        if service_name not in self.request_history:
+            self.request_history[service_name] = []
+        
+        self.request_history[service_name].append({
+            "timestamp": now,
+            "success": success
+        })
+        
+        # Keep only recent history (last hour)
+        cutoff = now - timedelta(hours=1)
+        self.request_history[service_name] = [
+            req for req in self.request_history[service_name]
+            if req["timestamp"] > cutoff
+        ]
+    
+    def _update_service_health(self, service_name, success):
+        """Update service health metrics."""
+        health = self.service_health[service_name]
+        now = datetime.now()
+        
+        if success:
+            health["last_success"] = now
+            health["failure_count"] = 0
+            health["available"] = True
+        else:
+            health["last_failure"] = now
+            health["failure_count"] += 1
+            
+            # Mark as unavailable if too many failures
+            if health["failure_count"] >= 3:
+                health["available"] = False
+        
+        # Calculate success rate from recent history
+        if service_name in self.request_history:
+            recent_requests = self.request_history[service_name]
+            if recent_requests:
+                successes = sum(1 for req in recent_requests if req["success"])
+                health["success_rate"] = successes / len(recent_requests)
+    
+    def _get_service_health_summary(self):
+        """Get summary of all service health statuses."""
+        # Your implementation here
+        pass
+
+# Test the aggregator:
+def test_aggregator():
+    """Test the social media aggregator."""
+    aggregator = SocialMediaAggregator({
+        "twitter": "fake_twitter_token",
+        "linkedin": "fake_linkedin_token"
+    })
+    
+    result = aggregator.get_user_profile("johndoe")
+    
+    print("=== Aggregation Results ===")
+    print(f"Services queried: {result['services_queried']}")
+    print(f"Services successful: {result['services_successful']}")
+    print(f"Services failed: {result['services_failed']}")
+    print(f"Query time: {result['query_time']:.2f} seconds")
+    
+    if result["profile"]:
+        profile = result["profile"]
+        print(f"\nAggregated Profile:")
+        print(f"  Name: {profile.get('display_name', 'Unknown')}")
+        print(f"  Username: {profile.get('username', 'Unknown')}")
+        print(f"  Bio: {profile.get('bio', 'No bio available')}")
+    
+    if result["errors"]:
+        print(f"\nErrors encountered:")
+        for service, error in result["errors"].items():
+            print(f"  {service}: {error}")
+
+# Run test
+test_aggregator()
+```
+
+---
+
+# Task 3: Smart Caching System (10 minutes)
+
+## Problem Statement
+
+Build an intelligent caching system that optimizes API usage while maintaining data freshness and handling cache invalidation scenarios.
+
+### Your Task
+
+Create a caching system with:
+
+1. **TTL-based expiration** with different durations for different data types
+2. **Cache warming** for frequently accessed data
+3. **Cache invalidation** based on data changes
+4. **Memory management** with LRU eviction
+5. **Cache statistics** and performance monitoring
+
+### Implementation Template
+
+```python
+import time
+import json
+import hashlib
+from collections import OrderedDict
+from datetime import datetime, timedelta
+
+class SmartCache:
+    """Intelligent caching system for API responses."""
+    
+    def __init__(self, max_size=1000, default_ttl=300):
+        self.max_size = max_size
+        self.default_ttl = default_ttl
+        self.cache = OrderedDict()  # For LRU eviction
+        self.access_counts = {}
+        self.statistics = {
+            "hits": 0,
+            "misses": 0,
+            "evictions": 0,
+            "invalidations": 0
+        }
+        
+        # TTL settings for different data types
+        self.ttl_settings = {
+            "user_profile": 3600,      # 1 hour
+            "news_articles": 900,      # 15 minutes
+            "weather_data": 300,       # 5 minutes
+            "stock_prices": 60,        # 1 minute
+            "exchange_rates": 1800     # 30 minutes
+        }
+    
+    def get(self, key, data_type="default"):
+        """Get item from cache if valid."""
+        # Your implementation here
+        pass
+    
+    def set(self, key, value, data_type="default", custom_ttl=None):
+        """Store item in cache with appropriate TTL."""
+        # Your implementation here
+        pass
+    
+    def invalidate(self, pattern=None):
+        """Invalidate cache entries matching pattern."""
+        # Your implementation here
+        pass
+    
+    def warm_cache(self, keys_and_fetchers):
+        """Warm cache with frequently accessed data."""
+        # Your implementation here
+        pass
+    
+    def get_statistics(self):
+        """Get cache performance statistics."""
+        total_requests = self.statistics["hits"] + self.statistics["misses"]
+        hit_rate = self.statistics["hits"] / total_requests if total_requests > 0 else 0
+        
+        return {
+            "hit_rate": hit_rate,
+            "total_requests": total_requests,
+            "cache_size": len(self.cache),
+            "max_size": self.max_size,
+            **self.statistics
+        }
+
+# Test your caching system:
+def test_smart_cache():
+    """Test the smart caching system."""
+    cache = SmartCache(max_size=5)
+    
+    # Test basic operations
+    cache.set("user:123", {"name": "Alice", "followers": 100}, "user_profile")
+    cache.set("weather:seattle", {"temp": 68, "condition": "sunny"}, "weather_data")
+    
+    # Test cache hits
+    result1 = cache.get("user:123", "user_profile")
+    result2 = cache.get("weather:seattle", "weather_data")
+    
+    print("Cache Statistics:")
+    stats = cache.get_statistics()
+    for key, value in stats.items():
+        print(f"  {key}: {value}")
+
+# Run test
+test_smart_cache()
+```
+
+---
+
+# Task 4: Circuit Breaker Implementation (10 minutes)
+
+## Problem Statement
+
+Implement a circuit breaker pattern to prevent cascading failures when external services become unreliable.
+
+### Your Task
+
+Build a circuit breaker that:
+
+1. **Monitors service health** with configurable thresholds
+2. **Opens circuit** when failure rate exceeds threshold
+3. **Allows limited testing** in half-open state
+4. **Automatically recovers** when service improves
+5. **Provides fallback responses** during outages
+
+### Implementation Template
+
+```python
+import time
+import random
+from enum import Enum
+
+class CircuitState(Enum):
+    CLOSED = "closed"
+    OPEN = "open"
+    HALF_OPEN = "half_open"
+
+class CircuitBreaker:
+    """Circuit breaker for external service calls."""
+    
+    def __init__(self, failure_threshold=5, recovery_timeout=60, half_open_max_calls=3):
+        # Your implementation here
+        pass
+    
+    def call(self, func, *args, **kwargs):
+        """Execute function with circuit breaker protection."""
+        # Your implementation here
+        pass
+    
+    def _should_attempt_call(self):
+        """Check if call should be attempted based on current state."""
+        # Your implementation here
+        pass
+    
+    def _record_success(self):
+        """Record successful call."""
+        # Your implementation here
+        pass
+    
+    def _record_failure(self):
+        """Record failed call."""
+        # Your implementation here
+        pass
+
+# Test your circuit breaker:
+def unreliable_service(failure_rate=0.7):
+    """Simulate an unreliable external service."""
+    if random.random() < failure_rate:
+        raise ConnectionError("Service unavailable")
+    return {"status": "success", "data": "Service response"}
+
+def test_circuit_breaker():
+    """Test the circuit breaker implementation."""
+    breaker = CircuitBreaker(failure_threshold=3, recovery_timeout=10)
+    
+    print("=== Testing Circuit Breaker ===")
+    
+    # Test with high failure rate
+    for i in range(10):
+        try:
+            result = breaker.call(unreliable_service, failure_rate=0.8)
+            print(f"Call {i+1}: Success - {result}")
+        except Exception as e:
+            print(f"Call {i+1}: Failed - {e}")
+        
+        print(f"  Circuit state: {breaker.state}")
+        time.sleep(1)
+
+# Run test
+test_circuit_breaker()
+```
+
+---
+
+# Assessment Criteria
+
+## Technical Excellence (60 points)
+
+### HTTP Communication (15 points)
+- **Excellent (14-15)**: Robust HTTP handling with comprehensive error management
+- **Good (11-13)**: Good HTTP implementation with error handling
+- **Satisfactory (8-10)**: Basic HTTP requests work correctly
+- **Needs Improvement (0-7)**: Poor or incomplete HTTP implementation
+
+### API Integration (15 points)
+- **Excellent (14-15)**: Professional API client with authentication, rate limiting, retry logic
+- **Good (11-13)**: Good API integration with most professional features
+- **Satisfactory (8-10)**: Basic API integration works
+- **Needs Improvement (0-7)**: Limited or broken API integration
+
+### Error Handling and Resilience (15 points)
+- **Excellent (14-15)**: Comprehensive error handling with graceful degradation
+- **Good (11-13)**: Good error handling for most scenarios
+- **Satisfactory (8-10)**: Basic error handling implemented
+- **Needs Improvement (0-7)**: Poor or missing error handling
+
+### Performance Optimization (15 points)
+- **Excellent (14-15)**: Intelligent caching, rate limiting, and optimization strategies
+- **Good (11-13)**: Good performance optimizations implemented
+- **Satisfactory (8-10)**: Basic performance considerations
+- **Needs Improvement (0-7)**: No performance optimizations
+
+## System Design (25 points)
+
+### Architecture (10 points)
+- **Excellent (9-10)**: Well-designed, modular, extensible architecture
+- **Good (7-8)**: Good architectural design
+- **Satisfactory (5-6)**: Acceptable system design
+- **Needs Improvement (0-4)**: Poor architectural choices
+
+### Scalability and Reliability (15 points)
+- **Excellent (14-15)**: System handles load, failures, and edge cases excellently
+- **Good (11-13)**: Good scalability and reliability features
+- **Satisfactory (8-10)**: Basic reliability implemented
+- **Needs Improvement (0-7)**: Poor reliability design
+
+## Code Quality (15 points)
+
+### Code Organization (8 points)
+- **Excellent (7-8)**: Clean, well-structured, maintainable code
+- **Good (5-6)**: Well-organized code
+- **Satisfactory (3-4)**: Acceptable code organization
+- **Needs Improvement (0-2)**: Poor code structure
+
+### Documentation (7 points)
+- **Excellent (6-7)**: Comprehensive documentation and clear code comments
+- **Good (4-5)**: Good documentation
+- **Satisfactory (2-3)**: Basic documentation
+- **Needs Improvement (0-1)**: Poor or missing documentation
+
+---
+
+# Submission Guidelines
+
+Submit your complete implementation with:
+
+1. **All task solutions** with working code
+2. **Test results** demonstrating functionality
+3. **Performance analysis** of your implementations
+4. **Error scenario testing** results
+5. **Brief architecture explanation** for each solution
+
+Remember: Focus on building production-ready systems that handle real-world complexity, failures, and performance requirements!

@@ -1,0 +1,315 @@
+---
+title: "Week 1: Python Foundations & AI Partnership"
+subtitle: "Learning Programming WITH AI, Not Despite It"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Welcome to Python Programming with AI
+
+## Course Philosophy (15 minutes)
+
+### The Revolution in Learning Programming
+
+Welcome to a new way of learning programming! Unlike traditional courses that either ignore AI or ban it entirely, we're going to learn Python WITH AI as our learning partner.
+
+**Key Principle**: AI is your tutor, not your ghostwriter.
+
+### What This Means
+
+- ✅ **DO**: Ask AI to explain concepts
+- ✅ **DO**: Use AI to understand error messages  
+- ✅ **DO**: Have AI help debug your thinking
+- ❌ **DON'T**: Ask AI to write entire programs
+- ❌ **DON'T**: Copy-paste without understanding
+- ❌ **DON'T**: Skip learning by using AI
+
+### Your AI Options
+
+You can use any AI tool you prefer:
+- **Google Colab's built-in Gemini** (convenient, no tab switching)
+- **Claude** (copy-paste interface)
+- **ChatGPT** (copy-paste interface)
+- **GitHub Copilot** (if you have access)
+- Any other AI assistant
+
+The principles we'll learn apply to ALL of them.
+
+### Course Expectations
+
+1. **Every line of code you submit, you must understand**
+2. **Document your AI interactions** (we'll learn how)
+3. **Start simple, resist complexity**
+4. **Focus on learning, not just "making it work"**
+
+## First Steps with Python (20 minutes)
+
+### What is Google Colab?
+
+Google Colab is a free, cloud-based Python environment. Think of it as "Google Docs for Python code."
+
+**Benefits**:
+- No installation required
+- Works on any device with a browser
+- Free access to computing resources
+- Easy sharing and collaboration
+- Built-in AI assistance
+
+### Your First Python Program
+
+Let's start with the traditional first program:
+
+```python
+print("Hello, World!")
+```
+
+**What's happening here?**
+- `print` is a function (a command that does something)
+- `()` parentheses contain what we want to print
+- `"Hello, World!"` is a string (text data)
+- The quotes tell Python this is text, not code
+
+### Understanding Variables
+
+Variables are like labeled boxes that store values:
+
+```python
+name = "Alice"
+age = 20
+print(name)
+print(age)
+```
+
+**Key Points**:
+- Variable names should be descriptive
+- The `=` sign means "store this value"
+- No quotes around variable names when using them
+
+### Data Types: The Building Blocks
+
+Python has several basic data types:
+
+```python
+# Integers (whole numbers)
+student_count = 25
+
+# Floats (decimals)  
+grade = 95.5
+
+# Strings (text)
+course_name = "Python with AI"
+
+# Booleans (True/False)
+is_fun = True
+```
+
+**Important**: Python figures out the type automatically!
+
+### Checking Types
+
+```python
+age = 25
+print(type(age))  # <class 'int'>
+
+price = 19.99
+print(type(price))  # <class 'float'>
+
+name = "Python"
+print(type(name))  # <class 'str'>
+```
+
+## User Interaction (15 minutes)
+
+### Getting Input from Users
+
+The `input()` function lets us get information from users:
+
+```python
+name = input("What's your name? ")
+print("Hello, " + name + "!")
+```
+
+**Critical Point**: `input()` ALWAYS returns a string!
+
+### Type Conversion
+
+Since `input()` returns strings, we need to convert for numbers:
+
+```python
+# This will cause problems:
+age = input("How old are you? ")
+next_year = age + 1  # ERROR! Can't add string + number
+
+# This works:
+age = input("How old are you? ")
+age = int(age)  # Convert string to integer
+next_year = age + 1
+print("Next year you'll be", next_year)
+```
+
+### Common Beginner Errors
+
+1. **Forgetting quotes**:
+   ```python
+   print(Hello)  # ERROR - Python looks for a variable named Hello
+   print("Hello")  # Correct
+   ```
+
+2. **Type mismatches**:
+   ```python
+   number = "5"
+   result = number * 2  # "55" not 10!
+   ```
+
+3. **Case sensitivity**:
+   ```python
+   Name = "Alice"
+   print(name)  # ERROR - 'name' is different from 'Name'
+   ```
+
+## AI Partnership Demo (10 minutes)
+
+### Good AI Interactions
+
+**Good Prompt**: 
+> "I'm getting a TypeError when I try to add 1 to the user's age. Here's my code: age = input('Age: '). Can you explain why?"
+
+**Why it's good**:
+- Specific error mentioned
+- Shows your code
+- Asks for explanation, not solution
+
+**Good Prompt**:
+> "Can you explain the difference between int() and float() in Python with simple examples?"
+
+**Why it's good**:
+- Focused question
+- Asks for explanation
+- Requests examples for understanding
+
+### Bad AI Interactions
+
+**Bad Prompt**:
+> "Write a temperature converter program for me"
+
+**Why it's bad**:
+- No learning happens
+- You won't understand the code
+- Can't modify it later
+
+**Bad Prompt**:
+> "My code doesn't work, fix it"
+
+**Why it's bad**:
+- No effort to understand
+- Misses learning opportunity
+- Creates dependence
+
+### AI Tendency: Over-complication
+
+When you ask AI for help, it often suggests advanced features you don't need yet:
+
+**You write**:
+```python
+age = input("Age: ")
+age = int(age)
+```
+
+**AI might suggest**:
+```python
+while True:
+    try:
+        age = int(input("Age: "))
+        if age < 0 or age > 150:
+            raise ValueError("Invalid age range")
+        break
+    except ValueError as e:
+        print(f"Error: {e}. Please enter a valid age.")
+```
+
+**Your response**: "No thanks, I just need the basic version for now."
+
+## Week 1 Project Preview
+
+### Temperature Converter
+
+By the end of this week, you'll build a temperature converter that:
+- Asks the user for a temperature
+- Asks if it's Celsius or Fahrenheit  
+- Converts to the other scale
+- Displays the result nicely
+
+**Example interaction**:
+```
+Enter temperature: 32
+Is that (C)elsius or (F)ahrenheit? F
+32.0°F equals 0.0°C
+```
+
+We'll build this step-by-step, understanding every line!
+
+## Key Takeaways
+
+1. **AI is a tool for understanding, not avoiding work**
+2. **Start simple - complexity comes later**
+3. **Every error is a learning opportunity**
+4. **You must understand every line you write**
+5. **It's okay to struggle - that's how learning happens**
+
+## Preparing for Lab
+
+In lab, we'll:
+1. Set up Google Colab
+2. Practice basic Python concepts
+3. Experience AI's limitations firsthand
+4. Start building our temperature converter
+
+**Remember**: The goal isn't to finish fastest - it's to understand deepest!
+
+---
+
+# Instructor Notes
+
+## Timing Guide
+- 0:00-0:15 - Philosophy and expectations
+- 0:15-0:35 - Python basics and Colab intro  
+- 0:35-0:50 - User input and common errors
+- 0:50-1:00 - AI demo and project preview
+
+## Key Demonstrations
+
+### Demo 1: Show Over-complicated AI Code
+Live demo asking AI for a "simple greeting program" and show how it adds unnecessary features.
+
+### Demo 2: Good vs Bad Prompts
+Demonstrate the same problem with good and bad prompts to AI.
+
+### Demo 3: Type Conversion Error
+Create the error live, use AI to explain (not fix).
+
+## Common Student Issues
+
+1. **Colab Confusion**: Students might create notebooks in Drive root - show organization
+2. **Runtime Disconnects**: Explain that variables are lost when runtime restarts
+3. **Copy-Paste Errors**: Emphasize checking indentation and quotes
+4. **AI Over-reliance**: Set firm expectations early
+
+## Discussion Prompts
+
+- "Who has tried to learn programming before? What was hard?"
+- "What's your biggest concern about using AI to learn?"
+- "Why do you think I'm emphasizing 'simple' so much?"
+
+## Assessment Ideas During Lecture
+
+- Quick poll: "Which data type would you use for a person's name?"
+- Think-pair-share: "What could go wrong with this code?"
+- Exit ticket: One thing learned, one question remaining

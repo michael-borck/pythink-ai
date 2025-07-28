@@ -1,0 +1,712 @@
+---
+title: "Week 5: Modularity & Reusability"
+subtitle: "Building Programs with Functions"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# The Power of Modular Thinking
+
+## The Recipe Card Problem (10 minutes)
+
+### AI's Kitchen Nightmare
+
+Let me show you what happens when we ask AI for a "recipe management system":
+
+**Me**: "Create a recipe manager"
+
+**AI might give**:
+```python
+import sqlite3
+from datetime import datetime
+import json
+
+class Recipe:
+    def __init__(self, name, ingredients, instructions, tags=[]):
+        self.id = None
+        self.name = name
+        self.ingredients = ingredients
+        self.instructions = instructions
+        self.tags = tags
+        self.created_at = datetime.now()
+        self.ratings = []
+        
+class RecipeManager:
+    def __init__(self, db_path):
+        self.conn = sqlite3.connect(db_path)
+        self.create_tables()
+        
+    def create_tables(self):
+        cursor = self.conn.cursor()
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS recipes (
+                id INTEGER PRIMARY KEY,
+                name TEXT NOT NULL,
+                ingredients JSON,
+                instructions TEXT,
+                created_at TIMESTAMP
+            )
+        ''')
+        
+    def add_recipe(self, recipe):
+        # Complex database operations...
+        
+    def search_by_ingredient(self, ingredient):
+        # SQL queries with joins...
+        
+    def recommend_recipes(self, user_preferences):
+        # Machine learning recommendation engine...
+```
+
+**Let's be honest**:
+- Do you understand classes and databases?
+- What's JSON serialization?
+- Can you modify the recommendation algorithm?
+- What does a recipe program REALLY need?
+
+### The Core Truth
+
+A recipe program needs to:
+1. Store recipes (ingredients + instructions)
+2. Scale quantities (double/halve recipes)
+3. Convert units (cups to ml, F to C)
+4. Find recipes by ingredient
+
+Each of these is a separate, focused task - perfect for functions!
+
+### Today's Journey
+
+We'll discover:
+1. How to break problems into smaller pieces
+2. How to make code reusable
+3. How to organize programs clearly
+4. How to test and debug easily
+
+## Why Modular Programming Matters (20 minutes)
+
+### Real-World Modularity
+
+Think about how the world is organized:
+
+**Kitchen**:
+```
+Recipe Cards: Each recipe is self-contained
+- Ingredients go in → Instructions → Dish comes out
+- Don't need other recipes to work
+- Can share with friends
+```
+
+**Phone Contacts**:
+```
+Each Contact: Complete information package
+- Name, number, email all together
+- Add/edit/delete independently
+- One contact doesn't affect others
+```
+
+**Banking**:
+```
+Each Transaction: Standalone operation
+- Deposit: amount in → balance updated
+- Withdraw: amount out → balance updated
+- Check balance: → current amount
+```
+
+### The Function Mental Model
+
+A function is like a machine:
+```
+INPUTS → [FUNCTION MACHINE] → OUTPUT
+
+Examples:
+Numbers → [ADD] → Sum
+Text → [UPPERCASE] → UPPERCASE TEXT
+List → [SORT] → Sorted List
+Temperature → [CONVERT] → Different Unit
+```
+
+### Why Functions Transform Programming
+
+#### 1. Reusability - Write Once, Use Many
+Without functions:
+```python
+# Calculate area of room 1
+length1 = 10
+width1 = 12
+area1 = length1 * width1
+print(f"Room 1: {area1} sq ft")
+
+# Calculate area of room 2
+length2 = 15
+width2 = 20
+area2 = length2 * width2
+print(f"Room 2: {area2} sq ft")
+
+# Calculate area of room 3...
+# Copying and pasting forever!
+```
+
+With functions:
+```python
+def calculate_area(length, width):
+    """Calculate area of a rectangle."""
+    return length * width
+
+# Now reuse everywhere!
+print(f"Room 1: {calculate_area(10, 12)} sq ft")
+print(f"Room 2: {calculate_area(15, 20)} sq ft")
+print(f"Room 3: {calculate_area(8, 10)} sq ft")
+```
+
+#### 2. Testing - Verify Each Piece Works
+```python
+def convert_to_celsius(fahrenheit):
+    """Convert Fahrenheit to Celsius."""
+    celsius = (fahrenheit - 32) * 5/9
+    return celsius
+
+# Easy to test!
+print(convert_to_celsius(32))   # Should be 0
+print(convert_to_celsius(212))  # Should be 100
+print(convert_to_celsius(98.6)) # Should be 37
+```
+
+#### 3. Clarity - Each Function Has One Job
+```python
+# Clear, single purpose functions
+def is_valid_email(email):
+    """Check if email format is valid."""
+    return "@" in email and "." in email.split("@")[1]
+
+def clean_phone_number(phone):
+    """Remove all non-digits from phone."""
+    digits = ""
+    for char in phone:
+        if char.isdigit():
+            digits = digits + char
+    return digits
+
+def calculate_age(birth_year, current_year):
+    """Calculate age from birth year."""
+    return current_year - birth_year
+```
+
+## From Concepts to Code: Python Functions (20 minutes)
+
+### Basic Function Anatomy
+
+```python
+def function_name(parameters):
+    """Docstring explaining what function does."""
+    # Function body - the work happens here
+    result = do_something_with(parameters)
+    return result  # Send result back to caller
+```
+
+### Your First Function
+
+```python
+# Define the function
+def greet(name):
+    """Create a personalized greeting."""
+    message = f"Hello, {name}! Welcome to Python functions!"
+    return message
+
+# Call the function
+greeting = greet("Alice")
+print(greeting)  # "Hello, Alice! Welcome to Python functions!"
+
+# Call it again with different input
+print(greet("Bob"))  # "Hello, Bob! Welcome to Python functions!"
+```
+
+Key points:
+- `def` keyword starts function definition
+- `name` is a parameter (placeholder for data)
+- `return` sends data back to caller
+- Function doesn't run until called
+
+### Parameters: Function Inputs
+
+```python
+# No parameters
+def get_greeting():
+    """Return a generic greeting."""
+    return "Hello, World!"
+
+# One parameter
+def square(number):
+    """Calculate square of a number."""
+    return number * number
+
+# Multiple parameters
+def calculate_rectangle_area(length, width):
+    """Calculate area of rectangle."""
+    return length * width
+
+# Using the functions
+print(get_greeting())                    # "Hello, World!"
+print(square(5))                        # 25
+print(calculate_rectangle_area(10, 6))  # 60
+```
+
+### Default Parameters: Optional Values
+
+```python
+def make_coffee(size="medium", milk=True, sugar=False):
+    """Make coffee with customizable options."""
+    drink = f"{size} coffee"
+    
+    if milk:
+        drink = drink + " with milk"
+    
+    if sugar:
+        drink = drink + " and sugar"
+        
+    return drink
+
+# Different ways to call
+print(make_coffee())                          # "medium coffee with milk"
+print(make_coffee("large"))                   # "large coffee with milk"
+print(make_coffee("small", False))            # "small coffee"
+print(make_coffee("large", True, True))       # "large coffee with milk and sugar"
+print(make_coffee(sugar=True))                # "medium coffee with milk and sugar"
+```
+
+### Return Values: Function Outputs
+
+```python
+# Return single value
+def calculate_tax(amount, rate=0.08):
+    """Calculate tax on amount."""
+    tax = amount * rate
+    return tax
+
+# Return multiple values
+def get_name_parts(full_name):
+    """Split name into first and last."""
+    parts = full_name.split()
+    if len(parts) >= 2:
+        return parts[0], parts[-1]  # First and last
+    else:
+        return parts[0], ""  # Just first name
+
+# Return nothing (None)
+def print_header(title):
+    """Print a formatted header."""
+    print("=" * 40)
+    print(title.center(40))
+    print("=" * 40)
+    # No return statement = returns None
+
+# Using returns
+tax = calculate_tax(100)  # 8.0
+total = 100 + tax         # 108.0
+
+first, last = get_name_parts("John Doe")
+print(f"First: {first}, Last: {last}")
+
+result = print_header("WELCOME")  # Prints header
+print(result)  # None
+```
+
+### Understanding Scope
+
+```python
+# Global scope - outside any function
+global_message = "I'm global!"
+count = 0
+
+def demonstrate_scope():
+    """Show how scope works."""
+    # Local scope - inside function
+    local_message = "I'm local!"
+    count = 100  # Different from global count!
+    
+    print(global_message)  # Can read global
+    print(local_message)   # Can read local
+    print(f"Local count: {count}")  # 100
+    
+    return count
+
+# Call function
+result = demonstrate_scope()
+print(f"Returned: {result}")      # 100
+print(f"Global count: {count}")   # Still 0!
+# print(local_message)  # Error! Not accessible outside function
+```
+
+### Common Patterns
+
+**Validator Functions** (return True/False):
+```python
+def is_valid_password(password):
+    """Check if password meets requirements."""
+    if len(password) < 8:
+        return False
+    
+    has_upper = any(c.isupper() for c in password)
+    has_lower = any(c.islower() for c in password)
+    has_digit = any(c.isdigit() for c in password)
+    
+    return has_upper and has_lower and has_digit
+
+# Usage
+if is_valid_password("Secret123"):
+    print("Password accepted!")
+else:
+    print("Password too weak!")
+```
+
+**Transformer Functions** (return modified data):
+```python
+def clean_phone_number(phone):
+    """Extract just digits from phone number."""
+    clean = ""
+    for char in phone:
+        if char.isdigit():
+            clean = clean + char
+    return clean
+
+# Usage
+messy = "(555) 123-4567"
+clean = clean_phone_number(messy)
+print(clean)  # "5551234567"
+```
+
+**Calculator Functions** (return computed value):
+```python
+def calculate_tip(bill_amount, tip_percent=20):
+    """Calculate tip amount."""
+    tip = bill_amount * (tip_percent / 100)
+    return round(tip, 2)
+
+def calculate_total(bill_amount, tip_percent=20):
+    """Calculate total including tip."""
+    tip = calculate_tip(bill_amount, tip_percent)
+    return bill_amount + tip
+
+# Usage
+bill = 47.50
+tip = calculate_tip(bill)        # 9.50
+total = calculate_total(bill)     # 57.00
+print(f"Bill: ${bill}, Tip: ${tip}, Total: ${total}")
+```
+
+## AI Partnership: Smart Function Design (7 minutes)
+
+### Progressive Prompt Evolution
+
+Let's build functions intelligently:
+
+#### Attempt 1: Too Vague
+**You**: "email validation function"
+
+**AI gives**: Complex regex, external libraries, email verification services...
+
+#### Attempt 2: Adding Focus
+**You**: "Simple function to check if email format is valid"
+
+**AI might give**: Still includes regex patterns, advanced validation...
+
+#### Attempt 3: Clear Constraints
+**You**: "Function to validate email using ONLY:
+- Check for @ symbol
+- Check for . after @
+- Use string methods only
+- Return True or False
+- Add docstring"
+
+**AI gives**:
+```python
+def is_valid_email(email):
+    """Check if email has basic valid format.
+    
+    Args:
+        email: String to validate
+        
+    Returns:
+        True if valid format, False otherwise
+    """
+    # Check for @ symbol
+    if "@" not in email:
+        return False
+    
+    # Split into parts
+    parts = email.split("@")
+    if len(parts) != 2:
+        return False
+    
+    username, domain = parts
+    
+    # Check both parts have content
+    if not username or not domain:
+        return False
+    
+    # Check domain has a dot
+    if "." not in domain:
+        return False
+    
+    return True
+```
+
+Now we understand every line!
+
+### Using AI for Function Debugging
+
+**Good Debugging Prompts**:
+> "Why does my function return None instead of a value?"
+
+> "How do I return multiple values from a function?"
+
+> "What's the difference between print and return?"
+
+> "How do I make a parameter optional with a default value?"
+
+### Common AI Overcomplications
+
+1. **Too Many Responsibilities**:
+   ```python
+   # BAD: Function does too much
+   def process_user_data(data):
+       # Validates, cleans, saves, emails, logs...
+   ```
+
+2. **Unnecessary Complexity**:
+   ```python
+   # BAD: Over-engineered
+   def add(a, b):
+       try:
+           return float(str(a)) + float(str(b))
+       except ValueError:
+           return None
+   ```
+
+3. **Global State Abuse**:
+   ```python
+   # BAD: Modifies globals
+   total = 0
+   def add_to_total(value):
+       global total
+       total += value
+   ```
+
+Keep functions simple, focused, and predictable!
+
+## Building on Previous Weeks (3 minutes)
+
+### Integration Points
+
+Functions organize everything we've learned:
+- **String operations** → String processing functions
+- **List operations** → List manipulation functions
+- **Loops** → Functions that process collections
+- **Conditions** → Functions that make decisions
+
+### Foundation for the Future
+
+This week enables:
+- Building larger programs
+- Code sharing and reuse
+- Team collaboration
+- Testing and debugging
+- Professional programming practices
+
+## Preparing for Lab
+
+In today's lab, you'll:
+1. Write your first functions
+2. Practice parameter passing
+3. Master return statements
+4. Refactor old code with functions
+
+Key advice:
+- Start with simple functions
+- Test each function independently
+- Use descriptive names
+- Write clear docstrings
+
+### Textbook Connection
+
+**Read for next class**:
+- Chapter 16: "Functions" - Basic syntax
+- Chapter 17: "Parameters and Arguments"
+- Chapter 18: "Return Values"
+- Chapter 19: "Scope and Lifetime"
+
+---
+
+# Instructor Notes
+
+## Hook Management
+
+The recipe example works because:
+1. Everyone understands recipe cards
+2. AI overcomplicates with databases/classes
+3. Core need is simple transformations
+4. Natural function boundaries exist
+
+Alternative hooks: Banking system, Contact manager, Grade calculator
+
+## Key Teaching Points
+
+### Function Conceptual Challenges
+
+**Parameters vs Arguments**:
+- Parameters: Variables in function definition
+- Arguments: Actual values when calling
+- Students often confuse these
+
+**Return vs Print**:
+```python
+# Students often do this:
+def add(a, b):
+    print(a + b)  # PRINTS but doesn't RETURN
+
+# Should be:
+def add(a, b):
+    return a + b  # RETURNS the value
+```
+
+**Scope Boundaries**:
+- Draw boxes around functions
+- Variables inside box stay inside
+- Can read outside, can't change outside
+
+### Common Confusions
+
+**When to Create a Function**:
+- Repeated code (2+ times)
+- Logical unit of work
+- Complex calculation
+- Need to test separately
+
+**Function Naming**:
+- Verbs for actions: calculate_, get_, is_, has_
+- Clear and specific
+- Follow conventions
+
+**Parameter Order**:
+- Required parameters first
+- Optional parameters (with defaults) last
+- Be consistent across similar functions
+
+## Live Coding Strategy
+
+### Refactoring Demo
+
+Start with repetitive code:
+```python
+# BEFORE: Repetitive temperature conversions
+temp1_f = 32
+temp1_c = (temp1_f - 32) * 5/9
+print(f"{temp1_f}F = {temp1_c}C")
+
+temp2_f = 212
+temp2_c = (temp2_f - 32) * 5/9
+print(f"{temp2_f}F = {temp2_c}C")
+
+temp3_f = 98.6
+temp3_c = (temp3_f - 32) * 5/9
+print(f"{temp3_f}F = {temp3_c}C")
+```
+
+Refactor step by step:
+```python
+# AFTER: With function
+def fahrenheit_to_celsius(f_temp):
+    """Convert Fahrenheit to Celsius."""
+    return (f_temp - 32) * 5/9
+
+# Now much cleaner!
+temps = [32, 212, 98.6]
+for temp_f in temps:
+    temp_c = fahrenheit_to_celsius(temp_f)
+    print(f"{temp_f}F = {temp_c:.1f}C")
+```
+
+### Debugging Demo
+
+Common errors to show:
+1. Forgetting return
+2. Print vs return confusion
+3. Scope errors
+4. Parameter mismatch
+
+## Assessment Ideas
+
+**Quick Checks**:
+- "What does this function return?"
+- "Is this variable local or global?"
+- "What's wrong with this function?"
+
+**Peer Activities**:
+- Write function, partner tests it
+- Debug each other's functions
+- Explain scope with examples
+
+## Common Student Issues
+
+1. **No Return Statement**
+   ```python
+   def calculate(x, y):
+       result = x + y
+       # Forgot return!
+   ```
+
+2. **Modifying Parameters**
+   ```python
+   def bad_append(lst, item):
+       lst = lst + [item]  # Creates new list!
+       return lst
+   ```
+
+3. **Scope Confusion**
+   ```python
+   total = 0
+   def add_to_total(value):
+       total = total + value  # UnboundLocalError!
+   ```
+
+4. **Too Many Responsibilities**
+   - Guide toward single-purpose functions
+   - Show how to decompose complex functions
+
+## Differentiation
+
+**For Struggling Students**:
+- Start with void functions (no return)
+- Use very simple calculations
+- Provide function templates
+- Extra scope visualization
+
+**For Advanced Students**:
+- Function composition challenges
+- Multiple return values
+- Complex validation functions
+- Refactoring exercises
+
+## Time Management
+- 0:00-0:10 - Hook with recipe system
+- 0:10-0:30 - Modular thinking concepts
+- 0:30-0:50 - Python function syntax
+- 0:50-0:57 - AI partnership
+- 0:57-1:00 - Wrap up and preview
+
+## Week 5 Specific Tips
+
+1. **Start Simple** - Basic math functions first
+2. **Visualize Scope** - Draw boxes constantly
+3. **Test Everything** - Show testing mindset
+4. **Name Carefully** - Good names = good design
+5. **One Job Rule** - Each function does ONE thing
+
+Remember: Functions are where students become "real programmers"!

@@ -1,0 +1,308 @@
+---
+title: "Week 1 Project: Temperature Converter Portfolio"
+subtitle: "Demonstrating AI Partnership and Understanding"
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    code-fold: false
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Temperature Converter Portfolio Project
+
+## Project Overview
+
+Create a temperature converter that demonstrates your ability to:
+- Use AI as a learning partner effectively
+- Build understanding through prompt evolution
+- Create mental models of program flow
+- Verify and test AI-generated code
+- Document your learning journey
+
+This is not just about making a working program - it's about showing how you learned to build it.
+
+## Learning Objectives
+
+- Demonstrate strategic AI use for learning
+- Show understanding of computational thinking concepts
+- Create clear documentation of your process
+- Build a working program you fully understand
+- Reflect on AI's strengths and limitations
+
+## Project Components
+
+### 1. Prompt Evolution Documentation (25%)
+
+Document your journey from vague to specific prompts:
+
+```markdown
+# My Temperature Converter Journey
+
+## Attempt 1: Starting Vague
+**My Prompt**: [exactly what you typed]
+**AI Response**: [what AI generated]
+**Analysis**: 
+- What was too complex?
+- What concepts were unfamiliar?
+- Why wasn't this ideal for a beginner?
+
+## Attempt 2: Adding Requirements
+**My Prompt**: [your improved prompt]
+**AI Response**: [what AI generated]
+**Improvements**:
+- What got better?
+- What was still too advanced?
+- What would you change next?
+
+## Attempt 3: Constraining Complexity
+**My Prompt**: [your constrained prompt]
+**AI Response**: [what AI generated]
+**Success Factors**:
+- Why did this work better?
+- What constraints were helpful?
+- Is this understandable now?
+
+## Final Version: Learning Focus
+**My Prompt**: [asking for explanations]
+**What I Learned**:
+- Key insight 1
+- Key insight 2
+- Key insight 3
+```
+
+### 2. Final Program with Understanding Comments (35%)
+
+Your final temperature converter must include:
+- Comments showing YOU understand each part
+- Clean, simple code (no unnecessary complexity)
+- Proper testing with known values
+
+```python
+# Temperature Converter - Final Version
+# Author: [Your Name]
+# Date: [Date]
+
+# Program greeting - makes it friendly for users
+print("=== Temperature Converter ===")
+print("I can convert between Celsius and Fahrenheit!")
+print()  # Empty line for readability
+
+# Get temperature from user
+# input() always returns a string, so we need to convert it
+temp_string = input("Enter temperature: ")
+temp_value = float(temp_string)  # Convert string to decimal number
+
+# Get the scale
+# Using upper() later so user can type c or C
+scale = input("Is that (C)elsius or (F)ahrenheit? ")
+
+# Decision logic - checking which scale they entered
+if scale.upper() == "C":
+    # Formula: °F = (°C × 9/5) + 32
+    fahrenheit = (temp_value * 9/5) + 32
+    print(f"{temp_value}°C equals {fahrenheit}°F")
+elif scale.upper() == "F":
+    # Formula: °C = (°F - 32) × 5/9
+    celsius = (temp_value - 32) * 5/9
+    print(f"{temp_value}°F equals {celsius}°C")
+else:
+    # Handle invalid input
+    print("Please enter C or F")
+
+print()
+print("Thanks for using the temperature converter!")
+```
+
+### 3. Program Flow Documentation (20%)
+
+Create a clear flowchart or diagram showing how your program works:
+
+```
+Temperature Converter Flow
+========================
+
+START
+  ↓
+[Display Welcome Message]
+  ↓
+[Get Temperature from User] → Store in: temp_value
+  ↓
+[Get Scale (C or F)] → Store in: scale
+  ↓
+<Is scale "C"?> 
+  ↓ YES              ↓ NO
+[Convert C to F]    <Is scale "F"?>
+  ↓                   ↓ YES        ↓ NO
+  ↓                 [Convert F to C] [Error Message]
+  ↓                   ↓              ↓
+[Display Result] ← ← ←              ↓
+  ↓                                 ↓
+[Display Thank You] ← ← ← ← ← ← ← ←
+  ↓
+END
+```
+
+Include:
+- All decision points
+- Variable storage
+- Input/output operations
+- Error handling paths
+
+### 4. Testing Documentation (10%)
+
+Show that you tested your program thoroughly:
+
+```markdown
+# Testing Log
+
+## Test Case 1: Freezing Point of Water
+- Input: 0, C
+- Expected: 32°F
+- Actual: 32.0°F ✓
+
+## Test Case 2: Boiling Point of Water  
+- Input: 212, F
+- Expected: 100°C
+- Actual: 100.0°C ✓
+
+## Test Case 3: Same Temperature Point
+- Input: -40, C
+- Expected: -40°F
+- Actual: -40.0°F ✓
+
+## Test Case 4: Invalid Scale
+- Input: 25, X
+- Expected: Error message
+- Actual: "Please enter C or F" ✓
+
+## Edge Cases Tested:
+- Negative numbers: Working correctly
+- Decimal inputs: Working correctly
+- Lowercase c/f: Working correctly
+```
+
+### 5. AI Partnership Reflection (10%)
+
+Write a thoughtful reflection addressing:
+
+```markdown
+# AI Partnership Reflection
+
+## How AI Helped My Learning
+- [Specific example of AI explaining a concept]
+- [How AI helped me understand errors]
+- [Ways AI made learning more efficient]
+
+## Challenges with AI
+- [When AI gave overly complex solutions]
+- [Concepts AI assumed I knew]
+- [Times I had to push back on AI's suggestions]
+
+## Key Insights
+1. The importance of specific constraints in prompts
+2. Why understanding beats copy-paste
+3. How to verify AI's code is correct
+
+## Moving Forward
+How I'll use AI differently in Week 2: _____________
+```
+
+## Bonus Challenges (Optional)
+
+If you finish early and want to extend your learning:
+
+### Challenge 1: Add Kelvin Support
+- Research Kelvin conversion formulas
+- Use AI to help plan where to add it
+- Implement without making code too complex
+- Update your flowchart
+
+### Challenge 2: Add Context Messages
+- If below freezing: "That's freezing!"
+- If above body temperature: "That's fever temperature!"
+- Room temperature range: "That's comfortable!"
+
+### Challenge 3: Round Output Nicely
+- Research how to round to 1 decimal place
+- Implement clean output formatting
+- Test edge cases like 99.99
+
+## Submission Requirements
+
+Your complete portfolio should include:
+
+1. **Colab Notebook** with:
+   - All prompt evolution documentation
+   - Final commented code
+   - Test results
+   - Reflection
+
+2. **Flowchart** (can be hand-drawn and photographed)
+
+3. **Peer Review** (have a classmate check):
+   - Can they understand your code?
+   - Is your flowchart accurate?
+   - Did you use AI appropriately?
+
+## Grading Rubric
+
+### Prompt Evolution (25 points)
+- **Excellent (23-25)**: Shows clear progression, insightful analysis
+- **Good (18-22)**: Good attempts, some analysis
+- **Satisfactory (13-17)**: Basic progression shown
+- **Needs Work (0-12)**: Minimal documentation
+
+### Code Understanding (35 points)
+- **Excellent (32-35)**: Every line explained, deep understanding shown
+- **Good (26-31)**: Most lines explained, good understanding
+- **Satisfactory (20-25)**: Basic comments, some understanding
+- **Needs Work (0-19)**: Minimal comments or understanding
+
+### Flow Documentation (20 points)
+- **Excellent (18-20)**: Clear, accurate, complete flowchart
+- **Good (14-17)**: Good flowchart, minor issues
+- **Satisfactory (10-13)**: Basic flowchart present
+- **Needs Work (0-9)**: Missing or inaccurate
+
+### Testing (10 points)
+- **Excellent (9-10)**: Comprehensive testing with edge cases
+- **Good (7-8)**: Good test coverage
+- **Satisfactory (5-6)**: Basic tests present
+- **Needs Work (0-4)**: Minimal testing
+
+### Reflection (10 points)
+- **Excellent (9-10)**: Thoughtful, specific examples, insights
+- **Good (7-8)**: Good reflection with examples
+- **Satisfactory (5-6)**: Basic reflection present
+- **Needs Work (0-4)**: Minimal reflection
+
+## Tips for Success
+
+1. **Start with the prompt evolution** - don't skip to the final code
+2. **Test each version** as you go
+3. **Ask AI to explain**, not just generate
+4. **Draw your flowchart** before finalizing code
+5. **Be honest** about what you don't understand
+
+## Academic Integrity
+
+- You SHOULD use AI - that's the point!
+- You MUST understand every line you submit
+- You MUST document your AI interactions
+- Working with peers is encouraged for understanding
+- Each person must submit their own unique work
+
+## Getting Help
+
+If you're stuck:
+1. Review the lab materials
+2. Ask AI to explain concepts (not write code)
+3. Discuss with classmates
+4. Attend office hours
+5. Post questions in the course forum
+
+Remember: This project is about the journey, not just the destination!

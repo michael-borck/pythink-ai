@@ -1,0 +1,802 @@
+---
+title: "Week 5 Lab: Mastering Functions"
+subtitle: "Building Modular Programs Step by Step"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Lab Overview
+
+This lab will guide you through creating your first functions, understanding scope, and refactoring code for reusability. By the end, you'll build a modular calculator using functions.
+
+**Duration:** 2 hours  
+**Goals:**
+1. Write functions with clear purposes
+2. Master parameter passing and returns
+3. Understand variable scope
+4. Refactor repetitive code
+5. Build a function-based calculator
+
+---
+
+# Hour 1: Function Fundamentals
+
+## Part 1: Your First Functions (20 minutes)
+
+### Exercise 1.1: Basic Functions
+
+Write these simple functions:
+
+```python
+# 1. Greeting function
+def say_hello():
+    """Print a greeting message."""
+    # Your code here
+    pass
+
+# Test it
+say_hello()  # Should print a greeting
+
+# 2. Personalized greeting
+def greet_person(name):
+    """Print personalized greeting."""
+    # Your code here
+    pass
+
+# Test it
+greet_person("Alice")  # Should print "Hello, Alice!"
+
+# 3. Area calculator
+def rectangle_area(length, width):
+    """Calculate area of rectangle."""
+    # Your code here
+    # Remember to RETURN the result!
+    pass
+
+# Test it
+area = rectangle_area(10, 5)
+print(f"Area: {area}")  # Should print "Area: 50"
+```
+
+### Exercise 1.2: Functions with Returns
+
+Complete these functions that return values:
+
+```python
+# 1. Temperature converter
+def celsius_to_fahrenheit(celsius):
+    """Convert Celsius to Fahrenheit."""
+    # Formula: (C × 9/5) + 32
+    fahrenheit = _____
+    return _____
+
+# Test with known values
+print(celsius_to_fahrenheit(0))    # Should be 32
+print(celsius_to_fahrenheit(100))  # Should be 212
+print(celsius_to_fahrenheit(37))   # Should be 98.6
+
+# 2. Price calculator
+def calculate_total(price, tax_rate):
+    """Calculate total price including tax."""
+    tax = _____
+    total = _____
+    return _____
+
+# Test it
+total = calculate_total(100, 0.08)  # 8% tax
+print(f"Total: ${total}")  # Should be $108.00
+
+# 3. String cleaner
+def clean_input(text):
+    """Clean and standardize input text."""
+    # Remove whitespace and convert to lowercase
+    cleaned = _____
+    return _____
+
+# Test it
+messy = "  Hello WORLD  "
+clean = clean_input(messy)
+print(f"'{clean}'")  # Should be 'hello world'
+```
+
+### Exercise 1.3: Multiple Parameters
+
+Write functions that take multiple inputs:
+
+```python
+# 1. Full name formatter
+def format_name(first, last):
+    """Format full name properly."""
+    # Return "Last, First" format
+    pass
+
+# Test it
+print(format_name("John", "Doe"))  # "Doe, John"
+
+# 2. Grade calculator
+def calculate_grade(score, total):
+    """Calculate percentage grade."""
+    # Return percentage as float
+    pass
+
+# Test it
+grade = calculate_grade(85, 100)
+print(f"{grade}%")  # "85.0%"
+
+# 3. Time converter
+def hours_to_minutes_seconds(hours):
+    """Convert hours to minutes and seconds."""
+    minutes = _____
+    seconds = _____
+    return minutes, seconds  # Return TWO values!
+
+# Test it
+mins, secs = hours_to_minutes_seconds(2.5)
+print(f"2.5 hours = {mins} minutes = {secs} seconds")
+```
+
+## Part 2: Default Parameters (20 minutes)
+
+### Exercise 2.1: Optional Values
+
+Create functions with default parameters:
+
+```python
+# 1. Greeting with time
+def greet(name, time_of_day="day"):
+    """Greet person with time-appropriate message."""
+    return f"Good {time_of_day}, {name}!"
+
+# Test different calls
+print(greet("Alice"))                  # Uses default
+print(greet("Bob", "morning"))         # Override default
+print(greet("Charlie", "evening"))     # Override default
+
+# 2. Power function
+def power(base, exponent=2):
+    """Raise base to exponent power (default: square)."""
+    # Your code here
+    pass
+
+# Test it
+print(power(5))      # 25 (squared by default)
+print(power(5, 3))   # 125 (cubed)
+print(power(2, 10))  # 1024
+
+# 3. Format currency
+def format_money(amount, currency="$", decimal_places=2):
+    """Format amount as currency string."""
+    # Round to decimal_places
+    # Add currency symbol
+    # Return formatted string
+    pass
+
+# Test it
+print(format_money(1234.5678))           # "$1234.57"
+print(format_money(1234.5678, "€"))      # "€1234.57"
+print(format_money(1234.5678, "$", 0))   # "$1235"
+```
+
+### Exercise 2.2: Practical Defaults
+
+Build useful functions with smart defaults:
+
+```python
+# 1. Password generator
+def generate_password(length=12, include_numbers=True):
+    """Generate a simple password."""
+    import random
+    
+    letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    characters = letters
+    
+    if include_numbers:
+        characters = characters + "0123456789"
+    
+    # Build password (simple version without random)
+    password = ""
+    for i in range(length):
+        # Use position to pick character
+        index = (i * 7) % len(characters)  # Pseudo-random
+        password = password + characters[index]
+    
+    return password
+
+# Test it
+print(generate_password())           # 12 chars with numbers
+print(generate_password(8))          # 8 chars with numbers
+print(generate_password(16, False))  # 16 chars, no numbers
+
+# 2. List statistics
+def analyze_numbers(numbers, include_sum=True, include_avg=True):
+    """Analyze list of numbers."""
+    if not numbers:  # Empty list check
+        return None
+    
+    results = {}
+    
+    if include_sum:
+        results["sum"] = sum(numbers)
+    
+    if include_avg:
+        results["average"] = sum(numbers) / len(numbers)
+    
+    return results
+
+# Test it
+data = [10, 20, 30, 40, 50]
+print(analyze_numbers(data))
+print(analyze_numbers(data, include_avg=False))
+```
+
+## Part 3: Understanding Scope (20 minutes)
+
+### Exercise 3.1: Scope Tracing
+
+Trace the values of variables:
+
+```python
+# Global variables
+counter = 0
+message = "Global"
+
+def function_one():
+    # Local variable with same name
+    counter = 10
+    message = "Local to function_one"
+    print(f"Inside function_one: counter={counter}, message={message}")
+    return counter
+
+def function_two():
+    # Using global variable (read-only)
+    print(f"Inside function_two: counter={counter}, message={message}")
+    local_var = 99
+    return local_var
+
+# Trace execution
+print(f"Before functions: counter={counter}, message={message}")
+
+result1 = function_one()
+print(f"After function_one: counter={counter}, result={result1}")
+
+result2 = function_two()
+print(f"After function_two: counter={counter}, result={result2}")
+
+# What will each print statement show?
+# Write your predictions first, then run!
+```
+
+### Exercise 3.2: Scope Errors
+
+Fix these scope-related errors:
+
+```python
+# Error 1: UnboundLocalError
+def calculate_tax():
+    # This will crash! Why?
+    total = total + 10
+    return total
+
+# Fix:
+def calculate_tax_fixed(amount):
+    # Your fix here
+    pass
+
+# Error 2: Variable not defined
+def get_full_name():
+    first = "John"
+    last = "Doe"
+    return full_name  # NameError!
+
+# Fix:
+def get_full_name_fixed():
+    # Your fix here
+    pass
+
+# Error 3: Lost changes
+def double_values(numbers):
+    # This doesn't work as expected
+    for i in range(len(numbers)):
+        numbers[i] = numbers[i] * 2
+    numbers = []  # Oops!
+    return numbers
+
+# Fix:
+def double_values_fixed(numbers):
+    # Your fix here
+    pass
+```
+
+### Exercise 3.3: Design Clean Functions
+
+Practice good scope hygiene:
+
+```python
+# Task: Create functions that don't rely on global state
+
+# 1. Bad version (uses globals)
+user_count = 0
+
+def register_user_bad(name):
+    global user_count  # Bad practice!
+    user_count = user_count + 1
+    return f"User {name} registered. Total users: {user_count}"
+
+# Good version (no globals)
+def register_user_good(name, current_count):
+    """Register user and return new count."""
+    # Your code here
+    pass
+
+# 2. Create a score tracker
+def update_score(current_score, points_earned):
+    """Update score and return new total."""
+    # Your code here
+    pass
+
+def display_score(score):
+    """Display formatted score."""
+    # Your code here
+    pass
+
+# Test your functions
+score = 0
+score = update_score(score, 10)
+display_score(score)
+score = update_score(score, 5)
+display_score(score)
+```
+
+---
+
+# Hour 2: Integration and Calculator Project
+
+## Part 4: Refactoring Practice (20 minutes)
+
+### Exercise 4.1: Identify Repetition
+
+Find and refactor the repeated code:
+
+```python
+# BEFORE: Repetitive grade checking
+print("Student 1:")
+score1 = 85
+if score1 >= 90:
+    grade1 = "A"
+elif score1 >= 80:
+    grade1 = "B"
+elif score1 >= 70:
+    grade1 = "C"
+elif score1 >= 60:
+    grade1 = "D"
+else:
+    grade1 = "F"
+print(f"Score: {score1}, Grade: {grade1}")
+
+print("\nStudent 2:")
+score2 = 92
+if score2 >= 90:
+    grade2 = "A"
+elif score2 >= 80:
+    grade2 = "B"
+elif score2 >= 70:
+    grade2 = "C"
+elif score2 >= 60:
+    grade2 = "D"
+else:
+    grade2 = "F"
+print(f"Score: {score2}, Grade: {grade2}")
+
+print("\nStudent 3:")
+score3 = 78
+# ... same pattern repeated!
+
+# AFTER: With function
+def calculate_letter_grade(score):
+    """Convert numeric score to letter grade."""
+    # Your code here
+    pass
+
+# Now use the function
+students = [("Student 1", 85), ("Student 2", 92), ("Student 3", 78)]
+for name, score in students:
+    grade = calculate_letter_grade(score)
+    print(f"{name}: Score: {score}, Grade: {grade}")
+```
+
+### Exercise 4.2: Extract Functions
+
+Refactor this messy code into clean functions:
+
+```python
+# BEFORE: Everything in one big block
+print("=== Shopping Calculator ===")
+items = []
+running = True
+
+while running:
+    print("\n1. Add item")
+    print("2. View total")
+    print("3. Exit")
+    
+    choice = input("Choose: ")
+    
+    if choice == "1":
+        name = input("Item name: ")
+        price_str = input("Price: $")
+        price = float(price_str)
+        
+        # Calculate tax
+        tax_rate = 0.08
+        tax = price * tax_rate
+        total = price + tax
+        
+        items.append((name, price, tax, total))
+        print(f"Added {name}: ${total:.2f} (includes tax)")
+        
+    elif choice == "2":
+        if len(items) == 0:
+            print("No items yet!")
+        else:
+            grand_total = 0
+            print("\nYour items:")
+            for name, price, tax, total in items:
+                print(f"- {name}: ${price:.2f} + ${tax:.2f} tax = ${total:.2f}")
+                grand_total = grand_total + total
+            print(f"\nGrand total: ${grand_total:.2f}")
+            
+    elif choice == "3":
+        running = False
+        print("Goodbye!")
+
+# AFTER: With functions
+def calculate_item_tax(price, tax_rate=0.08):
+    """Calculate tax for an item."""
+    # Your code here
+    pass
+
+def calculate_item_total(price, tax_rate=0.08):
+    """Calculate total including tax."""
+    # Your code here
+    pass
+
+def display_items(items):
+    """Display all items with totals."""
+    # Your code here
+    pass
+
+def shopping_menu():
+    """Run shopping calculator."""
+    # Your refactored code here
+    pass
+
+# Run the program
+# shopping_menu()
+```
+
+## Part 5: Function Composition (20 minutes)
+
+### Exercise 5.1: Functions Calling Functions
+
+Build functions that use other functions:
+
+```python
+# Base conversion functions
+def miles_to_kilometers(miles):
+    """Convert miles to kilometers."""
+    return miles * 1.60934
+
+def kilometers_to_meters(km):
+    """Convert kilometers to meters."""
+    return km * 1000
+
+def miles_to_meters(miles):
+    """Convert miles to meters using other functions."""
+    # Use the other functions!
+    km = _____
+    meters = _____
+    return meters
+
+# Test the composition
+print(f"5 miles = {miles_to_meters(5)} meters")
+
+# Temperature conversion chain
+def fahrenheit_to_celsius(f):
+    """Convert F to C."""
+    return (f - 32) * 5/9
+
+def celsius_to_kelvin(c):
+    """Convert C to K."""
+    return c + 273.15
+
+def fahrenheit_to_kelvin(f):
+    """Convert F to K using other functions."""
+    # Your code here
+    pass
+
+# Test it
+print(f"32°F = {fahrenheit_to_kelvin(32)}K")  # Should be 273.15
+```
+
+### Exercise 5.2: Building Complex Behavior
+
+Create a text processing pipeline:
+
+```python
+# Individual processing functions
+def remove_punctuation(text):
+    """Remove common punctuation from text."""
+    clean = text
+    for char in ".,!?;:":
+        clean = clean.replace(char, "")
+    return clean
+
+def normalize_whitespace(text):
+    """Replace multiple spaces with single space."""
+    while "  " in text:
+        text = text.replace("  ", " ")
+    return text.strip()
+
+def count_words(text):
+    """Count words in text."""
+    words = text.split()
+    return len(words)
+
+def analyze_text(text):
+    """Complete text analysis using other functions."""
+    # Clean the text
+    clean = remove_punctuation(text)
+    clean = normalize_whitespace(clean)
+    
+    # Analyze
+    word_count = count_words(clean)
+    char_count = len(clean)
+    
+    # Calculate average word length
+    if word_count > 0:
+        avg_length = (char_count - clean.count(" ")) / word_count
+    else:
+        avg_length = 0
+    
+    return {
+        "original_length": len(text),
+        "clean_length": char_count,
+        "word_count": word_count,
+        "avg_word_length": round(avg_length, 1)
+    }
+
+# Test the pipeline
+sample = "Hello,  world!   This   is a    test..."
+results = analyze_text(sample)
+for key, value in results.items():
+    print(f"{key}: {value}")
+```
+
+## Part 6: Calculator Project (20 minutes)
+
+### Build Your Modular Calculator
+
+Create a calculator using functions for all operations:
+
+```python
+# Basic arithmetic functions
+def add(a, b):
+    """Add two numbers."""
+    return a + b
+
+def subtract(a, b):
+    """Subtract b from a."""
+    # Your code here
+    pass
+
+def multiply(a, b):
+    """Multiply two numbers."""
+    # Your code here
+    pass
+
+def divide(a, b):
+    """Divide a by b safely."""
+    if b == 0:
+        return None  # Can't divide by zero
+    # Your code here
+    pass
+
+# Advanced operations
+def power(base, exponent=2):
+    """Raise base to exponent."""
+    result = 1
+    for _ in range(int(exponent)):
+        result = result * base
+    return result
+
+def square_root(number):
+    """Calculate square root (simple approximation)."""
+    if number < 0:
+        return None
+    
+    # Newton's method (simplified)
+    guess = number / 2
+    for _ in range(10):  # 10 iterations
+        guess = (guess + number / guess) / 2
+    
+    return round(guess, 2)
+
+# Input validation
+def get_number(prompt):
+    """Get valid number from user."""
+    while True:
+        try:
+            value = input(prompt)
+            return float(value)
+        except ValueError:
+            print("Please enter a valid number!")
+
+# Display functions
+def display_result(operation, result):
+    """Display calculation result."""
+    if result is None:
+        print(f"Error: {operation} failed!")
+    else:
+        print(f"Result: {result}")
+
+# Main calculator function
+def calculator():
+    """Run the calculator program."""
+    print("=== Modular Calculator ===")
+    
+    while True:
+        print("\nOperations:")
+        print("1. Add")
+        print("2. Subtract")
+        print("3. Multiply")
+        print("4. Divide")
+        print("5. Power")
+        print("6. Square Root")
+        print("7. Exit")
+        
+        choice = input("\nChoose operation: ")
+        
+        if choice == "7":
+            print("Thanks for calculating!")
+            break
+        
+        if choice in ["1", "2", "3", "4", "5"]:
+            # Two number operations
+            num1 = get_number("Enter first number: ")
+            num2 = get_number("Enter second number: ")
+            
+            if choice == "1":
+                result = add(num1, num2)
+                display_result("Addition", result)
+            # Add other operations...
+            
+        elif choice == "6":
+            # Single number operation
+            num = get_number("Enter number: ")
+            result = square_root(num)
+            display_result("Square root", result)
+        
+        else:
+            print("Invalid choice!")
+
+# Run the calculator
+calculator()
+```
+
+---
+
+# Lab Submission
+
+## What to Submit
+
+1. **Function exercises** from Parts 1-3
+2. **Refactored code** from Part 4
+3. **Function composition** examples from Part 5
+4. **Working calculator** from Part 6
+5. **Reflection** (3-5 sentences):
+   - Which concept was most challenging?
+   - How do functions change your approach?
+   - What would you refactor from previous weeks?
+
+## Grading Rubric
+
+| Component | Points | Criteria |
+|-----------|---------|----------|
+| Basic Functions | 20 | Correct syntax and returns |
+| Parameters/Defaults | 15 | Proper parameter usage |
+| Scope Understanding | 15 | Correct scope handling |
+| Refactoring | 15 | Clean extraction of functions |
+| Function Composition | 15 | Functions using functions |
+| Calculator Project | 20 | Working with 5+ functions |
+
+---
+
+# Common Issues and Solutions
+
+## Return vs Print
+
+**Problem:**
+```python
+def add(a, b):
+    print(a + b)  # Prints but doesn't return!
+
+result = add(5, 3)  # result is None!
+```
+
+**Solution:**
+```python
+def add(a, b):
+    return a + b  # Returns the value
+
+result = add(5, 3)  # result is 8
+```
+
+## Forgetting Return
+
+**Problem:**
+```python
+def calculate_area(length, width):
+    area = length * width
+    # Forgot return!
+
+result = calculate_area(10, 5)  # result is None!
+```
+
+**Solution:** Always return the result!
+
+## Scope Confusion
+
+**Problem:**
+```python
+total = 0
+
+def add_to_total(value):
+    total = total + value  # UnboundLocalError!
+    return total
+```
+
+**Solution:** Pass and return values instead
+
+## Parameter Mismatch
+
+**Problem:**
+```python
+def greet(first_name, last_name):
+    return f"Hello, {first_name} {last_name}"
+
+greet("Smith")  # Error: missing argument!
+```
+
+**Solution:** Provide all required arguments
+
+---
+
+# Extra Challenges
+
+If you finish early:
+
+1. **Unit Converter**: Length, weight, temperature functions
+2. **Text Analyzer**: Word frequency, readability score
+3. **Game Functions**: Dice roller, score keeper
+4. **Validation Library**: Email, phone, password validators
+5. **Math Library**: Factorial, prime checker, GCD
+
+---
+
+# Next Steps
+
+After this lab:
+1. Practice writing single-purpose functions
+2. Refactor your previous projects
+3. Build a personal function library
+4. Think modularly in all programs
+
+Next week: Dictionaries for organizing related data!

@@ -1,0 +1,381 @@
+---
+title: "Week 2: Common Errors and Solutions"
+subtitle: "Decision Logic Troubleshooting Guide"
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Common Week 2 Errors
+
+## Syntax Errors
+
+### Error 1: Assignment Instead of Comparison
+
+**The Error**:
+```python
+score = 85
+if score = 90:  # SyntaxError: invalid syntax
+    print("A grade")
+```
+
+**Why It Happens**: 
+Using single `=` (assignment) instead of `==` (comparison) in a condition.
+
+**The Fix**:
+```python
+score = 85
+if score == 90:  # Now it compares!
+    print("A grade")
+```
+
+**Remember**: 
+- `=` ASSIGNS a value
+- `==` ASKS if values are equal
+
+### Error 2: Missing Colon
+
+**The Error**:
+```python
+if temperature > 80  # SyntaxError: invalid syntax
+    print("It's hot!")
+```
+
+**Why It Happens**: 
+Forgetting the colon `:` after the condition.
+
+**The Fix**:
+```python
+if temperature > 80:  # Colon required!
+    print("It's hot!")
+```
+
+### Error 3: Indentation Errors
+
+**The Error**:
+```python
+if score >= 90:
+print("A grade")  # IndentationError
+```
+
+**Why It Happens**: 
+Code inside if/elif/else must be indented.
+
+**The Fix**:
+```python
+if score >= 90:
+    print("A grade")  # Indented with 4 spaces
+```
+
+**Common Variations**:
+```python
+# Mixed tabs and spaces
+if score >= 90:
+    print("A")  # 4 spaces
+	print("Great!")  # Tab - ERROR!
+
+# Inconsistent indentation
+if score >= 90:
+    print("A")  # 4 spaces
+      print("Great!")  # 6 spaces - ERROR!
+```
+
+## Logic Errors
+
+### Error 4: Wrong Order in elif Chain
+
+**The Error**:
+```python
+score = 85
+
+if score >= 70:
+    grade = "C"  # This runs for 85!
+elif score >= 80:
+    grade = "B"  # Never reached
+elif score >= 90:
+    grade = "A"  # Never reached
+```
+
+**Why It Happens**: 
+First matching condition wins. Lower values checked first catch everything.
+
+**The Fix**:
+```python
+score = 85
+
+if score >= 90:
+    grade = "A"
+elif score >= 80:
+    grade = "B"  # Now this catches 85
+elif score >= 70:
+    grade = "C"
+```
+
+**Rule**: Always check from highest to lowest with `>=` or lowest to highest with `<=`.
+
+### Error 5: Gaps in Coverage
+
+**The Error**:
+```python
+score = 70  # What grade is this?
+
+if score > 90:
+    grade = "A"
+elif score > 80:
+    grade = "B"
+elif score > 70:  # Misses exactly 70!
+    grade = "C"
+else:
+    grade = "F"
+
+# score of 70, 80, or 90 falls through to F!
+```
+
+**Why It Happens**: 
+Using `>` instead of `>=` creates gaps at boundaries.
+
+**The Fix**:
+```python
+if score >= 90:
+    grade = "A"
+elif score >= 80:
+    grade = "B"
+elif score >= 70:
+    grade = "C"
+else:
+    grade = "F"
+```
+
+### Error 6: Using if Instead of elif
+
+**The Error**:
+```python
+score = 95
+grade = "F"  # Default
+
+if score >= 90:
+    grade = "A"  # Sets to A
+if score >= 80:
+    grade = "B"  # Also runs! Sets to B
+if score >= 70:
+    grade = "C"  # Also runs! Sets to C
+
+print(grade)  # Prints "C" for score of 95!
+```
+
+**Why It Happens**: 
+Multiple if statements all execute independently.
+
+**The Fix**:
+```python
+score = 95
+
+if score >= 90:
+    grade = "A"
+elif score >= 80:  # Only checks if first was False
+    grade = "B"
+elif score >= 70:
+    grade = "C"
+else:
+    grade = "F"
+```
+
+## Comparison Errors
+
+### Error 7: Case Sensitivity
+
+**The Error**:
+```python
+answer = input("Continue? (Yes/No): ")  # User types "yes"
+
+if answer == "Yes":  # False! "yes" != "Yes"
+    print("Continuing...")
+else:
+    print("Stopping...")  # This runs unexpectedly
+```
+
+**Why It Happens**: 
+String comparisons are case-sensitive.
+
+**The Fix**:
+```python
+answer = input("Continue? (Yes/No): ")
+
+if answer.lower() == "yes":  # Handles Yes, YES, yes, etc.
+    print("Continuing...")
+```
+
+### Error 8: Incorrect OR Logic
+
+**The Error**:
+```python
+answer = input("Continue? ")
+
+# This is ALWAYS True!
+if answer == "Y" or "y":  # Wrong!
+    print("Continuing...")
+```
+
+**Why It Happens**: 
+Python evaluates as `(answer == "Y") or ("y")`. The string "y" is always truthy.
+
+**The Fix**:
+```python
+answer = input("Continue? ")
+
+if answer == "Y" or answer == "y":  # Check both
+    print("Continuing...")
+
+# Or better:
+if answer.upper() == "Y":
+    print("Continuing...")
+```
+
+### Error 9: Float Comparison Precision
+
+**The Error**:
+```python
+result = 0.1 + 0.2  # Actually 0.30000000000000004
+
+if result == 0.3:  # False!
+    print("Equal")
+else:
+    print("Not equal")  # This runs
+```
+
+**Why It Happens**: 
+Floating-point arithmetic isn't always exact.
+
+**The Fix**:
+```python
+result = 0.1 + 0.2
+
+# Check if close enough
+if abs(result - 0.3) < 0.0001:
+    print("Equal (close enough)")
+
+# Or round for display
+if round(result, 1) == 0.3:
+    print("Equal when rounded")
+```
+
+## Common Patterns and Solutions
+
+### Pattern 1: Range Checking
+
+**Wrong Way**:
+```python
+# Redundant upper bound check
+if score >= 80 and score < 90:
+    grade = "B"
+elif score >= 90 and score < 100:  # Don't need < 100
+    grade = "A"
+```
+
+**Right Way**:
+```python
+if score >= 90:
+    grade = "A"
+elif score >= 80:  # Already know it's < 90
+    grade = "B"
+```
+
+### Pattern 2: Input Validation
+
+**Wrong Way**:
+```python
+score = float(input("Enter score: "))
+# What if they enter "abc"? Crash!
+```
+
+**Right Way (with current knowledge)**:
+```python
+score_string = input("Enter score: ")
+score = float(score_string)  # Still crashes, but we see where
+
+# Better validation (preview of future):
+if not score_string.replace(".", "").isdigit():
+    print("Please enter a number!")
+```
+
+### Pattern 3: Multiple Valid Inputs
+
+**Wrong Way**:
+```python
+if choice == "1" or "2" or "3":  # Always True!
+    print("Valid choice")
+```
+
+**Right Way**:
+```python
+if choice == "1" or choice == "2" or choice == "3":
+    print("Valid choice")
+
+# Or with in (but that uses lists - not learned yet!)
+```
+
+## Debugging Strategies
+
+### 1. Add Print Statements
+
+```python
+score = 85
+print(f"DEBUG: score = {score}")
+
+if score >= 90:
+    print("DEBUG: Checking A")
+    grade = "A"
+elif score >= 80:
+    print("DEBUG: Checking B")  # This should print
+    grade = "B"
+```
+
+### 2. Check One Condition at a Time
+
+```python
+# Isolate complex conditions
+age = 16
+has_permit = True
+
+print(f"age >= 16: {age >= 16}")  # True
+print(f"has_permit: {has_permit}")  # True
+print(f"Both: {age >= 16 and has_permit}")  # True
+```
+
+### 3. Test Boundaries
+
+Always test:
+- Exact boundary values (70, 80, 90)
+- Just above boundaries (70.1, 80.1)
+- Just below boundaries (69.9, 79.9)
+- Extreme values (0, 100, negative, very large)
+
+### 4. Simplify First
+
+```python
+# Complex condition hard to debug:
+if (score >= 80 and score < 90) or (extra_credit and score >= 75):
+    grade = "B"
+
+# Break it down:
+in_b_range = score >= 80 and score < 90
+extra_credit_b = extra_credit and score >= 75
+if in_b_range or extra_credit_b:
+    grade = "B"
+```
+
+## Prevention Tips
+
+1. **Always use elif** for mutually exclusive conditions
+2. **Check highest values first** when using >=
+3. **Test every boundary value**
+4. **Use .lower() or .upper()** for case-insensitive comparison
+5. **Comment your logic** for complex conditions
+6. **Keep conditions simple** - break complex ones into parts
+
+Remember: These errors are normal! Every programmer makes them. The key is learning to recognize and fix them quickly.

@@ -1,0 +1,323 @@
+---
+title: "Week 5 Assessment: Function Tracing"
+subtitle: "Understanding Function Execution and Data Flow"
+format:
+  html:
+    toc: true
+    code-fold: false
+  pdf:
+    toc: true
+---
+
+# Function Execution Tracing
+
+**Name:** _________________________ **Date:** _____________
+
+**Instructions:** Trace through each program step by step. Show all variable values and function returns.
+
+---
+
+## Problem 1: Basic Function Calls (15 points)
+
+Trace this code:
+```python
+def double(x):
+    result = x * 2
+    return result
+
+def add_one(x):
+    return x + 1
+
+# Main program
+a = 5
+b = double(a)
+c = add_one(b)
+d = double(c)
+
+print(f"Final: {d}")
+```
+
+Complete the trace:
+
+| Step | Variable/Call | Value | Notes |
+|------|--------------|-------|-------|
+| 1 | a = 5 | a = 5 | |
+| 2 | double(5) called | x = 5 | Inside double |
+| 3 | result = 5 * 2 | result = 10 | |
+| 4 | return 10 | | Back to main |
+| 5 | b = 10 | b = 10 | |
+| 6 | add_one(10) called | | |
+| ... | | | |
+
+**Final output:** _______________________
+
+---
+
+## Problem 2: Functions with Multiple Parameters (15 points)
+
+Trace this code:
+```python
+def calculate(a, b, operation):
+    if operation == "add":
+        return a + b
+    elif operation == "multiply":
+        return a * b
+    else:
+        return 0
+
+# Main program
+x = 4
+y = 3
+result1 = calculate(x, y, "add")
+result2 = calculate(y, x, "multiply")
+result3 = calculate(result1, result2, "add")
+
+print(f"Results: {result1}, {result2}, {result3}")
+```
+
+Trace each function call:
+
+**Call 1: calculate(4, 3, "add")**
+- Parameters: a = ___, b = ___, operation = ___
+- Condition: operation == "add" is ___
+- Returns: ___
+
+**Call 2: calculate(3, 4, "multiply")**
+- Parameters: a = ___, b = ___, operation = ___
+- Condition: operation == "multiply" is ___
+- Returns: ___
+
+**Call 3: calculate(___, ___, "add")**
+- Parameters: a = ___, b = ___, operation = ___
+- Returns: ___
+
+**Final output:** _______________________
+
+---
+
+## Problem 3: Functions with Default Parameters (15 points)
+
+Trace this code:
+```python
+def greet(name, greeting="Hello", punctuation="!"):
+    message = f"{greeting}, {name}{punctuation}"
+    return message
+
+# Main program
+msg1 = greet("Alice")
+msg2 = greet("Bob", "Hi")
+msg3 = greet("Charlie", "Hey", "?")
+msg4 = greet("David", punctuation=".")
+
+print(msg1)
+print(msg2)
+print(msg3)
+print(msg4)
+```
+
+For each call, show parameter values:
+
+| Call | name | greeting | punctuation | Returns |
+|------|------|----------|-------------|---------|
+| greet("Alice") | "Alice" | | | |
+| greet("Bob", "Hi") | | | | |
+| greet("Charlie", "Hey", "?") | | | | |
+| greet("David", punctuation=".") | | | | |
+
+**Output (each line):**
+1. _______________________
+2. _______________________
+3. _______________________
+4. _______________________
+
+---
+
+## Problem 4: Scope Tracing (20 points)
+
+Trace this code carefully:
+```python
+count = 10  # Global
+
+def increment(value):
+    count = 5  # Local
+    count = count + 1
+    value = value + count
+    return value
+
+def display(message, number):
+    print(f"{message}: {number}")
+    return number * 2
+
+# Main program
+result1 = increment(3)
+display("First", result1)
+result2 = increment(result1)
+display("Second", result2)
+display("Global count", count)
+```
+
+Trace the execution:
+
+| Line | Action | Local Variables | Global Variables | Output |
+|------|--------|-----------------|------------------|---------|
+| count = 10 | Set global | | count = 10 | |
+| result1 = increment(3) | Call increment | | | |
+| → count = 5 | Set local count | count = 5, value = 3 | count = 10 | |
+| → count = count + 1 | | count = 6, value = 3 | | |
+| → value = value + count | | | | |
+| → return value | | | | |
+| result1 = ___ | | | | |
+| ... | | | | |
+
+**All output lines:**
+1. _______________________
+2. _______________________
+3. _______________________
+
+---
+
+## Problem 5: Multiple Returns (15 points)
+
+Trace this code:
+```python
+def analyze(numbers):
+    if not numbers:
+        return 0, 0, 0
+    
+    total = 0
+    for num in numbers:
+        total = total + num
+    
+    average = total / len(numbers)
+    minimum = min(numbers)
+    maximum = max(numbers)
+    
+    return minimum, average, maximum
+
+# Main program
+data1 = [10, 20, 30]
+low1, avg1, high1 = analyze(data1)
+
+data2 = []
+low2, avg2, high2 = analyze(data2)
+
+print(f"Data1: Low={low1}, Avg={avg1}, High={high1}")
+print(f"Data2: Low={low2}, Avg={avg2}, High={high2}")
+```
+
+**First call - analyze([10, 20, 30]):**
+- numbers = _______________
+- Is empty? ___
+- total calculation: _______________
+- average = ___
+- minimum = ___
+- maximum = ___
+- Returns: (__, __, __)
+
+**Second call - analyze([]):**
+- numbers = _______________
+- Is empty? ___
+- Returns: (__, __, __)
+
+**Output:**
+1. _______________________
+2. _______________________
+
+---
+
+## Problem 6: Function Composition (20 points)
+
+Trace this code:
+```python
+def add_five(n):
+    return n + 5
+
+def double(n):
+    return n * 2
+
+def process(n):
+    temp = add_five(n)
+    result = double(temp)
+    return result
+
+def complex_calc(a, b):
+    x = process(a)
+    y = process(b)
+    z = add_five(x + y)
+    return z
+
+# Main program
+answer = complex_calc(3, 7)
+print(f"Answer: {answer}")
+```
+
+Show the call stack as functions call each other:
+
+```
+complex_calc(3, 7)
+│ a = 3, b = 7
+│ x = process(3)
+│   │ n = 3
+│   │ temp = add_five(3)
+│   │   │ n = 3
+│   │   │ return ___
+│   │ temp = ___
+│   │ result = double(___)
+│   │   │ n = ___
+│   │   │ return ___
+│   │ result = ___
+│   │ return ___
+│ x = ___
+│ y = process(7)
+│   │ [trace similar to above]
+│   │ return ___
+│ y = ___
+│ z = add_five(___ + ___)
+│   │ n = ___
+│   │ return ___
+│ z = ___
+│ return ___
+answer = ___
+```
+
+**Final output:** _______________________
+
+---
+
+## Grading Rubric
+
+| Problem | Points | Your Score |
+|---------|---------|------------|
+| Problem 1: Basic Calls | 15 |   |
+| Problem 2: Multiple Parameters | 15 |   |
+| Problem 3: Default Parameters | 15 |   |
+| Problem 4: Scope Tracing | 20 |   |
+| Problem 5: Multiple Returns | 15 |   |
+| Problem 6: Function Composition | 20 |   |
+| **Total** | **100** |   |
+
+**Grade:** _______
+
+---
+
+## Answer Key (For Instructor Use)
+
+### Problem 1
+- b = 10
+- c = 11  
+- d = 22
+- Output: "Final: 22"
+
+### Problem 2
+- result1 = 7
+- result2 = 12
+- result3 = 19
+- Output: "Results: 7, 12, 19"
+
+### Problem 4 Key Points
+- Local count vs global count
+- result1 = 9 (3 + 6)
+- result2 = 15 (9 + 6)
+- Global count remains 10
+
+[Complete solutions provided separately]

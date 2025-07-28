@@ -1,0 +1,320 @@
+---
+title: "Week 2 Logic Check"
+subtitle: "Understanding Decision Making"
+format:
+  html:
+    toc: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Week 2 Logic Check
+
+**Time**: 30 minutes  
+**Instructions**: This assessment checks your understanding of conditional logic and decision-making. You may use AI to verify your thinking, but document any AI assistance.
+
+## Part 1: Prediction (20 points)
+
+### Question 1: Basic Conditions (5 points)
+What will this code print?
+
+```python
+temperature = 78
+is_sunny = True
+
+if temperature > 75 and is_sunny:
+    print("Perfect beach weather!")
+elif temperature > 75:
+    print("Warm but not ideal")
+else:
+    print("Too cold for beach")
+```
+
+Your answer: _______________________________
+
+### Question 2: Order Matters (5 points)
+What's the output when score = 85?
+
+```python
+score = 85
+
+if score >= 70:
+    print("C")
+elif score >= 80:
+    print("B")
+elif score >= 90:
+    print("A")
+else:
+    print("F")
+```
+
+Your answer: _______________________________
+
+Why? _______________________________
+
+### Question 3: Complex Logic (5 points)
+What prints when age = 16 and has_license = False?
+
+```python
+age = 16
+has_license = False
+
+if age >= 16 and has_license:
+    print("Can drive alone")
+elif age >= 16 and not has_license:
+    print("Can get a license")
+elif age < 16:
+    print("Too young to drive")
+```
+
+Your answer: _______________________________
+
+### Question 4: Edge Cases (5 points)
+Fill in the output for each temperature:
+
+```python
+if temp < 32:
+    status = "Frozen"
+elif temp == 32:
+    status = "Freezing point"
+elif temp > 32 and temp < 212:
+    status = "Liquid"
+elif temp >= 212:
+    status = "Boiling"
+```
+
+- temp = 31: _______________________________
+- temp = 32: _______________________________
+- temp = 100: _______________________________
+- temp = 212: _______________________________
+
+## Part 2: Finding Errors (20 points)
+
+### Question 5: Logic Error (10 points)
+This grade calculator has a bug. Explain what's wrong:
+
+```python
+grade = 92
+
+if grade >= 90:
+    letter = "A"
+if grade >= 80:
+    letter = "B"
+if grade >= 70:
+    letter = "C"
+else:
+    letter = "F"
+
+print(f"Grade: {letter}")
+```
+
+The bug: _______________________________
+
+How to fix: _______________________________
+
+### Question 6: Comparison Error (10 points)
+Why doesn't this work as expected?
+
+```python
+user_answer = input("Continue? (yes/no): ")
+
+if user_answer == "yes" or "Yes" or "YES":
+    print("Continuing...")
+else:
+    print("Stopping...")
+```
+
+The problem: _______________________________
+
+Correct version: _______________________________
+
+## Part 3: Code Writing (30 points)
+
+### Question 7: Password Validator (15 points)
+Write code that checks if a password is valid:
+- At least 8 characters long
+- Contains at least one number (hint: any(char.isdigit() for char in password))
+- Wait, we haven't learned any() or generators!
+
+Simpler version: Just check if length >= 8
+
+```python
+password = input("Create password: ")
+
+# Your code here:
+
+
+
+
+```
+
+### Question 8: Ticket Pricing (15 points)
+Write code for movie ticket pricing:
+- Child (under 12): $8
+- Senior (65+): $10  
+- Adult (12-64): $15
+- Tuesday discount: $2 off any ticket
+
+```python
+age = int(input("Enter age: "))
+day = input("What day? ")
+
+# Your code here:
+
+
+
+
+```
+
+## Part 4: Flowchart Analysis (15 points)
+
+### Question 9: Code to Flowchart (10 points)
+Draw a flowchart for this code:
+
+```python
+number = int(input("Enter a number: "))
+
+if number > 0:
+    print("Positive")
+elif number < 0:
+    print("Negative")
+else:
+    print("Zero")
+```
+
+Your flowchart:
+```
+[Draw or describe your flowchart here]
+```
+
+### Question 10: Flowchart to Code (5 points)
+Write code for this logic:
+- Get user's age
+- If under 13: "Child"
+- If 13-19: "Teen"
+- If 20-64: "Adult"
+- If 65+: "Senior"
+
+```python
+# Your code here:
+
+
+
+
+```
+
+## Part 5: Debugging Practice (15 points)
+
+### Question 11: Fix the Logic (15 points)
+This discount calculator has multiple bugs. Fix them:
+
+```python
+# Buggy code
+price = float(input("Enter price: "))
+member = input("Are you a member? ")
+
+if member = "yes":
+    discount = 0.1
+else member == "no":
+    discount = 0
+
+if price > 100 or member == "yes":
+    discount = discount + 0.05
+
+final_price = price - (price * discount)
+print(f"Final price: ${final_price}")
+```
+
+Fixed code:
+```python
+# Your fixed version:
+
+
+
+
+```
+
+## Bonus Question (5 points)
+
+Explain why this is bad practice even though it works:
+
+```python
+score = 85
+grade = "F"
+
+if score >= 90:
+    grade = "A"
+if score >= 80 and score < 90:
+    grade = "B"
+if score >= 70 and score < 80:
+    grade = "C"
+if score >= 60 and score < 70:
+    grade = "D"
+```
+
+Your explanation: _______________________________
+
+---
+
+## AI Usage Documentation
+
+If you used AI, document it:
+
+**Question #**: ____  
+**What you asked**: _______________________________  
+**How it helped**: _______________________________
+
+---
+
+## Answer Key (Instructor Use)
+
+### Part 1
+1. "Perfect beach weather!"
+2. "C" (because 70 is checked first)
+3. "Can get a license"
+4. Frozen, Freezing point, Liquid, Boiling
+
+### Part 2
+5. Bug: Uses if instead of elif, so grade gets overwritten
+6. Problem: "Yes" and "YES" are always truthy; need user_answer == for each
+
+### Part 3
+7. Basic solution:
+```python
+if len(password) >= 8:
+    print("Valid length")
+else:
+    print("Too short! Need 8+ characters")
+```
+
+8. Ticket pricing:
+```python
+if age < 12:
+    price = 8
+elif age >= 65:
+    price = 10
+else:
+    price = 15
+
+if day.lower() == "tuesday":
+    price = price - 2
+```
+
+### Part 4
+9. Flowchart should show diamond with three branches
+10. Code should use elif chain in order
+
+### Part 5
+11. Fixed: = to ==, else not elif, logical fixes
+
+### Bonus
+Bad because: redundant comparisons, inefficient, should use elif
+
+## Grading Scale
+- 90-100: Excellent understanding
+- 80-89: Good grasp of concepts
+- 70-79: Satisfactory progress
+- 60-69: Needs additional practice
+- Below 60: Requires review

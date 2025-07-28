@@ -1,0 +1,321 @@
+---
+title: "Week 3 Assessment: Loop Tracing"
+subtitle: "Understanding Loop Execution Step by Step"
+format:
+  html:
+    toc: true
+    code-fold: false
+  pdf:
+    toc: true
+---
+
+# Loop Tracing Assessment
+
+**Name:** _________________________ **Date:** _____________
+
+**Instructions:** For each problem, trace through the code execution step by step. Show all variable values and output.
+
+---
+
+## Problem 1: While Loop Trace (10 points)
+
+Trace this code:
+```python
+count = 5
+while count > 0:
+    print(f"Count: {count}")
+    count = count - 2
+print("Done!")
+```
+
+Complete the trace table:
+
+| Step | count (before) | Condition (count > 0) | Output | count (after) |
+|------|----------------|----------------------|---------|---------------|
+| 1    | 5              | True                 |         |               |
+| 2    |                |                      |         |               |
+| 3    |                |                      |         |               |
+| 4    |                |                      |         |               |
+
+**Final output (in order):**
+```
+
+
+
+
+```
+
+---
+
+## Problem 2: For Loop with Range (10 points)
+
+Trace this code:
+```python
+total = 0
+for i in range(1, 4):
+    total = total + i
+    print(f"i={i}, total={total}")
+print(f"Final: {total}")
+```
+
+Complete the trace table:
+
+| Iteration | i | total (before) | Calculation | total (after) | Output |
+|-----------|---|----------------|-------------|---------------|---------|
+| 1         |   |                |             |               |         |
+| 2         |   |                |             |               |         |
+| 3         |   |                |             |               |         |
+
+**Final output (in order):**
+```
+
+
+
+
+```
+
+---
+
+## Problem 3: For Loop with List (15 points)
+
+Trace this code:
+```python
+numbers = [10, 25, 30]
+result = 0
+
+for num in numbers:
+    if num > 20:
+        result = result + num
+    print(f"num={num}, result={result}")
+    
+print(f"Final result: {result}")
+```
+
+Complete the trace table:
+
+| Iteration | num | num > 20? | result (before) | Action | result (after) | Output |
+|-----------|-----|-----------|-----------------|---------|----------------|---------|
+| 1         |     |           |                 |         |                |         |
+| 2         |     |           |                 |         |                |         |
+| 3         |     |           |                 |         |                |         |
+
+**Final output (in order):**
+```
+
+
+
+
+
+```
+
+---
+
+## Problem 4: Nested Decision in Loop (15 points)
+
+Trace this code:
+```python
+values = [5, 12, 8, 15, 3]
+count_small = 0
+count_large = 0
+
+for val in values:
+    if val < 10:
+        count_small = count_small + 1
+    else:
+        count_large = count_large + 1
+
+print(f"Small: {count_small}")
+print(f"Large: {count_large}")
+```
+
+Complete the trace table:
+
+| Iteration | val | val < 10? | count_small | count_large |
+|-----------|-----|-----------|-------------|-------------|
+| Start     | -   | -         | 0           | 0           |
+| 1         |     |           |             |             |
+| 2         |     |           |             |             |
+| 3         |     |           |             |             |
+| 4         |     |           |             |             |
+| 5         |     |           |             |             |
+
+**Final output:**
+```
+
+
+```
+
+---
+
+## Problem 5: Loop with Break (10 points)
+
+Trace this code:
+```python
+items = ["apple", "banana", "cherry", "date"]
+search = "cherry"
+
+for item in items:
+    print(f"Checking: {item}")
+    if item == search:
+        print("Found it!")
+        break
+    print("Not this one")
+    
+print("Search complete")
+```
+
+**Write the complete output in order:**
+```
+
+
+
+
+
+
+
+```
+
+**Which items were never checked? Why?**
+
+_________________________________________________
+
+---
+
+## Problem 6: While Loop with Multiple Updates (15 points)
+
+Trace this code:
+```python
+x = 1
+y = 10
+count = 0
+
+while x < y:
+    print(f"x={x}, y={y}")
+    x = x + 2
+    y = y - 1
+    count = count + 1
+    
+print(f"Loop ran {count} times")
+```
+
+Complete the trace table:
+
+| Iteration | x (start) | y (start) | x < y? | Output | x (end) | y (end) | count |
+|-----------|-----------|-----------|---------|---------|----------|----------|--------|
+| 1         | 1         | 10        |         |         |          |          |        |
+| 2         |           |           |         |         |          |          |        |
+| 3         |           |           |         |         |          |          |        |
+| 4         |           |           |         |         |          |          |        |
+| 5         |           |           |         |         |          |          |        |
+
+**Final output line:**
+```
+
+```
+
+---
+
+## Problem 7: List Building (10 points)
+
+Trace this code:
+```python
+result = []
+for i in range(3):
+    value = i * 2
+    result.append(value)
+    print(f"Added {value}")
+    
+print(f"Final list: {result}")
+```
+
+Show the list after each iteration:
+
+| Iteration | i | value | result (after append) |
+|-----------|---|-------|----------------------|
+| 1         |   |       |                      |
+| 2         |   |       |                      |
+| 3         |   |       |                      |
+
+**Final output:**
+```
+
+
+
+
+```
+
+---
+
+## Problem 8: Complex Loop Logic (15 points)
+
+Trace this code:
+```python
+numbers = [4, 7, 2, 9, 5]
+total = 0
+count = 0
+
+for num in numbers:
+    if num > 5:
+        total = total + num
+        count = count + 1
+        
+if count > 0:
+    average = total / count
+    print(f"Average of numbers > 5: {average}")
+else:
+    print("No numbers > 5")
+```
+
+Complete the trace:
+
+| num | num > 5? | total | count |
+|-----|----------|--------|--------|
+| 4   |          |        |        |
+| 7   |          |        |        |
+| 2   |          |        |        |
+| 9   |          |        |        |
+| 5   |          |        |        |
+
+**Final calculation:** _______________
+
+**Output:** _________________________
+
+---
+
+## Grading Rubric
+
+| Problem | Points | Your Score |
+|---------|---------|------------|
+| Problem 1 | 10 |   |
+| Problem 2 | 10 |   |
+| Problem 3 | 15 |   |
+| Problem 4 | 15 |   |
+| Problem 5 | 10 |   |
+| Problem 6 | 15 |   |
+| Problem 7 | 10 |   |
+| Problem 8 | 15 |   |
+| **Total** | **100** |   |
+
+**Grade:** _______
+
+---
+
+## Answer Key (For Instructor Use)
+
+### Problem 1
+```
+Count: 5
+Count: 3
+Count: 1
+Done!
+```
+
+### Problem 2
+```
+i=1, total=1
+i=2, total=3
+i=3, total=6
+Final: 6
+```
+
+[Additional answers provided separately]

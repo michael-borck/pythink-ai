@@ -1,0 +1,593 @@
+---
+title: "Week 12 Assessment: GUI Application Design"
+format: 
+  html:
+    toc: true
+    code-fold: show
+execute:
+  eval: false
+---
+
+# Assessment: GUI Application Design
+**Week 12 - Visual Interfaces**
+
+## Overview
+
+This assessment focuses on designing and implementing complete GUI applications, demonstrating your ability to create professional, user-friendly software with proper architecture and design patterns.
+
+**Time Limit**: 60 minutes  
+**Points**: 100 points  
+**Format**: Application design and implementation
+
+---
+
+## Task 1: Application Architecture (30 points)
+
+### Problem Statement
+
+Design and implement the architecture for a "Personal Finance Tracker" application, demonstrating proper separation of concerns and organized code structure.
+
+### Part A: Architecture Design (15 points)
+
+Create the foundational structure for the application:
+
+```python
+import tkinter as tk
+from tkinter import ttk, messagebox
+import json
+from datetime import datetime
+from abc import ABC, abstractmethod
+
+class Model:
+    """Handles data and business logic."""
+    def __init__(self):
+        self.transactions = []
+        self.categories = ["Food", "Transport", "Entertainment", "Bills", "Other"]
+        self.data_file = "finance_data.json"
+    
+    def add_transaction(self, amount, category, description, date=None):
+        """
+        Add a new transaction.
+        
+        TODO: Implement transaction addition with:
+        - Unique ID generation
+        - Date handling (default to today)
+        - Validation
+        - Return success/failure
+        """
+        pass
+    
+    def get_transactions(self, filter_category=None, filter_date=None):
+        """
+        Get transactions with optional filtering.
+        
+        TODO: Implement filtering by:
+        - Category
+        - Date range
+        - Return filtered list
+        """
+        pass
+    
+    def calculate_summary(self):
+        """
+        Calculate financial summary.
+        
+        TODO: Return dictionary with:
+        - Total income
+        - Total expenses
+        - Balance
+        - Spending by category
+        """
+        pass
+    
+    def save_data(self):
+        """Save transactions to file."""
+        pass
+    
+    def load_data(self):
+        """Load transactions from file."""
+        pass
+
+class View:
+    """Handles all UI elements and display."""
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Personal Finance Tracker")
+        self.root.geometry("800x600")
+        
+        # UI Components (to be set by controller)
+        self.transaction_list = None
+        self.amount_entry = None
+        self.category_var = None
+        self.description_entry = None
+        
+        self.setup_ui()
+    
+    def setup_ui(self):
+        """
+        Create the complete UI with:
+        - Input section for new transactions
+        - Transaction list display
+        - Summary section
+        - Menu bar
+        
+        TODO: Implement complete UI layout
+        """
+        pass
+    
+    def refresh_transaction_list(self, transactions):
+        """Update the transaction display."""
+        pass
+    
+    def refresh_summary(self, summary_data):
+        """Update the summary display."""
+        pass
+    
+    def show_error(self, message):
+        """Display error message to user."""
+        messagebox.showerror("Error", message)
+    
+    def show_success(self, message):
+        """Display success message to user."""
+        messagebox.showinfo("Success", message)
+
+class Controller:
+    """Manages interaction between Model and View."""
+    def __init__(self):
+        self.root = tk.Tk()
+        self.model = Model()
+        self.view = View(self.root)
+        
+        self.bind_events()
+        self.load_initial_data()
+    
+    def bind_events(self):
+        """
+        Connect UI events to controller methods.
+        
+        TODO: Bind:
+        - Add transaction button
+        - Filter controls
+        - Menu commands
+        """
+        pass
+    
+    def add_transaction(self):
+        """
+        Handle adding a new transaction.
+        
+        TODO: 
+        - Get data from view
+        - Validate input
+        - Add to model
+        - Update view
+        - Show feedback
+        """
+        pass
+    
+    def filter_transactions(self):
+        """Handle filtering transactions."""
+        pass
+    
+    def load_initial_data(self):
+        """Load data and update view on startup."""
+        pass
+    
+    def run(self):
+        """Start the application."""
+        self.root.mainloop()
+
+# Application entry point
+if __name__ == "__main__":
+    app = Controller()
+    app.run()
+```
+
+### Part B: Design Patterns (15 points)
+
+Answer the following design questions:
+
+1. **MVC Benefits** (5 points)
+   - What are three specific benefits of using Model-View-Controller pattern in this application?
+   - Provide concrete examples from the finance tracker.
+
+2. **Event Handling Strategy** (5 points)
+   - Design an event handling system for:
+     - Real-time input validation
+     - Keyboard shortcuts
+     - Window resize events
+   - Show code examples
+
+3. **Error Handling Architecture** (5 points)
+   - Design a comprehensive error handling strategy covering:
+     - Invalid user input
+     - File I/O errors
+     - Data corruption
+   - Implement example methods
+
+---
+
+## Task 2: Advanced UI Components (35 points)
+
+### Problem Statement
+
+Create a "Study Session Manager" with advanced UI components and interactions.
+
+### Requirements
+
+Implement the following advanced features:
+
+```python
+import tkinter as tk
+from tkinter import ttk
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import time
+from threading import Thread
+
+class StudySessionManager:
+    def __init__(self):
+        self.window = tk.Tk()
+        self.window.title("Study Session Manager")
+        self.window.geometry("900x700")
+        
+        self.sessions = []
+        self.current_session = None
+        self.is_running = False
+        
+        self.create_ui()
+    
+    def create_ui(self):
+        """
+        Create UI with these components:
+        
+        1. Tabbed Interface (ttk.Notebook)
+           - Timer Tab
+           - Statistics Tab
+           - Settings Tab
+        
+        2. Timer Tab Features:
+           - Custom timer display (Canvas)
+           - Progress bar
+           - Start/Pause/Stop buttons
+           - Subject selection
+           - Break reminders
+        
+        3. Statistics Tab:
+           - Study time graph
+           - Subject breakdown
+           - Daily/Weekly/Monthly views
+        
+        4. Settings Tab:
+           - Timer duration configuration
+           - Break interval settings
+           - Notification preferences
+           - Theme selection
+        """
+        
+        # TODO: Implement tabbed interface
+        self.notebook = ttk.Notebook(self.window)
+        self.notebook.pack(fill="both", expand=True)
+        
+        # Create tabs
+        self.create_timer_tab()
+        self.create_statistics_tab()
+        self.create_settings_tab()
+    
+    def create_timer_tab(self):
+        """
+        Implement timer tab with:
+        - Circular progress indicator (Canvas)
+        - Digital timer display
+        - Control buttons with icons
+        - Subject dropdown
+        """
+        timer_frame = ttk.Frame(self.notebook)
+        self.notebook.add(timer_frame, text="Timer")
+        
+        # TODO: Create circular timer using Canvas
+        # TODO: Implement smooth progress animation
+        # TODO: Add interactive controls
+        pass
+    
+    def create_statistics_tab(self):
+        """
+        Implement statistics tab with:
+        - Matplotlib integration for charts
+        - Data filtering controls
+        - Export functionality
+        """
+        stats_frame = ttk.Frame(self.notebook)
+        self.notebook.add(stats_frame, text="Statistics")
+        
+        # TODO: Create matplotlib figure
+        # TODO: Embed in tkinter
+        # TODO: Add interactive controls
+        pass
+    
+    def create_settings_tab(self):
+        """
+        Implement settings tab with:
+        - Grouped settings sections
+        - Input validation
+        - Apply/Cancel buttons
+        - Settings persistence
+        """
+        settings_frame = ttk.Frame(self.notebook)
+        self.notebook.add(settings_frame, text="Settings")
+        
+        # TODO: Create settings interface
+        # TODO: Implement validation
+        # TODO: Add save functionality
+        pass
+    
+    def draw_circular_timer(self, canvas, percentage):
+        """
+        Draw a circular progress timer.
+        
+        TODO: Implement:
+        - Clear previous drawing
+        - Draw background circle
+        - Draw progress arc
+        - Draw time text in center
+        """
+        pass
+    
+    def update_timer_display(self):
+        """
+        Update timer in separate thread.
+        
+        TODO: Implement:
+        - Thread-safe updates
+        - Smooth animations
+        - Proper cleanup
+        """
+        pass
+    
+    def create_study_chart(self, figure, data):
+        """
+        Create study time visualization.
+        
+        TODO: Implement:
+        - Bar chart for daily study time
+        - Pie chart for subject distribution
+        - Line graph for progress over time
+        """
+        pass
+    
+    def apply_theme(self, theme_name):
+        """
+        Apply visual theme to entire application.
+        
+        TODO: Implement:
+        - Color scheme changes
+        - Font updates
+        - Widget style modifications
+        """
+        pass
+    
+    def export_statistics(self):
+        """
+        Export statistics to file.
+        
+        TODO: Implement:
+        - File dialog for save location
+        - Multiple format options (CSV, PDF)
+        - Progress indication
+        """
+        pass
+
+# Advanced UI demonstration
+app = StudySessionManager()
+app.window.mainloop()
+```
+
+### Implementation Requirements
+
+1. **Tabbed Interface** (10 points)
+   - Properly organized tabs
+   - Consistent styling across tabs
+   - Tab change handling
+
+2. **Custom Graphics** (10 points)
+   - Canvas-based timer display
+   - Smooth animations
+   - Interactive elements
+
+3. **Data Visualization** (10 points)
+   - Integrated charts/graphs
+   - Interactive controls
+   - Real-time updates
+
+4. **Advanced Widgets** (5 points)
+   - Progress bars
+   - Themed widgets
+   - Custom dialogs
+
+---
+
+## Task 3: User Experience Design (20 points)
+
+### Problem Statement
+
+Evaluate and improve the user experience of a poorly designed application.
+
+### Part A: UX Analysis (10 points)
+
+Given this problematic code, identify and fix UX issues:
+
+```python
+# Problematic Recipe Manager
+def bad_recipe_app():
+    w = tk.Tk()
+    w.title("recipe")
+    
+    # Everything in one frame
+    tk.Label(w, text="name").pack()
+    e1 = tk.Entry(w, width=10).pack()
+    tk.Label(w, text="ingredients").pack()
+    e2 = tk.Entry(w, width=10).pack()
+    tk.Label(w, text="time").pack()
+    e3 = tk.Entry(w, width=10).pack()
+    
+    def save():
+        # No validation
+        # No feedback
+        print("saved")
+    
+    tk.Button(w, text="s", command=save).pack()
+    tk.Button(w, text="d").pack()  # No command
+    tk.Button(w, text="q", command=w.quit).pack()
+    
+    # No organization
+    for i in range(10):
+        tk.Label(w, text=f"Recipe {i}").pack()
+    
+    w.mainloop()
+```
+
+**Identify Issues:**
+1. Visual/Layout problems (list 5)
+2. Functionality issues (list 5)
+3. User feedback problems (list 3)
+
+### Part B: UX Improvement (10 points)
+
+Redesign the recipe manager with excellent UX:
+
+```python
+class ImprovedRecipeManager:
+    """
+    Implement a recipe manager with excellent UX:
+    
+    Requirements:
+    1. Clear visual hierarchy
+    2. Intuitive navigation
+    3. Helpful user feedback
+    4. Error prevention
+    5. Consistent design
+    6. Keyboard shortcuts
+    7. Responsive layout
+    """
+    
+    def __init__(self):
+        # TODO: Implement improved version
+        pass
+```
+
+Focus on:
+- Professional appearance
+- Clear labeling
+- Logical grouping
+- User guidance
+- Error handling
+- Accessibility
+
+---
+
+## Task 4: Complete Application Challenge (15 points)
+
+### Problem Statement
+
+Create a "Quick Note Taker" application in 30 minutes that demonstrates all your GUI skills.
+
+### Requirements
+
+Build a note-taking app with:
+
+1. **Core Features** (10 points)
+   - Create new notes
+   - Save notes with timestamps
+   - Search notes
+   - Delete notes (with confirmation)
+   - Auto-save functionality
+
+2. **UI Excellence** (5 points)
+   - Clean, modern interface
+   - Keyboard shortcuts
+   - Status indicators
+   - Proper error handling
+   - Responsive design
+
+### Starter Template
+
+```python
+class QuickNoteTaker:
+    def __init__(self):
+        self.window = tk.Tk()
+        self.window.title("Quick Note Taker")
+        
+        # TODO: Implement complete application
+        # Focus on quality over quantity
+        # Make it something you'd actually use!
+    
+    def run(self):
+        self.window.mainloop()
+
+# Build your app!
+app = QuickNoteTaker()
+app.run()
+```
+
+---
+
+## Submission Requirements
+
+### Files to Submit
+
+1. `finance_tracker.py` - Task 1 MVC application
+2. `study_manager.py` - Task 2 advanced UI
+3. `ux_analysis.txt` - Task 3 UX issue identification
+4. `improved_recipe.py` - Task 3 improved design
+5. `quick_notes.py` - Task 4 complete application
+
+### Documentation
+
+Each file should include:
+- Clear comments explaining design decisions
+- Docstrings for all classes and methods
+- List of features implemented
+- Known limitations or future improvements
+
+### Evaluation Criteria
+
+| Component | Points | Focus Areas |
+|-----------|---------|-------------|
+| **Architecture** | 30 | MVC pattern, organization, separation of concerns |
+| **Advanced UI** | 35 | Complex widgets, graphics, data visualization |
+| **UX Design** | 20 | User-centered design, improvements, analysis |
+| **Integration** | 15 | Complete application, feature integration |
+
+---
+
+## Excellence Indicators
+
+### Architecture Excellence
+- Clear separation of concerns
+- Reusable components
+- Extensible design
+- Proper error propagation
+
+### UI/UX Excellence
+- Intuitive without documentation
+- Consistent visual language
+- Responsive to user actions
+- Graceful error handling
+
+### Code Excellence
+- Self-documenting code
+- Efficient algorithms
+- Resource management
+- Professional organization
+
+---
+
+## Common Pitfalls to Avoid
+
+1. **Over-Engineering**: Don't make it more complex than needed
+2. **Under-Testing**: Test all features and edge cases
+3. **Poor Organization**: Keep related code together
+4. **Ignoring UX**: Always consider the user's perspective
+5. **Incomplete Features**: Better to have fewer working features
+
+Remember: You're building applications that real people would use. Make them proud to show!

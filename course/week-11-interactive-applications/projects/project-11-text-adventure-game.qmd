@@ -1,0 +1,442 @@
+---
+title: "Week 11 Project: Text Adventure Game"
+format: 
+  html:
+    toc: true
+    code-fold: show
+execute:
+  eval: false
+---
+
+# Project 11: Text Adventure Game
+**Building Interactive Adventures with State Management**
+
+## Overview
+
+Create a complete text adventure game that demonstrates mastery of interactive programming, state management, and user experience design. Your game should provide an engaging experience where players make meaningful choices, progress their character, and explore a dynamic world.
+
+**Duration**: 3-4 hours  
+**Difficulty**: Intermediate to Advanced  
+**Skills Focus**: Interactive systems, state management, random content, user experience
+
+---
+
+## Learning Objectives
+
+By completing this project, you will demonstrate:
+
+1. **Interactive System Design**
+   - Create intuitive menu-driven interfaces
+   - Implement responsive user feedback
+   - Design engaging user experience flows
+
+2. **Advanced State Management**
+   - Maintain complex application state
+   - Implement persistent save/load functionality
+   - Handle state validation and recovery
+
+3. **Dynamic Content Generation**
+   - Use randomness to create varied experiences
+   - Implement procedural content systems
+   - Balance predictability with surprise
+
+4. **Professional Development Practices**
+   - Write maintainable, well-structured code
+   - Debug complex interactive systems
+   - Document design decisions clearly
+
+---
+
+## Project Requirements
+
+### Core Features (Required)
+
+#### 1. Character System
+- [ ] Character creation with name input
+- [ ] Level-based progression system (1-20)
+- [ ] At least 4 character attributes (strength, intelligence, etc.)
+- [ ] Health and mana/energy systems
+- [ ] Experience points and leveling mechanics
+
+#### 2. World and Exploration
+- [ ] At least 5 different explorable locations
+- [ ] Location descriptions with atmospheric details
+- [ ] Travel system between discovered locations
+- [ ] Hidden locations unlocked through exploration
+
+#### 3. Interactive Events
+- [ ] At least 10 different random events
+- [ ] Each event must have 2-3 meaningful choices
+- [ ] Consequences that affect character or world state
+- [ ] Events that scale with character level
+
+#### 4. Inventory System
+- [ ] Item collection and storage (minimum 20-item capacity)
+- [ ] At least 5 different item types
+- [ ] Usable items (health potions, tools, etc.)
+- [ ] Item descriptions and properties
+
+#### 5. State Persistence
+- [ ] Save game functionality with descriptive names
+- [ ] Load saved games with validation
+- [ ] Multiple save slots (at least 3)
+- [ ] Auto-save feature
+
+#### 6. User Interface
+- [ ] Clear, intuitive menu systems
+- [ ] Consistent navigation patterns
+- [ ] Input validation and error handling
+- [ ] Help/tutorial system
+
+### Advanced Features (Choose 2)
+
+#### A. Combat System
+- [ ] Turn-based combat encounters
+- [ ] Enemy types with different abilities
+- [ ] Stat-based damage calculation
+- [ ] Victory rewards (experience, loot)
+- [ ] Combat strategy choices
+
+#### B. Quest System
+- [ ] At least 3 multi-step quests
+- [ ] Quest tracking and progress indicators
+- [ ] Branching quest outcomes
+- [ ] Quest rewards and completion tracking
+
+#### C. Skill System
+- [ ] At least 6 different skills
+- [ ] Skill progression through use
+- [ ] Skill-based challenge resolution
+- [ ] Skill specialization paths
+
+#### D. Economy System
+- [ ] Currency (gold, coins, etc.)
+- [ ] Merchant interactions
+- [ ] Item buying and selling
+- [ ] Price fluctuations or rare items
+
+#### E. Social Interactions
+- [ ] Named NPCs with personalities
+- [ ] Dialogue trees with multiple options
+- [ ] Reputation system
+- [ ] NPC relationships affecting gameplay
+
+#### F. Procedural Generation
+- [ ] Randomly generated locations
+- [ ] Procedural quest generation
+- [ ] Dynamic NPC names and personalities
+- [ ] Variable event outcomes
+
+---
+
+## Technical Specifications
+
+### Code Requirements
+
+1. **File Organization**
+   ```
+   adventure_game.py          # Main game file
+   game_state.py             # State management classes
+   events.py                 # Random event definitions
+   characters.py             # Character and progression systems
+   items.py                  # Item definitions and inventory
+   locations.py              # Location data and descriptions
+   save_system.py            # Save/load functionality
+   ```
+
+2. **Code Quality Standards**
+   - Use meaningful variable and function names
+   - Include docstrings for all functions and classes
+   - Implement proper error handling
+   - Follow consistent code formatting
+   - Include comments for complex logic
+
+3. **Data Structures**
+   - Use dictionaries for complex state management
+   - Implement lists for collections (inventory, locations)
+   - Use appropriate data types for all values
+   - Maintain consistent data structure patterns
+
+### Feature Constraints
+
+**Week 11 Technology Limits** (as per course progression):
+- ✅ **Allowed**: All features through Week 10 PLUS:
+  - `import random` module and all random functions
+  - `time.sleep()` for pacing and dramatic effect
+  - Global variables for state management
+  - Complex nested dictionaries and lists
+  - Advanced control flow patterns
+
+- ❌ **Not Yet Introduced**:
+  - Classes and object-oriented programming
+  - GUI frameworks (tkinter comes in Week 12)
+  - Database systems
+  - Web frameworks or networking
+  - Threading or concurrent programming
+
+---
+
+## Implementation Guide
+
+### Phase 1: Foundation (45 minutes)
+
+1. **Set Up Basic Structure**
+   - Create main game loop
+   - Implement basic menu system
+   - Set up character creation
+   - Design core data structures
+
+2. **Core State Management**
+   - Define game state dictionary structure
+   - Implement basic character stats
+   - Create location system foundation
+   - Set up inventory structure
+
+### Phase 2: Core Features (90 minutes)
+
+1. **Character and Progression**
+   - Implement experience and leveling
+   - Create stat allocation system
+   - Build character display functions
+   - Add progression tracking
+
+2. **World and Exploration**
+   - Create location descriptions
+   - Implement travel system
+   - Build exploration mechanics
+   - Add location discovery
+
+3. **Events and Interactions**
+   - Design random event system
+   - Create event outcomes
+   - Implement choice consequences
+   - Add variety to encounters
+
+### Phase 3: Advanced Systems (75 minutes)
+
+1. **Choose and Implement 2 Advanced Features**
+   - Follow requirements for chosen features
+   - Integrate with existing systems
+   - Test thoroughly for edge cases
+
+2. **State Persistence**
+   - Implement save/load functionality
+   - Add data validation
+   - Create multiple save slots
+   - Test save integrity
+
+### Phase 4: Polish and Testing (30 minutes)
+
+1. **User Experience**
+   - Improve menu clarity and navigation
+   - Add help and instruction text
+   - Implement input validation
+   - Test all user paths
+
+2. **Final Testing**
+   - Play through complete game session
+   - Test save/load functionality
+   - Verify all features work correctly
+   - Fix any remaining bugs
+
+---
+
+## Testing Requirements
+
+### Functionality Testing
+
+Test and document the following scenarios:
+
+1. **Character Creation and Progression**
+   - Create new character
+   - Gain experience and level up
+   - Allocate stat points
+   - View character progression
+
+2. **Exploration and Events**
+   - Explore all locations
+   - Encounter all event types
+   - Make different choices in events
+   - Verify consequences apply correctly
+
+3. **Inventory Management**
+   - Collect various items
+   - Use consumable items
+   - Manage inventory space
+   - View item descriptions
+
+4. **Save/Load System**
+   - Save game in multiple slots
+   - Load saved games successfully
+   - Verify state preservation
+   - Test with corrupted save data
+
+5. **Edge Cases**
+   - Character death scenarios
+   - Full inventory situations
+   - Invalid user inputs
+   - Boundary conditions (level limits, etc.)
+
+---
+
+## Submission Requirements
+
+### Files to Submit
+
+1. **Source Code**
+   - All Python files (organized as specified)
+   - Clear, commented code
+   - Working implementation of all required features
+
+2. **Documentation**
+   - `README.md` with:
+     - Game description and features
+     - Installation and running instructions
+     - Controls and gameplay guide
+     - Advanced features implemented
+
+3. **Design Documentation**
+   - `DESIGN.md` with:
+     - Data structure decisions
+     - Algorithm explanations
+     - AI collaboration examples
+     - Challenge solutions
+
+4. **Testing Documentation**
+   - `TESTING.md` with:
+     - Testing scenarios and results
+     - Known issues or limitations
+     - Future enhancement ideas
+
+### Demonstration Requirements
+
+Be prepared to demonstrate:
+
+1. **Complete Gameplay Session** (10 minutes)
+   - Character creation
+   - Exploration and events
+   - Character progression
+   - Save/load functionality
+
+2. **Advanced Features** (5 minutes)
+   - Show your 2 chosen advanced features
+   - Explain implementation decisions
+   - Demonstrate integration with core systems
+
+3. **Code Walkthrough** (5 minutes)
+   - Explain key data structures
+   - Show most challenging implementation
+   - Discuss AI collaboration examples
+
+---
+
+## Evaluation Criteria
+
+### Technical Implementation (40%)
+
+- **Code Quality** (15%): Clean, readable, well-documented code
+- **Functionality** (15%): All required features work correctly
+- **Data Management** (10%): Efficient state and data handling
+
+### User Experience (30%)
+
+- **Interface Design** (15%): Intuitive, consistent navigation
+- **Game Flow** (10%): Engaging, logical progression
+- **Error Handling** (5%): Graceful handling of invalid inputs
+
+### Advanced Features (20%)
+
+- **Feature Completion** (15%): Chosen advanced features fully implemented
+- **Integration** (5%): Advanced features work seamlessly with core game
+
+### Documentation and Process (10%)
+
+- **Code Documentation** (5%): Clear comments and docstrings
+- **Design Decisions** (3%): Justified technical choices
+- **AI Collaboration** (2%): Effective use of AI assistance
+
+---
+
+## AI Collaboration Guidelines
+
+### Effective AI Prompts for This Project
+
+1. **System Design**
+   - "Help me design a data structure for tracking character progression in a text adventure game"
+   - "What's the best way to organize random events with multiple outcomes?"
+   - "How should I structure save game data for easy validation?"
+
+2. **Implementation Help**
+   - "Help me create a robust menu system that handles invalid input gracefully"
+   - "How can I implement a level-up system that feels rewarding?"
+   - "What's an elegant way to manage inventory with different item types?"
+
+3. **User Experience**
+   - "How can I make my text adventure game more engaging for players?"
+   - "What are good practices for giving feedback to users in interactive applications?"
+   - "Help me design a tutorial that teaches players the game naturally"
+
+4. **Debugging and Testing**
+   - "My save system isn't working correctly - help me debug this function"
+   - "How should I test edge cases in my character progression system?"
+   - "What scenarios should I consider when testing my game state management?"
+
+### Documentation Requirements
+
+Document your AI collaboration by including:
+
+1. **Design Phase**: Show AI conversations about system architecture
+2. **Implementation**: Include AI-suggested code with your modifications
+3. **Problem Solving**: Document how AI helped resolve specific challenges
+4. **Testing**: Show AI assistance with edge case identification
+
+---
+
+## Extensions and Challenges
+
+### For Advanced Students
+
+1. **Narrative Branching**
+   - Create interconnected storylines
+   - Implement choice consequences across sessions
+   - Build character reputation systems
+
+2. **Advanced Combat**
+   - Multi-character party system
+   - Tactical combat with positioning
+   - Equipment with stat modifications
+
+3. **Dynamic World**
+   - Time-based world changes
+   - Seasonal or day/night cycles
+   - Persistent NPC actions
+
+### Research Opportunities
+
+1. **Game Design Principles**
+   - Study player engagement techniques
+   - Research progression curve design
+   - Analyze successful text adventure games
+
+2. **AI in Game Development**
+   - Explore procedural content generation
+   - Research AI-driven narrative systems
+   - Study player behavior analysis
+
+---
+
+## Success Indicators
+
+You've successfully completed this project when:
+
+- ✅ Players can enjoy a complete game session from start to finish
+- ✅ All core features work reliably without crashes
+- ✅ Save/load functionality preserves all important game state
+- ✅ Character progression feels meaningful and engaging
+- ✅ Advanced features enhance rather than complicate the experience
+- ✅ Code is well-organized and thoroughly documented
+- ✅ AI collaboration improved your development process
+
+This project represents the culmination of your interactive programming skills from Week 11. You should feel proud of creating a complete, engaging application that demonstrates professional development practices and thoughtful user experience design.
+
+**Remember**: The goal isn't just to meet requirements, but to create something you're excited to show others - a game that demonstrates your growing expertise in building interactive applications that people actually want to use!

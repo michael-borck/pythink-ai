@@ -1,0 +1,253 @@
+---
+title: "Week 7 Assessment: Data Persistence"
+subtitle: "Building Programs That Remember"
+format:
+  html:
+    toc: true
+    code-fold: false
+    embed-resources: true
+  pdf:
+    toc: true
+---
+
+# Assessment Overview
+
+This assessment tests your ability to design and implement data persistence systems. You'll create save/load functions, design file formats, and handle data corruption scenarios.
+
+**Time Limit:** 45 minutes  
+**Points:** 100 total  
+**Format:** Design and implementation tasks
+
+---
+
+# Part 1: File Format Design (25 points)
+
+## Question 1.1: Simple Format Design (10 points)
+
+Design a file format for each scenario:
+
+```python
+# Scenario A: Save a playlist
+playlist = [
+    {"title": "Song 1", "artist": "Artist A", "duration": 180},
+    {"title": "Song 2", "artist": "Artist B", "duration": 210},
+    {"title": "Song 3", "artist": "Artist A", "duration": 195}
+]
+
+# Design your format (write example):
+# Line 1: _______________
+# Line 2: _______________
+# Line 3: _______________
+
+# Scenario B: Save game progress
+game_state = {
+    "player_name": "Alice",
+    "level": 5,
+    "score": 1250,
+    "lives": 3,
+    "inventory": ["sword", "shield", "potion"]
+}
+
+# Design your format:
+# _______________
+# _______________
+# _______________
+
+# Which format is better for adding new fields? Why?
+# _______________________________________________
+```
+
+## Question 1.2: Multi-Record Format (8 points)
+
+Design a format for storing multiple records:
+
+```python
+# Student gradebook
+students = [
+    {"id": "S001", "name": "Alice", "grades": [85, 92, 78]},
+    {"id": "S002", "name": "Bob", "grades": [90, 88, 95]},
+    {"id": "S003", "name": "Carol", "grades": [92, 85, 89]}
+]
+
+# Option 1: One record per line
+# Example line: _______________
+
+# Option 2: Structured sections
+# Example format:
+# _______________
+# _______________
+# _______________
+
+# Option 3: Header-data format
+# Example:
+# _______________
+# _______________
+
+# Best choice and why: _______________
+```
+
+## Question 1.3: Version Control (7 points)
+
+Design a versioned file format:
+
+```python
+# Version 1: Basic contact
+contact_v1 = {"name": "Alice", "phone": "555-1234"}
+
+# Version 2: Added email
+contact_v2 = {"name": "Alice", "phone": "555-1234", "email": "alice@email.com"}
+
+# Version 3: Added address
+contact_v3 = {
+    "name": "Alice", 
+    "phone": "555-1234", 
+    "email": "alice@email.com",
+    "address": "123 Main St"
+}
+
+# Design a format that handles all versions:
+def save_contact_versioned(contact, filename):
+    """Save contact with version information."""
+    with open(filename, "w") as file:
+        file.write("_______________")  # Version header
+        # Your format here
+        
+        
+
+def load_contact_versioned(filename):
+    """Load contact handling different versions."""
+    contact = {}
+    try:
+        with open(filename, "r") as file:
+            version = _______________
+            # Handle different versions
+            
+            
+            
+    except FileNotFoundError:
+        pass
+    return contact
+```
+
+---
+
+# Part 2: Save/Load Implementation (35 points)
+
+## Question 2.1: Inventory System (15 points)
+
+Implement a complete save/load system:
+
+```python
+class InventoryManager:
+    def __init__(self):
+        self.items = {}
+        self.filename = "inventory.txt"
+    
+    def add_item(self, name, quantity, price):
+        """Add item to inventory."""
+        if name in self.items:
+            self.items[name]["quantity"] += quantity
+        else:
+            self.items[name] = {
+                "quantity": quantity,
+                "price": price
+            }
+        self.auto_save()
+    
+    def remove_item(self, name, quantity):
+        """Remove quantity from inventory."""
+        if name in self.items:
+            self.items[name]["quantity"] -= quantity
+            if self.items[name]["quantity"] <= 0:
+                del self.items[name]
+            self.auto_save()
+    
+    def save_inventory(self):
+        """Save inventory to file."""
+        with open(self.filename, "w") as file:
+            file.write("INVENTORY_V1\\n")
+            for name, data in self.items.items():
+                # Your save format here
+                
+                
+    
+    def load_inventory(self):
+        """Load inventory from file."""
+        self.items = {}
+        try:
+            with open(self.filename, "r") as file:
+                version = file.readline().strip()
+                if version != "INVENTORY_V1":
+                    print("Unknown inventory format")
+                    return False
+                
+                for line in file:
+                    # Your load logic here
+                    
+                    
+                    
+            return True
+        except FileNotFoundError:
+            print("No saved inventory found")
+            return False
+    
+    def auto_save(self):
+        """Automatically save after changes."""
+        self.save_inventory()
+    
+    def display_inventory(self):
+        """Show current inventory."""
+        if not self.items:
+            print("Inventory is empty")
+            return
+        
+        print("\\n=== INVENTORY ===")
+        total_value = 0
+        for name, data in self.items.items():
+            value = data["quantity"] * data["price"]
+            total_value += value
+            print(f"{name}: {data['quantity']} @ ${data['price']:.2f} = ${value:.2f}")
+        print(f"Total Value: ${total_value:.2f}")
+
+# Test the system
+inventory = InventoryManager()
+inventory.load_inventory()  # Load existing data
+inventory.add_item("Apples", 50, 2.50)
+inventory.add_item("Bananas", 30, 1.99)
+inventory.display_inventory()
+```
+
+## Question 2.2: Settings Manager (10 points)
+
+Create a configuration system:
+
+```python
+def save_app_settings(settings, filename="app_config.txt"):
+    """Save application settings with categories."""
+    with open(filename, "w") as file:
+        file.write("# Application Configuration\\n")
+        file.write("# Generated automatically\\n\\n")
+        
+        # Group settings by category
+        categories = {}
+        for key, value in settings.items():
+            if "." in key:
+                category, setting = key.split(".", 1)
+                if category not in categories:
+                    categories[category] = {}
+                categories[category][setting] = value
+            else:
+                if "general" not in categories:
+                    categories["general"] = {}
+                categories["general"][key] = value
+        
+        # Write by category
+        for category, cat_settings in categories.items():
+            file.write(f"[{category}]\\n")
+            for setting, value in cat_settings.items():\n                # Your write format here\n                \n            file.write(\"\\n\")\n\ndef load_app_settings(filename=\"app_config.txt\"):\n    \"\"\"Load settings from configuration file.\"\"\"\n    settings = {}\n    current_category = \"general\"\n    \n    try:\n        with open(filename, \"r\") as file:\n            for line in file:\n                line = line.strip()\n                \n                # Skip comments and empty lines\n                if not line or line.startswith(\"#\"):\n                    continue\n                \n                # Check for category header\n                if line.startswith(\"[\") and line.endswith(\"]\"):\n                    current_category = line[1:-1]\n                    continue\n                \n                # Parse setting line\n                if \"=\" in line:\n                    # Your parsing logic here\n                    \n                    \n                    \n    \n    except FileNotFoundError:\n        print(\"No configuration file found, using defaults\")\n        # Return default settings\n        settings = {\n            \"ui.theme\": \"light\",\n            \"ui.font_size\": \"12\",\n            \"game.difficulty\": \"medium\",\n            \"game.sound\": \"on\",\n            \"player_name\": \"Player1\"\n        }\n    \n    return settings\n\n# Test the system\ntest_settings = {\n    \"ui.theme\": \"dark\",\n    \"ui.font_size\": \"14\",\n    \"game.difficulty\": \"hard\",\n    \"game.sound\": \"off\",\n    \"player_name\": \"Alice\"\n}\n\nsave_app_settings(test_settings)\nloaded = load_app_settings()\nprint(\"Loaded settings:\", loaded)\n```
+
+## Question 2.3: Backup System (10 points)
+
+Implement automatic backups:
+
+```python\nfrom datetime import datetime\n\ndef create_backup(source_file, backup_dir=\"backups\"):\n    \"\"\"Create timestamped backup of file.\"\"\"\n    # Note: We can't create directories yet, so simulate\n    timestamp = datetime.now().strftime(\"%Y%m%d_%H%M%S\")\n    backup_name = f\"{source_file}_{timestamp}.backup\"\n    \n    try:\n        # Your backup logic here\n        \n        \n        \n        return backup_name\n    except FileNotFoundError:\n        print(f\"Cannot backup: {source_file} not found\")\n        return None\n    except Exception as e:\n        print(f\"Backup failed: {e}\")\n        return None\n\ndef restore_from_backup(backup_file, target_file):\n    \"\"\"Restore file from backup.\"\"\"\n    try:\n        # Your restore logic here\n        \n        \n        \n        return True\n    except FileNotFoundError:\n        print(f\"Backup file {backup_file} not found\")\n        return False\n    except Exception as e:\n        print(f\"Restore failed: {e}\")\n        return False\n\ndef auto_backup_save(data, filename, backup_first=True):\n    \"\"\"Save data with automatic backup.\"\"\"\n    if backup_first:\n        backup_name = create_backup(filename)\n        if backup_name:\n            print(f\"Backup created: {backup_name}\")\n    \n    # Save new data\n    # Your save logic here\n    \n    \n\n# Test backup system\ntest_data = {\"user\": \"Alice\", \"score\": 1000}\nauto_backup_save(test_data, \"game_save.txt\")\n```\n\n---\n\n# Part 3: Data Corruption Handling (25 points)\n\n## Question 3.1: Validation and Recovery (15 points)\n\nHandle corrupted data gracefully:\n\n```python\ndef validate_contact_file(filename):\n    \"\"\"Check if contact file is valid.\"\"\"\n    errors = []\n    line_count = 0\n    \n    try:\n        with open(filename, \"r\") as file:\n            # Check version header\n            first_line = file.readline().strip()\n            if not first_line.startswith(\"CONTACTS_\"):\n                errors.append(\"Missing or invalid version header\")\n            \n            # Validate each contact entry\n            for line in file:\n                line_count += 1\n                line = line.strip()\n                if not line:\n                    continue\n                \n                # Your validation logic here\n                parts = line.split(\"|\")\n                \n                # Check minimum fields\n                if _______________:\n                    errors.append(f\"Line {line_count}: Insufficient fields\")\n                \n                # Validate name field\n                if _______________:\n                    errors.append(f\"Line {line_count}: Empty name field\")\n                \n                # Validate phone format (basic)\n                phone = parts[1] if len(parts) > 1 else \"\"\n                if phone and not _______________:\n                    errors.append(f\"Line {line_count}: Invalid phone format\")\n    \n    except FileNotFoundError:\n        errors.append(\"File not found\")\n    except Exception as e:\n        errors.append(f\"File read error: {e}\")\n    \n    return errors\n\ndef repair_contact_file(filename):\n    \"\"\"Attempt to repair corrupted contact file.\"\"\"\n    repaired_contacts = []\n    skipped_lines = 0\n    \n    try:\n        with open(filename, \"r\") as file:\n            # Skip/repair header if needed\n            first_line = file.readline().strip()\n            if not first_line.startswith(\"CONTACTS_\"):\n                print(\"Repairing header...\")\n            \n            for line_num, line in enumerate(file, 2):\n                line = line.strip()\n                if not line:\n                    continue\n                \n                parts = line.split(\"|\")\n                \n                # Try to repair the line\n                if len(parts) >= 2 and parts[0].strip():\n                    # Pad missing fields\n                    while len(parts) < 4:\n                        parts.append(\"\")\n                    \n                    # Clean up fields\n                    name = parts[0].strip()\n                    phone = parts[1].strip()\n                    email = parts[2].strip()\n                    address = parts[3].strip()\n                    \n                    if name:  # At least name is required\n                        repaired_line = f\"{name}|{phone}|{email}|{address}\"\n                        repaired_contacts.append(repaired_line)\n                    else:\n                        skipped_lines += 1\n                        print(f\"Skipping line {line_num}: No valid name\")\n                else:\n                    skipped_lines += 1\n                    print(f\"Skipping line {line_num}: Cannot repair\")\n        \n        # Write repaired file\n        backup_name = f\"{filename}.corrupt_backup\"\n        with open(backup_name, \"w\") as backup:\n            with open(filename, \"r\") as original:\n                backup.write(original.read())\n        \n        with open(filename, \"w\") as file:\n            file.write(\"CONTACTS_V1\\n\")\n            for contact in repaired_contacts:\n                file.write(contact + \"\\n\")\n        \n        print(f\"Repair complete: {len(repaired_contacts)} contacts saved, {skipped_lines} lines skipped\")\n        print(f\"Original file backed up as {backup_name}\")\n        \n        return True\n    \n    except Exception as e:\n        print(f\"Repair failed: {e}\")\n        return False\n\n# Test validation and repair\n# Create a corrupted file for testing\nwith open(\"corrupted_contacts.txt\", \"w\") as file:\n    file.write(\"INVALID_HEADER\\n\")\n    file.write(\"Alice|555-1234|alice@email.com|123 Main St\\n\")\n    file.write(\"Bob|invalid-phone\\n\")  # Missing fields\n    file.write(\"|555-9999|no_name@email.com\\n\")  # No name\n    file.write(\"Carol|555-5555|carol@email.com|456 Oak Ave\\n\")\n\nerrors = validate_contact_file(\"corrupted_contacts.txt\")\nprint(f\"Found {len(errors)} errors:\")\nfor error in errors:\n    print(f\"  - {error}\")\n\nif errors:\n    print(\"\\nAttempting repair...\")\n    repair_contact_file(\"corrupted_contacts.txt\")\n```\n\n## Question 3.2: Safe Loading (10 points)\n\nImplement defensive loading:\n\n```python\ndef safe_load_data(filename, expected_format=\"UNKNOWN\"):\n    \"\"\"Safely load data with comprehensive error handling.\"\"\"\n    result = {\n        \"success\": False,\n        \"data\": {},\n        \"errors\": [],\n        \"warnings\": []\n    }\n    \n    try:\n        with open(filename, \"r\") as file:\n            # Check file size (prevent loading huge files)\n            file.seek(0, 2)  # Go to end\n            size = file.tell()\n            file.seek(0)  # Go back to start\n            \n            if size > 1024 * 1024:  # 1MB limit\n                result[\"errors\"].append(\"File too large\")\n                return result\n            \n            # Read and validate header\n            first_line = file.readline().strip()\n            if expected_format != \"UNKNOWN\" and not first_line.startswith(expected_format):\n                result[\"warnings\"].append(f\"Expected {expected_format}, got {first_line}\")\n            \n            # Read data with limits\n            line_count = 0\n            max_lines = 10000  # Reasonable limit\n            \n            for line in file:\n                line_count += 1\n                if line_count > max_lines:\n                    result[\"errors\"].append(f\"Too many lines (>{max_lines})\")\n                    break\n                \n                line = line.strip()\n                if not line:\n                    continue\n                \n                # Your data parsing here\n                try:\n                    # Parse line based on expected format\n                    if \"|\" in line:\n                        parts = line.split(\"|\")\n                        if len(parts) >= 2:\n                            key = parts[0]\n                            value = \"|\".join(parts[1:])\n                            result[\"data\"][key] = value\n                except Exception as e:\n                    result[\"warnings\"].append(f\"Line {line_count}: {e}\")\n            \n            result[\"success\"] = True\n    \n    except FileNotFoundError:\n        result[\"errors\"].append(\"File not found\")\n    except PermissionError:\n        result[\"errors\"].append(\"Permission denied\")\n    except Exception as e:\n        result[\"errors\"].append(f\"Unexpected error: {e}\")\n    \n    return result\n\n# Test safe loading\nresult = safe_load_data(\"test_data.txt\", \"DATA_V1\")\nif result[\"success\"]:\n    print(f\"Loaded {len(result['data'])} items\")\nelse:\n    print(\"Load failed:\")\n    for error in result[\"errors\"]:\n        print(f\"  ERROR: {error}\")\n\nfor warning in result[\"warnings\"]:\n    print(f\"  WARNING: {warning}\")\n```\n\n---\n\n# Part 4: Application Integration (15 points)\n\n## Question 4.1: Complete Persistence Layer (15 points)\n\nBuild a complete data persistence system:\n\n```python\nclass DataManager:\n    def __init__(self, app_name):\n        self.app_name = app_name\n        self.data_file = f\"{app_name}_data.txt\"\n        self.config_file = f\"{app_name}_config.txt\"\n        self.data = {}\n        self.config = {}\n        self.auto_save = True\n    \n    def initialize(self):\n        \"\"\"Initialize data manager - load existing data.\"\"\"\n        self.load_config()\n        self.load_data()\n        print(f\"Data manager initialized for {self.app_name}\")\n    \n    def load_config(self):\n        \"\"\"Load application configuration.\"\"\"\n        try:\n            # Your config loading here\n            \n            \n            \n        except:\n            # Default config\n            self.config = {\n                \"version\": \"1.0\",\n                \"auto_save\": \"true\",\n                \"backup_count\": \"3\"\n            }\n            self.save_config()\n    \n    def save_config(self):\n        \"\"\"Save current configuration.\"\"\"\n        # Your config saving here\n        \n        \n    \n    def load_data(self):\n        \"\"\"Load application data.\"\"\"\n        try:\n            # Your data loading here\n            \n            \n            \n        except:\n            self.data = {}\n            print(\"Starting with empty data\")\n    \n    def save_data(self):\n        \"\"\"Save current data state.\"\"\"\n        if self.config.get(\"auto_save\", \"true\") == \"true\":\n            self.create_backup()\n        \n        # Your data saving here\n        \n        \n    \n    def create_backup(self):\n        \"\"\"Create numbered backup.\"\"\"\n        backup_count = int(self.config.get(\"backup_count\", \"3\"))\n        \n        # Rotate backups\n        for i in range(backup_count - 1, 0, -1):\n            old_backup = f\"{self.data_file}.backup{i}\"\n            new_backup = f\"{self.data_file}.backup{i+1}\"\n            try:\n                with open(old_backup, \"r\") as src:\n                    with open(new_backup, \"w\") as dst:\n                        dst.write(src.read())\n            except:\n                pass\n        \n        # Create new backup.1\n        try:\n            # Your backup creation here\n            \n            \n        except:\n            pass\n    \n    def set_value(self, key, value):\n        \"\"\"Set a data value.\"\"\"\n        self.data[key] = value\n        if self.auto_save:\n            self.save_data()\n    \n    def get_value(self, key, default=None):\n        \"\"\"Get a data value.\"\"\"\n        return self.data.get(key, default)\n    \n    def close(self):\n        \"\"\"Clean shutdown - save everything.\"\"\"\n        self.save_data()\n        self.save_config()\n        print(f\"Data manager closed for {self.app_name}\")\n\n# Test the complete system\ndm = DataManager(\"TestApp\")\ndm.initialize()\n\ndm.set_value(\"user_name\", \"Alice\")\ndm.set_value(\"high_score\", 1500)\ndm.set_value(\"settings\", {\"theme\": \"dark\", \"sound\": \"on\"})\n\nprint(f\"User: {dm.get_value('user_name')}\")\nprint(f\"Score: {dm.get_value('high_score')}\")\n\ndm.close()\n```\n\n---\n\n# Submission Requirements\n\n## Required Files\n\n1. **Python script** (`data_persistence_assessment.py`)\n   - Complete all implementations\n   - Include test output\n   - Add comprehensive comments\n\n2. **Format Documentation** (`formats.txt`)\n   - Explain your file format choices\n   - Justify design decisions\n   - Document version handling\n\n## Grading Rubric\n\n| Section | Points | Focus |\n|---------|---------|-------|\n| Format Design | 25 | Clear, extensible formats |\n| Save/Load Implementation | 35 | Correct data persistence |\n| Corruption Handling | 25 | Robust error recovery |\n| Integration | 15 | Complete working system |\n\n## Tips for Success\n\n1. **Design First** - Plan your format before coding\n2. **Handle Errors** - Always expect file issues\n3. **Test Edge Cases** - Empty files, corrupted data\n4. **Document Formats** - Make them human-readable\n5. **Version Everything** - Plan for future changes\n\nGood luck building persistent applications!

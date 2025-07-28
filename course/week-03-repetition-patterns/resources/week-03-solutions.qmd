@@ -1,0 +1,444 @@
+---
+title: "Week 3: Solutions Guide"
+subtitle: "Complete Solutions for Lab and Assessments"
+format:
+  html:
+    toc: true
+    code-fold: true
+  pdf:
+    toc: true
+---
+
+# Lab Solutions
+
+## Exercise 1.2: Execution Tracing Solution
+
+```python
+total = 0
+for num in [10, 20, 30]:
+    total = total + num
+    print(f"num={num}, total={total}")
+```
+
+| Iteration | num | total (before) | total (after) | Output |
+|-----------|-----|----------------|---------------|---------|
+| 1         | 10  | 0              | 10            | num=10, total=10 |
+| 2         | 20  | 10             | 30            | num=20, total=30 |
+| 3         | 30  | 30             | 60            | num=30, total=60 |
+
+## Exercise 1.3: Predicting Iterations Solution
+
+```python
+# Loop A - runs 5 times (5, 4, 3, 2, 1)
+# Loop B - runs 5 times (0, 2, 4, 6, 8)
+# Loop C - runs 5 times (h, e, l, l, o)
+```
+
+## Exercise 2.1: Counting Patterns Solutions
+
+```python
+# A. Count 1 to 5
+for i in range(1, 6):
+    print(i)
+
+# B. Count down 5 to 1
+for i in range(5, 0, -1):
+    print(i)
+    
+# Alternative with while:
+count = 5
+while count > 0:
+    print(count)
+    count = count - 1
+
+# C. Count by 2s from 0 to 10
+for i in range(0, 11, 2):
+    print(i)
+```
+
+## Exercise 2.2: Input Validation Solution
+
+```python
+age = -1  # Start with invalid value
+while age < 0 or age > 120:
+    age_string = input("Enter your age (0-120): ")
+    age = int(age_string)
+    if age < 0 or age > 120:
+        print("Please enter a valid age!")
+        
+print(f"Your age is {age}")
+```
+
+## Exercise 2.3: Sentinel Value Solution
+
+```python
+total = 0
+number = 0
+
+while number != -1:
+    number = int(input("Enter number (-1 to stop): "))
+    if number != -1:
+        total = total + number
+    
+print(f"Sum: {total}")
+```
+
+## Exercise 3.2: Index Practice Solution
+
+```python
+colors = ["red", "green", "blue"]
+
+# Safe index check
+index = 3
+if index < len(colors):
+    print(colors[index])
+else:
+    print("Index out of range!")
+```
+
+## Exercise 3.3: Building Lists Solution
+
+```python
+scores = []
+
+for i in range(5):
+    score_string = input(f"Enter score {i+1}: ")
+    score = int(score_string)
+    scores.append(score)
+
+print(f"Scores: {scores}")
+```
+
+## Exercise 4.1: Processing All Items Solution
+
+```python
+temps = [72, 75, 68, 79, 71]
+
+# Task 1: Display each
+print("Temperatures in Fahrenheit:")
+for temp in temps:
+    print(f"{temp}°F")
+
+# Task 2: Convert to Celsius
+print("\nTemperatures in Celsius:")
+for temp in temps:
+    celsius = (temp - 32) * 5/9
+    print(f"{temp}°F = {celsius:.1f}°C")
+
+# Task 3: Find average
+total = 0
+for temp in temps:
+    total = total + temp
+average = total / len(temps)
+print(f"\nAverage temperature: {average}°F")
+```
+
+## Exercise 4.2: Finding Items Solution
+
+```python
+shopping_list = ["milk", "bread", "eggs", "cheese"]
+search_item = input("What are you looking for? ")
+
+found = False
+for item in shopping_list:
+    if item.lower() == search_item.lower():
+        print(f"Found {search_item}!")
+        found = True
+        break
+        
+if not found:
+    print(f"{search_item} not in list")
+```
+
+## Exercise 5.2: Simple Statistics Solution
+
+```python
+scores = [85, 92, 78, 65, 90, 88, 72, 60, 95]
+
+# Highest
+highest = scores[0]
+for score in scores:
+    if score > highest:
+        highest = score
+print(f"Highest: {highest}")
+
+# Lowest
+lowest = scores[0]
+for score in scores:
+    if score < lowest:
+        lowest = score
+print(f"Lowest: {lowest}")
+
+# Average
+total = 0
+for score in scores:
+    total = total + score
+average = total / len(scores)
+print(f"Average: {average:.1f}")
+
+# Count passing
+passing = 0
+for score in scores:
+    if score >= 70:
+        passing = passing + 1
+print(f"Passing: {passing} out of {len(scores)}")
+```
+
+---
+
+# Shopping List Manager - Complete Solution
+
+```python
+"""
+Shopping List Manager
+A complete implementation with all required features
+"""
+
+print("=== Shopping List Manager ===")
+
+shopping_list = []
+running = True
+
+while running:
+    print("\n1. Add item")
+    print("2. View list")
+    print("3. Remove item")
+    print("4. Check for item")
+    print("5. Clear list")
+    print("6. Exit")
+    
+    choice = input("\nChoose option: ")
+    
+    if choice == "1":
+        # Add item
+        item = input("Enter item to add: ")
+        if item:  # Not empty
+            shopping_list.append(item)
+            print(f"'{item}' added to your list.")
+        else:
+            print("Cannot add empty item!")
+        
+    elif choice == "2":
+        # View list
+        if len(shopping_list) == 0:
+            print("Your list is empty!")
+        else:
+            print("\nYour Shopping List:")
+            for i in range(len(shopping_list)):
+                print(f"{i+1}. {shopping_list[i]}")
+            print(f"\nTotal items: {len(shopping_list)}")
+            
+    elif choice == "3":
+        # Remove item
+        if len(shopping_list) == 0:
+            print("Nothing to remove - list is empty!")
+        else:
+            # Show list first
+            print("\nYour Shopping List:")
+            for i in range(len(shopping_list)):
+                print(f"{i+1}. {shopping_list[i]}")
+                
+            # Get item number
+            try:
+                num_string = input("\nWhich number to remove? ")
+                num = int(num_string)
+                
+                # Check valid range (1 to length)
+                if 1 <= num <= len(shopping_list):
+                    # Convert to 0-based index
+                    index = num - 1
+                    removed_item = shopping_list[index]
+                    shopping_list.remove(removed_item)
+                    print(f"'{removed_item}' removed from your list.")
+                else:
+                    print(f"Invalid number! Choose 1-{len(shopping_list)}")
+            except:
+                print("Please enter a valid number!")
+        
+    elif choice == "4":
+        # Check for item
+        if len(shopping_list) == 0:
+            print("Your list is empty!")
+        else:
+            search = input("What item to check for? ")
+            
+            # Case-insensitive search
+            found = False
+            position = 0
+            
+            for i in range(len(shopping_list)):
+                if shopping_list[i].lower() == search.lower():
+                    found = True
+                    position = i + 1
+                    break
+                    
+            if found:
+                print(f"'{search}' found at position {position}!")
+            else:
+                print(f"'{search}' is not in your list.")
+        
+    elif choice == "5":
+        # Clear list
+        if len(shopping_list) == 0:
+            print("List is already empty!")
+        else:
+            confirm = input(f"Remove all {len(shopping_list)} items? (y/n): ")
+            if confirm.lower() == 'y':
+                shopping_list = []
+                print("List cleared!")
+            else:
+                print("Clear cancelled.")
+        
+    elif choice == "6":
+        running = False
+        print("\nThank you for using Shopping List Manager!")
+        print("Goodbye!")
+        
+    else:
+        print("Invalid choice! Please choose 1-6.")
+```
+
+---
+
+# Assessment Solutions
+
+## Loop Tracing Assessment
+
+### Problem 1 Solution
+```
+Count: 5
+Count: 3  
+Count: 1
+Done!
+```
+
+### Problem 2 Solution
+| Iteration | i | total (before) | Calculation | total (after) | Output |
+|-----------|---|----------------|-------------|---------------|---------|
+| 1         | 1 | 0              | 0 + 1       | 1             | i=1, total=1 |
+| 2         | 2 | 1              | 1 + 2       | 3             | i=2, total=3 |
+| 3         | 3 | 3              | 3 + 3       | 6             | i=3, total=6 |
+
+Final output: `Final: 6`
+
+### Problem 3 Solution
+| Iteration | num | num > 20? | result (before) | Action | result (after) | Output |
+|-----------|-----|-----------|-----------------|---------|----------------|---------|
+| 1         | 10  | False     | 0               | None    | 0              | num=10, result=0 |
+| 2         | 25  | True      | 0               | Add 25  | 25             | num=25, result=25 |
+| 3         | 30  | True      | 25              | Add 30  | 55             | num=30, result=55 |
+
+Final output: `Final result: 55`
+
+## Pattern Recognition Assessment
+
+### Part 1 Expected Answers:
+1. for with range - known count
+2. while - unknown iterations  
+3. for with list - process each item
+4. for with range - known count
+5. while - condition-based
+6. for with list - process collection
+7. for with range - known count
+8. while - sentinel value
+
+### Part 2 Answers:
+1. A (Accumulation)
+2. B (Search)
+3. C (Validation)
+4. D (Building)
+5. E (Counting)
+6. F (Index-based)
+
+### Part 3 Solutions:
+
+Question 1:
+```python
+for i in range(5):
+    print(f"Number: {i}")
+```
+
+Question 2:
+```python
+names = ["Alice", "Bob", "Charlie"]
+i = 0
+while i < len(names):
+    print(f"Hello, {names[i]}!")
+    i = i + 1
+```
+
+Question 3: Option B is better - cleaner, more Pythonic, less error-prone
+
+## Debugging Assessment Key Points
+
+### Problem 1: Missing increment
+```python
+count = 1
+while count <= 5:
+    print(count)
+    count = count + 1  # FIXED: Added increment
+```
+
+### Problem 2: Wrong range
+```python
+for i in range(1, 6):  # FIXED: range(1, 6) for 1-5
+    print(i)
+```
+
+### Problem 3: Index out of bounds
+```python
+fruits = ["apple", "banana", "orange"]
+for i in range(len(fruits)):  # FIXED: Use len()
+    print(fruits[i])
+```
+
+### Problem 4: Empty list access
+```python
+scores = []
+if len(scores) > 0:  # FIXED: Check first
+    highest = scores[0]
+    for score in scores:
+        if score > highest:
+            highest = score
+    print(f"Highest: {highest}")
+else:
+    print("No scores to analyze")
+```
+
+### Problem 5: Modifying list during iteration
+```python
+# Better approach: build new list
+scores = [85, 65, 90, 55, 75, 60, 80]
+passing_scores = []
+for score in scores:
+    if score >= 70:
+        passing_scores.append(score)
+scores = passing_scores
+print(scores)
+```
+
+---
+
+# Teaching Notes on Solutions
+
+## Common Mistakes to Highlight
+
+1. **Off-by-one errors**: Always check range parameters
+2. **Empty list handling**: Check length before accessing
+3. **Infinite loops**: Ensure loop variable changes
+4. **Wrong loop choice**: Match pattern to problem
+
+## Debugging Strategies to Emphasize
+
+1. Add print statements inside loops
+2. Check loop conditions carefully
+3. Test with edge cases (0, 1, many)
+4. Trace execution manually first
+
+## Extension Ideas for Advanced Students
+
+1. Add sorting to shopping list
+2. Implement undo feature
+3. Save list between sessions (preview)
+4. Category organization
+5. Quantity tracking

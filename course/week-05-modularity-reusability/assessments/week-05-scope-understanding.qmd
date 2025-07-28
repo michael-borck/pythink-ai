@@ -1,0 +1,335 @@
+---
+title: "Week 5 Assessment: Scope Understanding"
+subtitle: "Mastering Local vs Global Variables"
+format:
+  html:
+    toc: true
+    code-fold: false
+  pdf:
+    toc: true
+---
+
+# Variable Scope Assessment
+
+**Name:** _________________________ **Date:** _____________
+
+**Instructions:** Analyze variable scope in each problem. Identify local vs global variables and predict outputs.
+
+---
+
+## Problem 1: Basic Scope Identification (15 points)
+
+Label each variable as LOCAL or GLOBAL:
+
+```python
+score = 100  # ____________
+
+def update_score(points):
+    bonus = 10  # ____________
+    new_score = score + points + bonus  # new_score is ____________
+    return new_score
+
+def display_info():
+    message = "Game Status"  # ____________
+    print(message)
+    print(f"Current score: {score}")  # score here is ____________
+
+result = update_score(50)  # result is ____________
+```
+
+---
+
+## Problem 2: Scope Prediction (20 points)
+
+Predict the output:
+
+```python
+name = "Global Alice"
+count = 5
+
+def function_one():
+    name = "Local Bob"
+    count = 10
+    print(f"In function_one: {name}, {count}")
+
+def function_two():
+    print(f"In function_two: {name}, {count}")
+
+def function_three(name):
+    count = 15
+    print(f"In function_three: {name}, {count}")
+
+# What will each print?
+print(f"In main: {name}, {count}")         # 1. ________________
+function_one()                              # 2. ________________
+function_two()                              # 3. ________________
+function_three("Parameter Charlie")         # 4. ________________
+print(f"After calls: {name}, {count}")     # 5. ________________
+```
+
+---
+
+## Problem 3: Scope Errors (20 points)
+
+Each code snippet has a scope-related error. Identify and fix it:
+
+### Error A:
+```python
+def calculate_total():
+    subtotal = 100
+    tax = subtotal * tax_rate  # Error!
+    return subtotal + tax
+
+tax_rate = 0.08
+total = calculate_total()
+```
+
+**Error:** _________________________________
+
+**Fix:**
+```python
+def calculate_total(________):
+    # Your fix
+    
+    
+```
+
+### Error B:
+```python
+def increment_counter():
+    counter = counter + 1  # Error!
+    return counter
+
+counter = 0
+new_count = increment_counter()
+```
+
+**Error:** _________________________________
+
+**Fix:**
+```python
+def increment_counter(________):
+    # Your fix
+    
+    
+```
+
+### Error C:
+```python
+def get_user_info():
+    username = input("Enter name: ")
+    user_age = int(input("Enter age: "))
+
+get_user_info()
+print(f"Welcome {username}, age {user_age}")  # Error!
+```
+
+**Error:** _________________________________
+
+**Fix:**
+```python
+def get_user_info():
+    # Your fix
+    
+    
+    
+
+# How to use it correctly:
+
+```
+
+---
+
+## Problem 4: Tricky Scope Cases (25 points)
+
+Analyze these more complex scenarios:
+
+### Case A: Same Name, Different Scopes
+```python
+value = 100
+
+def outer():
+    value = 200
+    
+    def inner():
+        value = 300
+        print(f"Inner: {value}")
+    
+    inner()
+    print(f"Outer: {value}")
+
+outer()
+print(f"Global: {value}")
+```
+
+**Output (3 lines):**
+1. _______________________
+2. _______________________
+3. _______________________
+
+### Case B: Parameter Shadows Global
+```python
+items = ["global1", "global2"]
+
+def process_items(items):
+    items = ["local1", "local2", "local3"]
+    items.append("local4")
+    print(f"Inside: {len(items)} items")
+    return items
+
+result = process_items(items)
+print(f"Result: {len(result)} items")
+print(f"Original: {len(items)} items")
+```
+
+**Output (3 lines):**
+1. _______________________
+2. _______________________
+3. _______________________
+
+### Case C: Modifying Mutable Objects
+```python
+numbers = [1, 2, 3]
+
+def modify_list(lst):
+    lst.append(4)  # Modifies the original!
+    lst = [10, 20, 30]  # Creates new local list
+    lst.append(40)
+    return lst
+
+result = modify_list(numbers)
+print(f"numbers: {numbers}")
+print(f"result: {result}")
+```
+
+**Output (2 lines):**
+1. _______________________
+2. _______________________
+
+**Explain why numbers changed:** ______________________________
+
+_____________________________________________________________
+
+---
+
+## Problem 5: Design with Good Scope (20 points)
+
+Redesign this code to avoid scope issues:
+
+### Original (Poor Design):
+```python
+# Global variables everywhere!
+user_name = ""
+user_score = 0
+high_score = 100
+
+def get_name():
+    global user_name
+    user_name = input("Enter name: ")
+
+def update_score(points):
+    global user_score
+    user_score = user_score + points
+
+def check_high_score():
+    global user_score, high_score
+    if user_score > high_score:
+        high_score = user_score
+        return True
+    return False
+
+# Usage
+get_name()
+update_score(50)
+update_score(75)
+if check_high_score():
+    print(f"{user_name} got a new high score: {user_score}!")
+```
+
+### Your Improved Version (No Globals):
+```python
+def get_name():
+    """Get username from input."""
+    # Your code - return the name
+    
+    
+
+def update_score(current_score, points):
+    """Update and return new score."""
+    # Your code - return new score
+    
+    
+
+def check_high_score(current_score, high_score):
+    """Check if current score beats high score."""
+    # Your code - return True/False and new high score
+    
+    
+    
+
+# Better usage without globals:
+# Your code showing how to use these functions
+
+
+
+
+```
+
+---
+
+## Bonus: Scope Puzzle (10 points)
+
+What does this tricky code print? Trace carefully!
+
+```python
+x = 1
+
+def f():
+    x = 2
+    def g():
+        x = 3
+        def h():
+            # x = 4  # This line is commented out!
+            print(f"h: x = {x}")
+        h()
+        print(f"g: x = {x}")
+    g()
+    print(f"f: x = {x}")
+
+f()
+print(f"main: x = {x}")
+```
+
+**Output (4 lines):**
+1. _______________________
+2. _______________________
+3. _______________________
+4. _______________________
+
+---
+
+## Grading Rubric
+
+| Problem | Points | Your Score |
+|---------|---------|------------|
+| Problem 1: Identification | 15 |   |
+| Problem 2: Prediction | 20 |   |
+| Problem 3: Error Fixes | 20 |   |
+| Problem 4: Tricky Cases | 25 |   |
+| Problem 5: Good Design | 20 |   |
+| Bonus: Scope Puzzle | 10 |   |
+| **Total** | **100** (+10) |   |
+
+**Grade:** _______
+
+---
+
+## Key Concepts to Remember
+
+1. **Local variables** exist only inside their function
+2. **Parameters** are local to their function
+3. **Global variables** exist outside all functions
+4. Functions can **read** globals but shouldn't modify them
+5. **Return values** are the proper way to get data out
+6. **Parameters** are the proper way to get data in
+7. Same name in different scopes = different variables

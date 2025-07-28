@@ -1,0 +1,1840 @@
+---
+title: "Week 12 Lab: Building Visual Interfaces"
+format: 
+  html:
+    toc: true
+    code-fold: show
+execute:
+  eval: false
+---
+
+# Week 12 Lab: Building Visual Interfaces
+**From Console to GUI - Creating Professional Applications**
+
+## Introduction
+
+Welcome to the final lab of your Python journey! Today, you'll apply everything you've learned to create professional graphical user interfaces. We'll transform text-based programs into visual applications that users will actually want to use.
+
+**Lab Duration**: 2 hours  
+**Skill Level**: Integrative (using all previous concepts)
+
+### Prerequisites
+- All concepts from Weeks 1-11
+- Enthusiasm for creating visual applications
+- Ready to celebrate your programming journey!
+
+### AI Partnership Note
+This lab encourages AI collaboration for:
+- Interface design suggestions
+- Widget selection advice
+- Layout optimization
+- Debugging visual issues
+
+Remember: AI can suggest patterns, but you design the user experience!
+
+---
+
+# Exercise 1: Your First GUI Application (20 minutes)
+
+## Introduction
+
+Let's start by converting a familiar program into a GUI. We'll transform the temperature converter from Week 1 into a visual application.
+
+### 1.1 Basic Window and Widgets
+
+**Task**: Create a temperature converter with a graphical interface.
+
+```python
+import tkinter as tk
+
+def create_temperature_converter():
+    """Create a GUI temperature converter application."""
+    
+    # Create the main window
+    window = tk.Tk()
+    window.title("Temperature Converter")
+    window.geometry("300x200")
+    
+    # Add a title label
+    title_label = tk.Label(window, text="Temperature Converter", 
+                          font=("Arial", 16, "bold"))
+    title_label.pack(pady=10)
+    
+    # Create input section
+    input_frame = tk.Frame(window)
+    input_frame.pack(pady=10)
+    
+    tk.Label(input_frame, text="Celsius:").pack(side="left")
+    celsius_entry = tk.Entry(input_frame, width=10)
+    celsius_entry.pack(side="left", padx=5)
+    
+    # Create conversion button
+    def convert():
+        try:
+            celsius = float(celsius_entry.get())
+            fahrenheit = (celsius * 9/5) + 32
+            result_label.config(text=f"{celsius}°C = {fahrenheit:.1f}°F")
+            result_label.config(fg="green")
+        except ValueError:
+            result_label.config(text="Please enter a valid number")
+            result_label.config(fg="red")
+    
+    convert_button = tk.Button(window, text="Convert", command=convert,
+                              bg="blue", fg="white", padx=20)
+    convert_button.pack(pady=10)
+    
+    # Create result label
+    result_label = tk.Label(window, text="", font=("Arial", 12))
+    result_label.pack(pady=10)
+    
+    # Bind Enter key to convert function
+    celsius_entry.bind('<Return>', lambda event: convert())
+    
+    # Focus on entry field
+    celsius_entry.focus()
+    
+    # Start the event loop
+    window.mainloop()
+
+# Run the converter
+create_temperature_converter()
+```
+
+### 1.2 Adding More Features
+
+**Task**: Enhance the converter with bidirectional conversion.
+
+```python
+import tkinter as tk
+
+class TemperatureConverter:
+    def __init__(self):
+        self.window = tk.Tk()
+        self.window.title("Temperature Converter Pro")
+        self.window.geometry("400x300")
+        
+        # Create the interface
+        self.create_widgets()
+        
+    def create_widgets(self):
+        # Title
+        title = tk.Label(self.window, text="Temperature Converter Pro",
+                        font=("Arial", 18, "bold"))
+        title.pack(pady=10)
+        
+        # Celsius input
+        celsius_frame = tk.Frame(self.window)
+        celsius_frame.pack(pady=5)
+        
+        tk.Label(celsius_frame, text="Celsius:", width=10).pack(side="left")
+        self.celsius_var = tk.StringVar()
+        self.celsius_entry = tk.Entry(celsius_frame, textvariable=self.celsius_var, 
+                                     width=15)
+        self.celsius_entry.pack(side="left")
+        
+        # Fahrenheit input
+        fahrenheit_frame = tk.Frame(self.window)
+        fahrenheit_frame.pack(pady=5)
+        
+        tk.Label(fahrenheit_frame, text="Fahrenheit:", width=10).pack(side="left")
+        self.fahrenheit_var = tk.StringVar()
+        self.fahrenheit_entry = tk.Entry(fahrenheit_frame, 
+                                        textvariable=self.fahrenheit_var, width=15)
+        self.fahrenheit_entry.pack(side="left")
+        
+        # Conversion buttons
+        button_frame = tk.Frame(self.window)
+        button_frame.pack(pady=20)
+        
+        tk.Button(button_frame, text="C → F", command=self.celsius_to_fahrenheit,
+                 bg="blue", fg="white", padx=20).pack(side="left", padx=5)
+        
+        tk.Button(button_frame, text="F → C", command=self.fahrenheit_to_celsius,
+                 bg="red", fg="white", padx=20).pack(side="left", padx=5)
+        
+        tk.Button(button_frame, text="Clear", command=self.clear_all,
+                 bg="gray", fg="white", padx=20).pack(side="left", padx=5)
+        
+        # Status label
+        self.status_label = tk.Label(self.window, text="Ready to convert!",
+                                    font=("Arial", 10), fg="green")
+        self.status_label.pack(pady=10)
+        
+        # History text area
+        tk.Label(self.window, text="Conversion History:").pack()
+        self.history_text = tk.Text(self.window, height=5, width=40)
+        self.history_text.pack(pady=5)
+        
+    def celsius_to_fahrenheit(self):
+        try:
+            celsius = float(self.celsius_var.get())
+            fahrenheit = (celsius * 9/5) + 32
+            self.fahrenheit_var.set(f"{fahrenheit:.2f}")
+            self.add_to_history(f"{celsius}°C = {fahrenheit:.2f}°F")
+            self.status_label.config(text="Converted successfully!", fg="green")
+        except ValueError:
+            self.status_label.config(text="Invalid Celsius value!", fg="red")
+    
+    def fahrenheit_to_celsius(self):
+        try:
+            fahrenheit = float(self.fahrenheit_var.get())
+            celsius = (fahrenheit - 32) * 5/9
+            self.celsius_var.set(f"{celsius:.2f}")
+            self.add_to_history(f"{fahrenheit}°F = {celsius:.2f}°C")
+            self.status_label.config(text="Converted successfully!", fg="green")
+        except ValueError:
+            self.status_label.config(text="Invalid Fahrenheit value!", fg="red")
+    
+    def clear_all(self):
+        self.celsius_var.set("")
+        self.fahrenheit_var.set("")
+        self.status_label.config(text="Cleared!", fg="blue")
+    
+    def add_to_history(self, conversion):
+        self.history_text.insert("1.0", conversion + "\n")
+        # Keep only last 10 conversions
+        content = self.history_text.get("1.0", "end").split("\n")
+        if len(content) > 11:
+            self.history_text.delete("11.0", "end")
+    
+    def run(self):
+        self.window.mainloop()
+
+# Create and run the application
+app = TemperatureConverter()
+app.run()
+```
+
+**Reflection Questions**:
+1. How does event-driven programming differ from the console version?
+2. What makes the GUI version more user-friendly?
+3. How would you add temperature unit validation?
+
+---
+
+# Exercise 2: Interactive Calculator GUI (25 minutes)
+
+## Introduction
+
+Let's build a fully functional calculator with a professional interface. This will demonstrate layout management and event handling.
+
+### 2.1 Calculator Layout
+
+**Task**: Create a calculator with a grid layout for buttons.
+
+```python
+import tkinter as tk
+
+class Calculator:
+    def __init__(self):
+        self.window = tk.Tk()
+        self.window.title("Python Calculator")
+        self.window.geometry("300x400")
+        self.window.resizable(False, False)
+        
+        self.current_value = ""
+        self.create_widgets()
+        
+    def create_widgets(self):
+        # Display screen
+        self.display = tk.Entry(self.window, font=("Arial", 20), 
+                               justify="right", bd=10)
+        self.display.pack(fill="both", expand=True, padx=10, pady=10)
+        
+        # Button frame
+        button_frame = tk.Frame(self.window)
+        button_frame.pack(fill="both", expand=True, padx=10, pady=10)
+        
+        # Define buttons
+        buttons = [
+            ['7', '8', '9', '/'],
+            ['4', '5', '6', '*'],
+            ['1', '2', '3', '-'],
+            ['0', '.', '=', '+'],
+            ['C', '←', '(', ')']
+        ]
+        
+        # Create buttons
+        for i, row in enumerate(buttons):
+            for j, button_text in enumerate(row):
+                button = tk.Button(button_frame, text=button_text,
+                                 font=("Arial", 14), width=5, height=2)
+                button.grid(row=i, column=j, padx=2, pady=2, sticky="nsew")
+                
+                # Configure button behavior
+                if button_text == '=':
+                    button.config(bg="green", fg="white",
+                                command=self.calculate)
+                elif button_text == 'C':
+                    button.config(bg="red", fg="white",
+                                command=self.clear)
+                elif button_text == '←':
+                    button.config(bg="orange", fg="white",
+                                command=self.backspace)
+                else:
+                    button.config(command=lambda x=button_text: self.add_to_expression(x))
+        
+        # Configure grid weights for responsive layout
+        for i in range(5):
+            button_frame.rowconfigure(i, weight=1)
+        for j in range(4):
+            button_frame.columnconfigure(j, weight=1)
+            
+        # Bind keyboard events
+        self.window.bind('<Return>', lambda e: self.calculate())
+        self.window.bind('<BackSpace>', lambda e: self.backspace())
+        self.window.bind('<Escape>', lambda e: self.clear())
+        
+        # Bind number keys
+        for num in '0123456789':
+            self.window.bind(num, lambda e, n=num: self.add_to_expression(n))
+        
+        # Bind operator keys
+        for op in '+-*/().':
+            self.window.bind(op, lambda e, o=op: self.add_to_expression(o))
+    
+    def add_to_expression(self, value):
+        self.current_value += str(value)
+        self.update_display()
+    
+    def update_display(self):
+        self.display.delete(0, tk.END)
+        self.display.insert(0, self.current_value)
+    
+    def clear(self):
+        self.current_value = ""
+        self.update_display()
+    
+    def backspace(self):
+        self.current_value = self.current_value[:-1]
+        self.update_display()
+    
+    def calculate(self):
+        try:
+            # Evaluate the expression safely
+            result = str(eval(self.current_value))
+            self.current_value = result
+            self.update_display()
+        except:
+            self.display.delete(0, tk.END)
+            self.display.insert(0, "Error")
+            self.current_value = ""
+    
+    def run(self):
+        self.window.mainloop()
+
+# Create and run calculator
+calc = Calculator()
+calc.run()
+```
+
+### 2.2 Enhanced Calculator with Memory
+
+**Task**: Add memory functions and history to the calculator.
+
+```python
+import tkinter as tk
+from tkinter import messagebox
+
+class ScientificCalculator:
+    def __init__(self):
+        self.window = tk.Tk()
+        self.window.title("Scientific Calculator")
+        self.window.geometry("400x600")
+        
+        self.current_value = ""
+        self.memory_value = 0
+        self.history = []
+        
+        self.create_widgets()
+        
+    def create_widgets(self):
+        # Top frame for display and memory
+        top_frame = tk.Frame(self.window)
+        top_frame.pack(fill="x", padx=10, pady=10)
+        
+        # Memory display
+        self.memory_label = tk.Label(top_frame, text="M: 0", 
+                                    font=("Arial", 10), anchor="w")
+        self.memory_label.pack(fill="x")
+        
+        # Main display
+        self.display = tk.Entry(top_frame, font=("Arial", 20), 
+                               justify="right", bd=5)
+        self.display.pack(fill="x", pady=(5, 0))
+        
+        # Button frame
+        button_frame = tk.Frame(self.window)
+        button_frame.pack(fill="both", expand=True, padx=10)
+        
+        # Define enhanced buttons
+        buttons = [
+            ['MC', 'MR', 'M+', 'M-', 'MS'],
+            ['7', '8', '9', '/', 'C'],
+            ['4', '5', '6', '*', '←'],
+            ['1', '2', '3', '-', '√'],
+            ['0', '.', '=', '+', '±']
+        ]
+        
+        # Create buttons with enhanced styling
+        for i, row in enumerate(buttons):
+            for j, button_text in enumerate(row):
+                button = tk.Button(button_frame, text=button_text,
+                                 font=("Arial", 12), width=5, height=2)
+                button.grid(row=i, column=j, padx=2, pady=2, sticky="nsew")
+                
+                # Configure button commands and colors
+                self.configure_button(button, button_text)
+        
+        # Configure grid
+        for i in range(5):
+            button_frame.rowconfigure(i, weight=1)
+        for j in range(5):
+            button_frame.columnconfigure(j, weight=1)
+        
+        # History frame
+        history_frame = tk.Frame(self.window)
+        history_frame.pack(fill="both", expand=True, padx=10, pady=10)
+        
+        tk.Label(history_frame, text="History:", font=("Arial", 10)).pack(anchor="w")
+        
+        # History listbox with scrollbar
+        scrollbar = tk.Scrollbar(history_frame)
+        scrollbar.pack(side="right", fill="y")
+        
+        self.history_listbox = tk.Listbox(history_frame, height=6,
+                                         yscrollcommand=scrollbar.set)
+        self.history_listbox.pack(fill="both", expand=True)
+        scrollbar.config(command=self.history_listbox.yview)
+        
+        # Status bar
+        self.status_bar = tk.Label(self.window, text="Ready", 
+                                  bd=1, relief="sunken", anchor="w")
+        self.status_bar.pack(side="bottom", fill="x")
+        
+    def configure_button(self, button, text):
+        """Configure button appearance and command based on its function."""
+        if text == '=':
+            button.config(bg="green", fg="white", command=self.calculate)
+        elif text == 'C':
+            button.config(bg="red", fg="white", command=self.clear)
+        elif text == '←':
+            button.config(bg="orange", fg="white", command=self.backspace)
+        elif text.startswith('M'):
+            button.config(bg="lightblue", command=lambda: self.memory_operation(text))
+        elif text == '√':
+            button.config(command=self.square_root)
+        elif text == '±':
+            button.config(command=self.toggle_sign)
+        elif text in '0123456789.+-*/()':
+            button.config(command=lambda x=text: self.add_to_expression(x))
+    
+    def add_to_expression(self, value):
+        self.current_value += str(value)
+        self.update_display()
+        self.status_bar.config(text=f"Entering: {value}")
+    
+    def update_display(self):
+        self.display.delete(0, tk.END)
+        self.display.insert(0, self.current_value)
+    
+    def clear(self):
+        self.current_value = ""
+        self.update_display()
+        self.status_bar.config(text="Cleared")
+    
+    def backspace(self):
+        self.current_value = self.current_value[:-1]
+        self.update_display()
+    
+    def calculate(self):
+        try:
+            expression = self.current_value
+            result = eval(expression)
+            
+            # Add to history
+            self.history.append(f"{expression} = {result}")
+            self.history_listbox.insert(0, f"{expression} = {result}")
+            
+            # Update display
+            self.current_value = str(result)
+            self.update_display()
+            self.status_bar.config(text="Calculation complete")
+            
+        except ZeroDivisionError:
+            messagebox.showerror("Error", "Cannot divide by zero!")
+            self.clear()
+        except Exception as e:
+            messagebox.showerror("Error", "Invalid expression!")
+            self.clear()
+    
+    def memory_operation(self, operation):
+        try:
+            current = float(self.display.get()) if self.display.get() else 0
+            
+            if operation == 'MC':  # Memory Clear
+                self.memory_value = 0
+            elif operation == 'MR':  # Memory Recall
+                self.current_value = str(self.memory_value)
+                self.update_display()
+            elif operation == 'M+':  # Memory Add
+                self.memory_value += current
+            elif operation == 'M-':  # Memory Subtract
+                self.memory_value -= current
+            elif operation == 'MS':  # Memory Store
+                self.memory_value = current
+            
+            self.memory_label.config(text=f"M: {self.memory_value}")
+            self.status_bar.config(text=f"Memory: {operation}")
+            
+        except ValueError:
+            self.status_bar.config(text="Invalid value for memory operation")
+    
+    def square_root(self):
+        try:
+            value = float(self.display.get())
+            if value < 0:
+                messagebox.showerror("Error", "Cannot calculate square root of negative number!")
+                return
+            
+            result = value ** 0.5
+            self.history.append(f"√{value} = {result}")
+            self.history_listbox.insert(0, f"√{value} = {result}")
+            
+            self.current_value = str(result)
+            self.update_display()
+            
+        except ValueError:
+            self.status_bar.config(text="Invalid value for square root")
+    
+    def toggle_sign(self):
+        if self.current_value:
+            if self.current_value[0] == '-':
+                self.current_value = self.current_value[1:]
+            else:
+                self.current_value = '-' + self.current_value
+            self.update_display()
+    
+    def run(self):
+        # Add menu bar
+        menubar = tk.Menu(self.window)
+        self.window.config(menu=menubar)
+        
+        # File menu
+        file_menu = tk.Menu(menubar, tearoff=0)
+        menubar.add_cascade(label="File", menu=file_menu)
+        file_menu.add_command(label="Clear History", command=self.clear_history)
+        file_menu.add_separator()
+        file_menu.add_command(label="Exit", command=self.window.quit)
+        
+        # Help menu
+        help_menu = tk.Menu(menubar, tearoff=0)
+        menubar.add_cascade(label="Help", menu=help_menu)
+        help_menu.add_command(label="About", command=self.show_about)
+        
+        self.window.mainloop()
+    
+    def clear_history(self):
+        self.history.clear()
+        self.history_listbox.delete(0, tk.END)
+        self.status_bar.config(text="History cleared")
+    
+    def show_about(self):
+        messagebox.showinfo("About", "Scientific Calculator\nBuilt with Python tkinter\nWeek 12 Lab Exercise")
+
+# Create and run the calculator
+calc = ScientificCalculator()
+calc.run()
+```
+
+**AI Challenge**: 
+Ask AI: "How can I add scientific functions (sin, cos, log) to this calculator while maintaining a clean interface?"
+
+---
+
+# Exercise 3: Todo List Application Foundation (30 minutes)
+
+## Introduction
+
+Now we'll build the foundation of a complete todo list application, integrating concepts from throughout the course.
+
+### 3.1 Basic Todo List Interface
+
+**Task**: Create a todo list with add, delete, and complete functionality.
+
+```python
+import tkinter as tk
+from tkinter import messagebox
+import json
+from datetime import datetime
+
+class TodoApp:
+    def __init__(self):
+        self.window = tk.Tk()
+        self.window.title("My Todo List")
+        self.window.geometry("500x600")
+        
+        self.tasks = []
+        self.create_widgets()
+        self.load_tasks()
+        
+    def create_widgets(self):
+        # Title
+        title_label = tk.Label(self.window, text="My Todo List",
+                              font=("Arial", 20, "bold"))
+        title_label.pack(pady=10)
+        
+        # Input frame
+        input_frame = tk.Frame(self.window)
+        input_frame.pack(pady=10, padx=20, fill="x")
+        
+        self.task_entry = tk.Entry(input_frame, font=("Arial", 12))
+        self.task_entry.pack(side="left", fill="x", expand=True)
+        
+        add_button = tk.Button(input_frame, text="Add Task",
+                             command=self.add_task, bg="green", fg="white")
+        add_button.pack(side="left", padx=(10, 0))
+        
+        # Bind Enter key to add task
+        self.task_entry.bind('<Return>', lambda e: self.add_task())
+        
+        # Task list frame
+        list_frame = tk.Frame(self.window)
+        list_frame.pack(pady=10, padx=20, fill="both", expand=True)
+        
+        # Scrollbar
+        scrollbar = tk.Scrollbar(list_frame)
+        scrollbar.pack(side="right", fill="y")
+        
+        # Task listbox
+        self.task_listbox = tk.Listbox(list_frame, font=("Arial", 11),
+                                      yscrollcommand=scrollbar.set,
+                                      selectmode="single")
+        self.task_listbox.pack(side="left", fill="both", expand=True)
+        scrollbar.config(command=self.task_listbox.yview)
+        
+        # Control buttons frame
+        control_frame = tk.Frame(self.window)
+        control_frame.pack(pady=10)
+        
+        complete_button = tk.Button(control_frame, text="✓ Complete",
+                                  command=self.complete_task,
+                                  bg="blue", fg="white", width=10)
+        complete_button.pack(side="left", padx=5)
+        
+        delete_button = tk.Button(control_frame, text="🗑 Delete",
+                                command=self.delete_task,
+                                bg="red", fg="white", width=10)
+        delete_button.pack(side="left", padx=5)
+        
+        clear_completed_button = tk.Button(control_frame, text="Clear Done",
+                                         command=self.clear_completed,
+                                         bg="orange", fg="white", width=10)
+        clear_completed_button.pack(side="left", padx=5)
+        
+        # Status bar
+        self.status_bar = tk.Label(self.window, text="Ready",
+                                  bd=1, relief="sunken", anchor="w")
+        self.status_bar.pack(side="bottom", fill="x")
+        
+    def add_task(self):
+        task_text = self.task_entry.get().strip()
+        if task_text:
+            task = {
+                "text": task_text,
+                "completed": False,
+                "created": datetime.now().isoformat(),
+                "completed_at": None
+            }
+            self.tasks.append(task)
+            self.refresh_task_list()
+            self.task_entry.delete(0, tk.END)
+            self.save_tasks()
+            self.update_status(f"Added: {task_text}")
+        else:
+            messagebox.showwarning("Empty Task", "Please enter a task!")
+    
+    def complete_task(self):
+        selection = self.task_listbox.curselection()
+        if selection:
+            index = selection[0]
+            self.tasks[index]["completed"] = not self.tasks[index]["completed"]
+            if self.tasks[index]["completed"]:
+                self.tasks[index]["completed_at"] = datetime.now().isoformat()
+            else:
+                self.tasks[index]["completed_at"] = None
+            
+            self.refresh_task_list()
+            self.save_tasks()
+            status = "completed" if self.tasks[index]["completed"] else "uncompleted"
+            self.update_status(f"Task {status}")
+    
+    def delete_task(self):
+        selection = self.task_listbox.curselection()
+        if selection:
+            index = selection[0]
+            task_text = self.tasks[index]["text"]
+            
+            if messagebox.askyesno("Confirm Delete", f"Delete task: {task_text}?"):
+                del self.tasks[index]
+                self.refresh_task_list()
+                self.save_tasks()
+                self.update_status(f"Deleted: {task_text}")
+    
+    def clear_completed(self):
+        completed_count = sum(1 for task in self.tasks if task["completed"])
+        
+        if completed_count > 0:
+            if messagebox.askyesno("Clear Completed", 
+                                 f"Remove {completed_count} completed tasks?"):
+                self.tasks = [task for task in self.tasks if not task["completed"]]
+                self.refresh_task_list()
+                self.save_tasks()
+                self.update_status(f"Cleared {completed_count} completed tasks")
+        else:
+            messagebox.showinfo("No Completed Tasks", "No completed tasks to clear!")
+    
+    def refresh_task_list(self):
+        self.task_listbox.delete(0, tk.END)
+        
+        for i, task in enumerate(self.tasks):
+            if task["completed"]:
+                display_text = f"✓ {task['text']}"
+                self.task_listbox.insert(tk.END, display_text)
+                self.task_listbox.itemconfig(i, fg="gray")
+            else:
+                self.task_listbox.insert(tk.END, f"○ {task['text']}")
+    
+    def save_tasks(self):
+        try:
+            with open("tasks.json", "w") as f:
+                json.dump(self.tasks, f, indent=2)
+        except Exception as e:
+            messagebox.showerror("Save Error", f"Could not save tasks: {e}")
+    
+    def load_tasks(self):
+        try:
+            with open("tasks.json", "r") as f:
+                self.tasks = json.load(f)
+            self.refresh_task_list()
+            self.update_status(f"Loaded {len(self.tasks)} tasks")
+        except FileNotFoundError:
+            self.update_status("No saved tasks found")
+        except Exception as e:
+            messagebox.showerror("Load Error", f"Could not load tasks: {e}")
+    
+    def update_status(self, message):
+        self.status_bar.config(text=f"{message} | Total tasks: {len(self.tasks)}")
+    
+    def run(self):
+        # Focus on entry field
+        self.task_entry.focus()
+        
+        # Start the main loop
+        self.window.mainloop()
+
+# Create and run the app
+app = TodoApp()
+app.run()
+```
+
+### 3.2 Enhanced Todo List with Categories
+
+**Task**: Add categories, priorities, and due dates to tasks.
+
+```python
+import tkinter as tk
+from tkinter import ttk, messagebox
+import json
+from datetime import datetime, timedelta
+import os
+
+class AdvancedTodoApp:
+    def __init__(self):
+        self.window = tk.Tk()
+        self.window.title("Advanced Todo Manager")
+        self.window.geometry("700x700")
+        
+        self.tasks = []
+        self.categories = ["Personal", "Work", "Shopping", "Health", "Other"]
+        self.current_filter = "All"
+        
+        self.create_widgets()
+        self.load_data()
+        
+    def create_widgets(self):
+        # Title and menu
+        self.create_menu()
+        
+        title_frame = tk.Frame(self.window)
+        title_frame.pack(fill="x", padx=20, pady=10)
+        
+        tk.Label(title_frame, text="Advanced Todo Manager",
+                font=("Arial", 24, "bold")).pack(side="left")
+        
+        # Filter dropdown
+        tk.Label(title_frame, text="Filter:").pack(side="right", padx=(10, 5))
+        
+        self.filter_var = tk.StringVar(value="All")
+        filter_menu = ttk.Combobox(title_frame, textvariable=self.filter_var,
+                                  values=["All", "Active", "Completed"] + self.categories,
+                                  state="readonly", width=15)
+        filter_menu.pack(side="right")
+        filter_menu.bind('<<ComboboxSelected>>', lambda e: self.apply_filter())
+        
+        # Task input section
+        input_frame = tk.LabelFrame(self.window, text="Add New Task", padx=10, pady=10)
+        input_frame.pack(fill="x", padx=20, pady=10)
+        
+        # First row: Task text
+        tk.Label(input_frame, text="Task:").grid(row=0, column=0, sticky="w")
+        self.task_entry = tk.Entry(input_frame, font=("Arial", 12), width=40)
+        self.task_entry.grid(row=0, column=1, columnspan=3, padx=5, pady=5, sticky="ew")
+        
+        # Second row: Category and Priority
+        tk.Label(input_frame, text="Category:").grid(row=1, column=0, sticky="w")
+        self.category_var = tk.StringVar(value="Personal")
+        category_menu = ttk.Combobox(input_frame, textvariable=self.category_var,
+                                    values=self.categories, state="readonly", width=15)
+        category_menu.grid(row=1, column=1, padx=5, pady=5)
+        
+        tk.Label(input_frame, text="Priority:").grid(row=1, column=2, sticky="w", padx=(20, 5))
+        self.priority_var = tk.StringVar(value="Normal")
+        priority_menu = ttk.Combobox(input_frame, textvariable=self.priority_var,
+                                    values=["Low", "Normal", "High"], 
+                                    state="readonly", width=15)
+        priority_menu.grid(row=1, column=3, padx=5, pady=5)
+        
+        # Third row: Due date
+        tk.Label(input_frame, text="Due:").grid(row=2, column=0, sticky="w")
+        
+        due_frame = tk.Frame(input_frame)
+        due_frame.grid(row=2, column=1, columnspan=2, sticky="w")
+        
+        self.due_var = tk.StringVar(value="No due date")
+        due_options = ["No due date", "Today", "Tomorrow", "This week", "Custom"]
+        
+        for i, option in enumerate(due_options):
+            tk.Radiobutton(due_frame, text=option, variable=self.due_var,
+                         value=option).pack(side="left", padx=5)
+        
+        # Add button
+        add_button = tk.Button(input_frame, text="Add Task", command=self.add_task,
+                             bg="green", fg="white", font=("Arial", 12, "bold"))
+        add_button.grid(row=2, column=3, padx=5, pady=5)
+        
+        # Configure grid weights
+        input_frame.columnconfigure(1, weight=1)
+        
+        # Task list
+        list_frame = tk.Frame(self.window)
+        list_frame.pack(fill="both", expand=True, padx=20, pady=10)
+        
+        # Create Treeview for tasks
+        columns = ("Category", "Priority", "Due", "Created")
+        self.task_tree = ttk.Treeview(list_frame, columns=columns, height=15)
+        
+        # Define columns
+        self.task_tree.heading("#0", text="Task")
+        self.task_tree.heading("Category", text="Category")
+        self.task_tree.heading("Priority", text="Priority")
+        self.task_tree.heading("Due", text="Due Date")
+        self.task_tree.heading("Created", text="Created")
+        
+        # Column widths
+        self.task_tree.column("#0", width=300)
+        self.task_tree.column("Category", width=100)
+        self.task_tree.column("Priority", width=80)
+        self.task_tree.column("Due", width=100)
+        self.task_tree.column("Created", width=100)
+        
+        # Scrollbar
+        scrollbar = ttk.Scrollbar(list_frame, command=self.task_tree.yview)
+        self.task_tree.configure(yscrollcommand=scrollbar.set)
+        
+        # Pack widgets
+        self.task_tree.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
+        
+        # Bind double-click to complete task
+        self.task_tree.bind("<Double-Button-1>", lambda e: self.toggle_complete())
+        
+        # Control buttons
+        control_frame = tk.Frame(self.window)
+        control_frame.pack(pady=10)
+        
+        buttons_config = [
+            ("✓ Complete", self.toggle_complete, "blue"),
+            ("✏ Edit", self.edit_task, "orange"),
+            ("🗑 Delete", self.delete_task, "red"),
+            ("📊 Statistics", self.show_statistics, "purple")
+        ]
+        
+        for text, command, color in buttons_config:
+            tk.Button(control_frame, text=text, command=command,
+                     bg=color, fg="white", width=12).pack(side="left", padx=5)
+        
+        # Status bar
+        self.status_bar = tk.Label(self.window, text="Ready",
+                                  bd=1, relief="sunken", anchor="w")
+        self.status_bar.pack(side="bottom", fill="x")
+        
+    def create_menu(self):
+        menubar = tk.Menu(self.window)
+        self.window.config(menu=menubar)
+        
+        # File menu
+        file_menu = tk.Menu(menubar, tearoff=0)
+        menubar.add_cascade(label="File", menu=file_menu)
+        file_menu.add_command(label="Export Tasks", command=self.export_tasks)
+        file_menu.add_command(label="Import Tasks", command=self.import_tasks)
+        file_menu.add_separator()
+        file_menu.add_command(label="Exit", command=self.window.quit)
+        
+        # Edit menu
+        edit_menu = tk.Menu(menubar, tearoff=0)
+        menubar.add_cascade(label="Edit", menu=edit_menu)
+        edit_menu.add_command(label="Clear All Tasks", command=self.clear_all_tasks)
+        edit_menu.add_command(label="Clear Completed", command=self.clear_completed)
+        
+        # View menu
+        view_menu = tk.Menu(menubar, tearoff=0)
+        menubar.add_cascade(label="View", menu=view_menu)
+        view_menu.add_command(label="Refresh", command=self.refresh_display)
+        view_menu.add_command(label="Statistics", command=self.show_statistics)
+        
+    def add_task(self):
+        task_text = self.task_entry.get().strip()
+        if not task_text:
+            messagebox.showwarning("Empty Task", "Please enter a task!")
+            return
+        
+        # Calculate due date
+        due_date = None
+        due_option = self.due_var.get()
+        
+        if due_option == "Today":
+            due_date = datetime.now().date().isoformat()
+        elif due_option == "Tomorrow":
+            due_date = (datetime.now().date() + timedelta(days=1)).isoformat()
+        elif due_option == "This week":
+            due_date = (datetime.now().date() + timedelta(days=7)).isoformat()
+        
+        # Create task
+        task = {
+            "id": datetime.now().timestamp(),
+            "text": task_text,
+            "category": self.category_var.get(),
+            "priority": self.priority_var.get(),
+            "due_date": due_date,
+            "completed": False,
+            "created": datetime.now().isoformat(),
+            "completed_at": None
+        }
+        
+        self.tasks.append(task)
+        self.refresh_display()
+        self.save_data()
+        
+        # Clear input
+        self.task_entry.delete(0, tk.END)
+        self.task_entry.focus()
+        
+        self.update_status(f"Added: {task_text}")
+    
+    def toggle_complete(self):
+        selection = self.task_tree.selection()
+        if selection:
+            item_id = selection[0]
+            task_index = int(self.task_tree.item(item_id)["tags"][0])
+            
+            self.tasks[task_index]["completed"] = not self.tasks[task_index]["completed"]
+            if self.tasks[task_index]["completed"]:
+                self.tasks[task_index]["completed_at"] = datetime.now().isoformat()
+            else:
+                self.tasks[task_index]["completed_at"] = None
+            
+            self.refresh_display()
+            self.save_data()
+    
+    def edit_task(self):
+        # Implement task editing dialog
+        selection = self.task_tree.selection()
+        if not selection:
+            messagebox.showinfo("No Selection", "Please select a task to edit!")
+            return
+        
+        # Create edit dialog (simplified for space)
+        messagebox.showinfo("Edit Task", "Task editing dialog would appear here!")
+    
+    def delete_task(self):
+        selection = self.task_tree.selection()
+        if selection:
+            item_id = selection[0]
+            task_index = int(self.task_tree.item(item_id)["tags"][0])
+            task_text = self.tasks[task_index]["text"]
+            
+            if messagebox.askyesno("Confirm Delete", f"Delete task: {task_text}?"):
+                del self.tasks[task_index]
+                self.refresh_display()
+                self.save_data()
+    
+    def apply_filter(self):
+        self.current_filter = self.filter_var.get()
+        self.refresh_display()
+    
+    def refresh_display(self):
+        # Clear tree
+        for item in self.task_tree.get_children():
+            self.task_tree.delete(item)
+        
+        # Filter tasks
+        filtered_tasks = []
+        for i, task in enumerate(self.tasks):
+            if self.current_filter == "All":
+                filtered_tasks.append((i, task))
+            elif self.current_filter == "Active" and not task["completed"]:
+                filtered_tasks.append((i, task))
+            elif self.current_filter == "Completed" and task["completed"]:
+                filtered_tasks.append((i, task))
+            elif self.current_filter == task["category"]:
+                filtered_tasks.append((i, task))
+        
+        # Display filtered tasks
+        for index, task in filtered_tasks:
+            # Format display values
+            task_text = task["text"]
+            if task["completed"]:
+                task_text = f"✓ {task_text}"
+            
+            due_display = task["due_date"] if task["due_date"] else "No due date"
+            created_display = datetime.fromisoformat(task["created"]).strftime("%m/%d %H:%M")
+            
+            # Determine priority color tag
+            priority_tag = f"priority_{task['priority']}"
+            
+            # Insert into tree
+            item = self.task_tree.insert("", "end", text=task_text,
+                                       values=(task["category"], task["priority"],
+                                              due_display, created_display),
+                                       tags=(str(index), priority_tag))
+            
+            # Apply styling
+            if task["completed"]:
+                self.task_tree.item(item, tags=(str(index), "completed"))
+        
+        # Configure tags
+        self.task_tree.tag_configure("completed", foreground="gray")
+        self.task_tree.tag_configure("priority_High", foreground="red")
+        self.task_tree.tag_configure("priority_Normal", foreground="black")
+        self.task_tree.tag_configure("priority_Low", foreground="blue")
+        
+        # Update status
+        active_count = sum(1 for t in self.tasks if not t["completed"])
+        completed_count = len(self.tasks) - active_count
+        self.update_status(f"Tasks: {active_count} active, {completed_count} completed")
+    
+    def show_statistics(self):
+        """Show task statistics in a new window."""
+        stats_window = tk.Toplevel(self.window)
+        stats_window.title("Task Statistics")
+        stats_window.geometry("400x300")
+        
+        # Calculate statistics
+        total = len(self.tasks)
+        completed = sum(1 for t in self.tasks if t["completed"])
+        active = total - completed
+        
+        # Category breakdown
+        category_counts = {}
+        for task in self.tasks:
+            cat = task["category"]
+            category_counts[cat] = category_counts.get(cat, 0) + 1
+        
+        # Display statistics
+        tk.Label(stats_window, text="Task Statistics", 
+                font=("Arial", 16, "bold")).pack(pady=10)
+        
+        stats_text = f"""
+Total Tasks: {total}
+Active Tasks: {active}
+Completed Tasks: {completed}
+Completion Rate: {completed/total*100:.1f}% if total > 0 else 0%
+
+Tasks by Category:
+"""
+        for cat, count in category_counts.items():
+            stats_text += f"  {cat}: {count}\n"
+        
+        tk.Label(stats_window, text=stats_text, justify="left",
+                font=("Arial", 12)).pack(pady=10)
+        
+        tk.Button(stats_window, text="Close", 
+                 command=stats_window.destroy).pack(pady=10)
+    
+    def clear_completed(self):
+        completed_count = sum(1 for t in self.tasks if t["completed"])
+        if completed_count > 0:
+            if messagebox.askyesno("Clear Completed", 
+                                 f"Remove {completed_count} completed tasks?"):
+                self.tasks = [t for t in self.tasks if not t["completed"]]
+                self.refresh_display()
+                self.save_data()
+    
+    def clear_all_tasks(self):
+        if self.tasks and messagebox.askyesno("Clear All", 
+                                             "Delete ALL tasks? This cannot be undone!"):
+            self.tasks = []
+            self.refresh_display()
+            self.save_data()
+    
+    def export_tasks(self):
+        # Simplified export
+        filename = f"tasks_export_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        try:
+            with open(filename, "w") as f:
+                json.dump(self.tasks, f, indent=2)
+            messagebox.showinfo("Export Complete", f"Tasks exported to {filename}")
+        except Exception as e:
+            messagebox.showerror("Export Error", f"Could not export tasks: {e}")
+    
+    def import_tasks(self):
+        # Simplified import
+        messagebox.showinfo("Import", "Import functionality would be implemented here!")
+    
+    def save_data(self):
+        try:
+            with open("advanced_tasks.json", "w") as f:
+                json.dump(self.tasks, f, indent=2)
+        except Exception as e:
+            messagebox.showerror("Save Error", f"Could not save tasks: {e}")
+    
+    def load_data(self):
+        try:
+            with open("advanced_tasks.json", "r") as f:
+                self.tasks = json.load(f)
+            self.refresh_display()
+        except FileNotFoundError:
+            self.update_status("No saved tasks found")
+        except Exception as e:
+            messagebox.showerror("Load Error", f"Could not load tasks: {e}")
+    
+    def update_status(self, message):
+        self.status_bar.config(text=message)
+    
+    def run(self):
+        # Bind keyboard shortcuts
+        self.window.bind('<Control-n>', lambda e: self.task_entry.focus())
+        self.window.bind('<Delete>', lambda e: self.delete_task())
+        self.window.bind('<F5>', lambda e: self.refresh_display())
+        
+        # Focus on entry
+        self.task_entry.focus()
+        
+        # Start main loop
+        self.window.mainloop()
+
+# Create and run the advanced app
+app = AdvancedTodoApp()
+app.run()
+```
+
+**Reflection Questions**:
+1. How does the TreeView widget improve the user experience?
+2. What makes this version more professional than the basic version?
+3. How would you add task reminders or notifications?
+
+---
+
+# Exercise 4: Multi-Window Application (20 minutes)
+
+## Introduction
+
+Professional applications often use multiple windows. Let's create an application with dialogs and secondary windows.
+
+### 4.1 Settings and About Windows
+
+**Task**: Create an application with settings and about dialogs.
+
+```python
+import tkinter as tk
+from tkinter import ttk, messagebox, colorchooser
+import json
+import os
+
+class MultiWindowApp:
+    def __init__(self):
+        self.window = tk.Tk()
+        self.window.title("Multi-Window Application Demo")
+        self.window.geometry("600x400")
+        
+        # Application settings
+        self.settings = self.load_settings()
+        
+        self.create_main_window()
+        self.apply_theme()
+        
+    def create_main_window(self):
+        # Menu bar
+        menubar = tk.Menu(self.window)
+        self.window.config(menu=menubar)
+        
+        # File menu
+        file_menu = tk.Menu(menubar, tearoff=0)
+        menubar.add_cascade(label="File", menu=file_menu)
+        file_menu.add_command(label="New", command=self.new_document, accelerator="Ctrl+N")
+        file_menu.add_command(label="Open", command=self.open_document, accelerator="Ctrl+O")
+        file_menu.add_separator()
+        file_menu.add_command(label="Exit", command=self.window.quit)
+        
+        # Edit menu
+        edit_menu = tk.Menu(menubar, tearoff=0)
+        menubar.add_cascade(label="Edit", menu=edit_menu)
+        edit_menu.add_command(label="Settings", command=self.open_settings)
+        
+        # Help menu
+        help_menu = tk.Menu(menubar, tearoff=0)
+        menubar.add_cascade(label="Help", menu=help_menu)
+        help_menu.add_command(label="User Guide", command=self.show_user_guide)
+        help_menu.add_command(label="About", command=self.show_about)
+        
+        # Main content area
+        main_frame = tk.Frame(self.window)
+        main_frame.pack(fill="both", expand=True, padx=20, pady=20)
+        
+        # Text area with scrollbar
+        self.text_area = tk.Text(main_frame, wrap="word", font=(self.settings["font_family"], 
+                                                                self.settings["font_size"]))
+        scrollbar = tk.Scrollbar(main_frame, command=self.text_area.yview)
+        self.text_area.configure(yscrollcommand=scrollbar.set)
+        
+        self.text_area.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
+        
+        # Status bar
+        self.status_bar = tk.Label(self.window, text="Ready", bd=1, 
+                                  relief="sunken", anchor="w")
+        self.status_bar.pack(side="bottom", fill="x")
+        
+        # Bind keyboard shortcuts
+        self.window.bind('<Control-n>', lambda e: self.new_document())
+        self.window.bind('<Control-o>', lambda e: self.open_document())
+        
+    def open_settings(self):
+        """Open settings window."""
+        settings_window = tk.Toplevel(self.window)
+        settings_window.title("Settings")
+        settings_window.geometry("400x500")
+        settings_window.transient(self.window)  # Keep on top of main window
+        settings_window.grab_set()  # Make modal
+        
+        # Create notebook for tabbed interface
+        notebook = ttk.Notebook(settings_window)
+        notebook.pack(fill="both", expand=True, padx=10, pady=10)
+        
+        # Appearance tab
+        appearance_frame = ttk.Frame(notebook)
+        notebook.add(appearance_frame, text="Appearance")
+        
+        # Font settings
+        font_frame = tk.LabelFrame(appearance_frame, text="Font Settings", padx=10, pady=10)
+        font_frame.pack(fill="x", padx=10, pady=10)
+        
+        tk.Label(font_frame, text="Font Family:").grid(row=0, column=0, sticky="w", pady=5)
+        font_var = tk.StringVar(value=self.settings["font_family"])
+        font_menu = ttk.Combobox(font_frame, textvariable=font_var,
+                                values=["Arial", "Times New Roman", "Courier New", "Helvetica"],
+                                state="readonly", width=20)
+        font_menu.grid(row=0, column=1, pady=5)
+        
+        tk.Label(font_frame, text="Font Size:").grid(row=1, column=0, sticky="w", pady=5)
+        size_var = tk.IntVar(value=self.settings["font_size"])
+        size_spinbox = tk.Spinbox(font_frame, from_=8, to=24, textvariable=size_var, width=10)
+        size_spinbox.grid(row=1, column=1, sticky="w", pady=5)
+        
+        # Color settings
+        color_frame = tk.LabelFrame(appearance_frame, text="Color Settings", padx=10, pady=10)
+        color_frame.pack(fill="x", padx=10, pady=10)
+        
+        def choose_bg_color():
+            color = colorchooser.askcolor(initialcolor=self.settings["bg_color"])
+            if color[1]:
+                self.settings["bg_color"] = color[1]
+                bg_color_button.config(bg=color[1])
+        
+        def choose_fg_color():
+            color = colorchooser.askcolor(initialcolor=self.settings["fg_color"])
+            if color[1]:
+                self.settings["fg_color"] = color[1]
+                fg_color_button.config(bg=color[1])
+        
+        tk.Label(color_frame, text="Background Color:").grid(row=0, column=0, sticky="w", pady=5)
+        bg_color_button = tk.Button(color_frame, text="    ", bg=self.settings["bg_color"],
+                                   command=choose_bg_color, width=10)
+        bg_color_button.grid(row=0, column=1, pady=5)
+        
+        tk.Label(color_frame, text="Text Color:").grid(row=1, column=0, sticky="w", pady=5)
+        fg_color_button = tk.Button(color_frame, text="    ", bg=self.settings["fg_color"],
+                                   command=choose_fg_color, width=10)
+        fg_color_button.grid(row=1, column=1, pady=5)
+        
+        # Behavior tab
+        behavior_frame = ttk.Frame(notebook)
+        notebook.add(behavior_frame, text="Behavior")
+        
+        # Auto-save settings
+        autosave_frame = tk.LabelFrame(behavior_frame, text="Auto-save", padx=10, pady=10)
+        autosave_frame.pack(fill="x", padx=10, pady=10)
+        
+        autosave_var = tk.BooleanVar(value=self.settings["auto_save"])
+        tk.Checkbutton(autosave_frame, text="Enable auto-save", 
+                      variable=autosave_var).pack(anchor="w")
+        
+        tk.Label(autosave_frame, text="Auto-save interval (minutes):").pack(anchor="w", pady=(10, 0))
+        interval_var = tk.IntVar(value=self.settings["auto_save_interval"])
+        tk.Spinbox(autosave_frame, from_=1, to=60, textvariable=interval_var, 
+                  width=10).pack(anchor="w")
+        
+        # Advanced tab
+        advanced_frame = ttk.Frame(notebook)
+        notebook.add(advanced_frame, text="Advanced")
+        
+        tk.Label(advanced_frame, text="Advanced settings would go here...",
+                font=("Arial", 12)).pack(pady=50)
+        
+        # Buttons
+        button_frame = tk.Frame(settings_window)
+        button_frame.pack(fill="x", padx=10, pady=10)
+        
+        def save_settings():
+            self.settings["font_family"] = font_var.get()
+            self.settings["font_size"] = size_var.get()
+            self.settings["auto_save"] = autosave_var.get()
+            self.settings["auto_save_interval"] = interval_var.get()
+            
+            self.save_settings()
+            self.apply_theme()
+            settings_window.destroy()
+            messagebox.showinfo("Settings", "Settings saved successfully!")
+        
+        tk.Button(button_frame, text="Save", command=save_settings,
+                 bg="green", fg="white", width=10).pack(side="right", padx=5)
+        tk.Button(button_frame, text="Cancel", command=settings_window.destroy,
+                 width=10).pack(side="right")
+        
+    def show_about(self):
+        """Show about dialog."""
+        about_window = tk.Toplevel(self.window)
+        about_window.title("About")
+        about_window.geometry("400x300")
+        about_window.transient(self.window)
+        about_window.grab_set()
+        
+        # Center the window
+        about_window.update_idletasks()
+        x = (about_window.winfo_screenwidth() // 2) - (about_window.winfo_width() // 2)
+        y = (about_window.winfo_screenheight() // 2) - (about_window.winfo_height() // 2)
+        about_window.geometry(f"+{x}+{y}")
+        
+        # Content
+        tk.Label(about_window, text="Multi-Window Application",
+                font=("Arial", 16, "bold")).pack(pady=20)
+        
+        tk.Label(about_window, text="Version 1.0",
+                font=("Arial", 12)).pack()
+        
+        tk.Label(about_window, text="Created with Python tkinter",
+                font=("Arial", 10)).pack(pady=10)
+        
+        info_text = """
+This application demonstrates:
+• Multiple windows and dialogs
+• Settings management
+• Professional GUI patterns
+• Event-driven programming
+
+Part of Week 12 Python Course
+        """
+        
+        tk.Label(about_window, text=info_text, justify="left",
+                font=("Arial", 10)).pack(pady=20)
+        
+        tk.Button(about_window, text="Close", command=about_window.destroy,
+                 width=20).pack(pady=10)
+    
+    def show_user_guide(self):
+        """Show user guide window."""
+        guide_window = tk.Toplevel(self.window)
+        guide_window.title("User Guide")
+        guide_window.geometry("500x400")
+        
+        # Scrollable text
+        text_frame = tk.Frame(guide_window)
+        text_frame.pack(fill="both", expand=True, padx=10, pady=10)
+        
+        scrollbar = tk.Scrollbar(text_frame)
+        scrollbar.pack(side="right", fill="y")
+        
+        guide_text = tk.Text(text_frame, wrap="word", yscrollcommand=scrollbar.set)
+        guide_text.pack(side="left", fill="both", expand=True)
+        scrollbar.config(command=guide_text.yview)
+        
+        # Insert guide content
+        guide_content = """
+USER GUIDE
+
+Welcome to the Multi-Window Application!
+
+GETTING STARTED
+--------------
+This application demonstrates professional GUI patterns including multiple windows, 
+settings management, and user-friendly interfaces.
+
+FEATURES
+--------
+1. Main Text Editor
+   - Type or paste text in the main area
+   - Text automatically wraps at window edge
+   - Customizable font and colors
+
+2. Settings (Edit → Settings)
+   - Appearance: Change fonts and colors
+   - Behavior: Configure auto-save
+   - Advanced: Additional options
+
+3. Keyboard Shortcuts
+   - Ctrl+N: New document
+   - Ctrl+O: Open document
+   - Ctrl+S: Save document
+
+CUSTOMIZATION
+------------
+Access the Settings window to customize:
+- Font family and size
+- Background and text colors
+- Auto-save preferences
+
+TIPS
+----
+• Use the status bar to monitor application state
+• Settings are automatically saved
+• The application remembers your preferences
+
+For more information, see the About dialog.
+        """
+        
+        guide_text.insert("1.0", guide_content)
+        guide_text.config(state="disabled")  # Make read-only
+        
+        tk.Button(guide_window, text="Close", command=guide_window.destroy,
+                 width=20).pack(pady=10)
+    
+    def new_document(self):
+        if self.text_area.get("1.0", "end-1c"):
+            if messagebox.askyesno("New Document", 
+                                 "Discard current content and create new document?"):
+                self.text_area.delete("1.0", "end")
+                self.status_bar.config(text="New document created")
+        
+    def open_document(self):
+        # Simplified - would normally use filedialog
+        self.status_bar.config(text="Open dialog would appear here")
+    
+    def load_settings(self):
+        """Load settings from file or return defaults."""
+        default_settings = {
+            "font_family": "Arial",
+            "font_size": 12,
+            "bg_color": "#ffffff",
+            "fg_color": "#000000",
+            "auto_save": True,
+            "auto_save_interval": 5
+        }
+        
+        try:
+            with open("app_settings.json", "r") as f:
+                return json.load(f)
+        except:
+            return default_settings
+    
+    def save_settings(self):
+        """Save settings to file."""
+        try:
+            with open("app_settings.json", "w") as f:
+                json.dump(self.settings, f, indent=2)
+        except Exception as e:
+            messagebox.showerror("Settings Error", f"Could not save settings: {e}")
+    
+    def apply_theme(self):
+        """Apply theme settings to application."""
+        self.text_area.config(
+            font=(self.settings["font_family"], self.settings["font_size"]),
+            bg=self.settings["bg_color"],
+            fg=self.settings["fg_color"]
+        )
+    
+    def run(self):
+        self.window.mainloop()
+
+# Create and run the application
+app = MultiWindowApp()
+app.run()
+```
+
+**AI Challenge**: 
+Ask AI: "How can I add a find/replace dialog to this text editor application?"
+
+---
+
+# Exercise 5: Integration Challenge (25 minutes)
+
+## Final Challenge: Complete Application
+
+### 5.1 Bringing It All Together
+
+**Task**: Create a complete application that integrates multiple concepts from the course.
+
+This is your chance to create something unique! Choose one of these options or create your own:
+
+1. **Recipe Manager**: Store, search, and categorize recipes
+2. **Expense Tracker**: Track spending with categories and reports
+3. **Study Timer**: Pomodoro timer with task tracking
+4. **Password Manager**: Secure storage for passwords (simplified)
+5. **Book Library**: Catalog your books with ratings and notes
+
+### Example Framework: Study Timer
+
+```python
+import tkinter as tk
+from tkinter import ttk, messagebox
+import json
+import time
+from datetime import datetime, timedelta
+import threading
+
+class StudyTimer:
+    def __init__(self):
+        self.window = tk.Tk()
+        self.window.title("Study Timer - Pomodoro Technique")
+        self.window.geometry("500x600")
+        
+        # Timer settings
+        self.work_minutes = 25
+        self.break_minutes = 5
+        self.long_break_minutes = 15
+        self.sessions_until_long_break = 4
+        
+        # State
+        self.current_session = 0
+        self.is_running = False
+        self.is_break = False
+        self.time_remaining = self.work_minutes * 60
+        self.tasks = []
+        self.completed_sessions = []
+        
+        self.create_widgets()
+        self.load_data()
+        
+    def create_widgets(self):
+        # Timer display
+        timer_frame = tk.Frame(self.window, bg="lightblue", pady=20)
+        timer_frame.pack(fill="x")
+        
+        self.timer_label = tk.Label(timer_frame, text="25:00", 
+                                   font=("Arial", 48, "bold"),
+                                   bg="lightblue")
+        self.timer_label.pack()
+        
+        self.status_label = tk.Label(timer_frame, text="Ready to focus!",
+                                    font=("Arial", 14),
+                                    bg="lightblue")
+        self.status_label.pack()
+        
+        # Control buttons
+        control_frame = tk.Frame(self.window)
+        control_frame.pack(pady=20)
+        
+        self.start_button = tk.Button(control_frame, text="Start",
+                                     command=self.toggle_timer,
+                                     font=("Arial", 14), width=10,
+                                     bg="green", fg="white")
+        self.start_button.pack(side="left", padx=5)
+        
+        self.reset_button = tk.Button(control_frame, text="Reset",
+                                     command=self.reset_timer,
+                                     font=("Arial", 14), width=10)
+        self.reset_button.pack(side="left", padx=5)
+        
+        # Task management
+        task_frame = tk.LabelFrame(self.window, text="Tasks", padx=10, pady=10)
+        task_frame.pack(fill="both", expand=True, padx=20, pady=10)
+        
+        # Task input
+        input_frame = tk.Frame(task_frame)
+        input_frame.pack(fill="x", pady=(0, 10))
+        
+        self.task_entry = tk.Entry(input_frame, font=("Arial", 12))
+        self.task_entry.pack(side="left", fill="x", expand=True)
+        
+        add_button = tk.Button(input_frame, text="Add Task",
+                             command=self.add_task)
+        add_button.pack(side="left", padx=(5, 0))
+        
+        # Task list
+        self.task_listbox = tk.Listbox(task_frame, font=("Arial", 11),
+                                      selectmode="single")
+        self.task_listbox.pack(fill="both", expand=True)
+        
+        # Session counter
+        self.session_label = tk.Label(self.window, 
+                                     text=f"Session: {self.current_session}",
+                                     font=("Arial", 12))
+        self.session_label.pack()
+        
+        # Statistics
+        stats_button = tk.Button(self.window, text="View Statistics",
+                               command=self.show_statistics)
+        stats_button.pack(pady=10)
+        
+    def toggle_timer(self):
+        if self.is_running:
+            self.pause_timer()
+        else:
+            self.start_timer()
+    
+    def start_timer(self):
+        self.is_running = True
+        self.start_button.config(text="Pause", bg="orange")
+        self.run_timer()
+    
+    def pause_timer(self):
+        self.is_running = False
+        self.start_button.config(text="Resume", bg="green")
+    
+    def reset_timer(self):
+        self.is_running = False
+        self.start_button.config(text="Start", bg="green")
+        
+        if self.is_break:
+            self.time_remaining = self.break_minutes * 60
+        else:
+            self.time_remaining = self.work_minutes * 60
+        
+        self.update_display()
+    
+    def run_timer(self):
+        if self.is_running and self.time_remaining > 0:
+            self.time_remaining -= 1
+            self.update_display()
+            self.window.after(1000, self.run_timer)
+        elif self.time_remaining == 0:
+            self.timer_complete()
+    
+    def update_display(self):
+        minutes = self.time_remaining // 60
+        seconds = self.time_remaining % 60
+        self.timer_label.config(text=f"{minutes:02d}:{seconds:02d}")
+    
+    def timer_complete(self):
+        self.is_running = False
+        
+        if not self.is_break:
+            # Work session complete
+            self.current_session += 1
+            self.completed_sessions.append({
+                "timestamp": datetime.now().isoformat(),
+                "duration": self.work_minutes,
+                "type": "work"
+            })
+            
+            # Determine break type
+            if self.current_session % self.sessions_until_long_break == 0:
+                self.time_remaining = self.long_break_minutes * 60
+                self.status_label.config(text="Time for a long break!")
+                messagebox.showinfo("Long Break!", 
+                                  "Great job! Take a long break.")
+            else:
+                self.time_remaining = self.break_minutes * 60
+                self.status_label.config(text="Time for a short break!")
+                messagebox.showinfo("Break Time!", 
+                                  "Good work! Take a short break.")
+            
+            self.is_break = True
+        else:
+            # Break complete
+            self.completed_sessions.append({
+                "timestamp": datetime.now().isoformat(),
+                "duration": self.break_minutes,
+                "type": "break"
+            })
+            
+            self.time_remaining = self.work_minutes * 60
+            self.status_label.config(text="Ready for next session!")
+            messagebox.showinfo("Break Over!", 
+                              "Time to focus again!")
+            self.is_break = False
+        
+        self.start_button.config(text="Start", bg="green")
+        self.session_label.config(text=f"Session: {self.current_session}")
+        self.update_display()
+        self.save_data()
+    
+    def add_task(self):
+        task = self.task_entry.get().strip()
+        if task:
+            self.tasks.append({
+                "text": task,
+                "created": datetime.now().isoformat(),
+                "completed": False
+            })
+            self.task_listbox.insert(tk.END, f"☐ {task}")
+            self.task_entry.delete(0, tk.END)
+            self.save_data()
+    
+    def show_statistics(self):
+        stats_window = tk.Toplevel(self.window)
+        stats_window.title("Study Statistics")
+        stats_window.geometry("400x300")
+        
+        # Calculate stats
+        total_work = sum(s["duration"] for s in self.completed_sessions 
+                        if s["type"] == "work")
+        total_breaks = sum(s["duration"] for s in self.completed_sessions 
+                          if s["type"] == "break")
+        
+        stats_text = f"""
+Study Statistics
+================
+
+Total Sessions: {self.current_session}
+Total Focus Time: {total_work} minutes
+Total Break Time: {total_breaks} minutes
+
+Today's Sessions: {self.current_session}
+Tasks Created: {len(self.tasks)}
+
+Keep up the great work!
+        """
+        
+        tk.Label(stats_window, text=stats_text, justify="left",
+                font=("Arial", 12)).pack(pady=20)
+        
+        tk.Button(stats_window, text="Close",
+                 command=stats_window.destroy).pack()
+    
+    def save_data(self):
+        data = {
+            "current_session": self.current_session,
+            "tasks": self.tasks,
+            "completed_sessions": self.completed_sessions
+        }
+        try:
+            with open("study_timer_data.json", "w") as f:
+                json.dump(data, f, indent=2)
+        except Exception as e:
+            print(f"Could not save data: {e}")
+    
+    def load_data(self):
+        try:
+            with open("study_timer_data.json", "r") as f:
+                data = json.load(f)
+                self.current_session = data.get("current_session", 0)
+                self.tasks = data.get("tasks", [])
+                self.completed_sessions = data.get("completed_sessions", [])
+                
+                # Refresh task display
+                for task in self.tasks:
+                    prefix = "☑" if task["completed"] else "☐"
+                    self.task_listbox.insert(tk.END, f"{prefix} {task['text']}")
+                
+                self.session_label.config(text=f"Session: {self.current_session}")
+        except:
+            pass
+    
+    def run(self):
+        self.window.mainloop()
+
+# Create and run the timer
+app = StudyTimer()
+app.run()
+```
+
+**Final Challenge**: 
+Create your own complete application using all the concepts learned in this course!
+
+---
+
+# Lab Reflection and Assessment
+
+## What You've Accomplished
+
+In this final lab, you've:
+
+1. **Transformed console programs into GUIs**
+2. **Built professional interfaces with multiple widgets**
+3. **Implemented event-driven programming**
+4. **Created multi-window applications**
+5. **Integrated all course concepts into complete applications**
+
+## Key Skills Demonstrated
+
+- **GUI Programming**: Windows, widgets, layouts, events
+- **Application Architecture**: Separating logic from interface
+- **User Experience Design**: Creating intuitive interfaces
+- **Data Persistence**: Saving application state
+- **Error Handling**: Visual feedback for errors
+- **Integration**: Combining all course concepts
+
+## Real-World Applications
+
+These skills enable you to create:
+- Desktop productivity tools
+- Data entry applications
+- Game interfaces
+- System utilities
+- Business applications
+
+## Next Steps
+
+**Continue Your Journey:**
+1. Explore advanced tkinter widgets (Canvas, Treeview, Notebook)
+2. Learn other GUI frameworks (PyQt, Kivy, wxPython)
+3. Study web interfaces (Flask, Django)
+4. Create mobile apps
+5. Build your portfolio
+
+## Final Challenge Submission
+
+**Create a Complete Application** that:
+- Uses at least 5 different widget types
+- Implements data persistence
+- Includes error handling with user feedback
+- Has a professional, intuitive interface
+- Integrates concepts from multiple weeks
+- Shows creativity and polish
+
+**Documentation Requirements:**
+- Application description and features
+- How to use your application
+- Technical challenges overcome
+- AI collaboration examples
+- Future enhancement ideas
+
+---
+
+## Congratulations! 🎉
+
+You've completed your Python programming journey! From "Hello, World!" to building complete GUI applications, you've mastered:
+
+- **Fundamental Programming**: Variables, control flow, functions
+- **Data Structures**: Lists, dictionaries, files
+- **Advanced Concepts**: APIs, error handling, state management
+- **Professional Development**: GUI programming, application architecture
+- **AI Partnership**: Effective collaboration throughout
+
+### Remember:
+> "The expert in anything was once a beginner who never gave up."
+
+Your programming adventure continues beyond this course. Keep building, keep learning, and keep creating amazing things with Python!
+
+**Thank you for your dedication and hard work throughout these 12 weeks!** 🚀

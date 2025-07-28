@@ -1,0 +1,1117 @@
+---
+title: "Week 8 Project: Personal Finance Manager"
+subtitle: "Building a Complete Financial Tracking Application"
+author: "AI-Integrated Programming Course"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Project Overview
+
+Create a comprehensive personal finance management application that demonstrates professional software development practices. This project integrates all concepts from Weeks 1-8 into a cohesive, real-world application.
+
+**Estimated Time:** 6-8 hours  
+**Difficulty:** Advanced Integration  
+**Key Concepts:** Application architecture, error handling, testing, user experience, data persistence
+
+---
+
+# Learning Objectives
+
+By completing this project, you will:
+
+1. Design and implement a complete application architecture
+2. Create professional user interfaces with comprehensive error handling
+3. Implement robust data persistence and validation
+4. Build comprehensive testing suites
+5. Apply professional development practices
+6. Integrate multiple programming concepts seamlessly
+
+---
+
+# Project Requirements
+
+## Core Features (Required)
+
+Your Personal Finance Manager must include:
+
+### 1. Account Management
+- Create and manage multiple accounts (checking, savings, credit cards)
+- Each account has: name, type, balance, description
+- View account summaries and balances
+- Edit account information
+- Delete accounts (with safeguards)
+
+### 2. Transaction Tracking
+- Add income and expense transactions
+- Each transaction has: date, amount, category, description, account
+- Support for different transaction types (income, expense, transfer)
+- Edit existing transactions
+- Delete transactions with confirmation
+
+### 3. Category System
+- Built-in categories (Food, Transportation, Entertainment, etc.)
+- Add custom categories
+- Edit and delete categories
+- Assign categories to transactions
+- View spending by category
+
+### 4. Financial Reports
+- Account balance summary
+- Monthly income vs expenses
+- Spending by category
+- Transaction history with filtering
+- Net worth calculation
+
+### 5. Data Management
+- Save all data to files
+- Load data on startup
+- Export reports to text files
+- Backup and restore functionality
+- Data validation and error recovery
+
+### 6. Professional Interface
+```
+===== PERSONAL FINANCE MANAGER =====
+Current Net Worth: $2,350.00
+
+1. Account Management
+2. Add Transaction
+3. View Transactions
+4. Categories
+5. Financial Reports
+6. Data Management
+7. Help
+8. Exit
+
+Your choice: 
+```
+
+## Enhanced Features (Optional)
+
+If you complete the core features, add:
+
+### 1. Advanced Reporting
+- Monthly/yearly spending trends
+- Budget tracking and alerts
+- Financial goal setting and tracking
+- Investment portfolio tracking
+
+### 2. Data Analysis
+- Spending pattern analysis
+- Unusual spending detection
+- Monthly comparison reports
+- Predictive budgeting
+
+### 3. Import/Export
+- CSV import for bank statements
+- Multiple file format exports
+- Data synchronization between devices
+
+### 4. Security Features
+- Simple password protection
+- Data encryption for sensitive information
+- Audit trail for all changes
+
+---
+
+# Architecture Design
+
+## Application Structure
+
+```python
+# Recommended file organization:
+
+# 1. Data Layer (data_manager.py)
+#    - load_data(), save_data()
+#    - validate_data(), backup_data()
+#    - File format management
+
+# 2. Models Layer (models.py)
+#    - Account class simulation with functions
+#    - Transaction management functions
+#    - Category management functions
+
+# 3. Business Logic Layer (finance_logic.py)
+#    - calculate_net_worth()
+#    - generate_reports()
+#    - process_transactions()
+
+# 4. Interface Layer (user_interface.py)
+#    - display_menu(), get_user_input()
+#    - show_reports(), display_transactions()
+
+# 5. Main Application (main.py)
+#    - main(), application_loop()
+#    - Feature coordination
+```
+
+## Data Structure Design
+
+Consider these data structures:
+
+```python
+# Accounts structure
+accounts = {
+    "checking": {
+        "name": "Main Checking",
+        "type": "checking",
+        "balance": 1500.00,
+        "description": "Primary checking account"
+    },
+    "savings": {
+        "name": "Emergency Fund",
+        "type": "savings", 
+        "balance": 5000.00,
+        "description": "Emergency savings"
+    }
+}
+
+# Transactions structure
+transactions = [
+    {
+        "id": 1,
+        "date": "2024-03-15",
+        "type": "expense",
+        "amount": 45.67,
+        "category": "food",
+        "description": "Grocery shopping",
+        "account": "checking"
+    },
+    {
+        "id": 2,
+        "date": "2024-03-14",
+        "type": "income",
+        "amount": 2500.00,
+        "category": "salary",
+        "description": "Monthly salary",
+        "account": "checking"
+    }
+]
+
+# Categories structure
+categories = {
+    "income": ["salary", "freelance", "investment", "other_income"],
+    "expense": ["food", "transportation", "entertainment", "utilities", "healthcare", "shopping", "other_expense"]
+}
+```
+
+---
+
+# Implementation Guide
+
+## Step 1: Core Data Management
+
+Start with the foundation - data persistence:
+
+```python
+from datetime import datetime
+import json
+
+def load_finance_data(filename="finance_data.txt"):
+    """Load financial data from file with error handling."""
+    default_data = {
+        "accounts": {},
+        "transactions": [],
+        "categories": {
+            "income": ["salary", "freelance", "investment", "gift", "other_income"],
+            "expense": ["food", "transportation", "entertainment", "utilities", 
+                      "healthcare", "shopping", "education", "other_expense"]
+        },
+        "settings": {
+            "currency": "$",
+            "date_format": "%Y-%m-%d"
+        }
+    }
+    
+    try:
+        with open(filename, "r") as file:
+            lines = file.readlines()
+            
+            # Parse our custom format
+            current_section = None
+            data = default_data.copy()
+            
+            for line in lines:
+                line = line.strip()
+                if not line or line.startswith("#"):
+                    continue
+                
+                if line.startswith("[") and line.endswith("]"):
+                    current_section = line[1:-1]
+                    continue
+                
+                if current_section == "accounts" and "|" in line:
+                    # Parse: account_id|name|type|balance|description
+                    parts = line.split("|")
+                    if len(parts) >= 5:
+                        account_id = parts[0]
+                        data["accounts"][account_id] = {
+                            "name": parts[1],
+                            "type": parts[2],
+                            "balance": float(parts[3]),
+                            "description": parts[4]
+                        }
+                
+                elif current_section == "transactions" and "|" in line:
+                    # Parse: id|date|type|amount|category|description|account
+                    parts = line.split("|")
+                    if len(parts) >= 7:
+                        transaction = {
+                            "id": int(parts[0]),
+                            "date": parts[1],
+                            "type": parts[2],
+                            "amount": float(parts[3]),
+                            "category": parts[4],
+                            "description": parts[5],
+                            "account": parts[6]
+                        }
+                        data["transactions"].append(transaction)
+        
+        print(f"💾 Loaded data: {len(data['accounts'])} accounts, {len(data['transactions'])} transactions")
+        return data
+    
+    except FileNotFoundError:
+        print("📝 No saved data found. Starting with default setup.")
+        return default_data
+    except Exception as e:
+        print(f"⚠️  Error loading data: {e}")
+        print("Starting with default data.")
+        return default_data
+
+def save_finance_data(data, filename="finance_data.txt"):
+    """Save financial data to file with backup."""
+    try:
+        # Create backup
+        try:
+            with open(filename, "r") as original:
+                backup_content = original.read()
+            with open(filename + ".backup", "w") as backup:
+                backup.write(backup_content)
+        except FileNotFoundError:
+            pass
+        
+        # Save current data
+        with open(filename, "w") as file:
+            file.write("# Personal Finance Manager Data File\n")
+            file.write(f"# Last updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
+            
+            # Save accounts
+            file.write("[accounts]\n")
+            for account_id, account in data["accounts"].items():
+                line = f"{account_id}|{account['name']}|{account['type']}|{account['balance']}|{account['description']}\n"
+                file.write(line)
+            
+            # Save transactions
+            file.write("\n[transactions]\n")
+            for transaction in data["transactions"]:
+                line = f"{transaction['id']}|{transaction['date']}|{transaction['type']}|{transaction['amount']}|{transaction['category']}|{transaction['description']}|{transaction['account']}\n"
+                file.write(line)
+            
+            # Save categories
+            file.write("\n[categories]\n")
+            file.write("# Categories are currently managed in code\n")
+        
+        print(f"💾 Data saved successfully")
+        return True
+    
+    except Exception as e:
+        print(f"❌ Error saving data: {e}")
+        return False
+
+def validate_data_integrity(data):
+    """Validate data integrity and fix common issues."""
+    issues_found = []
+    
+    # Check accounts
+    if "accounts" not in data:
+        data["accounts"] = {}
+        issues_found.append("Missing accounts data - initialized")
+    
+    # Check transactions
+    if "transactions" not in data:
+        data["transactions"] = []
+        issues_found.append("Missing transactions data - initialized")
+    
+    # Validate transaction references
+    valid_accounts = set(data["accounts"].keys())
+    invalid_transactions = []
+    
+    for i, transaction in enumerate(data["transactions"]):
+        if transaction.get("account") not in valid_accounts:
+            invalid_transactions.append(i)
+    
+    # Remove transactions with invalid account references
+    for i in reversed(invalid_transactions):
+        removed = data["transactions"].pop(i)
+        issues_found.append(f"Removed transaction with invalid account: {removed['description']}")
+    
+    if issues_found:
+        print("🔧 Data integrity issues fixed:")
+        for issue in issues_found:
+            print(f"   - {issue}")
+    
+    return len(issues_found) == 0
+```
+
+## Step 2: Account Management
+
+```python
+def create_account(data, account_id, name, account_type, initial_balance=0.0, description=""):
+    """Create a new account with validation."""
+    # Validate inputs
+    if not account_id or not account_id.strip():
+        return False, "Account ID cannot be empty"
+    
+    if account_id in data["accounts"]:
+        return False, f"Account '{account_id}' already exists"
+    
+    if not name or not name.strip():
+        return False, "Account name cannot be empty"
+    
+    valid_types = ["checking", "savings", "credit", "investment", "cash"]
+    if account_type not in valid_types:
+        return False, f"Account type must be one of: {', '.join(valid_types)}"
+    
+    try:
+        balance = float(initial_balance)
+    except (ValueError, TypeError):
+        return False, "Initial balance must be a valid number"
+    
+    # Create account
+    data["accounts"][account_id] = {
+        "name": name.strip(),
+        "type": account_type,
+        "balance": balance,
+        "description": description.strip()
+    }
+    
+    return True, f"✅ Created account '{name}'"
+
+def update_account_balance(data, account_id, amount, transaction_type="expense"):
+    """Update account balance based on transaction."""
+    if account_id not in data["accounts"]:
+        return False, f"Account '{account_id}' not found"
+    
+    account = data["accounts"][account_id]
+    
+    if transaction_type == "income":
+        account["balance"] += amount
+    elif transaction_type == "expense":
+        account["balance"] -= amount
+    else:
+        return False, f"Invalid transaction type: {transaction_type}"
+    
+    return True, f"Updated {account['name']} balance to ${account['balance']:.2f}"
+
+def get_account_summary(data):
+    """Generate summary of all accounts."""
+    if not data["accounts"]:
+        return "No accounts found."
+    
+    summary = []
+    summary.append("💰 ACCOUNT SUMMARY")
+    summary.append("=" * 40)
+    
+    total_assets = 0
+    total_debt = 0
+    
+    # Group by account type
+    by_type = {}
+    for account_id, account in data["accounts"].items():
+        account_type = account["type"]
+        if account_type not in by_type:
+            by_type[account_type] = []
+        by_type[account_type].append((account_id, account))
+    
+    # Display by type
+    type_order = ["checking", "savings", "investment", "cash", "credit"]
+    
+    for account_type in type_order:
+        if account_type in by_type:
+            summary.append(f"\n{account_type.title()} Accounts:")
+            summary.append("-" * 20)
+            
+            for account_id, account in by_type[account_type]:
+                balance = account["balance"]
+                summary.append(f"  {account['name']:<20} ${balance:>10,.2f}")
+                
+                if account_type in ["checking", "savings", "investment", "cash"]:
+                    total_assets += balance
+                else:  # credit accounts
+                    total_debt += abs(balance)
+    
+    # Calculate net worth
+    net_worth = total_assets - total_debt
+    
+    summary.append("\n" + "=" * 40)
+    summary.append(f"Total Assets:     ${total_assets:>10,.2f}")
+    summary.append(f"Total Debt:       ${total_debt:>10,.2f}")
+    summary.append(f"Net Worth:        ${net_worth:>10,.2f}")
+    
+    return "\n".join(summary)
+```
+
+## Step 3: Transaction Management
+
+```python
+def add_transaction(data, transaction_type, amount, category, description, account_id, date=None):
+    """Add a new transaction with validation."""
+    # Generate unique ID
+    if data["transactions"]:
+        new_id = max(t["id"] for t in data["transactions"]) + 1
+    else:
+        new_id = 1
+    
+    # Validate inputs
+    if transaction_type not in ["income", "expense", "transfer"]:
+        return False, "Transaction type must be income, expense, or transfer"
+    
+    try:
+        amount = float(amount)
+        if amount <= 0:
+            return False, "Amount must be positive"
+    except (ValueError, TypeError):
+        return False, "Amount must be a valid number"
+    
+    if account_id not in data["accounts"]:
+        return False, f"Account '{account_id}' not found"
+    
+    # Validate category
+    valid_categories = data["categories"].get(transaction_type, [])
+    if category not in valid_categories:
+        return False, f"Invalid category. Must be one of: {', '.join(valid_categories)}"
+    
+    # Use current date if not provided
+    if not date:
+        date = datetime.now().strftime("%Y-%m-%d")
+    
+    # Create transaction
+    transaction = {
+        "id": new_id,
+        "date": date,
+        "type": transaction_type,
+        "amount": amount,
+        "category": category,
+        "description": description.strip(),
+        "account": account_id
+    }
+    
+    data["transactions"].append(transaction)
+    
+    # Update account balance
+    success, message = update_account_balance(data, account_id, amount, transaction_type)
+    if not success:
+        # Remove transaction if balance update failed
+        data["transactions"].pop()
+        return False, f"Transaction failed: {message}"
+    
+    return True, f"✅ Added {transaction_type}: ${amount:.2f}"
+
+def get_transactions_by_filter(data, account=None, category=None, transaction_type=None, start_date=None, end_date=None):
+    """Filter transactions by various criteria."""
+    filtered = data["transactions"].copy()
+    
+    if account:
+        filtered = [t for t in filtered if t["account"] == account]
+    
+    if category:
+        filtered = [t for t in filtered if t["category"] == category]
+    
+    if transaction_type:
+        filtered = [t for t in filtered if t["type"] == transaction_type]
+    
+    if start_date:
+        filtered = [t for t in filtered if t["date"] >= start_date]
+    
+    if end_date:
+        filtered = [t for t in filtered if t["date"] <= end_date]
+    
+    return filtered
+
+def generate_spending_report(data, period="month"):
+    """Generate spending analysis report."""
+    transactions = data["transactions"]
+    expenses = [t for t in transactions if t["type"] == "expense"]
+    
+    if not expenses:
+        return "No expenses found for analysis."
+    
+    # Group by category
+    by_category = {}
+    total_spent = 0
+    
+    for transaction in expenses:
+        category = transaction["category"]
+        amount = transaction["amount"]
+        
+        if category not in by_category:
+            by_category[category] = {"total": 0, "count": 0, "transactions": []}
+        
+        by_category[category]["total"] += amount
+        by_category[category]["count"] += 1
+        by_category[category]["transactions"].append(transaction)
+        total_spent += amount
+    
+    # Create report
+    report = []
+    report.append("📊 SPENDING ANALYSIS")
+    report.append("=" * 40)
+    report.append(f"Total Expenses: ${total_spent:.2f}")
+    report.append(f"Categories: {len(by_category)}")
+    report.append("")
+    
+    # Sort categories by spending
+    sorted_categories = sorted(by_category.items(), key=lambda x: x[1]["total"], reverse=True)
+    
+    report.append("Spending by Category:")
+    report.append("-" * 25)
+    
+    for category, data_cat in sorted_categories:
+        total = data_cat["total"]
+        count = data_cat["count"]
+        percentage = (total / total_spent) * 100 if total_spent > 0 else 0
+        avg_amount = total / count if count > 0 else 0
+        
+        report.append(f"{category.title():<15} ${total:>8.2f} ({percentage:4.1f}%) - {count} transactions")
+        report.append(f"{'':15} Avg: ${avg_amount:.2f}")
+    
+    return "\n".join(report)
+```
+
+## Step 4: User Interface
+
+Create a professional interface system:
+
+```python
+def display_main_menu(data):
+    """Display main menu with current financial summary."""
+    # Calculate net worth
+    total_assets = sum(acc["balance"] for acc in data["accounts"].values() 
+                      if acc["type"] in ["checking", "savings", "investment", "cash"])
+    total_debt = sum(abs(acc["balance"]) for acc in data["accounts"].values() 
+                    if acc["type"] == "credit")
+    net_worth = total_assets - total_debt
+    
+    print("\n" + "="*50)
+    print("        PERSONAL FINANCE MANAGER")
+    print("="*50)
+    print(f"Current Net Worth: ${net_worth:,.2f}")
+    print(f"Accounts: {len(data['accounts'])} | Transactions: {len(data['transactions'])}")
+    print("")
+    print("1. Account Management")
+    print("2. Add Transaction")
+    print("3. View Transactions")
+    print("4. Financial Reports")
+    print("5. Categories")
+    print("6. Data Management")
+    print("7. Help")
+    print("8. Exit")
+    print("="*50)
+
+def get_transaction_input(data):
+    """Get transaction details from user with validation."""
+    print("\n--- Add New Transaction ---")
+    
+    # Get transaction type
+    print("Transaction type:")
+    print("1. Income")
+    print("2. Expense")
+    
+    while True:
+        choice = input("Choice (1-2): ").strip()
+        if choice == "1":
+            transaction_type = "income"
+            break
+        elif choice == "2":
+            transaction_type = "expense"
+            break
+        print("Please enter 1 or 2.")
+    
+    # Get amount
+    while True:
+        try:
+            amount = float(input("Amount: $"))
+            if amount <= 0:
+                print("Amount must be positive.")
+                continue
+            break
+        except ValueError:
+            print("Please enter a valid number.")
+    
+    # Get category
+    categories = data["categories"][transaction_type]
+    print(f"\nAvailable categories:")
+    for i, cat in enumerate(categories, 1):
+        print(f"{i}. {cat.title()}")
+    
+    while True:
+        try:
+            choice = int(input("Category choice: ")) - 1
+            if 0 <= choice < len(categories):
+                category = categories[choice]
+                break
+            print(f"Please enter a number from 1 to {len(categories)}.")
+        except ValueError:
+            print("Please enter a valid number.")
+    
+    # Get description
+    description = input("Description: ").strip()
+    if not description:
+        description = f"{transaction_type.title()} - {category.title()}"
+    
+    # Get account
+    if not data["accounts"]:
+        print("No accounts available. Please create an account first.")
+        return None
+    
+    account_list = list(data["accounts"].keys())
+    print(f"\nAvailable accounts:")
+    for i, account_id in enumerate(account_list, 1):
+        account = data["accounts"][account_id]
+        print(f"{i}. {account['name']} (${account['balance']:.2f})")
+    
+    while True:
+        try:
+            choice = int(input("Account choice: ")) - 1
+            if 0 <= choice < len(account_list):
+                account_id = account_list[choice]
+                break
+            print(f"Please enter a number from 1 to {len(account_list)}.")
+        except ValueError:
+            print("Please enter a valid number.")
+    
+    return {
+        "type": transaction_type,
+        "amount": amount,
+        "category": category,
+        "description": description,
+        "account": account_id
+    }
+
+def display_transactions(transactions, title="Transactions"):
+    """Display transactions in organized format."""
+    if not transactions:
+        print(f"\n📋 No {title.lower()} found.")
+        return
+    
+    print(f"\n=== {title} ({len(transactions)} total) ===")
+    
+    # Sort by date (newest first)
+    sorted_transactions = sorted(transactions, key=lambda t: t["date"], reverse=True)
+    
+    print(f"{'Date':<12} {'Type':<8} {'Amount':<10} {'Category':<15} {'Description':<20}")
+    print("-" * 75)
+    
+    for transaction in sorted_transactions[:20]:  # Show latest 20
+        type_symbol = "+" if transaction["type"] == "income" else "-"
+        amount_str = f"{type_symbol}${transaction['amount']:.2f}"
+        
+        print(f"{transaction['date']:<12} "
+              f"{transaction['type']:<8} "
+              f"{amount_str:<10} "
+              f"{transaction['category']:<15} "
+              f"{transaction['description'][:20]:<20}")
+    
+    if len(sorted_transactions) > 20:
+        print(f"\n... and {len(sorted_transactions) - 20} more transactions")
+
+def help_system():
+    """Display comprehensive help information."""
+    help_text = """
+🆘 PERSONAL FINANCE MANAGER - HELP
+
+GETTING STARTED:
+• Create at least one account before adding transactions
+• Add transactions regularly to track your finances
+• Review reports monthly to understand spending patterns
+
+ACCOUNTS:
+• Checking: Daily spending and income
+• Savings: Money set aside for goals
+• Credit: Credit card and loan balances (negative values)
+• Investment: Stocks, bonds, retirement accounts
+• Cash: Physical cash you have
+
+TRANSACTIONS:
+• Income: Money coming in (salary, gifts, etc.)
+• Expense: Money going out (purchases, bills, etc.)
+• Always assign to the correct account
+• Use clear descriptions for easy tracking
+
+CATEGORIES:
+• Helps analyze where your money goes
+• Use consistent categories for better reports
+• Review spending by category monthly
+
+REPORTS:
+• Account Summary: Shows all account balances
+• Spending Analysis: Breaks down expenses by category
+• Transaction History: Lists recent transactions
+
+TIPS:
+• Save your data regularly (auto-saves on exit)
+• Review your finances weekly
+• Set up categories that match your lifestyle
+• Use clear, consistent descriptions
+• Check account balances against real accounts
+
+TROUBLESHOOTING:
+• If data seems wrong, check Data Management > Validate
+• Backup files are created automatically
+• Use Export to save reports outside the app
+    """
+    
+    print(help_text)
+    input("\nPress Enter to continue...")
+```
+
+## Step 5: Main Application
+
+```python
+def main():
+    """Main application entry point."""
+    print("🚀 Starting Personal Finance Manager...")
+    
+    # Load data
+    data = load_finance_data()
+    
+    # Validate data integrity
+    validate_data_integrity(data)
+    
+    # Main application loop
+    while True:
+        try:
+            display_main_menu(data)
+            choice = input("Your choice (1-8): ").strip()
+            
+            if choice == "1":
+                # Account management
+                account_management_menu(data)
+            
+            elif choice == "2":
+                # Add transaction
+                transaction_data = get_transaction_input(data)
+                if transaction_data:
+                    success, message = add_transaction(
+                        data,
+                        transaction_data["type"],
+                        transaction_data["amount"],
+                        transaction_data["category"],
+                        transaction_data["description"],
+                        transaction_data["account"]
+                    )
+                    print(message)
+            
+            elif choice == "3":
+                # View transactions
+                transaction_menu(data)
+            
+            elif choice == "4":
+                # Financial reports
+                reports_menu(data)
+            
+            elif choice == "5":
+                # Categories management
+                category_menu(data)
+            
+            elif choice == "6":
+                # Data management
+                data_management_menu(data)
+            
+            elif choice == "7":
+                # Help
+                help_system()
+            
+            elif choice == "8":
+                # Exit
+                print("\n💾 Saving your financial data...")
+                if save_finance_data(data):
+                    print("✅ Data saved successfully!")
+                print("💰 Thank you for using Personal Finance Manager!")
+                print("Stay on top of your financial goals! 🎯")
+                break
+            
+            else:
+                print("Please enter a number from 1 to 8.")
+        
+        except KeyboardInterrupt:
+            print("\n\n💾 Saving data before exit...")
+            save_finance_data(data)
+            print("👋 Goodbye!")
+            break
+        except Exception as e:
+            print(f"❌ An error occurred: {e}")
+            print("The application will continue running.")
+
+def account_management_menu(data):
+    """Handle account management operations."""
+    # Implementation for account menu
+    pass
+
+def transaction_menu(data):
+    """Handle transaction viewing and filtering."""
+    # Implementation for transaction menu
+    pass
+
+def reports_menu(data):
+    """Handle financial reports."""
+    # Implementation for reports menu
+    pass
+
+def category_menu(data):
+    """Handle category management."""
+    # Implementation for category menu
+    pass
+
+def data_management_menu(data):
+    """Handle data import/export/backup."""
+    # Implementation for data management menu
+    pass
+
+if __name__ == "__main__":
+    main()
+```
+
+---
+
+# Testing Requirements
+
+Create comprehensive tests for your finance manager:
+
+```python
+def test_finance_manager():
+    """Comprehensive test suite for finance manager."""
+    
+    print("🧪 Running Finance Manager Test Suite")
+    
+    # Test data setup
+    test_data = {
+        "accounts": {},
+        "transactions": [],
+        "categories": {
+            "income": ["salary", "freelance"],
+            "expense": ["food", "transportation"]
+        }
+    }
+    
+    # Test 1: Account creation
+    print("\n--- Testing Account Creation ---")
+    
+    success, msg = create_account(test_data, "checking1", "Main Checking", "checking", 1000.0)
+    assert success, f"Account creation should succeed: {msg}"
+    assert "checking1" in test_data["accounts"], "Account should be added to data"
+    
+    success, msg = create_account(test_data, "checking1", "Duplicate", "checking", 500.0)
+    assert not success, "Duplicate account creation should fail"
+    
+    print("✅ Account creation tests passed")
+    
+    # Test 2: Transaction processing
+    print("\n--- Testing Transaction Processing ---")
+    
+    success, msg = add_transaction(test_data, "income", 2500.0, "salary", "Monthly salary", "checking1")
+    assert success, f"Transaction should succeed: {msg}"
+    assert len(test_data["transactions"]) == 1, "Transaction should be added"
+    assert test_data["accounts"]["checking1"]["balance"] == 3500.0, "Balance should be updated"
+    
+    success, msg = add_transaction(test_data, "expense", 50.0, "food", "Groceries", "checking1")
+    assert success, f"Expense should succeed: {msg}"
+    assert test_data["accounts"]["checking1"]["balance"] == 3450.0, "Balance should be reduced"
+    
+    print("✅ Transaction processing tests passed")
+    
+    # Test 3: Data validation
+    print("\n--- Testing Data Validation ---")
+    
+    # Test invalid inputs
+    success, msg = add_transaction(test_data, "invalid", 100.0, "food", "Test", "checking1")
+    assert not success, "Invalid transaction type should fail"
+    
+    success, msg = add_transaction(test_data, "expense", -50.0, "food", "Test", "checking1")
+    assert not success, "Negative amount should fail"
+    
+    success, msg = add_transaction(test_data, "expense", 50.0, "invalid", "Test", "checking1")
+    assert not success, "Invalid category should fail"
+    
+    print("✅ Data validation tests passed")
+    
+    # Test 4: Financial calculations
+    print("\n--- Testing Financial Calculations ---")
+    
+    # Create savings account
+    create_account(test_data, "savings1", "Emergency Fund", "savings", 5000.0)
+    
+    # Calculate totals
+    total_assets = sum(acc["balance"] for acc in test_data["accounts"].values())
+    expected_total = 3450.0 + 5000.0  # checking + savings
+    
+    assert abs(total_assets - expected_total) < 0.01, f"Total assets calculation wrong: {total_assets} vs {expected_total}"
+    
+    print("✅ Financial calculation tests passed")
+    
+    print("\n🎉 All Finance Manager tests passed successfully!")
+
+# Run tests
+test_finance_manager()
+```
+
+---
+
+# Submission Requirements
+
+## What to Submit
+
+1. **Complete Application** (`finance_manager.py`)
+   - All core features implemented
+   - Professional error handling
+   - Comprehensive user interface
+   - Data persistence
+
+2. **Test Suite** (`test_finance_manager.py`)
+   - Tests for all major functions
+   - Edge case coverage
+   - Data validation tests
+   - Integration tests
+
+3. **Documentation** (`finance_manager_docs.txt`)
+   - User manual with screenshots
+   - Technical documentation
+   - Architecture explanation
+   - Future enhancement ideas
+
+4. **Sample Data** (`sample_finance_data.txt`)
+   - Demonstrate all features
+   - Realistic test scenarios
+   - Multiple account types
+   - Various transaction types
+
+## Code Organization Requirements
+
+```python
+# Required file structure:
+finance_manager.py          # Main application
+├── Data Management Functions
+├── Account Management Functions  
+├── Transaction Functions
+├── Report Generation Functions
+├── User Interface Functions
+├── Validation Functions
+├── Testing Functions
+└── Main Application Loop
+```
+
+---
+
+# Grading Rubric
+
+## Core Functionality (40%)
+
+| Feature | Points | Criteria |
+|---------|---------|----------|
+| Account Management | 10 | Create, edit, delete accounts |
+| Transaction Processing | 10 | Add, validate, categorize transactions |
+| Data Persistence | 10 | Save/load with error handling |
+| Financial Reports | 10 | Accurate calculations and display |
+
+## Code Quality (30%)
+
+| Aspect | Points | Criteria |
+|--------|---------|----------|
+| Organization | 10 | Clear function separation |
+| Error Handling | 10 | Comprehensive and user-friendly |
+| Documentation | 10 | Clear comments and docstrings |
+
+## User Experience (20%)
+
+| Element | Points | Criteria |
+|---------|---------|----------|
+| Interface Design | 10 | Professional and intuitive |
+| Input Validation | 5 | Robust user input handling |
+| Help System | 5 | Comprehensive user guidance |
+
+## Testing (10%)
+
+| Component | Points | Criteria |
+|-----------|---------|----------|
+| Test Coverage | 5 | Tests major functionality |
+| Test Quality | 5 | Edge cases and integration |
+
+---
+
+# Tips for Success
+
+## Architecture First
+- Design your data structures before coding
+- Plan function interfaces carefully
+- Think about error scenarios upfront
+- Consider user workflow
+
+## Build Incrementally
+- Start with basic account creation
+- Add simple transactions
+- Build up to complex reports
+- Test each feature thoroughly
+
+## Professional Polish
+- Consistent error messages
+- Clear user feedback
+- Helpful documentation
+- Robust data validation
+
+## Common Pitfalls to Avoid
+- Poor data structure design
+- Inadequate error handling
+- Confusing user interface
+- Missing edge case validation
+- Insufficient testing
+
+---
+
+# Extension Ideas
+
+Once core features work:
+
+1. **Budget Tracking**
+   - Set monthly category budgets
+   - Track spending against budgets
+   - Alert when approaching limits
+
+2. **Investment Tracking**
+   - Stock portfolio management
+   - Performance tracking
+   - Dividend recording
+
+3. **Bill Reminders**
+   - Recurring transaction templates
+   - Due date tracking
+   - Payment reminders
+
+4. **Advanced Analytics**
+   - Spending trend analysis
+   - Seasonal pattern detection
+   - Financial goal tracking
+
+Remember: Focus on making core features work perfectly before adding extensions!
+
+---
+
+# Getting Help
+
+If you need assistance:
+
+1. Review Week 1-8 materials for concept refreshers
+2. Use AI with appropriate constraints
+3. Break problems into smaller functions
+4. Test individual components separately
+5. Ask for specific technical help
+
+Good luck building your professional finance manager! 💰

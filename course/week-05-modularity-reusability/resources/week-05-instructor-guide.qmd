@@ -1,0 +1,454 @@
+---
+title: "Week 5 Instructor Guide: Modularity & Reusability"
+subtitle: "Teaching Functions Effectively"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+  pdf:
+    toc: true
+---
+
+# Week 5 Overview
+
+This week introduces functions - the most fundamental concept for writing maintainable code. Students often struggle with the abstract nature of functions, parameter passing, and scope. Take time to build strong foundations.
+
+## Key Learning Goals
+1. Understand functions as reusable code blocks
+2. Master parameter passing and returns
+3. Grasp variable scope boundaries
+4. Design clean function interfaces
+5. Refactor code for modularity
+
+---
+
+# Lecture Delivery Guide
+
+## Opening Hook: Recipe Management (10 minutes)
+
+### Setup
+Show AI-generated recipe system with:
+- Complex class hierarchies
+- Database connections
+- ML recommendations
+- Web scraping
+
+### Key Discussion Points
+1. "Do you understand any of this?"
+2. "Could you modify the recommendation algorithm?"
+3. "What does a recipe program really need?"
+4. Simple answer: Store, scale, convert, search
+
+### Transition
+"Each of these tasks is independent - perfect for functions!"
+
+## Conceptual Foundation (20 minutes)
+
+### Real-World Modularity
+
+**Physical Examples** (bring props if possible):
+- Recipe cards: Self-contained instructions
+- Phone contacts: Independent entries
+- LEGO blocks: Modular building
+- Kitchen appliances: Single purpose each
+
+**Key Insight**: "Functions are like kitchen appliances - each does ONE job well!"
+
+### Function Machine Metaphor
+
+Draw on board:
+```
+INGREDIENTS → [OVEN] → CAKE
+INPUT(S) → [FUNCTION] → OUTPUT
+
+number → [DOUBLE] → number×2
+text → [UPPERCASE] → TEXT
+list → [SORT] → sorted list
+```
+
+### Why Functions Matter
+
+**The DRY Principle**: Don't Repeat Yourself
+- Show repetitive code (visceral reaction)
+- Extract into function
+- Show reuse (satisfaction)
+
+## Live Coding Section (20 minutes)
+
+### Build Functions Incrementally
+
+**Step 1: Simplest Function**
+```python
+def say_hello():
+    print("Hello, World!")
+
+say_hello()  # Call it
+```
+
+**Step 2: Add Parameter**
+```python
+def greet(name):
+    print(f"Hello, {name}!")
+
+greet("Alice")
+greet("Bob")
+```
+
+**Step 3: Add Return**
+```python
+def greet(name):
+    message = f"Hello, {name}!"
+    return message  # Send back
+
+greeting = greet("Alice")
+print(greeting)
+```
+
+### Common Confusion: Print vs Return
+
+**Live Demo - The Vending Machine Analogy**:
+```python
+# WRONG - Like vending machine showing candy but not giving it
+def add_wrong(a, b):
+    print(a + b)  # Shows result but doesn't give it back
+
+result = add_wrong(5, 3)  # result is None!
+print(f"Result is: {result}")  # "Result is: None"
+
+# RIGHT - Vending machine gives you the candy
+def add_right(a, b):
+    return a + b  # Gives result back
+
+result = add_right(5, 3)  # result is 8
+print(f"Result is: {result}")  # "Result is: 8"
+```
+
+### Scope Demonstration
+
+**Visual with Boxes**:
+```python
+# Draw box around function
+│ def calculate(x):    │
+│     y = x * 2        │ ← y lives in this box
+│     return y         │
+│                      │
+
+z = calculate(5)       ← z lives outside box
+# print(y)  # Error! y is trapped in the box!
+```
+
+## Common Student Confusions
+
+### Issue 1: When to Create Functions
+
+**Rule of Three**:
+- See code twice? Consider a function
+- See it three times? Definitely make a function
+- Complex calculation? Function
+- Logical unit? Function
+
+### Issue 2: Parameter vs Argument
+
+**Clarify with Analogy**:
+```python
+def bake_cake(flavor, layers):  # Parameters (recipe placeholders)
+    # ...
+
+bake_cake("chocolate", 3)  # Arguments (actual ingredients)
+```
+
+### Issue 3: Scope Errors
+
+**Common Mistake**:
+```python
+total = 0
+
+def add_to_total(value):
+    total = total + value  # UnboundLocalError!
+```
+
+**Explain**: "Python sees you trying to assign to `total`, thinks you want a LOCAL total, but you're trying to use it before creating it!"
+
+---
+
+# Lab Management
+
+## Hour 1 Structure
+
+### Function Basics (20 min)
+- Start with void functions (no return)
+- Add returns gradually
+- Show testing each function
+- Emphasize single purpose
+
+### Parameters Practice (20 min)
+- Single parameter first
+- Multiple parameters
+- Default values last
+- Named arguments
+
+### Scope Exercises (20 min)
+- Trace with different colors
+- Local = blue, Global = red
+- Show variable lifetime
+- Practice predictions
+
+## Hour 2 Structure
+
+### Refactoring (20 min)
+- Start with obvious repetition
+- Guide extraction process
+- Test after each change
+- Celebrate code reduction
+
+### Composition (20 min)
+- Small functions first
+- Show how they combine
+- Build complexity gradually
+- Test integration
+
+### Calculator Project (20 min)
+- Provide structure
+- One operation at a time
+- Test each function
+- Focus on organization
+
+## Lab Tips
+
+1. **Circulate Constantly** - Catch scope confusion early
+2. **Test Together** - Model testing mindset
+3. **Name Functions Well** - Good names clarify purpose
+4. **Celebrate Refactoring** - "Look how much cleaner!"
+
+---
+
+# Common Teaching Challenges
+
+## Challenge 1: Abstract Thinking
+
+**Solution**:
+- Use physical props
+- Draw everything
+- Lots of analogies
+- Start concrete
+
+## Challenge 2: Print vs Return
+
+**Solution**:
+- Vending machine analogy
+- Show None explicitly
+- Test return values
+- Emphasize "giving back"
+
+## Challenge 3: Scope Boundaries
+
+**Solution**:
+- Draw boxes consistently
+- Use different colors
+- Show variable lifetime
+- Trace step-by-step
+
+## Challenge 4: Over-Engineering
+
+**Solution**:
+- Start simple
+- One purpose rule
+- Refactor incrementally
+- Show bad examples
+
+---
+
+# Assessment Strategies
+
+## Quick Formative Checks
+
+During lecture:
+- "Is this variable local or global?"
+- "What does this function return?"
+- "Should we make this a function?"
+
+## Lab Observation Points
+
+Watch for:
+- Forgetting return statements
+- Scope confusion
+- Poor function names
+- Too many responsibilities
+
+## Project Evaluation Focus
+
+1. Function count (aim for 15+)
+2. Clear single purposes
+3. Good parameter choices
+4. Proper returns
+5. Documentation quality
+
+---
+
+# Differentiation Strategies
+
+## For Struggling Students
+
+1. **Extra Visualization**
+   - Draw every function call
+   - Color code variables
+   - Trace with them
+
+2. **Simpler Functions**
+   - Start with no parameters
+   - Add complexity slowly
+   - Provide templates
+
+3. **Pair Programming**
+   - Strong with struggling
+   - Switch roles often
+   - Explain while coding
+
+## For Advanced Students
+
+1. **Complex Refactoring**
+   - Give messy code
+   - Multiple function extraction
+   - Function composition
+
+2. **Design Challenges**
+   - "Design functions for X"
+   - Focus on interfaces
+   - Consider edge cases
+
+3. **Mini Libraries**
+   - String utilities
+   - Math helpers
+   - List processors
+
+---
+
+# Time Management
+
+## Lecture Timeline
+- 0:00-0:10 - Hook with recipe system
+- 0:10-0:20 - Real-world modularity
+- 0:20-0:30 - Basic function syntax
+- 0:30-0:40 - Parameters and returns
+- 0:40-0:50 - Scope demonstration
+- 0:50-0:57 - AI partnership
+- 0:57-1:00 - Lab preview
+
+## Pacing Warnings
+- Don't rush first function
+- Scope needs visual time
+- Refactoring needs patience
+- Leave debugging time
+
+---
+
+# Materials and Resources
+
+## Required for Lecture
+- Whiteboard/markers (multiple colors)
+- Props for modularity (optional)
+- Code examples ready
+- Bad code for refactoring
+
+## Required for Lab
+- Function template handout
+- Scope tracing worksheet
+- Refactoring exercises
+- Calculator starter code
+
+## Supplementary Resources
+- Python Tutor for visualization
+- Function pattern library
+- Common errors reference
+- Extra practice problems
+
+---
+
+# Week 5 Specific Tips
+
+1. **Go Slow** - Functions are conceptually hard
+2. **Draw Everything** - Visual learners need this
+3. **Test Constantly** - Model good habits
+4. **Name Well** - Good names = good design
+5. **Celebrate Modularity** - Show the power
+
+## Most Important
+This is where students become "real programmers." Investment here pays dividends throughout the course. Better to go slow and build confidence than rush and create confusion.
+
+---
+
+# Debugging Strategies
+
+## Common Errors to Demo
+
+1. **No Return**:
+   ```python
+   def calculate(x, y):
+       result = x + y
+       # Forgot return!
+   ```
+
+2. **Print Instead of Return**:
+   ```python
+   def get_name():
+       print("Alice")  # Should return!
+   ```
+
+3. **Scope Confusion**:
+   ```python
+   def update():
+       value = value + 1  # UnboundLocalError
+   ```
+
+4. **Parameter Mismatch**:
+   ```python
+   def greet(first, last):
+       # ...
+   
+   greet("Alice")  # Missing argument!
+   ```
+
+---
+
+# After-Class Support
+
+## Office Hours Focus
+- Function design help
+- Scope confusion clearing
+- Refactoring practice
+- Calculator debugging
+
+## Online Support
+- Post function patterns
+- Share scope diagrams
+- Quick error fixes
+- Celebrate successes
+
+## Looking Ahead
+Week 6 introduces dictionaries - perfect for organizing related data that functions can process!
+
+---
+
+# Common Analogies That Work
+
+1. **Functions = Kitchen Appliances**
+   - Toaster: bread → toast
+   - Blender: fruits → smoothie
+   - Single purpose, reusable
+
+2. **Parameters = Recipe Ingredients**
+   - Recipe needs ingredients (parameters)
+   - You provide actual items (arguments)
+   - Recipe produces result (return)
+
+3. **Scope = Rooms in House**
+   - Each room (function) has its own furniture (variables)
+   - Can't use bedroom furniture in kitchen
+   - Some things (globals) visible from all rooms
+
+4. **Return = Vending Machine**
+   - Print = Shows through glass
+   - Return = Actually gives you the item
+   - No return = Broken machine (None)
+
+Use these consistently throughout the week!

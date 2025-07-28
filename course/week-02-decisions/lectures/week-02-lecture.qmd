@@ -1,0 +1,557 @@
+---
+title: "Week 2: Decision Making & Program Flow"
+subtitle: "Teaching Programs to Think"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# How Programs Make Choices
+
+## The Smart Home Dilemma (10 minutes)
+
+### Let's Start with AI Overengineering
+
+Watch what happens when I ask AI for a "smart thermostat controller":
+
+**Me**: "Write a smart home thermostat controller"
+
+**AI might give**:
+```python
+class SmartThermostat:
+    def __init__(self):
+        self.temp_history = []
+        self.learning_mode = True
+        self.eco_mode = False
+        self.schedules = {}
+        
+    def control_temperature(self, current_temp, target_temp, 
+                          outside_temp, humidity, time_of_day):
+        if self.eco_mode and outside_temp < target_temp - 5:
+            return self.open_windows()
+        elif self.learning_mode:
+            prediction = self.ml_predict_comfort(time_of_day, 
+                                               self.temp_history)
+            if prediction != target_temp:
+                self.adjust_schedule(time_of_day, prediction)
+        
+        if current_temp < target_temp - 1:
+            if humidity > 60:
+                return self.heat_with_dehumidify()
+            else:
+                return self.heat()
+        elif current_temp > target_temp + 1:
+            return self.cool()
+        else:
+            return self.maintain()
+```
+
+**Now let me ask you**:
+- What does a thermostat REALLY need to decide?
+- How many of these features do you understand?
+- Could you modify this to add a fan option?
+
+### The Core Truth
+
+A thermostat makes ONE fundamental decision:
+- Too cold? → Turn on heat
+- Too hot? → Turn on cooling  
+- Just right? → Do nothing
+
+That's it. Everything else is extra.
+
+### Today's Mission
+
+Learn to:
+1. Recognize when decisions are needed
+2. Build them simply and clearly
+3. Use AI without getting lost in complexity
+4. Debug when things go wrong
+
+## Computational Thinking: Decisions Everywhere (20 minutes)
+
+### Decisions in Daily Life
+
+Every interactive system makes decisions:
+
+**Traffic Light**:
+```
+IF pedestrian button pressed:
+    Change to walk signal
+ELSE:
+    Continue normal cycle
+```
+
+**Vending Machine**:
+```
+IF money inserted >= item price:
+    Dispense item
+    Give change
+ELSE:
+    Show "Insert more money"
+```
+
+**Your Phone**:
+```
+IF battery < 20%:
+    Show low battery warning
+IF screen timeout reached:
+    Turn off display
+```
+
+### The Three Decision Patterns
+
+#### 1. Single Choice (if)
+"Do something special in one case"
+
+```
+IF it's raining:
+    Take umbrella
+```
+
+#### 2. Either/Or Choice (if/else)
+"Do one thing OR another"
+
+```
+IF homework is done:
+    Play games
+ELSE:
+    Do homework first
+```
+
+#### 3. Multiple Options (if/elif/else)
+"Choose from several possibilities"
+
+```
+IF grade >= 90:
+    Letter grade is A
+ELIF grade >= 80:
+    Letter grade is B
+ELIF grade >= 70:
+    Letter grade is C
+ELSE:
+    Letter grade is F
+```
+
+### Flowchart Thinking
+
+Decisions are diamonds in flowcharts:
+
+```
+     Start
+       ↓
+   [Get Input]
+       ↓
+   <Decision?>
+    ↙       ↘
+  Yes        No
+   ↓          ↓
+[Action A] [Action B]
+    ↘       ↙
+       ↓
+      End
+```
+
+Real example - Password Checker:
+```
+     Start
+       ↓
+   [Get Password]
+       ↓
+   <Length >= 8?>
+    ↙         ↘
+   Yes         No
+    ↓           ↓
+<Has number?>  [Too short!]
+  ↙      ↘       ↓
+Yes       No     ↓
+ ↓         ↓      ↓
+[Strong] [Add number]
+    ↘      ↙      ↓
+       ↓         ↙
+      End ← ← ← 
+```
+
+## From Concepts to Code: Python's Way (15 minutes)
+
+### The Basic Structure
+
+Python uses indentation to show what's inside a decision:
+
+```python
+if condition:
+    # This code runs if condition is True
+    # Notice the indentation!
+```
+
+### Understanding True and False
+
+Every condition evaluates to a boolean (True or False):
+
+```python
+temperature = 75
+is_hot = temperature > 80      # False
+is_cold = temperature < 60     # False  
+is_comfortable = True          # Directly set
+
+# Using in decisions
+if is_hot:
+    print("Turn on AC")
+```
+
+### Comparison Operators
+
+These create boolean values:
+
+```python
+age = 18
+
+# Equality (TWO equals signs!)
+age == 18        # True
+age == 21        # False
+
+# Inequality  
+age != 21        # True
+
+# Ordering
+age < 21         # True
+age > 21         # False
+age <= 18        # True (less than OR equal)
+age >= 18        # True (greater than OR equal)
+```
+
+**Critical Warning**: `=` assigns, `==` compares!
+```python
+# WRONG - This assigns 5 to x!
+if x = 5:
+
+# RIGHT - This compares x to 5
+if x == 5:
+```
+
+### Building Complex Conditions
+
+Sometimes we need to check multiple things:
+
+```python
+# AND - Both conditions must be True
+age = 25
+has_license = True
+
+if age >= 16 and has_license:
+    print("You can drive")
+
+# OR - At least one condition must be True  
+day = "Saturday"
+
+if day == "Saturday" or day == "Sunday":
+    print("It's the weekend!")
+
+# NOT - Reverses True/False
+is_raining = False
+
+if not is_raining:
+    print("No umbrella needed")
+```
+
+### Common Patterns
+
+**Range Checking**:
+```python
+score = 85
+
+# Check if score is in B range (80-89)
+if score >= 80 and score < 90:
+    print("Grade: B")
+```
+
+**Multiple Valid Inputs**:
+```python
+answer = input("Continue? (Y/N): ")
+
+# Accept multiple versions
+if answer == "Y" or answer == "y" or answer == "yes":
+    print("Continuing...")
+
+# Simpler with upper()
+if answer.upper() == "Y":
+    print("Continuing...")
+```
+
+**Avoiding Redundancy**:
+```python
+# Redundant - elif already means "else if"
+if score >= 90:
+    grade = "A"
+elif score < 90 and score >= 80:  # Don't need score < 90
+    grade = "B"
+
+# Better
+if score >= 90:
+    grade = "A"
+elif score >= 80:  # We only get here if score < 90
+    grade = "B"
+```
+
+### The Importance of Order
+
+With elif, order matters:
+
+```python
+# WRONG - Never reaches B or C!
+if score >= 70:
+    grade = "C"
+elif score >= 80:
+    grade = "B"  # Never happens!
+elif score >= 90:
+    grade = "A"  # Never happens!
+
+# RIGHT - Check highest first
+if score >= 90:
+    grade = "A"
+elif score >= 80:
+    grade = "B"
+elif score >= 70:
+    grade = "C"
+```
+
+## AI Partnership: Smart Simplification (10 minutes)
+
+### Progressive Prompt Evolution
+
+Let's build a grade calculator the smart way:
+
+#### Attempt 1: Too Vague
+**You**: "grade calculator"
+
+**AI gives**: Complex system with databases, user accounts, weighted averages...
+
+#### Attempt 2: Adding Focus
+**You**: "Simple grade calculator that converts number score to letter grade"
+
+**AI might give**: Still includes functions, dictionaries, or fancy features
+
+#### Attempt 3: Clear Constraints
+**You**: "Grade calculator using ONLY:
+- Variables, input(), print()
+- if/elif/else statements
+- Comparison operators
+- Basic letter grades A, B, C, D, F
+No functions, no loops, no dictionaries"
+
+**AI gives**:
+```python
+print("=== Grade Calculator ===")
+
+score = input("Enter your score (0-100): ")
+score = float(score)
+
+if score >= 90:
+    grade = "A"
+elif score >= 80:
+    grade = "B"
+elif score >= 70:
+    grade = "C"
+elif score >= 60:
+    grade = "D"
+else:
+    grade = "F"
+
+print(f"Your score: {score}")
+print(f"Your grade: {grade}")
+```
+
+Now we can understand and modify it!
+
+### Using AI for Debugging
+
+**Good Debugging Prompts**:
+> "Trace through this grade calculator when score is 79.5"
+
+> "Why does score of 90 give 'B' in this code?" [paste code]
+
+> "What happens if the user enters -10 or 150?"
+
+### Common AI Overcomplications to Avoid
+
+1. **Dictionary Mapping** (too advanced):
+   ```python
+   grades = {90: 'A', 80: 'B', 70: 'C', 60: 'D'}
+   ```
+
+2. **Ternary Operators** (hard to read):
+   ```python
+   grade = 'A' if score >= 90 else 'B' if score >= 80 else 'C'
+   ```
+
+3. **Match/Case** (Python 3.10+, not widely available):
+   ```python
+   match score // 10:
+       case 9 | 10: grade = 'A'
+   ```
+
+Keep asking for simpler versions!
+
+## Why This Matters (5 minutes)
+
+### Foundation for Everything
+
+Decisions are everywhere in programming:
+- **Games**: If player hits obstacle → lose life
+- **Apps**: If user logged in → show profile
+- **Websites**: If item in stock → allow purchase
+- **Data**: If value unusual → flag for review
+
+### Next Week Preview
+
+Loops use these same conditions:
+```python
+while temperature < target:    # Uses comparison!
+    heat_one_degree()
+```
+
+### Building Complexity
+
+Today's simple decisions become tomorrow's complex logic:
+- Password validation
+- Game state management
+- User interface responses
+- Data processing rules
+
+## Preparing for Lab
+
+In today's lab, you'll:
+1. Draw flowcharts before coding
+2. Practice all three decision patterns
+3. Debug logic errors with AI help
+4. Build a smart grade calculator
+
+Key advice: Always test edge cases!
+- What if score is exactly 90?
+- What if user enters "abc"?
+- What if score is negative?
+
+### Textbook Connection
+
+**Read for next class**:
+- Chapter 5: "Making Decisions" - if statements
+- Chapter 6: "Either/Or" - else clauses  
+- Chapter 7: "Multiple Choices" - elif chains
+- Chapter 8: "Complex Conditions" - and/or/not
+
+---
+
+# Instructor Notes
+
+## Hook Management
+
+The thermostat example works because:
+1. Everyone understands the basic need
+2. AI consistently overcomplicates it
+3. Easy to simplify to core logic
+4. Sets tone for managing complexity
+
+If AI doesn't overcomplicate enough, ask for "enterprise-grade smart home system"!
+
+## Key Teaching Points
+
+### Indentation is Critical
+- Use ruler or visual guides
+- Show how wrong indentation breaks logic
+- Python is unique in using whitespace
+
+### Common Confusions
+
+**= vs ==**
+- Write on board: "= ASSIGNS, == ASKS"
+- Show error when using = in condition
+- Have students explain difference
+
+**and/or Logic**
+- Use truth tables
+- Real examples help
+- Test understanding with combinations
+
+**elif Order**
+- Always demonstrate wrong order first
+- Show how to trace through
+- Emphasize "first match wins"
+
+## Live Coding Tips
+
+### Build Incrementally
+1. Start with single if
+2. Add else
+3. Convert to elif chain
+4. Add complexity last
+
+### Test Everything
+After each addition:
+- Test expected case
+- Test edge case
+- Test invalid input
+
+### Debugging Demo
+Intentionally make these mistakes:
+1. Use = instead of ==
+2. Wrong elif order
+3. Missing case (like exactly 80)
+4. Wrong indentation
+
+## Assessment Ideas
+
+**Quick Checks**:
+- "What prints if age is 17?"
+- "Draw flowchart for ATM withdrawal"
+- "Find the bug" exercises
+
+**Peer Review**:
+- Exchange flowcharts
+- Test each other's code
+- Find missing cases
+
+## Common Student Issues
+
+1. **Forgetting Colon**
+   - if score > 90  ← Missing :
+   - Syntax error helps catch
+
+2. **Wrong Indentation**
+   - Mixing tabs and spaces
+   - Not indenting after :
+
+3. **Redundant Conditions**
+   - elif score < 90 and score >= 80
+   - Explain elif implies "and not previous"
+
+4. **Edge Case Blindness**
+   - Never test boundaries
+   - Emphasize systematic testing
+
+## Differentiation
+
+**For Struggling Students**:
+- Start with only if (no else)
+- Use more flowcharts
+- Pair programming
+- Trace tables
+
+**For Advanced Students**:
+- Nested conditions
+- More complex logic
+- Input validation
+- Error messages
+
+## Time Management
+- 0:00-0:10 - Hook with thermostat
+- 0:10-0:30 - Concepts and flowcharts
+- 0:30-0:45 - Python implementation
+- 0:45-0:55 - AI partnership
+- 0:55-1:00 - Wrap up and preview

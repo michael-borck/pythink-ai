@@ -1,0 +1,568 @@
+---
+title: "Week 3 Lab: Mastering Loops and Lists"
+subtitle: "Hands-on Practice with Repetition and Collections"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Lab Overview
+
+This lab will help you master loops and lists through hands-on practice. You'll learn to recognize patterns, trace execution, and build your first collection-based program.
+
+**Duration:** 2 hours  
+**Goals:**
+1. Understand loop execution through visualization
+2. Practice both while and for loops
+3. Master list operations and indexing
+4. Combine loops with lists for data processing
+5. Start building a shopping list manager
+
+---
+
+# Hour 1: Understanding Loops and Lists
+
+## Part 1: Loop Visualization (20 minutes)
+
+### Exercise 1.1: Flowchart Practice
+
+Draw flowcharts for these code snippets:
+
+**A. While Loop:**
+```python
+count = 0
+while count < 3:
+    print(f"Count is {count}")
+    count = count + 1
+print("Done!")
+```
+
+**Your flowchart should show:**
+- Start point
+- Decision diamond for `count < 3`
+- Process box for print
+- Process box for incrementing count
+- Arrows showing flow
+- End point
+
+**B. For Loop:**
+```python
+for i in range(3):
+    print(f"i = {i}")
+print("Finished!")
+```
+
+### Exercise 1.2: Execution Tracing
+
+Complete this execution trace table:
+
+```python
+total = 0
+for num in [10, 20, 30]:
+    total = total + num
+    print(f"num={num}, total={total}")
+```
+
+| Iteration | num | total (before) | total (after) | Output |
+|-----------|-----|----------------|---------------|---------|
+| 1         | ?   | ?              | ?             | ?       |
+| 2         | ?   | ?              | ?             | ?       |
+| 3         | ?   | ?              | ?             | ?       |
+
+### Exercise 1.3: Predicting Iterations
+
+How many times will each loop run? (Write your answer, then test!)
+
+```python
+# Loop A
+x = 5
+while x > 0:
+    print(x)
+    x = x - 1
+
+# Loop B
+for i in range(0, 10, 2):
+    print(i)
+
+# Loop C
+word = "hello"
+for letter in word:
+    print(letter)
+```
+
+## Part 2: Basic Loop Patterns (20 minutes)
+
+### Exercise 2.1: Counting Patterns
+
+**Task:** Write loops to produce these outputs:
+
+A. Count from 1 to 5:
+```
+1
+2
+3
+4
+5
+```
+
+B. Count down from 5 to 1:
+```
+5
+4
+3
+2
+1
+```
+
+C. Count by 2s from 0 to 10:
+```
+0
+2
+4
+6
+8
+10
+```
+
+### Exercise 2.2: Input Validation
+
+Complete this code to only accept ages between 0 and 120:
+
+```python
+age = -1  # Start with invalid value
+while ___________:  # What condition?
+    age_string = input("Enter your age (0-120): ")
+    age = int(age_string)
+    if ___________:  # Check if still invalid
+        print("Please enter a valid age!")
+        
+print(f"Your age is {age}")
+```
+
+### Exercise 2.3: Sentinel Value Pattern
+
+Write a program that:
+1. Keeps asking for numbers
+2. Stops when user enters -1
+3. Shows the sum of all numbers (excluding -1)
+
+```python
+# Start your code here
+total = 0
+number = 0
+while _______:  # What condition?
+    # Your code here
+    
+print(f"Sum: {total}")
+```
+
+## Part 3: List Fundamentals (20 minutes)
+
+### Exercise 3.1: Creating and Modifying Lists
+
+Predict the output, then run to check:
+
+```python
+# Part A
+fruits = []
+print(f"Empty list: {fruits}")
+fruits.append("apple")
+fruits.append("banana")
+print(f"After adding: {fruits}")
+print(f"Length: {len(fruits)}")
+
+# Part B
+numbers = [10, 20, 30, 40, 50]
+print(f"First item: {numbers[0]}")
+print(f"Last item: {numbers[-1]}")
+print(f"Middle item: {numbers[2]}")
+```
+
+### Exercise 3.2: Index Practice
+
+Fix these index errors:
+
+```python
+colors = ["red", "green", "blue"]
+
+# This will crash - fix it!
+# print(colors[3])
+
+# How would you safely check if index exists?
+index = 3
+if _______:  # What condition?
+    print(colors[index])
+else:
+    print("Index out of range!")
+```
+
+### Exercise 3.3: Building Lists
+
+Write code to:
+1. Create an empty list called `scores`
+2. Ask user for 5 test scores
+3. Add each score to the list
+4. Display the complete list
+
+```python
+# Your code here
+scores = []
+# Continue...
+```
+
+---
+
+# Hour 2: Integration and Project
+
+## Part 4: Combining Loops and Lists (20 minutes)
+
+### Exercise 4.1: Processing All Items
+
+Given this list of temperatures:
+```python
+temps = [72, 75, 68, 79, 71]
+```
+
+Write code to:
+1. Display each temperature
+2. Convert each to Celsius
+3. Find the average temperature
+
+```python
+temps = [72, 75, 68, 79, 71]
+
+# Task 1: Display each
+print("Temperatures in Fahrenheit:")
+for ______:  # Complete this
+    print(______)
+
+# Task 2: Convert to Celsius
+print("\nTemperatures in Celsius:")
+for temp in temps:
+    celsius = _______  # Formula: (F - 32) * 5/9
+    print(f"{temp}°F = {celsius:.1f}°C")
+
+# Task 3: Find average
+total = 0
+for ______:
+    _______
+average = _______
+print(f"\nAverage temperature: {average}°F")
+```
+
+### Exercise 4.2: Finding Items
+
+Complete this search function:
+
+```python
+shopping_list = ["milk", "bread", "eggs", "cheese"]
+search_item = input("What are you looking for? ")
+
+found = False
+for item in shopping_list:
+    if _______:  # Check if item matches
+        print(f"Found {search_item}!")
+        found = True
+        _______  # Stop looking
+        
+if not found:
+    print(f"{search_item} not in list")
+```
+
+### Exercise 4.3: Building Lists with User Input
+
+Create a program that:
+1. Asks how many names to enter
+2. Collects that many names
+3. Shows them numbered
+
+```python
+# Get count
+count = int(input("How many names? "))
+
+# Collect names
+names = []
+for i in range(count):
+    name = input(f"Enter name {i+1}: ")
+    _______  # Add to list
+
+# Display numbered list
+print("\nYour names:")
+for i in range(len(names)):
+    print(f"{i+1}. {names[i]}")
+```
+
+## Part 5: Common Patterns Practice (20 minutes)
+
+### Exercise 5.1: Menu System
+
+Study this menu pattern:
+
+```python
+running = True
+while running:
+    print("\n--- MENU ---")
+    print("1. Say hello")
+    print("2. Say goodbye") 
+    print("3. Exit")
+    
+    choice = input("\nChoice: ")
+    
+    if choice == "1":
+        print("Hello!")
+    elif choice == "2":
+        print("Goodbye!")
+    elif choice == "3":
+        running = False
+    else:
+        print("Invalid choice!")
+        
+print("Thanks for using the program!")
+```
+
+**Your task:** Add a 4th option that displays the current time using:
+```python
+print("The time is now!")  # Placeholder
+```
+
+### Exercise 5.2: Simple Statistics
+
+Given a list of scores, calculate:
+- Highest score
+- Lowest score  
+- Average score
+- How many passed (>= 70)
+
+```python
+scores = [85, 92, 78, 65, 90, 88, 72, 60, 95]
+
+# Highest
+highest = scores[0]  # Start with first
+for score in scores:
+    if score > highest:
+        highest = score
+print(f"Highest: {highest}")
+
+# Lowest - you write this
+lowest = _______
+for score in scores:
+    _______
+print(f"Lowest: {lowest}")
+
+# Average - you write this
+
+# Count passing - you write this
+```
+
+## Part 6: Project Start - Shopping List Manager (20 minutes)
+
+### Exercise 6.1: Design Planning
+
+Before coding, plan your shopping list features:
+
+**Core Features:**
+1. Add items to list
+2. View all items (numbered)
+3. Remove item by number
+4. Check if item exists
+5. Show total count
+6. Clear entire list
+7. Exit program
+
+**Data Structure:**
+- One list to store items
+- While loop for main menu
+- For loops to display items
+
+### Exercise 6.2: Basic Implementation
+
+Start with this skeleton:
+
+```python
+print("=== Shopping List Manager ===")
+
+shopping_list = []
+running = True
+
+while running:
+    print("\n1. Add item")
+    print("2. View list")
+    print("3. Remove item")
+    print("4. Check for item")
+    print("5. Clear list")
+    print("6. Exit")
+    
+    choice = input("\nChoose option: ")
+    
+    if choice == "1":
+        # Add item
+        item = input("Enter item to add: ")
+        shopping_list.append(item)
+        print(f"'{item}' added to your list.")
+        
+    elif choice == "2":
+        # View list
+        if len(shopping_list) == 0:
+            print("Your list is empty!")
+        else:
+            print("\nYour Shopping List:")
+            # Use for loop with range to show numbers
+            
+    elif choice == "3":
+        # Remove item - implement this
+        pass
+        
+    elif choice == "4":
+        # Check for item - implement this
+        pass
+        
+    elif choice == "5":
+        # Clear list - implement this
+        pass
+        
+    elif choice == "6":
+        running = False
+        print("Goodbye!")
+        
+    else:
+        print("Invalid choice!")
+```
+
+### Exercise 6.3: Testing Your Program
+
+Test these scenarios:
+1. View empty list
+2. Add 3 items
+3. View list (should show numbers)
+4. Remove middle item
+5. Check for existing item
+6. Check for non-existing item
+7. Clear list
+8. View empty list again
+
+---
+
+# Lab Submission
+
+## What to Submit
+
+1. **Flowcharts** from Exercise 1.1 (photo or digital)
+2. **Completed trace tables** from Exercise 1.2
+3. **All completed exercises** in a single Python file
+4. **Shopping list manager** (as complete as possible)
+5. **Reflection** (3-5 sentences):
+   - What loop concept was most challenging?
+   - What helped you understand it?
+   - What patterns do you see emerging?
+
+## Grading Rubric
+
+| Component | Points | Criteria |
+|-----------|---------|----------|
+| Flowcharts | 10 | Correct symbols and flow |
+| Loop Exercises | 20 | All patterns work correctly |
+| List Exercises | 20 | Proper indexing and operations |
+| Integration | 20 | Loops and lists combined properly |
+| Shopping List | 20 | Core features implemented |
+| Code Quality | 10 | Clear, well-organized code |
+
+---
+
+# Common Issues and Solutions
+
+## Infinite Loops
+
+**Problem:**
+```python
+x = 1
+while x > 0:
+    print(x)
+    # Forgot to change x!
+```
+
+**Solution:** Always ensure loop variable changes!
+
+## Index Errors
+
+**Problem:**
+```python
+items = [1, 2, 3]
+print(items[3])  # IndexError!
+```
+
+**Solution:** Remember indices go from 0 to len-1
+
+## Empty List Operations
+
+**Problem:**
+```python
+my_list = []
+first = my_list[0]  # IndexError!
+```
+
+**Solution:** Check length first:
+```python
+if len(my_list) > 0:
+    first = my_list[0]
+```
+
+## Off-by-One in Ranges
+
+**Problem:**
+```python
+# Want 1-5 but get 0-4
+for i in range(5):
+    print(i)
+```
+
+**Solution:** Use range(1, 6) for 1-5
+
+---
+
+# Extra Challenges
+
+If you finish early, try these:
+
+1. **Shopping List Enhancement**: Add quantity tracking
+2. **Pattern Maker**: Create loops that draw ASCII patterns
+3. **Number Guesser**: Use while loop for guessing game
+4. **List Statistics**: Find mode (most common item)
+5. **Menu Memory**: Remember last choice and highlight it
+
+---
+
+# AI Usage Guidelines
+
+## Good Prompts for Learning
+
+✅ "Explain why this loop is infinite"  
+✅ "Show me how to trace through this for loop"  
+✅ "What causes IndexError in this code?"  
+✅ "How do I check if a list is empty?"  
+
+## Avoid These Prompts
+
+❌ "Write the shopping list manager for me"  
+❌ "Complete all the exercises"  
+❌ "Give me the solution code"  
+
+Remember: AI should help you understand, not do the work for you!
+
+---
+
+# Next Steps
+
+After completing this lab:
+1. Review any exercises that were challenging
+2. Complete the shopping list manager
+3. Read textbook chapters on loops and lists
+4. Practice with online loop visualization tools
+
+Next week: String manipulation and list slicing!

@@ -1,0 +1,519 @@
+---
+title: "Week 12 Assessment: GUI Programming Fundamentals"
+format: 
+  html:
+    toc: true
+    code-fold: show
+execute:
+  eval: false
+---
+
+# Assessment: GUI Programming Fundamentals
+**Week 12 - Visual Interfaces**
+
+## Overview
+
+This assessment evaluates your understanding of GUI programming concepts, tkinter widgets, event-driven programming, and application design principles.
+
+**Time Limit**: 45 minutes  
+**Points**: 100 points  
+**Format**: Practical implementation and conceptual questions
+
+---
+
+## Task 1: Widget Knowledge and Usage (25 points)
+
+### Problem Statement
+
+Demonstrate your understanding of tkinter widgets by creating specific interface components and explaining their appropriate use cases.
+
+### Part A: Widget Implementation (15 points)
+
+Create a window that demonstrates the following widgets with proper functionality:
+
+```python
+import tkinter as tk
+from tkinter import ttk, messagebox
+
+def create_widget_demo():
+    """
+    Create a window demonstrating various tkinter widgets.
+    
+    Requirements:
+    1. Label with formatted text
+    2. Entry with validation
+    3. Button with command
+    4. Combobox with options
+    5. Text widget with scrollbar
+    6. Checkbutton with variable
+    7. Radiobuttons in a group
+    """
+    
+    window = tk.Tk()
+    window.title("Widget Demonstration")
+    window.geometry("500x600")
+    
+    # TODO: Implement all required widgets
+    # Each widget should be functional and properly configured
+    
+    # 1. Label with formatting
+    # Create a label with bold font and colored text
+    
+    # 2. Entry with validation
+    # Create an entry that only accepts numbers
+    
+    # 3. Button with command
+    # Create a button that shows a message when clicked
+    
+    # 4. Combobox with options
+    # Create a dropdown with at least 5 options
+    
+    # 5. Text widget with scrollbar
+    # Create a multi-line text area with vertical scrollbar
+    
+    # 6. Checkbutton with variable
+    # Create a checkbox that enables/disables another widget
+    
+    # 7. Radiobuttons in a group
+    # Create 3 radio buttons that work together
+    
+    window.mainloop()
+
+# Implement the function
+create_widget_demo()
+```
+
+### Part B: Widget Selection (10 points)
+
+For each scenario, identify the most appropriate tkinter widget and explain why:
+
+1. **User needs to select their birth date**
+   - Widget choice: _______________
+   - Justification: _______________
+
+2. **Display a long software license agreement**
+   - Widget choice: _______________
+   - Justification: _______________
+
+3. **User must choose exactly one payment method from 4 options**
+   - Widget choice: _______________
+   - Justification: _______________
+
+4. **Show real-time status updates during file processing**
+   - Widget choice: _______________
+   - Justification: _______________
+
+5. **Allow user to select multiple interests from a list**
+   - Widget choice: _______________
+   - Justification: _______________
+
+### Evaluation Criteria
+
+- **Widget Implementation** (15 points): Correct usage and configuration
+- **Widget Selection** (10 points): Appropriate choices with valid reasoning
+
+---
+
+## Task 2: Event-Driven Programming (30 points)
+
+### Problem Statement
+
+Create an interactive calculator that demonstrates event handling through multiple methods.
+
+### Requirements
+
+Implement a calculator with the following event handling:
+
+```python
+import tkinter as tk
+
+class EventCalculator:
+    def __init__(self):
+        self.window = tk.Tk()
+        self.window.title("Event-Driven Calculator")
+        self.window.geometry("300x400")
+        
+        self.current_value = ""
+        self.create_interface()
+        self.bind_events()
+    
+    def create_interface(self):
+        """
+        Create calculator interface with:
+        - Display entry field
+        - Number buttons (0-9)
+        - Operation buttons (+, -, *, /)
+        - Equals button
+        - Clear button
+        """
+        # TODO: Create the calculator interface
+        pass
+    
+    def bind_events(self):
+        """
+        Implement these event bindings:
+        1. Click events for all buttons
+        2. Keyboard number input (0-9)
+        3. Enter key for equals
+        4. Escape key for clear
+        5. Window close confirmation
+        """
+        # TODO: Implement all event bindings
+        pass
+    
+    def handle_number_click(self, number):
+        """Handle number button clicks."""
+        # TODO: Implement number handling
+        pass
+    
+    def handle_operation(self, operation):
+        """Handle operation button clicks."""
+        # TODO: Implement operation handling
+        pass
+    
+    def calculate_result(self):
+        """Calculate and display result."""
+        # TODO: Implement calculation with error handling
+        pass
+    
+    def clear_display(self):
+        """Clear the calculator display."""
+        # TODO: Implement clear functionality
+        pass
+    
+    def on_closing(self):
+        """Handle window close event."""
+        # TODO: Ask for confirmation before closing
+        pass
+    
+    def run(self):
+        self.window.mainloop()
+
+# Create and run the calculator
+calc = EventCalculator()
+calc.run()
+```
+
+### Event Handling Requirements
+
+1. **Button Commands** (10 points)
+   - All buttons must respond to clicks
+   - Visual feedback on button press
+
+2. **Keyboard Bindings** (10 points)
+   - Number keys input digits
+   - Enter calculates result
+   - Escape clears display
+   - Operators work with keyboard
+
+3. **Event Propagation** (5 points)
+   - Demonstrate event handling order
+   - Show how to stop event propagation
+
+4. **Error Handling** (5 points)
+   - Handle division by zero
+   - Handle invalid expressions
+   - Show error messages appropriately
+
+### Evaluation Criteria
+
+- **Interface Completeness** (10 points): All required elements present
+- **Event Implementation** (15 points): Correct event handling
+- **User Experience** (5 points): Smooth, intuitive operation
+
+---
+
+## Task 3: Layout Management (20 points)
+
+### Problem Statement
+
+Create a responsive form layout that demonstrates proper use of frames and the pack geometry manager.
+
+### Implementation Requirements
+
+```python
+def create_registration_form():
+    """
+    Create a user registration form with proper layout.
+    
+    Requirements:
+    1. Organized sections using frames
+    2. Proper alignment and spacing
+    3. Responsive to window resizing
+    4. Professional appearance
+    """
+    
+    window = tk.Tk()
+    window.title("User Registration")
+    window.geometry("400x500")
+    
+    # TODO: Create the following sections:
+    
+    # 1. Header Section
+    # - Application title (centered, large font)
+    # - Subtitle with description
+    
+    # 2. Personal Information Section (in a LabelFrame)
+    # - First Name (label + entry)
+    # - Last Name (label + entry)  
+    # - Email (label + entry)
+    # - Phone (label + entry)
+    
+    # 3. Account Settings Section (in a LabelFrame)
+    # - Username (label + entry)
+    # - Password (label + entry, show="*")
+    # - Confirm Password (label + entry, show="*")
+    
+    # 4. Preferences Section (in a LabelFrame)
+    # - Newsletter subscription (checkbutton)
+    # - Preferred contact method (radio buttons: Email, Phone, SMS)
+    
+    # 5. Action Buttons Section
+    # - Submit button (green, prominent)
+    # - Cancel button (smaller)
+    # - Buttons right-aligned
+    
+    # TODO: Implement proper spacing and padding throughout
+    # TODO: Make form sections expand properly when window resizes
+    
+    window.mainloop()
+
+# Implement the form
+create_registration_form()
+```
+
+### Layout Requirements
+
+1. **Frame Organization** (8 points)
+   - Logical grouping with LabelFrames
+   - Proper frame hierarchy
+   - Consistent spacing
+
+2. **Widget Alignment** (7 points)
+   - Labels aligned consistently
+   - Entries same width
+   - Buttons properly positioned
+
+3. **Responsive Design** (5 points)
+   - Form remains usable when resized
+   - Elements stretch appropriately
+   - Minimum size enforced
+
+### Evaluation Criteria
+
+- **Visual Organization** (10 points): Clear sections, good hierarchy
+- **Technical Implementation** (7 points): Correct use of pack options
+- **Responsiveness** (3 points): Handles window resizing well
+
+---
+
+## Task 4: Application Integration (25 points)
+
+### Problem Statement
+
+Create a simple password manager application that integrates multiple concepts.
+
+### Requirements
+
+Build a password manager with:
+
+```python
+class PasswordManager:
+    def __init__(self):
+        self.window = tk.Tk()
+        self.window.title("Simple Password Manager")
+        self.window.geometry("600x400")
+        
+        self.passwords = []  # List of password entries
+        self.create_interface()
+        self.load_passwords()
+    
+    def create_interface(self):
+        """
+        Create interface with:
+        1. Menu bar (File, Edit, Help)
+        2. Add password section
+        3. Password list display
+        4. Search functionality
+        5. Status bar
+        """
+        # TODO: Implement complete interface
+        pass
+    
+    def add_password_dialog(self):
+        """
+        Create a dialog window for adding passwords with:
+        - Website/Service name
+        - Username
+        - Password
+        - Password strength indicator
+        - Save/Cancel buttons
+        """
+        # TODO: Implement add password dialog
+        pass
+    
+    def validate_password_strength(self, password):
+        """
+        Check password strength and return:
+        - Strength level (Weak, Medium, Strong)
+        - Color code for visual feedback
+        """
+        # TODO: Implement password validation
+        # Consider length, uppercase, lowercase, numbers, symbols
+        pass
+    
+    def search_passwords(self, search_term):
+        """Filter displayed passwords based on search term."""
+        # TODO: Implement search functionality
+        pass
+    
+    def save_passwords(self):
+        """Save passwords to JSON file with error handling."""
+        # TODO: Implement save with try/except
+        pass
+    
+    def load_passwords(self):
+        """Load passwords from JSON file with error handling."""
+        # TODO: Implement load with try/except
+        pass
+    
+    def delete_password(self):
+        """Delete selected password with confirmation."""
+        # TODO: Implement delete with confirmation dialog
+        pass
+    
+    def show_about(self):
+        """Display about dialog with application information."""
+        # TODO: Implement about dialog
+        pass
+    
+    def run(self):
+        self.window.mainloop()
+
+# Implementation structure
+app = PasswordManager()
+app.run()
+```
+
+### Integration Requirements
+
+1. **Multiple Windows** (8 points)
+   - Main window
+   - Add password dialog
+   - About dialog
+   - Proper window management
+
+2. **Data Persistence** (7 points)
+   - Save to JSON
+   - Load on startup
+   - Error handling
+
+3. **User Experience** (5 points)
+   - Input validation
+   - Confirmation dialogs
+   - Status updates
+
+4. **Security Considerations** (5 points)
+   - Password strength checking
+   - Basic data protection
+   - Clear security warnings
+
+### Evaluation Criteria
+
+- **Feature Completeness** (15 points): All features implemented
+- **Integration Quality** (7 points): Components work together
+- **Error Handling** (3 points): Graceful error management
+
+---
+
+## Conceptual Questions (Bonus: 10 points)
+
+Answer the following questions to demonstrate your understanding:
+
+1. **Event-Driven vs Sequential** (3 points)
+   Explain the key differences between event-driven GUI programming and traditional sequential programming. Provide a specific example.
+
+2. **Widget Selection** (3 points)
+   When would you use a Text widget instead of an Entry widget? Give three specific scenarios.
+
+3. **Window Management** (2 points)
+   What's the difference between `window.quit()` and `window.destroy()`? When would you use each?
+
+4. **Performance** (2 points)
+   What causes a tkinter GUI to "freeze" and how can you prevent it?
+
+---
+
+## Submission Instructions
+
+### Required Files
+
+1. `widget_demo.py` - Task 1 widget demonstration
+2. `event_calculator.py` - Task 2 calculator implementation
+3. `registration_form.py` - Task 3 form layout
+4. `password_manager.py` - Task 4 integrated application
+5. `conceptual_answers.txt` - Answers to conceptual questions
+
+### Code Quality Requirements
+
+- Clear variable and function names
+- Comments explaining complex logic
+- Proper error handling
+- Consistent formatting
+- Docstrings for classes and functions
+
+### Testing Checklist
+
+Before submission, ensure:
+- [ ] All applications run without errors
+- [ ] Event handlers work correctly
+- [ ] Layouts resize properly
+- [ ] Error messages display appropriately
+- [ ] All features are functional
+
+---
+
+## Grading Rubric
+
+| Component | Points | Criteria |
+|-----------|---------|----------|
+| **Widget Usage** | 25 | Correct implementation and appropriate selection |
+| **Event Handling** | 30 | Proper event binding and response |
+| **Layout Design** | 20 | Well-organized, responsive layouts |
+| **Integration** | 25 | Complete application with multiple concepts |
+| **Bonus** | 10 | Conceptual understanding demonstrated |
+
+**Total: 100 points (+ 10 bonus)**
+
+### Grade Boundaries
+- A: 90-100 points
+- B: 80-89 points
+- C: 70-79 points
+- D: 60-69 points
+- F: Below 60 points
+
+---
+
+## Tips for Success
+
+### GUI Best Practices
+- Always provide user feedback
+- Handle errors gracefully
+- Use consistent styling
+- Test with different window sizes
+- Consider keyboard navigation
+
+### Common Mistakes to Avoid
+- Forgetting to call `mainloop()`
+- Not handling widget destruction
+- Ignoring error cases
+- Poor layout organization
+- Missing event bindings
+
+### Time Management
+- Start with basic functionality
+- Add features incrementally
+- Test after each addition
+- Leave time for polish
+
+Remember: A simple, working GUI is better than a complex, broken one!

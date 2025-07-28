@@ -1,0 +1,893 @@
+---
+title: "Week 9 Project: Sales Data Analyzer"
+subtitle: "Building a Professional Data Analysis System"
+author: "AI-Integrated Programming Course"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Project Overview
+
+Create a comprehensive sales analysis system that processes real-world sales data, performs statistical analysis, and generates actionable business insights through clear visualizations and reports.
+
+**Estimated Time:** 6-8 hours  
+**Difficulty:** Intermediate to Advanced  
+**Key Concepts:** CSV processing, data cleaning, statistical analysis, visualization, report generation
+
+---
+
+# Learning Objectives
+
+By completing this project, you will:
+
+1. Process large CSV files with real-world messiness
+2. Clean and validate sales data professionally
+3. Calculate meaningful business statistics
+4. Create clear, informative visualizations
+5. Generate actionable insights from data
+6. Build a complete, reusable analysis system
+
+---
+
+# Project Requirements
+
+## Core Features (Required)
+
+Your Sales Data Analyzer must include:
+
+### 1. Data Loading and Parsing
+- Read CSV files with various formats (comma, tab, pipe delimited)
+- Handle quoted values containing delimiters
+- Process files with different encodings
+- Skip empty lines and comments
+- Validate file structure and headers
+
+### 2. Data Cleaning and Validation
+- Clean currency values (remove $, handle different formats)
+- Standardize dates to YYYY-MM-DD format
+- Validate numeric ranges (prices > 0, quantities > 0)
+- Handle missing or invalid data appropriately
+- Remove duplicate transactions
+- Generate data quality report
+
+### 3. Sales Analysis by Multiple Dimensions
+
+#### By Time Period
+- Daily, weekly, monthly sales totals
+- Year-over-year growth calculations
+- Identify peak and slow periods
+- Trend analysis with growth rates
+
+#### By Product
+- Total sales per product
+- Best and worst selling products
+- Product performance rankings
+- Inventory turnover insights
+
+#### By Sales Representative
+- Individual performance metrics
+- Commission calculations
+- Performance rankings
+- Target achievement analysis
+
+#### By Geographic Region
+- Regional sales breakdowns
+- Market penetration analysis
+- Regional growth patterns
+- Opportunity identification
+
+### 4. Statistical Calculations
+- Mean, median, mode of transaction values
+- Standard deviation and variance
+- Percentile calculations (25th, 75th, 90th)
+- Outlier detection and analysis
+- Correlation between variables
+
+### 5. Visualizations (Text-Based)
+- Horizontal bar charts for comparisons
+- Trend lines for time series
+- Distribution histograms
+- Comparison tables
+- Performance dashboards
+
+### 6. Report Generation
+- Executive summary with key metrics
+- Detailed breakdowns by dimension
+- Actionable recommendations
+- Export capabilities (CSV, text report)
+
+## Enhanced Features (Optional)
+
+If you complete the core features, add:
+
+### 1. Advanced Analytics
+- Seasonal pattern detection
+- Moving averages (7-day, 30-day)
+- Sales forecasting (simple trend projection)
+- Customer lifetime value estimation
+- Market basket analysis (products bought together)
+
+### 2. Interactive Features
+- Menu-driven analysis options
+- Custom date range selection
+- Dynamic filtering capabilities
+- Real-time data updates
+- Analysis history tracking
+
+### 3. Performance Optimization
+- Handle files with 100,000+ rows
+- Efficient memory usage
+- Progress indicators for long operations
+- Parallel processing for multiple files
+
+### 4. Business Intelligence
+- Automated anomaly detection
+- Smart insights generation
+- Competitive benchmarking
+- Goal tracking and alerts
+
+---
+
+# Data Format Specifications
+
+## Input CSV Format
+
+Your analyzer should handle this standard format:
+
+```csv
+TransactionID,Date,ProductID,ProductName,Category,Quantity,UnitPrice,TotalAmount,SalesRep,Region,CustomerID
+1001,2024-01-15,P-101,Laptop Pro,Electronics,1,999.99,999.99,John Smith,North,C-5001
+1002,2024-01-15,P-205,"Wireless Mouse, Premium",Accessories,2,29.99,59.98,Jane Doe,North,C-5002
+1003,2024-01-16,P-101,Laptop Pro,Electronics,1,999.99,999.99,Bob Johnson,South,C-5003
+```
+
+## Common Data Issues to Handle
+
+```csv
+# Missing values
+1004,2024-01-17,P-301,,Office,1,49.99,49.99,Alice Brown,East,C-5004
+
+# Currency formatting
+1005,2024-01-17,P-401,Monitor,"Electronics",1,"$299.00","$299.00","John Smith","North",C-5005
+
+# Date variations
+1006,01/18/2024,P-501,Keyboard,Accessories,1,$79.99,$79.99,Jane Doe,West,C-5006
+1007,18-01-2024,P-601,Speaker Set,Electronics,1,149.99,149.99,Bob Johnson,South,C-5007
+
+# Quoted values with commas
+1008,2024-01-19,P-701,"Desk Lamp, LED",Office,3,39.99,119.97,"Alice Brown",East,C-5008
+```
+
+---
+
+# Implementation Guide
+
+## Step 1: Project Structure
+
+Organize your code into logical sections:
+
+```python
+"""
+Sales Data Analyzer
+Professional sales analysis system for business insights
+"""
+
+# =========================================
+# CONFIGURATION
+# =========================================
+
+# Column mappings for flexibility
+COLUMN_MAPPINGS = {
+    "date": ["Date", "TransactionDate", "SaleDate"],
+    "product": ["ProductName", "Product", "Item"],
+    "amount": ["TotalAmount", "Total", "Revenue"],
+    "quantity": ["Quantity", "Qty", "Units"],
+    "rep": ["SalesRep", "Representative", "Salesperson"],
+    "region": ["Region", "Territory", "Area"]
+}
+
+# =========================================
+# DATA LOADING FUNCTIONS
+# =========================================
+
+def detect_delimiter(filename, sample_lines=5):
+    """Automatically detect CSV delimiter."""
+    # Implementation here
+    pass
+
+def read_sales_csv(filename):
+    """Read sales data from CSV file."""
+    # Implementation here
+    pass
+
+# =========================================
+# DATA CLEANING FUNCTIONS
+# =========================================
+
+def clean_sales_data(raw_data):
+    """Clean and validate sales data."""
+    # Implementation here
+    pass
+
+# =========================================
+# ANALYSIS FUNCTIONS
+# =========================================
+
+def analyze_by_time_period(data, period="daily"):
+    """Analyze sales by time period."""
+    # Implementation here
+    pass
+
+def analyze_by_product(data):
+    """Analyze sales by product."""
+    # Implementation here
+    pass
+
+# =========================================
+# VISUALIZATION FUNCTIONS
+# =========================================
+
+def create_sales_dashboard(analyses):
+    """Create comprehensive sales dashboard."""
+    # Implementation here
+    pass
+
+# =========================================
+# MAIN PROGRAM
+# =========================================
+
+def main():
+    """Main program coordinator."""
+    # Implementation here
+    pass
+
+if __name__ == "__main__":
+    main()
+```
+
+## Step 2: Core Data Processing
+
+### CSV Reading with Flexibility
+
+```python
+def read_sales_csv(filename, encoding="utf-8"):
+    """
+    Read sales data from CSV with automatic format detection.
+    
+    Returns:
+        List of dictionaries with standardized column names
+    """
+    print(f"📂 Loading data from {filename}...")
+    
+    try:
+        # Detect delimiter
+        with open(filename, "r", encoding=encoding) as f:
+            sample = f.readline()
+        
+        delimiter = detect_delimiter([sample])
+        
+        # Read full file
+        with open(filename, "r", encoding=encoding) as f:
+            lines = f.readlines()
+        
+        if not lines:
+            print("❌ Error: File is empty")
+            return []
+        
+        # Parse headers
+        headers = parse_csv_line(lines[0].strip(), delimiter)
+        standardized_headers = standardize_column_names(headers)
+        
+        # Parse data
+        data = []
+        for line_num, line in enumerate(lines[1:], start=2):
+            if not line.strip() or line.startswith("#"):
+                continue
+            
+            values = parse_csv_line(line.strip(), delimiter)
+            
+            if len(values) != len(headers):
+                print(f"⚠️  Warning: Line {line_num} has {len(values)} values, expected {len(headers)}")
+                continue
+            
+            row = {}
+            for i, header in enumerate(standardized_headers):
+                row[header] = values[i] if i < len(values) else ""
+            
+            data.append(row)
+        
+        print(f"✅ Loaded {len(data)} records successfully")
+        return data
+    
+    except Exception as e:
+        print(f"❌ Error reading file: {e}")
+        return []
+```
+
+### Data Cleaning Pipeline
+
+```python
+def clean_sales_data(raw_data):
+    """
+    Clean and validate sales data.
+    
+    Returns:
+        Tuple of (cleaned_data, quality_report)
+    """
+    cleaned_data = []
+    quality_report = {
+        "total_records": len(raw_data),
+        "cleaned_records": 0,
+        "invalid_records": 0,
+        "missing_values": 0,
+        "duplicates_removed": 0,
+        "issues": []
+    }
+    
+    seen_transactions = set()
+    
+    for row_num, row in enumerate(raw_data, start=1):
+        # Create cleaned row
+        cleaned_row = {}
+        row_valid = True
+        
+        # Clean each field
+        # Transaction ID
+        transaction_id = row.get("transaction_id", "").strip()
+        if not transaction_id:
+            quality_report["issues"].append(f"Row {row_num}: Missing transaction ID")
+            row_valid = False
+        else:
+            # Check for duplicates
+            if transaction_id in seen_transactions:
+                quality_report["duplicates_removed"] += 1
+                continue
+            seen_transactions.add(transaction_id)
+            cleaned_row["transaction_id"] = transaction_id
+        
+        # Date cleaning
+        date_str = row.get("date", "")
+        cleaned_date = standardize_date(date_str)
+        if not cleaned_date:
+            quality_report["issues"].append(f"Row {row_num}: Invalid date '{date_str}'")
+            row_valid = False
+        else:
+            cleaned_row["date"] = cleaned_date
+        
+        # Amount cleaning
+        amount_str = row.get("amount", "")
+        cleaned_amount = clean_currency(amount_str)
+        if cleaned_amount <= 0:
+            quality_report["issues"].append(f"Row {row_num}: Invalid amount '{amount_str}'")
+            row_valid = False
+        else:
+            cleaned_row["amount"] = cleaned_amount
+        
+        # Continue with other fields...
+        
+        if row_valid:
+            cleaned_data.append(cleaned_row)
+            quality_report["cleaned_records"] += 1
+        else:
+            quality_report["invalid_records"] += 1
+    
+    return cleaned_data, quality_report
+```
+
+## Step 3: Analysis Implementation
+
+### Time-Based Analysis
+
+```python
+def analyze_by_time_period(data, period="daily"):
+    """
+    Analyze sales by time period.
+    
+    Args:
+        data: Cleaned sales data
+        period: "daily", "weekly", "monthly", "yearly"
+    
+    Returns:
+        Dictionary with time-based analysis
+    """
+    from collections import defaultdict
+    
+    period_sales = defaultdict(float)
+    period_transactions = defaultdict(int)
+    
+    for row in data:
+        date = row.get("date", "")
+        amount = row.get("amount", 0)
+        
+        # Determine period key
+        if period == "daily":
+            period_key = date
+        elif period == "weekly":
+            # Calculate week number
+            year, month, day = date.split("-")
+            week_num = (int(day) - 1) // 7 + 1
+            period_key = f"{year}-{month}-W{week_num}"
+        elif period == "monthly":
+            period_key = date[:7]  # YYYY-MM
+        elif period == "yearly":
+            period_key = date[:4]  # YYYY
+        
+        period_sales[period_key] += amount
+        period_transactions[period_key] += 1
+    
+    # Calculate statistics
+    periods = sorted(period_sales.keys())
+    values = [period_sales[p] for p in periods]
+    
+    analysis = {
+        "period_type": period,
+        "periods": periods,
+        "sales": {p: period_sales[p] for p in periods},
+        "transactions": {p: period_transactions[p] for p in periods},
+        "statistics": calculate_statistics(values),
+        "growth_rates": calculate_growth_rates(periods, period_sales),
+        "peak_period": max(period_sales, key=period_sales.get) if period_sales else None,
+        "slow_period": min(period_sales, key=period_sales.get) if period_sales else None
+    }
+    
+    return analysis
+
+def calculate_growth_rates(periods, period_sales):
+    """Calculate period-over-period growth rates."""
+    growth_rates = {}
+    
+    for i in range(1, len(periods)):
+        prev_period = periods[i-1]
+        curr_period = periods[i]
+        
+        prev_sales = period_sales[prev_period]
+        curr_sales = period_sales[curr_period]
+        
+        if prev_sales > 0:
+            growth_rate = ((curr_sales - prev_sales) / prev_sales) * 100
+            growth_rates[curr_period] = round(growth_rate, 2)
+    
+    return growth_rates
+```
+
+## Step 4: Visualization System
+
+### Professional Dashboard Creation
+
+```python
+def create_sales_dashboard(data, analyses):
+    """
+    Create comprehensive sales dashboard.
+    """
+    dashboard = []
+    
+    # Header
+    dashboard.append("=" * 80)
+    dashboard.append("                           SALES ANALYSIS DASHBOARD")
+    dashboard.append("=" * 80)
+    dashboard.append("")
+    
+    # Executive Summary
+    total_sales = sum(row.get("amount", 0) for row in data)
+    total_transactions = len(data)
+    avg_transaction = total_sales / total_transactions if total_transactions > 0 else 0
+    
+    dashboard.append("📊 EXECUTIVE SUMMARY")
+    dashboard.append("-" * 40)
+    dashboard.append(f"Total Revenue:        ${total_sales:,.2f}")
+    dashboard.append(f"Total Transactions:   {total_transactions:,}")
+    dashboard.append(f"Average Transaction:  ${avg_transaction:,.2f}")
+    dashboard.append("")
+    
+    # Time Analysis
+    if "time_analysis" in analyses:
+        time_data = analyses["time_analysis"]
+        dashboard.append("📅 SALES TREND (Last 30 Days)")
+        dashboard.append("-" * 40)
+        
+        # Create mini line chart
+        sales_by_day = time_data["sales"]
+        if sales_by_day:
+            chart = create_trend_chart(sales_by_day, height=10, width=60)
+            dashboard.extend(chart.split("\n"))
+        dashboard.append("")
+    
+    # Product Analysis
+    if "product_analysis" in analyses:
+        product_data = analyses["product_analysis"]
+        dashboard.append("🏆 TOP PRODUCTS")
+        dashboard.append("-" * 40)
+        
+        # Top 5 products bar chart
+        top_products = dict(sorted(product_data["product_sales"].items(), 
+                                 key=lambda x: x[1], reverse=True)[:5])
+        
+        chart = create_bar_chart(top_products, show_values=True, max_width=40)
+        dashboard.extend(chart.split("\n"))
+        dashboard.append("")
+    
+    # Regional Analysis
+    if "regional_analysis" in analyses:
+        regional_data = analyses["regional_analysis"]
+        dashboard.append("🌍 REGIONAL PERFORMANCE")
+        dashboard.append("-" * 40)
+        
+        # Regional comparison
+        regional_sales = regional_data["region_sales"]
+        chart = create_bar_chart(regional_sales, show_values=True, max_width=40)
+        dashboard.extend(chart.split("\n"))
+        dashboard.append("")
+    
+    # Sales Rep Performance
+    if "rep_analysis" in analyses:
+        rep_data = analyses["rep_analysis"]
+        dashboard.append("👥 TOP SALES REPRESENTATIVES")
+        dashboard.append("-" * 40)
+        
+        # Top performers table
+        top_reps = sorted(rep_data["rep_performance"].items(), 
+                         key=lambda x: x[1]["total_sales"], reverse=True)[:5]
+        
+        dashboard.append(f"{'Name':<20} {'Sales':<15} {'Transactions':<12} {'Avg Sale':<10}")
+        dashboard.append("-" * 60)
+        
+        for rep, stats in top_reps:
+            dashboard.append(f"{rep:<20} ${stats['total_sales']:<14,.2f} "
+                           f"{stats['count']:<12} ${stats['avg_sale']:<10,.2f}")
+        dashboard.append("")
+    
+    # Key Insights
+    dashboard.append("💡 KEY INSIGHTS & RECOMMENDATIONS")
+    dashboard.append("-" * 40)
+    
+    insights = generate_insights(data, analyses)
+    for insight in insights:
+        dashboard.append(f"• {insight}")
+    
+    dashboard.append("")
+    dashboard.append("=" * 80)
+    dashboard.append(f"Report generated on: {get_current_timestamp()}")
+    
+    return "\n".join(dashboard)
+
+def generate_insights(data, analyses):
+    """Generate actionable insights from analysis."""
+    insights = []
+    
+    # Time-based insights
+    if "time_analysis" in analyses:
+        time_data = analyses["time_analysis"]
+        if time_data.get("peak_period"):
+            insights.append(f"Peak sales period: {time_data['peak_period']} - "
+                          f"Consider increasing inventory")
+        
+        # Check for growth trends
+        growth_rates = time_data.get("growth_rates", {})
+        if growth_rates:
+            recent_growth = list(growth_rates.values())[-1]
+            if recent_growth > 10:
+                insights.append(f"Strong growth of {recent_growth}% - "
+                              f"Momentum is positive")
+            elif recent_growth < -10:
+                insights.append(f"Sales declined {abs(recent_growth)}% - "
+                              f"Investigate causes")
+    
+    # Product insights
+    if "product_analysis" in analyses:
+        product_data = analyses["product_analysis"]
+        best_seller = product_data.get("best_seller")
+        if best_seller:
+            insights.append(f"'{best_seller}' is the top performer - "
+                          f"Ensure adequate stock")
+        
+        # Low performers
+        poor_sellers = product_data.get("poor_sellers", [])
+        if poor_sellers:
+            insights.append(f"Consider promotions for slow-moving items: "
+                          f"{', '.join(poor_sellers[:3])}")
+    
+    # Regional insights
+    if "regional_analysis" in analyses:
+        regional_data = analyses["regional_analysis"]
+        underperforming = regional_data.get("underperforming_regions", [])
+        if underperforming:
+            insights.append(f"Focus on growth in: {', '.join(underperforming)}")
+    
+    return insights
+```
+
+## Step 5: Complete Implementation Example
+
+```python
+def main():
+    """
+    Main program - Sales Data Analyzer
+    """
+    print("🚀 SALES DATA ANALYZER v1.0")
+    print("=" * 50)
+    
+    # Get filename
+    filename = input("Enter CSV filename (or press Enter for 'sales.csv'): ").strip()
+    if not filename:
+        filename = "sales.csv"
+    
+    # Load data
+    raw_data = read_sales_csv(filename)
+    if not raw_data:
+        print("❌ Failed to load data. Exiting.")
+        return
+    
+    # Clean data
+    print("\n🧹 Cleaning data...")
+    cleaned_data, quality_report = clean_sales_data(raw_data)
+    
+    # Show data quality report
+    print("\n📋 DATA QUALITY REPORT")
+    print("-" * 30)
+    print(f"Total records:     {quality_report['total_records']}")
+    print(f"Clean records:     {quality_report['cleaned_records']}")
+    print(f"Invalid records:   {quality_report['invalid_records']}")
+    print(f"Duplicates removed: {quality_report['duplicates_removed']}")
+    
+    if not cleaned_data:
+        print("❌ No valid data to analyze. Exiting.")
+        return
+    
+    # Perform analyses
+    print("\n🔍 Performing analysis...")
+    
+    analyses = {
+        "time_analysis": analyze_by_time_period(cleaned_data, "daily"),
+        "product_analysis": analyze_by_product(cleaned_data),
+        "regional_analysis": analyze_by_region(cleaned_data),
+        "rep_analysis": analyze_by_sales_rep(cleaned_data)
+    }
+    
+    # Generate dashboard
+    print("\n📊 Generating dashboard...")
+    dashboard = create_sales_dashboard(cleaned_data, analyses)
+    
+    # Display dashboard
+    print("\n" + dashboard)
+    
+    # Export options
+    while True:
+        print("\n📁 EXPORT OPTIONS")
+        print("1. Save dashboard to text file")
+        print("2. Export cleaned data to CSV")
+        print("3. Export detailed analysis")
+        print("4. Exit")
+        
+        choice = input("\nYour choice (1-4): ").strip()
+        
+        if choice == "1":
+            export_dashboard(dashboard)
+        elif choice == "2":
+            export_cleaned_data(cleaned_data)
+        elif choice == "3":
+            export_detailed_analysis(analyses)
+        elif choice == "4":
+            print("\n✅ Thank you for using Sales Data Analyzer!")
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+if __name__ == "__main__":
+    main()
+```
+
+---
+
+# Testing Requirements
+
+Create comprehensive tests for your analyzer:
+
+```python
+def test_sales_analyzer():
+    """Test suite for sales analyzer."""
+    print("🧪 Running Sales Analyzer Tests")
+    print("=" * 40)
+    
+    # Test 1: CSV parsing
+    print("\n--- Test 1: CSV Parsing ---")
+    test_csv = '"Product, A",100.50,"Smith, John"'
+    parsed = parse_csv_line(test_csv)
+    assert parsed == ["Product, A", "100.50", "Smith, John"]
+    print("✓ CSV parsing with quotes")
+    
+    # Test 2: Date cleaning
+    print("\n--- Test 2: Date Standardization ---")
+    test_dates = [
+        ("01/15/2024", "2024-01-15"),
+        ("15-01-2024", "2024-01-15"),
+        ("2024.01.15", "2024-01-15"),
+        ("Jan 15, 2024", "2024-01-15")
+    ]
+    
+    for input_date, expected in test_dates:
+        result = standardize_date(input_date)
+        assert result == expected, f"Failed: {input_date} → {result}"
+    print("✓ Date standardization")
+    
+    # Test 3: Currency cleaning
+    print("\n--- Test 3: Currency Cleaning ---")
+    test_amounts = [
+        ("$1,234.56", 1234.56),
+        ("€1.234,56", 1234.56),
+        ("($100.00)", -100.00),
+        ("1.5K", 1500.0)
+    ]
+    
+    for input_amount, expected in test_amounts:
+        result = clean_currency(input_amount)
+        assert abs(result - expected) < 0.01, f"Failed: {input_amount} → {result}"
+    print("✓ Currency cleaning")
+    
+    # Test 4: Statistical calculations
+    print("\n--- Test 4: Statistics ---")
+    test_values = [10, 20, 30, 40, 50]
+    stats = calculate_statistics(test_values)
+    assert stats["mean"] == 30
+    assert stats["median"] == 30
+    assert stats["min"] == 10
+    assert stats["max"] == 50
+    print("✓ Statistical calculations")
+    
+    # Test 5: Growth rate calculation
+    print("\n--- Test 5: Growth Rates ---")
+    periods = ["2024-01", "2024-02", "2024-03"]
+    sales = {"2024-01": 1000, "2024-02": 1100, "2024-03": 1210}
+    growth = calculate_growth_rates(periods, sales)
+    assert growth["2024-02"] == 10.0  # 10% growth
+    assert growth["2024-03"] == 10.0  # 10% growth
+    print("✓ Growth rate calculations")
+    
+    print("\n🎉 All tests passed!")
+
+# Run tests
+test_sales_analyzer()
+```
+
+---
+
+# Submission Requirements
+
+## What to Submit
+
+1. **Main Program** (`sales_analyzer.py`)
+   - Complete implementation of all core features
+   - Clean, well-organized code
+   - Comprehensive error handling
+   - Professional output formatting
+
+2. **Test Suite** (`test_analyzer.py`)
+   - Tests for all major functions
+   - Edge case coverage
+   - Sample data generation
+   - Validation of calculations
+
+3. **Sample Output** (`analysis_report.txt`)
+   - Example dashboard output
+   - Shows all visualizations
+   - Demonstrates insights generation
+   - Professional formatting
+
+4. **Documentation** (`README.txt`)
+   - How to run the analyzer
+   - Input file format requirements
+   - Feature descriptions
+   - Known limitations
+
+5. **Sample Data** (`sample_sales.csv`)
+   - Minimum 100 transactions
+   - Multiple products, reps, regions
+   - Some messy data to demonstrate cleaning
+   - Realistic business scenarios
+
+---
+
+# Grading Rubric
+
+## Core Functionality (50%)
+
+| Feature | Points | Criteria |
+|---------|---------|----------|
+| CSV Processing | 10 | Handles quotes, delimiters, encodings |
+| Data Cleaning | 10 | Comprehensive validation and cleaning |
+| Statistical Analysis | 10 | Accurate calculations, multiple measures |
+| Visualizations | 10 | Clear, scaled, informative charts |
+| Report Generation | 10 | Professional output with insights |
+
+## Code Quality (30%)
+
+| Aspect | Points | Criteria |
+|--------|---------|----------|
+| Organization | 10 | Logical structure, clear functions |
+| Error Handling | 10 | Graceful failures, helpful messages |
+| Documentation | 10 | Clear comments, function docstrings |
+
+## Analysis Quality (20%)
+
+| Element | Points | Criteria |
+|---------|---------|----------|
+| Insights | 10 | Meaningful, actionable recommendations |
+| Completeness | 5 | All dimensions analyzed |
+| Presentation | 5 | Professional, clear formatting |
+
+---
+
+# Tips for Success
+
+## Data Processing
+- Test with messy data early
+- Handle edge cases gracefully
+- Validate everything
+- Provide clear error messages
+
+## Analysis Design
+- Think like a business analyst
+- Focus on actionable insights
+- Make comparisons meaningful
+- Highlight important findings
+
+## Visualization
+- Keep charts simple and clear
+- Use appropriate scales
+- Label everything
+- Show context (totals, percentages)
+
+## Code Organization
+- Separate concerns clearly
+- Make functions reusable
+- Test each component
+- Document your approach
+
+---
+
+# Extension Ideas
+
+Once core features work:
+
+1. **Predictive Analytics**
+   - Simple sales forecasting
+   - Seasonal trend detection
+   - Anomaly identification
+
+2. **Customer Analysis**
+   - Customer segmentation
+   - Purchase patterns
+   - Loyalty metrics
+
+3. **Interactive Features**
+   - Custom query builder
+   - Dynamic filtering
+   - Real-time updates
+
+4. **Performance Features**
+   - Multi-file processing
+   - Incremental analysis
+   - Memory optimization
+
+Remember: Focus on building a tool that provides real business value!
+
+---
+
+# Getting Help
+
+If you need assistance:
+
+1. Review Week 9 lecture materials
+2. Check lab exercises for similar patterns
+3. Use AI with appropriate constraints
+4. Break problems into smaller functions
+5. Test with simple data first
+
+Good luck creating your professional sales analyzer! 📊💼

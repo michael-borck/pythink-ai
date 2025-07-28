@@ -1,0 +1,215 @@
+---
+title: "Week 1: Prompt Evolution Assessment Rubric"
+subtitle: "Evaluating AI Partnership Skills"
+format:
+  html:
+    toc: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Prompt Evolution Assessment Rubric
+
+This rubric evaluates students' ability to use AI as a learning partner through progressive prompt refinement.
+
+## Overall Criteria
+
+Students document their journey from vague to specific prompts, showing:
+- Recognition of AI's tendencies
+- Strategic constraint application  
+- Focus on understanding over solution
+- Reflection on the process
+
+## Detailed Rubric
+
+### 1. Initial Prompt Attempt (20%)
+
+**Excellent (18-20 points)**
+- Started with genuinely vague prompt
+- Documented exact AI response
+- Identified multiple specific problems
+- Shows understanding of why it's too complex
+
+**Good (14-17 points)**
+- Reasonable first attempt
+- Documented AI response
+- Identified some problems
+- Basic analysis present
+
+**Satisfactory (10-13 points)**
+- Made an attempt
+- Some documentation
+- Minimal analysis
+- Problems identified but not explained
+
+**Needs Improvement (0-9 points)**
+- No clear first attempt
+- Missing documentation
+- No analysis of problems
+- Skipped to final solution
+
+### 2. Progressive Refinement (30%)
+
+**Excellent (27-30 points)**
+- Shows 3-4 iterations minimum
+- Each prompt meaningfully improves
+- Clear rationale for changes
+- Documents what worked/didn't work
+
+**Good (21-26 points)**
+- Shows 2-3 iterations
+- Improvements visible
+- Some rationale provided
+- Basic documentation
+
+**Satisfactory (15-20 points)**
+- Shows minimal iteration
+- Some improvement
+- Limited rationale
+- Basic attempts made
+
+**Needs Improvement (0-14 points)**
+- No clear progression
+- Random changes
+- No rationale
+- Minimal effort
+
+### 3. Constraint Application (25%)
+
+**Excellent (23-25 points)**
+- Specifically limits features (no functions, loops, etc.)
+- Requests appropriate complexity level
+- Understands which constraints help
+- Achieves simple, understandable code
+
+**Good (18-22 points)**
+- Applies some constraints
+- Generally appropriate
+- Mostly understands purpose
+- Code becomes simpler
+
+**Satisfactory (13-17 points)**
+- Basic constraints attempted
+- Some inappropriate constraints
+- Limited understanding
+- Code somewhat simplified
+
+**Needs Improvement (0-12 points)**
+- No meaningful constraints
+- Doesn't understand purpose
+- Still accepts complex code
+- No simplification achieved
+
+### 4. Learning Focus (15%)
+
+**Excellent (14-15 points)**
+- Asks AI to explain code
+- Seeks understanding of concepts
+- Questions specific elements
+- Documents what they learned
+
+**Good (11-13 points)**
+- Some explanation requests
+- Shows learning intent
+- Basic questions asked
+- Some documentation
+
+**Satisfactory (8-10 points)**
+- Minimal explanation seeking
+- Limited questions
+- Basic learning shown
+- Little documentation
+
+**Needs Improvement (0-7 points)**
+- No explanation requests
+- Just wants working code
+- No questions asked
+- No learning documented
+
+### 5. Reflection Quality (10%)
+
+**Excellent (9-10 points)**
+- Insightful analysis of process
+- Specific examples cited
+- Understands AI's limitations
+- Clear takeaways for future
+
+**Good (7-8 points)**
+- Good reflection present
+- Some examples
+- Basic understanding shown
+- Some takeaways
+
+**Satisfactory (5-6 points)**
+- Basic reflection
+- Few examples
+- Limited insights
+- Minimal takeaways
+
+**Needs Improvement (0-4 points)**
+- No meaningful reflection
+- No examples
+- No insights shown
+- Missing or trivial
+
+## Sample Prompt Evolution (Excellent)
+
+### Round 1
+**Prompt**: "temperature converter"
+
+**Analysis**: "AI gave me a complex solution with functions, error handling, and a menu system. This is way too advanced - I don't understand functions yet, and the while loop is confusing."
+
+### Round 2  
+**Prompt**: "Simple temperature converter that asks user for temp and converts between C and F"
+
+**Analysis**: "Better! No menu system now, but still has a function and try/except blocks. I need to be more specific about what 'simple' means."
+
+### Round 3
+**Prompt**: "Temperature converter using ONLY: print() for output, input() for getting data, float() for conversion, if/else for decisions. No functions, no loops, no error handling."
+
+**Analysis**: "Perfect! This version I can understand completely. The constraints forced AI to give me exactly what I need at my level."
+
+### Round 4
+**Prompt**: "Explain each line of this temperature converter code, especially why we need float() and how the if/else works"
+
+**Learning**: "I learned that input() always returns strings, so float() converts them to numbers for math. The if/else creates two different paths based on the user's choice."
+
+## Common Issues to Watch For
+
+### Red Flags
+- Jumping straight to complex solution
+- No iteration or refinement
+- Accepting first AI response
+- No evidence of understanding
+
+### Green Flags  
+- Multiple genuine attempts
+- Thoughtful constraint application
+- Focus on understanding
+- Recognition of AI limitations
+
+## Using This Rubric
+
+1. Students submit their complete prompt evolution
+2. Look for evidence of genuine learning process
+3. Value understanding over final code quality
+4. Encourage honest documentation of struggles
+
+## Total Score Calculation
+
+- Initial Attempt: ___/20
+- Progressive Refinement: ___/30  
+- Constraint Application: ___/25
+- Learning Focus: ___/15
+- Reflection Quality: ___/10
+- **Total: ___/100**
+
+## Grade Boundaries
+
+- A (90-100): Exceptional AI partnership skills
+- B (80-89): Good understanding and application
+- C (70-79): Satisfactory progress
+- D (60-69): Needs improvement
+- F (0-59): Requires significant support

@@ -1,0 +1,669 @@
+---
+title: "Week 5 Project: Modular Calculator"
+subtitle: "Building a Function-Based Calculator System"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Project Overview
+
+Create a comprehensive calculator program where every operation is handled by its own function. This project demonstrates mastery of functions, parameter passing, return values, and modular program design.
+
+**Learning Objectives:**
+- Design clear, single-purpose functions
+- Create reusable calculation utilities
+- Handle edge cases properly
+- Build user-friendly interfaces
+- Document functions effectively
+
+---
+
+# Project Requirements
+
+## Core Features (Required)
+
+Your calculator MUST include these features:
+
+### 1. Basic Arithmetic Functions
+Create separate functions for each operation:
+- Addition (two numbers)
+- Subtraction (two numbers)
+- Multiplication (two numbers)
+- Division (with zero checking)
+
+### 2. Advanced Operations
+Implement these mathematical functions:
+- Power (base and exponent)
+- Square root (with negative checking)
+- Percentage calculation
+- Modulo (remainder)
+
+### 3. Conversion Functions
+Include at least THREE conversion types:
+- Temperature (F↔C, C↔K, F↔K)
+- Length (miles↔km, feet↔meters)
+- Weight (pounds↔kg, ounces↔grams)
+
+### 4. Input Validation Functions
+- Get valid number from user
+- Get valid menu choice
+- Validate conversion inputs
+- Handle errors gracefully
+
+### 5. Display Functions
+- Show formatted results
+- Display error messages
+- Print menu options
+- Format numbers nicely
+
+### 6. Main Program Structure
+- Menu-driven interface
+- Call appropriate functions
+- Loop until user exits
+- Clear navigation
+
+## Function Design Requirements
+
+### Every Function Must:
+1. Have a clear, single purpose
+2. Include a docstring explaining:
+   - What it does
+   - Parameters expected
+   - What it returns
+3. Handle edge cases
+4. Return values (not just print)
+
+### Example Function Structure:
+```python
+def calculate_circle_area(radius):
+    """Calculate the area of a circle.
+    
+    Args:
+        radius: The radius of the circle (positive number)
+        
+    Returns:
+        The area of the circle, or None if radius is invalid
+    """
+    if radius <= 0:
+        return None
+    
+    pi = 3.14159
+    area = pi * radius * radius
+    return area
+```
+
+---
+
+# Implementation Guide
+
+## Step 1: Basic Arithmetic Functions
+
+Start with the foundation:
+
+```python
+def add(a, b):
+    """Add two numbers together.
+    
+    Args:
+        a: First number
+        b: Second number
+        
+    Returns:
+        Sum of a and b
+    """
+    return a + b
+
+def subtract(a, b):
+    """Subtract b from a.
+    
+    Args:
+        a: Number to subtract from
+        b: Number to subtract
+        
+    Returns:
+        Difference (a - b)
+    """
+    # Your code here
+    pass
+
+def multiply(a, b):
+    """Multiply two numbers.
+    
+    Args:
+        a: First number
+        b: Second number
+        
+    Returns:
+        Product of a and b
+    """
+    # Your code here
+    pass
+
+def divide(a, b):
+    """Divide a by b safely.
+    
+    Args:
+        a: Dividend
+        b: Divisor
+        
+    Returns:
+        Quotient (a / b) or None if b is zero
+    """
+    # Your code here - check for zero!
+    pass
+```
+
+## Step 2: Advanced Operations
+
+Add mathematical functions:
+
+```python
+def power(base, exponent=2):
+    """Calculate base raised to exponent.
+    
+    Args:
+        base: The base number
+        exponent: The power to raise to (default: 2)
+        
+    Returns:
+        base^exponent
+    """
+    result = 1
+    for _ in range(int(abs(exponent))):
+        result = result * base
+    
+    if exponent < 0:
+        result = 1 / result
+        
+    return result
+
+def square_root(number):
+    """Calculate square root using Newton's method.
+    
+    Args:
+        number: The number to find square root of
+        
+    Returns:
+        Square root or None if number is negative
+    """
+    if number < 0:
+        return None
+    
+    if number == 0:
+        return 0
+    
+    # Newton's method approximation
+    guess = number / 2
+    for _ in range(10):  # 10 iterations is usually enough
+        guess = (guess + number / guess) / 2
+    
+    return round(guess, 4)
+
+def calculate_percentage(value, percentage):
+    """Calculate percentage of a value.
+    
+    Args:
+        value: The base value
+        percentage: The percentage to calculate
+        
+    Returns:
+        The calculated percentage amount
+    """
+    # Your code here
+    pass
+
+def modulo(a, b):
+    """Calculate remainder of a divided by b.
+    
+    Args:
+        a: Dividend
+        b: Divisor
+        
+    Returns:
+        Remainder or None if b is zero
+    """
+    # Your code here
+    pass
+```
+
+## Step 3: Conversion Functions
+
+Create useful converters:
+
+```python
+# Temperature conversions
+def celsius_to_fahrenheit(celsius):
+    """Convert Celsius to Fahrenheit."""
+    return (celsius * 9/5) + 32
+
+def fahrenheit_to_celsius(fahrenheit):
+    """Convert Fahrenheit to Celsius."""
+    # Your code here
+    pass
+
+def celsius_to_kelvin(celsius):
+    """Convert Celsius to Kelvin."""
+    # Your code here
+    pass
+
+# Length conversions
+def miles_to_kilometers(miles):
+    """Convert miles to kilometers."""
+    return miles * 1.60934
+
+def kilometers_to_miles(kilometers):
+    """Convert kilometers to miles."""
+    # Your code here
+    pass
+
+def feet_to_meters(feet):
+    """Convert feet to meters."""
+    # Your code here
+    pass
+
+# Weight conversions
+def pounds_to_kilograms(pounds):
+    """Convert pounds to kilograms."""
+    # Your code here
+    pass
+
+def kilograms_to_pounds(kilograms):
+    """Convert kilograms to pounds."""
+    # Your code here
+    pass
+```
+
+## Step 4: Input Validation
+
+Create robust input handlers:
+
+```python
+def get_number(prompt):
+    """Get a valid number from user.
+    
+    Args:
+        prompt: Message to display to user
+        
+    Returns:
+        Valid float entered by user
+    """
+    while True:
+        try:
+            user_input = input(prompt)
+            number = float(user_input)
+            return number
+        except ValueError:
+            print("Invalid input! Please enter a number.")
+
+def get_positive_number(prompt):
+    """Get a positive number from user.
+    
+    Args:
+        prompt: Message to display to user
+        
+    Returns:
+        Valid positive float
+    """
+    while True:
+        number = get_number(prompt)
+        if number > 0:
+            return number
+        print("Please enter a positive number!")
+
+def get_menu_choice(options):
+    """Get valid menu choice from user.
+    
+    Args:
+        options: List of valid option strings
+        
+    Returns:
+        Valid choice from options
+    """
+    while True:
+        choice = input("Enter your choice: ").strip()
+        if choice in options:
+            return choice
+        print(f"Invalid choice! Please choose from: {', '.join(options)}")
+```
+
+## Step 5: Display Functions
+
+Format output nicely:
+
+```python
+def display_result(operation, result, decimals=2):
+    """Display calculation result.
+    
+    Args:
+        operation: Name of the operation
+        result: The result to display
+        decimals: Number of decimal places (default: 2)
+    """
+    if result is None:
+        print(f"Error: {operation} could not be completed!")
+    else:
+        if isinstance(result, float):
+            print(f"{operation} Result: {result:.{decimals}f}")
+        else:
+            print(f"{operation} Result: {result}")
+
+def display_menu(title, options):
+    """Display a formatted menu.
+    
+    Args:
+        title: Menu title
+        options: List of menu options
+    """
+    print(f"\n=== {title} ===")
+    for i, option in enumerate(options, 1):
+        print(f"{i}. {option}")
+
+def display_separator():
+    """Display a visual separator."""
+    print("-" * 40)
+```
+
+## Step 6: Main Calculator Function
+
+Tie it all together:
+
+```python
+def run_basic_operations():
+    """Run basic arithmetic operations menu."""
+    operations = ["Add", "Subtract", "Multiply", "Divide", "Back"]
+    
+    while True:
+        display_menu("Basic Operations", operations)
+        choice = get_menu_choice(["1", "2", "3", "4", "5"])
+        
+        if choice == "5":
+            break
+            
+        # Get two numbers for operation
+        num1 = get_number("Enter first number: ")
+        num2 = get_number("Enter second number: ")
+        
+        if choice == "1":
+            result = add(num1, num2)
+            display_result("Addition", result)
+        elif choice == "2":
+            result = subtract(num1, num2)
+            display_result("Subtraction", result)
+        # Continue for other operations...
+
+def run_conversions():
+    """Run conversion utilities menu."""
+    categories = ["Temperature", "Length", "Weight", "Back"]
+    
+    while True:
+        display_menu("Conversion Utilities", categories)
+        choice = get_menu_choice(["1", "2", "3", "4"])
+        
+        if choice == "4":
+            break
+        elif choice == "1":
+            run_temperature_conversions()
+        # Continue for other categories...
+
+def calculator():
+    """Main calculator program."""
+    print("=== Modular Calculator ===")
+    print("A function-based calculator system")
+    
+    main_options = [
+        "Basic Operations",
+        "Advanced Operations", 
+        "Conversions",
+        "Exit"
+    ]
+    
+    while True:
+        display_menu("Main Menu", main_options)
+        choice = get_menu_choice(["1", "2", "3", "4"])
+        
+        if choice == "1":
+            run_basic_operations()
+        elif choice == "2":
+            run_advanced_operations()
+        elif choice == "3":
+            run_conversions()
+        elif choice == "4":
+            print("\nThank you for using Modular Calculator!")
+            print("Goodbye!")
+            break
+
+# Run the calculator
+if __name__ == "__main__":
+    calculator()
+```
+
+---
+
+# Testing Requirements
+
+## Test Each Function Individually
+
+Before integrating, test every function:
+
+```python
+# Test arithmetic
+print("Testing arithmetic functions:")
+print(f"add(5, 3) = {add(5, 3)}")  # Should be 8
+print(f"divide(10, 0) = {divide(10, 0)}")  # Should be None
+print(f"divide(10, 2) = {divide(10, 2)}")  # Should be 5.0
+
+# Test conversions
+print("\nTesting conversions:")
+print(f"32°F = {fahrenheit_to_celsius(32)}°C")  # Should be 0
+print(f"100°C = {celsius_to_fahrenheit(100)}°F")  # Should be 212
+
+# Test validation
+print("\nTesting validation:")
+# This should handle invalid input gracefully
+# number = get_number("Test prompt: ")
+```
+
+## Edge Cases to Test
+
+- [ ] Division by zero
+- [ ] Square root of negative
+- [ ] Invalid menu choices
+- [ ] Non-numeric input
+- [ ] Very large numbers
+- [ ] Very small numbers
+- [ ] Negative values where not allowed
+
+---
+
+# Grading Rubric
+
+## Functionality (60 points)
+
+| Feature | Points | Criteria |
+|---------|---------|----------|
+| Basic Arithmetic | 15 | All 4 operations work correctly |
+| Advanced Operations | 15 | At least 4 advanced functions |
+| Conversions | 15 | At least 3 conversion types |
+| Input Validation | 10 | Handles all invalid input |
+| User Interface | 5 | Clear menus and navigation |
+
+## Code Quality (30 points)
+
+| Aspect | Points | Criteria |
+|--------|---------|----------|
+| Function Design | 10 | Single purpose, clear names |
+| Documentation | 10 | All functions have docstrings |
+| Organization | 5 | Logical grouping of functions |
+| Error Handling | 5 | Edge cases handled properly |
+
+## Testing (10 points)
+
+| Aspect | Points | Criteria |
+|--------|---------|----------|
+| Function Tests | 5 | Evidence of testing individual functions |
+| Integration | 5 | Full program works smoothly |
+
+---
+
+# Enhancement Ideas
+
+## Basic Enhancements
+1. **Memory Function**: Store and recall last result
+2. **History Tracking**: Show last 5 calculations
+3. **Batch Operations**: Calculate on lists of numbers
+4. **Custom Functions**: Let user define simple formulas
+
+## Advanced Enhancements
+1. **Scientific Functions**: sin, cos, factorial
+2. **Statistics**: mean, median, standard deviation  
+3. **Financial**: compound interest, loan payments
+4. **Unit Converter**: comprehensive unit system
+
+## Creative Features
+1. **Expression Parser**: "5 + 3 * 2"
+2. **Graphing**: Simple ASCII plots
+3. **Quiz Mode**: Practice math problems
+4. **Export Results**: Save calculations to file
+
+---
+
+# Common Mistakes to Avoid
+
+## Function Design Errors
+```python
+# WRONG: Function does too much
+def calculate_and_display_and_save(a, b, operation):
+    # Tries to do everything!
+
+# RIGHT: Separate concerns
+def calculate(a, b, operation):
+    # Just calculates
+def display_result(result):
+    # Just displays
+```
+
+## Missing Edge Cases
+```python
+# WRONG: No error checking
+def square_root(n):
+    return n ** 0.5  # Crashes on negative!
+
+# RIGHT: Handle edge cases
+def square_root(n):
+    if n < 0:
+        return None
+    return n ** 0.5
+```
+
+## Print vs Return
+```python
+# WRONG: Printing instead of returning
+def add(a, b):
+    print(a + b)  # Can't use result!
+
+# RIGHT: Return the value
+def add(a, b):
+    return a + b  # Caller decides what to do
+```
+
+---
+
+# Submission Requirements
+
+## What to Submit
+
+1. **Python file**: `modular_calculator.py`
+2. **Function count**: List all functions created (aim for 20+)
+3. **Test results**: Show testing of key functions
+4. **User manual**: Brief guide to using your calculator
+5. **AI usage report**: Document any AI assistance
+6. **Reflection**: What you learned about modular design
+
+## Code Organization
+
+Structure your file clearly:
+
+```python
+"""
+Modular Calculator
+Author: [Your Name]
+Date: [Date]
+
+A function-based calculator with arithmetic, advanced math,
+and unit conversions.
+"""
+
+# === ARITHMETIC FUNCTIONS ===
+def add(a, b):
+    """Add two numbers."""
+    # ...
+
+# === ADVANCED OPERATIONS ===
+def square_root(number):
+    """Calculate square root."""
+    # ...
+
+# === CONVERSION FUNCTIONS ===
+def celsius_to_fahrenheit(celsius):
+    """Convert C to F."""
+    # ...
+
+# === INPUT VALIDATION ===
+def get_number(prompt):
+    """Get valid number from user."""
+    # ...
+
+# === DISPLAY FUNCTIONS ===
+def display_result(operation, result):
+    """Display formatted result."""
+    # ...
+
+# === MAIN PROGRAM ===
+def calculator():
+    """Run the calculator."""
+    # ...
+
+if __name__ == "__main__":
+    calculator()
+```
+
+---
+
+# Tips for Success
+
+1. **Start Simple**
+   - Get basic arithmetic working first
+   - Add features incrementally
+   - Test as you go
+
+2. **Function Checklist**
+   - [ ] Clear name (verb_noun)
+   - [ ] Single purpose
+   - [ ] Docstring included
+   - [ ] Parameters validated
+   - [ ] Edge cases handled
+   - [ ] Returns (not prints)
+
+3. **User Experience**
+   - Clear menu options
+   - Helpful error messages
+   - Consistent interface
+   - Easy navigation
+
+4. **Testing Strategy**
+   - Test each function alone
+   - Test edge cases
+   - Test user flow
+   - Test invalid input
+
+---
+
+Good luck building your modular calculator! Remember: many small, focused functions are better than few large, complex ones. This project will form the foundation for all your future Python programs!

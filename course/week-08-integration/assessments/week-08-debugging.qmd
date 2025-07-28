@@ -1,0 +1,498 @@
+---
+title: "Week 8 Assessment: Debugging and Quality Assurance"
+subtitle: "Professional Debugging and Testing Skills"
+author: "AI-Integrated Programming Course"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Assessment Overview
+
+**Points:** 20 points  
+**Time Limit:** 40 minutes  
+**Type:** Debugging and code quality analysis  
+
+This assessment evaluates your ability to identify bugs, trace execution flow, implement fixes, and ensure code quality in complex applications.
+
+---
+
+# Part A: Bug Identification and Analysis (8 points)
+
+## Question 1: Logic Errors (4 points)
+
+The following student grade calculator has several bugs. Find and explain them:
+
+```python
+def calculate_student_stats(students):
+    """Calculate statistics for all students."""
+    total_students = len(students)
+    total_points = 0
+    highest_grade = 0
+    lowest_grade = 100
+    
+    for name, grades in students.items():
+        student_average = sum(grades) / len(grades)
+        total_points += student_average
+        
+        if student_average > highest_grade:
+            highest_grade = student_average
+        if student_average < lowest_grade:
+            lowest_grade = student_average
+    
+    class_average = total_points / total_students
+    
+    return {
+        "class_average": class_average,
+        "highest": highest_grade,
+        "lowest": lowest_grade,
+        "total_students": total_students
+    }
+
+# Test data
+students = {
+    "Alice": [85, 90, 78],
+    "Bob": [],  # No grades yet
+    "Carol": [95, 88, 92],
+    "David": [45, 55, 60]
+}
+
+stats = calculate_student_stats(students)
+print(f"Class average: {stats['class_average']:.1f}")
+print(f"Highest: {stats['highest']:.1f}")
+print(f"Lowest: {stats['lowest']:.1f}")
+```
+
+**Identify the bugs:** (4 points, 1 point each)
+
+1. **Bug 1:** ________________________________
+   **What happens:** ____________________________
+   **How to fix:** ______________________________
+
+2. **Bug 2:** ________________________________
+   **What happens:** ____________________________
+   **How to fix:** ______________________________
+
+3. **Bug 3:** ________________________________
+   **What happens:** ____________________________
+   **How to fix:** ______________________________
+
+4. **Bug 4:** ________________________________
+   **What happens:** ____________________________
+   **How to fix:** ______________________________
+
+## Question 2: Integration Issues (4 points)
+
+This task management system has integration problems between components:
+
+```python
+# Task manager with integration issues
+tasks = []
+categories = ["work", "personal", "shopping"]
+
+def add_task(title, category, priority):
+    """Add new task to the system."""
+    task_id = len(tasks) + 1
+    new_task = {
+        "id": task_id,
+        "title": title,
+        "category": category,
+        "priority": priority,
+        "completed": False
+    }
+    tasks.append(new_task)
+    save_tasks()
+    return task_id
+
+def complete_task(task_id):
+    """Mark task as completed."""
+    for task in tasks:
+        if task["id"] == task_id:
+            task["completed"] = True
+            return True
+    return False
+
+def delete_task(task_id):
+    """Delete task from system."""
+    for i, task in enumerate(tasks):
+        if task["id"] == task_id:
+            tasks.pop(i)
+            return True
+    return False
+
+def get_tasks_by_category(category):
+    """Get all tasks in a category."""
+    result = []
+    for task in tasks:
+        if task["category"] == category:
+            result.append(task)
+    return result
+
+def save_tasks():
+    """Save tasks to file."""
+    with open("tasks.txt", "w") as file:
+        for task in tasks:
+            line = f"{task['id']}|{task['title']}|{task['category']}|{task['priority']}|{task['completed']}\n"
+            file.write(line)
+
+def load_tasks():
+    """Load tasks from file."""
+    global tasks
+    tasks = []
+    with open("tasks.txt", "r") as file:
+        for line in file:
+            parts = line.strip().split("|")
+            task = {
+                "id": int(parts[0]),
+                "title": parts[1],
+                "category": parts[2],
+                "priority": int(parts[3]),
+                "completed": parts[4] == "True"
+            }
+            tasks.append(task)
+
+# Example usage scenario that fails:
+load_tasks()  # Load existing tasks
+add_task("Buy milk", "shopping", 1)
+add_task("Team meeting", "work", 2)
+delete_task(1)  # Delete first task
+add_task("Call mom", "personal", 1)  # This creates problems!
+```
+
+**Identify the integration issues:** (4 points, 2 points each)
+
+1. **Issue 1:** _________________________________
+   **Why it fails:** _____________________________
+   **Solution:** ________________________________
+
+2. **Issue 2:** _________________________________
+   **Why it fails:** _____________________________
+   **Solution:** ________________________________
+
+---
+
+# Part B: Systematic Debugging (6 points)
+
+## Question 3: Trace Execution (3 points)
+
+Follow the execution of this buggy shopping cart calculator and identify where it goes wrong:
+
+```python
+def calculate_cart_total(items, tax_rate=0.08, discount_code=None):
+    """Calculate total cost including tax and discounts."""
+    subtotal = 0
+    
+    # Calculate subtotal
+    for item in items:
+        price = item["price"]
+        quantity = item["quantity"]
+        subtotal += price * quantity
+    
+    # Apply discount
+    discount_amount = 0
+    if discount_code == "SAVE10":
+        discount_amount = subtotal * 0.10
+    elif discount_code == "SAVE20":
+        discount_amount = subtotal * 0.20
+    
+    # Calculate tax on discounted amount
+    after_discount = subtotal - discount_amount
+    tax_amount = after_discount * tax_rate
+    
+    # Final total
+    total = after_discount + tax_amount
+    
+    return {
+        "subtotal": subtotal,
+        "discount": discount_amount,
+        "tax": tax_amount,
+        "total": total
+    }
+
+# Test case that produces wrong results
+cart_items = [
+    {"name": "Book", "price": 20.00, "quantity": 2},
+    {"name": "Pen", "price": 1.50, "quantity": 5},
+    {"name": "Notebook", "price": 3.25, "quantity": 3}
+]
+
+result = calculate_cart_total(cart_items, tax_rate=0.08, discount_code="SAVE20")
+print(f"Expected total around $50, got: ${result['total']:.2f}")
+```
+
+**Trace the execution:** (3 points)
+
+1. **Step through the calculation manually:**
+   - Subtotal calculation: ______________________
+   - Discount amount: ___________________________
+   - After discount: ____________________________
+   - Tax calculation: ___________________________
+   - Final total: _______________________________
+
+2. **What's wrong with the logic?**
+   ________________________________________
+
+3. **How should it be fixed?**
+   ________________________________________
+
+## Question 4: Error Handling Analysis (3 points)
+
+This file processing function has poor error handling. Identify what could go wrong and improve it:
+
+```python
+def process_student_file(filename):
+    """Process student data from CSV-like file."""
+    students = {}
+    
+    file = open(filename, "r")
+    lines = file.readlines()
+    file.close()
+    
+    for line in lines:
+        parts = line.strip().split(",")
+        name = parts[0]
+        grade1 = float(parts[1])
+        grade2 = float(parts[2])
+        grade3 = float(parts[3])
+        
+        average = (grade1 + grade2 + grade3) / 3
+        students[name] = average
+    
+    return students
+
+# Sample file content that causes issues:
+# Alice,85,90,78
+# Bob,incomplete,85,90
+# Carol,95,,88
+# David
+```
+
+**Analysis and Improvement:** (3 points)
+
+1. **What errors could occur?** (1 point)
+   ________________________________________
+
+2. **Write an improved version:** (2 points)
+
+```python
+def process_student_file_safe(filename):
+    """Process student data with comprehensive error handling."""
+    students = {}
+    
+    # Your improved implementation here
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    return students
+```
+
+---
+
+# Part C: Quality Assurance and Testing (6 points)
+
+## Question 5: Test Case Design (3 points)
+
+For this password validation function, design comprehensive test cases:
+
+```python
+def validate_password(password):
+    """
+    Validate password strength.
+    
+    Requirements:
+    - At least 8 characters long
+    - Contains at least one uppercase letter
+    - Contains at least one lowercase letter  
+    - Contains at least one digit
+    - Contains at least one special character (!@#$%^&*)
+    
+    Returns:
+        True if valid, False otherwise
+    """
+    if len(password) < 8:
+        return False
+    
+    has_upper = any(c.isupper() for c in password)
+    has_lower = any(c.islower() for c in password)
+    has_digit = any(c.isdigit() for c in password)
+    has_special = any(c in "!@#$%^&*" for c in password)
+    
+    return has_upper and has_lower and has_digit and has_special
+```
+
+**Design test cases:** (3 points)
+
+```python
+def test_password_validation():
+    """Comprehensive password validation tests."""
+    
+    # Test 1: Valid passwords (should return True)
+    valid_passwords = [
+        # Add at least 3 valid test cases
+        
+        
+        
+    ]
+    
+    # Test 2: Invalid passwords (should return False)
+    invalid_passwords = [
+        # Add at least 5 invalid test cases covering different failure modes
+        
+        
+        
+        
+        
+    ]
+    
+    # Test 3: Edge cases
+    edge_cases = [
+        # Add at least 2 edge cases
+        
+        
+    ]
+    
+    # Run the tests
+    for password in valid_passwords:
+        assert validate_password(password) == True, f"Valid password failed: {password}"
+    
+    for password in invalid_passwords:
+        assert validate_password(password) == False, f"Invalid password passed: {password}"
+    
+    for password in edge_cases:
+        # Your edge case assertions here
+        
+    
+    print("All password validation tests passed!")
+
+test_password_validation()
+```
+
+## Question 6: Code Quality Review (3 points)
+
+Review this function and suggest improvements for readability and maintainability:
+
+```python
+def p(d, n):
+    r = []
+    for k, v in d.items():
+        if len(v) > 0:
+            a = sum(v) / len(v)
+            if a >= n:
+                r.append(k)
+    return r
+```
+
+**Code Quality Analysis:** (3 points)
+
+1. **What does this function do?** (1 point)
+   ________________________________________
+
+2. **List 3 specific problems with code quality:** (1 point)
+   - Problem 1: ____________________________
+   - Problem 2: ____________________________  
+   - Problem 3: ____________________________
+
+3. **Write an improved version:** (1 point)
+
+```python
+def improved_function():
+    """Your improved version with better names and documentation."""
+    
+    
+    
+    
+    
+    
+    
+    
+```
+
+---
+
+# Grading Rubric
+
+## Part A: Bug Identification (8 points)
+
+### Question 1: Logic Errors (4 points)
+- Each bug identified correctly: 1 point each
+- Common bugs to find:
+  - Division by zero when grades list is empty
+  - Incorrect initialization of lowest_grade 
+  - Not handling empty grade lists properly
+  - Potential floating point precision issues
+
+### Question 2: Integration Issues (4 points)
+- ID reuse problem after deletion: 2 points
+- File operation error handling: 2 points
+
+## Part B: Systematic Debugging (6 points)
+
+### Question 3: Trace Execution (3 points)
+- Correct manual calculation: 1 point
+- Logic error identification: 1 point
+- Appropriate fix suggestion: 1 point
+
+### Question 4: Error Handling (3 points)
+- Error identification: 1 point
+- Improved implementation: 2 points
+
+## Part C: Quality Assurance (6 points)
+
+### Question 5: Test Design (3 points)
+- Valid test cases: 1 point
+- Invalid test cases covering edge cases: 1 point
+- Proper test structure and assertions: 1 point
+
+### Question 6: Code Quality (3 points)
+- Function purpose identification: 1 point
+- Quality problems identified: 1 point
+- Improved implementation: 1 point
+
+---
+
+# Answer Key (For Instructors)
+
+## Part A Sample Answers
+
+### Question 1: Logic Errors
+1. **Division by zero** - Bob has empty grades list
+2. **Wrong lowest_grade initialization** - Should be float('inf') or first valid average
+3. **Doesn't skip empty grade lists** - Should handle students with no grades
+4. **Class average calculation** - Should only include students with grades
+
+### Question 2: Integration Issues
+1. **ID collision after deletion** - IDs get reused, causing data integrity issues
+2. **File operation errors** - No error handling for missing files or permission errors
+
+## Teaching Notes
+
+### Common Debugging Patterns
+Students should learn to:
+1. **Read error messages carefully**
+2. **Use print statements for tracing**
+3. **Test with edge cases**
+4. **Validate assumptions about data**
+
+### Professional Debugging Skills
+- Systematic approach to problem solving
+- Understanding of common error patterns
+- Ability to trace program execution
+- Recognition of code quality issues
+
+This assessment helps students develop critical debugging skills needed for professional development.

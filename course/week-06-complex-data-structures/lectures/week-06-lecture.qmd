@@ -1,0 +1,638 @@
+---
+title: "Week 6: Complex Data Structures"
+subtitle: "Organizing Data with Dictionaries"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# The Power of Key-Value Organization
+
+## The Contact Book Problem (10 minutes)
+
+### AI's Enterprise Solution
+
+Let me show you what happens when we ask AI for a "contact management system":
+
+**Me**: "Create a contact book application"
+
+**AI might give**:
+```python
+import sqlite3
+import json
+from flask import Flask, jsonify
+import requests
+
+class Contact:
+    def __init__(self, contact_id):
+        self.id = contact_id
+        self.personal_info = PersonalInfo()
+        self.social_media = SocialMediaProfiles()
+        self.interactions = InteractionHistory()
+        
+class ContactManager:
+    def __init__(self):
+        self.db = DatabaseConnection()
+        self.api = APIIntegration()
+        self.ml_engine = RecommendationEngine()
+        
+    def sync_with_cloud(self):
+        # Complex cloud synchronization
+        
+    def analyze_relationships(self):
+        # Graph analysis of contact networks
+        
+    def predict_communication_patterns(self):
+        # Machine learning predictions
+```
+
+**Let's be honest**:
+- Do you understand class inheritance?
+- What's a REST API?
+- Can you modify the ML engine?
+- What does a contact book REALLY need?
+
+### The Core Truth
+
+A contact book needs to:
+1. Store names with phone numbers and emails
+2. Find contacts quickly by name
+3. Update contact information
+4. Delete old contacts
+
+We need a way to connect names to their information - that's exactly what dictionaries do!
+
+### Today's Journey
+
+We'll discover:
+1. How to organize related data together
+2. How to access data by meaningful names
+3. How to model real-world information
+4. How to build complex data structures
+
+## Why Dictionaries Matter (20 minutes)
+
+### Real-World Key-Value Pairs
+
+Think about how information is organized:
+
+**Phone Book**:
+```
+"Alice Johnson" → "555-1234"
+"Bob Smith" → "555-5678"
+"Carol Davis" → "555-9012"
+```
+
+**Restaurant Menu**:
+```
+"Pizza" → $12.99
+"Burger" → $8.99
+"Salad" → $6.99
+```
+
+**Student Records**:
+```
+"A001" → {name: "Alice", grade: 92, major: "CS"}
+"B002" → {name: "Bob", grade: 85, major: "Math"}
+```
+
+### Lists vs Dictionaries
+
+**The List Problem**:
+```python
+# Using parallel lists (BAD!)
+names = ["Alice", "Bob", "Carol"]
+phones = ["555-1234", "555-5678", "555-9012"]
+emails = ["alice@email.com", "bob@email.com", "carol@email.com"]
+
+# To find Bob's phone:
+for i in range(len(names)):
+    if names[i] == "Bob":
+        print(phones[i])  # Hope the lists stay synchronized!
+```
+
+**The Dictionary Solution**:
+```python
+# Using a dictionary (GOOD!)
+contacts = {
+    "Alice": {"phone": "555-1234", "email": "alice@email.com"},
+    "Bob": {"phone": "555-5678", "email": "bob@email.com"},
+    "Carol": {"phone": "555-9012", "email": "carol@email.com"}
+}
+
+# To find Bob's phone:
+print(contacts["Bob"]["phone"])  # Direct access!
+```
+
+### Key Concepts
+
+#### Direct Access
+- Lists: Must search through positions
+- Dicts: Jump straight to the value
+
+#### Meaningful Names
+- Lists: arr[0], arr[1] - what do these mean?
+- Dicts: person["name"], person["age"] - self-documenting!
+
+#### Flexible Structure
+- Lists: All elements typically same type
+- Dicts: Mix any types of values
+
+## From Concepts to Code: Python Dictionaries (20 minutes)
+
+### Creating Dictionaries
+
+```python
+# Empty dictionary
+empty = {}
+empty2 = dict()  # Alternative way
+
+# Dictionary with initial values
+person = {
+    "name": "Alice Johnson",
+    "age": 25,
+    "email": "alice@email.com",
+    "student": True
+}
+
+# Different value types in one dict
+mixed = {
+    "text": "Hello",
+    "number": 42,
+    "decimal": 3.14,
+    "list": [1, 2, 3],
+    "nested": {"a": 1, "b": 2}
+}
+```
+
+### Accessing Values
+
+```python
+person = {
+    "name": "Alice Johnson",
+    "age": 25,
+    "email": "alice@email.com"
+}
+
+# Direct access (can cause KeyError!)
+name = person["name"]  # "Alice Johnson"
+age = person["age"]    # 25
+
+# Safe access with .get()
+phone = person.get("phone")  # None (no error!)
+phone = person.get("phone", "No phone")  # "No phone" (default)
+
+# Checking if key exists
+if "email" in person:
+    print(f"Email: {person['email']}")
+```
+
+### Modifying Dictionaries
+
+```python
+# Adding new entries
+person["phone"] = "555-1234"
+person["city"] = "New York"
+
+# Updating existing values
+person["age"] = 26
+person["email"] = "alice.johnson@email.com"
+
+# Deleting entries
+del person["city"]  # Remove city
+
+# Clear all entries
+# person.clear()  # Empties the dictionary
+```
+
+### Dictionary Methods
+
+```python
+contact = {
+    "name": "Bob Smith",
+    "phone": "555-5678",
+    "email": "bob@email.com"
+}
+
+# Get all keys
+keys = contact.keys()
+print(list(keys))  # ['name', 'phone', 'email']
+
+# Get all values  
+values = contact.values()
+print(list(values))  # ['Bob Smith', '555-5678', 'bob@email.com']
+
+# Get key-value pairs
+items = contact.items()
+for key, value in items:
+    print(f"{key}: {value}")
+```
+
+### Iteration Patterns
+
+```python
+# Iterate over keys (default)
+for key in contact:
+    print(f"Key: {key}")
+
+# Iterate over values
+for value in contact.values():
+    print(f"Value: {value}")
+
+# Iterate over key-value pairs
+for key, value in contact.items():
+    print(f"{key} = {value}")
+
+# Build new dictionary
+uppercase_contact = {}
+for key, value in contact.items():
+    if isinstance(value, str):
+        uppercase_contact[key] = value.upper()
+    else:
+        uppercase_contact[key] = value
+```
+
+### Nested Structures
+
+```python
+# Dictionary of dictionaries
+company = {
+    "employees": {
+        "alice": {"role": "Manager", "salary": 75000},
+        "bob": {"role": "Developer", "salary": 65000},
+        "carol": {"role": "Designer", "salary": 60000}
+    },
+    "departments": {
+        "engineering": ["alice", "bob"],
+        "design": ["carol"]
+    }
+}
+
+# Accessing nested values
+alice_role = company["employees"]["alice"]["role"]
+engineering_team = company["departments"]["engineering"]
+
+# List of dictionaries
+students = [
+    {"name": "Alice", "grade": 92, "subjects": ["Math", "CS"]},
+    {"name": "Bob", "grade": 85, "subjects": ["Physics", "Math"]},
+    {"name": "Carol", "grade": 88, "subjects": ["CS", "Art"]}
+]
+
+# Process list of dicts
+for student in students:
+    print(f"{student['name']}: {student['grade']}%")
+    
+# Find student by name
+def find_student(students, name):
+    for student in students:
+        if student["name"] == name:
+            return student
+    return None
+```
+
+### Common Patterns
+
+**Configuration/Settings**:
+```python
+settings = {
+    "app_name": "My Application",
+    "version": "1.0.0",
+    "debug_mode": True,
+    "max_users": 100,
+    "colors": {
+        "primary": "#007bff",
+        "secondary": "#6c757d"
+    }
+}
+```
+
+**Counting/Frequency**:
+```python
+# Count word frequency
+text = "the cat and the dog and the bird"
+word_count = {}
+
+for word in text.split():
+    if word in word_count:
+        word_count[word] = word_count[word] + 1
+    else:
+        word_count[word] = 1
+
+print(word_count)  # {'the': 3, 'cat': 1, 'and': 2, ...}
+```
+
+**Lookup Tables**:
+```python
+# Grade conversion
+grade_points = {
+    "A": 4.0,
+    "B": 3.0,
+    "C": 2.0,
+    "D": 1.0,
+    "F": 0.0
+}
+
+# Month names
+months = {
+    1: "January",
+    2: "February",
+    3: "March",
+    # etc...
+}
+```
+
+## AI Partnership: Smart Data Modeling (7 minutes)
+
+### Progressive Prompt Evolution
+
+Let's design data structures intelligently:
+
+#### Attempt 1: Too Vague
+**You**: "student information system"
+
+**AI gives**: Database schemas, ORMs, class hierarchies...
+
+#### Attempt 2: Adding Focus
+**You**: "Store student data with names, grades, and courses"
+
+**AI might give**: Still includes classes, JSON serialization...
+
+#### Attempt 3: Clear Constraints
+**You**: "Model student data using ONLY:
+- Dictionaries for each student
+- Lists where needed
+- Basic data types
+No classes, no imports, no files"
+
+**AI gives**:
+```python
+# Individual student
+student = {
+    "id": "S001",
+    "name": "Alice Johnson",
+    "age": 20,
+    "grades": {
+        "Math": 92,
+        "Physics": 88,
+        "CS": 95
+    },
+    "enrolled_courses": ["Math", "Physics", "CS"],
+    "contact": {
+        "email": "alice@university.edu",
+        "phone": "555-1234"
+    }
+}
+
+# All students
+students_db = {
+    "S001": student,
+    "S002": {
+        "id": "S002",
+        "name": "Bob Smith",
+        # ... more data
+    }
+}
+```
+
+Now we understand the structure!
+
+### Using AI for Dictionary Help
+
+**Good Debugging Prompts**:
+> "Why do I get KeyError when accessing a dictionary?"
+
+> "How do I safely check if a key exists before using it?"
+
+> "What's the best way to update nested dictionary values?"
+
+> "How should I structure data for a contact book?"
+
+### Common AI Overcomplications
+
+1. **Classes Too Early**:
+   ```python
+   # AI suggests classes - too advanced!
+   class Contact:
+       def __init__(self, name, phone):
+   ```
+
+2. **Database Integration**:
+   ```python
+   # AI suggests SQL - not needed yet!
+   import sqlite3
+   ```
+
+3. **JSON/Serialization**:
+   ```python
+   # AI suggests JSON - we'll learn files later!
+   import json
+   ```
+
+Keep it simple with basic dictionaries!
+
+## Building on Previous Weeks (3 minutes)
+
+### Integration Points
+
+Dictionaries work with everything we've learned:
+- **Functions** process dictionaries
+- **Loops** iterate through dict items
+- **Conditions** check dict values
+- **Lists** can contain dictionaries
+
+### Foundation for the Future
+
+This week enables:
+- Modeling complex real-world data
+- Building meaningful applications
+- Efficient data organization
+- Professional data structures
+
+## Preparing for Lab
+
+In today's lab, you'll:
+1. Master dictionary operations
+2. Design data structures
+3. Work with nested dictionaries
+4. Build a contact book system
+
+Key advice:
+- Always use .get() for safety
+- Think about your keys carefully
+- Test with empty dictionaries
+- Draw your structures first
+
+### Textbook Connection
+
+**Read for next class**:
+- Chapter 20: "Dictionaries" - Key-value basics
+- Chapter 21: "Dictionary Methods"
+- Chapter 22: "Nested Structures"
+- Chapter 23: "Data Modeling"
+
+---
+
+# Instructor Notes
+
+## Hook Management
+
+The contact book example works because:
+1. Everyone understands contact organization
+2. AI overcomplicates with enterprise features
+3. Core need is simple key-value storage
+4. Natural progression from lists
+
+Alternative hooks: Restaurant menu system, Grade book, Inventory management
+
+## Key Teaching Points
+
+### Dictionary Conceptual Challenges
+
+**Key-Value Thinking**:
+- Not everything has a natural position
+- Some data needs labels
+- Direct access vs sequential search
+
+**Mutable Keys Issue**:
+```python
+# This causes problems - don't use lists as keys!
+bad_dict = {[1, 2]: "value"}  # TypeError!
+
+# Use immutable types as keys
+good_dict = {(1, 2): "value"}  # Tuple is OK
+good_dict = {"key": "value"}   # String is OK
+```
+
+**KeyError Handling**:
+- Always demonstrate the error first
+- Show .get() as the solution
+- Explain when to use defaults
+
+### Common Confusions
+
+**List vs Dictionary Choice**:
+- Lists: Ordered, same type, access by position
+- Dicts: Labeled, mixed types, access by key
+
+**Nested Access Syntax**:
+```python
+# Students often confused by chaining
+value = data["level1"]["level2"]["level3"]
+
+# Break it down:
+temp1 = data["level1"]
+temp2 = temp1["level2"]
+value = temp2["level3"]
+```
+
+**Iteration Methods**:
+- Default iterates keys
+- .values() for just values
+- .items() for pairs
+
+## Live Coding Strategy
+
+### Build a Contact Entry
+
+Start simple and grow:
+```python
+# Version 1: Just name and phone
+contact = {"name": "Alice", "phone": "555-1234"}
+
+# Version 2: Add more fields
+contact["email"] = "alice@email.com"
+contact["address"] = "123 Main St"
+
+# Version 3: Nested structure
+contact = {
+    "name": "Alice",
+    "phones": {
+        "home": "555-1234",
+        "work": "555-5678"
+    }
+}
+```
+
+### Debugging Demo
+
+Common errors to show:
+1. KeyError on missing key
+2. TypeError with mutable keys
+3. Nested access failures
+4. Iteration mistakes
+
+## Assessment Ideas
+
+**Quick Checks**:
+- "What's the value of person['age']?"
+- "How do you safely get a value?"
+- "What does .items() return?"
+
+**Peer Activities**:
+- Design data structure together
+- Debug each other's KeyErrors
+- Compare different models
+
+## Common Student Issues
+
+1. **KeyError Anxiety**
+   - Always use .get() initially
+   - Build confidence gradually
+   - Show error isn't fatal
+
+2. **Over-Nesting**
+   ```python
+   # Too deep!
+   data["a"]["b"]["c"]["d"]["e"]
+   ```
+
+3. **Key Naming**
+   - Inconsistent names
+   - Spaces in keys (legal but awkward)
+   - Not descriptive enough
+
+4. **List-Dict Confusion**
+   ```python
+   # Mixing syntax
+   dict[0]  # Wrong - not a list!
+   list["key"]  # Wrong - not a dict!
+   ```
+
+## Differentiation
+
+**For Struggling Students**:
+- Start with single-level dicts
+- Provide structure templates
+- Extra visualization
+- Pair with stronger student
+
+**For Advanced Students**:
+- Complex nested structures
+- Data transformation challenges
+- Efficiency considerations
+- Alternative designs
+
+## Time Management
+- 0:00-0:10 - Hook with contact system
+- 0:10-0:30 - Key-value concepts
+- 0:30-0:50 - Dictionary operations
+- 0:50-0:57 - AI partnership
+- 0:57-1:00 - Lab preview
+
+## Week 6 Specific Tips
+
+1. **Visualize Everything** - Draw the structures
+2. **Real Examples** - Use familiar data
+3. **Compare Constantly** - List vs dict
+4. **Safety First** - Always .get()
+5. **Build Gradually** - Simple to nested
+
+Remember: Dictionaries are where data organization becomes powerful!

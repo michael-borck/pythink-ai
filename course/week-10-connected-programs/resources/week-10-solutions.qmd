@@ -1,0 +1,1815 @@
+---
+title: "Week 10 Solutions: Connected Programs"
+subtitle: "Complete Solutions for Lab Exercises and Assessments"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Solutions Overview
+
+This document provides complete, working solutions for all Week 10 exercises and assessments. These solutions demonstrate professional error handling, API integration, and resilient programming practices.
+
+**Important Note**: These are reference implementations. Students should develop their own solutions first, then use these for comparison and learning.
+
+---
+
+# Lab Exercise Solutions
+
+## Exercise 1: Error Handling Fundamentals
+
+### 1.1 Safe File Reader Solution
+
+```python
+def safe_file_reader(filename):
+    """Read file content with comprehensive error handling."""
+    try:
+        with open(filename, 'r', encoding='utf-8') as file:
+            content = file.read()
+            return {"success": True, "content": content}
+    except FileNotFoundError:
+        return {
+            "success": False, 
+            "error": f"File '{filename}' not found. Please check the file path."
+        }
+    except PermissionError:
+        return {
+            "success": False, 
+            "error": f"Permission denied accessing '{filename}'. Check file permissions."
+        }
+    except UnicodeDecodeError as e:
+        return {
+            "success": False, 
+            "error": f"File encoding error: {e}. Try saving the file as UTF-8."
+        }
+    except IsADirectoryError:
+        return {
+            "success": False, 
+            "error": f"'{filename}' is a directory, not a file."
+        }
+    except OSError as e:
+        return {
+            "success": False, 
+            "error": f"System error reading file: {e}"
+        }
+    except Exception as e:
+        return {
+            "success": False, 
+            "error": f"Unexpected error: {e}"
+        }
+
+# Test the function:
+test_files = ["existing_file.txt", "missing_file.txt", "/restricted/file.txt"]
+for filename in test_files:
+    result = safe_file_reader(filename)
+    if result["success"]:
+        print(f"✓ {filename}: {len(result['content'])} characters read")
+    else:
+        print(f"✗ {filename}: {result['error']}")
+```
+
+### 1.2 Data Conversion Solutions
+
+```python
+def safe_int_converter(user_input, default=None):
+    """Convert string to integer with error handling."""
+    try:
+        if user_input is None:
+            if default is not None:
+                return {"success": True, "value": default, "used_default": True}
+            return {"success": False, "error": "Input cannot be None"}
+        
+        # Handle empty strings
+        if isinstance(user_input, str) and user_input.strip() == "":
+            if default is not None:
+                return {"success": True, "value": default, "used_default": True}
+            return {"success": False, "error": "Input cannot be empty"}
+        
+        value = int(user_input)
+        return {"success": True, "value": value}
+        
+    except ValueError:
+        if default is not None:
+            return {"success": True, "value": default, "used_default": True}
+        return {"success": False, "error": f"'{user_input}' is not a valid integer"}
+    except TypeError:
+        return {"success": False, "error": f"Cannot convert {type(user_input).__name__} to integer"}
+
+def safe_float_converter(user_input, min_value=None, max_value=None):
+    """Convert to float with range validation."""
+    try:
+        if user_input is None:
+            return {"success": False, "error": "Input cannot be None"}
+        
+        if isinstance(user_input, str) and user_input.strip() == "":
+            return {"success": False, "error": "Input cannot be empty"}
+        
+        value = float(user_input)
+        
+        # Check for special float values
+        if not isfinite(value):
+            return {"success": False, "error": "Input cannot be infinity or NaN"}
+        
+        # Range validation
+        if min_value is not None and value < min_value:
+            return {"success": False, "error": f"Value {value} is below minimum {min_value}"}
+        if max_value is not None and value > max_value:
+            return {"success": False, "error": f"Value {value} is above maximum {max_value}"}
+            
+        return {"success": True, "value": value}
+        
+    except ValueError:
+        return {"success": False, "error": f"'{user_input}' is not a valid number"}
+    except TypeError:
+        return {"success": False, "error": f"Cannot convert {type(user_input).__name__} to float"}
+
+# Additional import needed
+from math import isfinite
+
+# Test both functions:
+test_cases = [
+    ("42", None, None),
+    ("3.14", 0, 10),
+    ("not_a_number", None, None),
+    ("", 5, None),
+    (None, 10, None),
+    ("-5", 0, 100),
+    ("150", None, 100),
+]
+
+for input_val, min_val, max_val in test_cases:
+    int_result = safe_int_converter(input_val, default=0)
+    float_result = safe_float_converter(input_val, min_val, max_val)
+    
+    print(f"Input: {input_val}")
+    print(f"  Int: {int_result}")
+    print(f"  Float: {float_result}")
+    print()
+```
+
+### 1.3 Safe Dictionary Access Solution
+
+```python
+def safe_get_nested(data, keys, default=None):
+    """Safely get nested dictionary values."""
+    try:
+        if not isinstance(data, dict):
+            return {"success": False, "error": "Input data must be a dictionary"}
+        
+        if not isinstance(keys, (list, tuple)):
+            return {"success": False, "error": "Keys must be a list or tuple"}
+        
+        if not keys:
+            return {"success": True, "value": data}
+        
+        current = data
+        path_taken = []
+        
+        for key in keys:
+            path_taken.append(str(key))
+            
+            if not isinstance(current, dict):
+                return {
+                    "success": True, 
+                    "value": default, 
+                    "used_default": True,
+                    "error_path": " -> ".join(path_taken[:-1]),
+                    "reason": f"Value at '{path_taken[-2]}' is not a dictionary"
+                }
+            
+            if key not in current:
+                return {
+                    "success": True, 
+                    "value": default, 
+                    "used_default": True,
+                    "error_path": " -> ".join(path_taken),
+                    "reason": f"Key '{key}' not found"
+                }
+            
+            current = current[key]
+        
+        return {"success": True, "value": current}
+        
+    except TypeError as e:
+        return {"success": False, "error": f"Type error during access: {e}"}
+    except Exception as e:
+        return {"success": False, "error": f"Unexpected error: {e}"}
+
+# Enhanced test data:
+complex_test_data = {
+    "user": {
+        "profile": {
+            "name": "Alice",
+            "age": 30,
+            "preferences": {
+                "theme": "dark",
+                "notifications": {
+                    "email": True,
+                    "sms": False,
+                    "push": True
+                }
+            }
+        },
+        "settings": {
+            "language": "en",
+            "timezone": "UTC"
+        }
+    },
+    "metadata": {
+        "created": "2024-01-15",
+        "version": "1.0"
+    }
+}
+
+# Test cases with various scenarios:
+test_paths = [
+    (["user", "profile", "name"], "Should work"),
+    (["user", "profile", "email"], "Missing field"),
+    (["user", "settings", "language"], "Should work"),
+    (["user", "profile", "preferences", "notifications", "email"], "Deeply nested"),
+    (["user", "missing", "field"], "Missing intermediate"),
+    (["metadata", "version"], "Should work"),
+    ([], "Empty path"),
+    (["nonexistent"], "Missing top level"),
+]
+
+for keys, description in test_paths:
+    result = safe_get_nested(complex_test_data, keys, "DEFAULT")
+    print(f"{description}: {keys}")
+    print(f"  Result: {result}")
+    print()
+```
+
+## Exercise 2: JSON Processing Solutions
+
+### 2.1 Basic JSON Operations Solutions
+
+```python
+import json
+
+def safe_json_parse(json_string):
+    """Parse JSON with comprehensive error handling."""
+    try:
+        if not isinstance(json_string, str):
+            return {
+                "success": False, 
+                "error": f"Input must be a string, got {type(json_string).__name__}"
+            }
+        
+        if not json_string.strip():
+            return {"success": False, "error": "Input string is empty"}
+        
+        data = json.loads(json_string)
+        return {"success": True, "data": data}
+        
+    except json.JSONDecodeError as e:
+        return {
+            "success": False, 
+            "error": f"Invalid JSON at line {e.lineno}, column {e.colno}: {e.msg}",
+            "error_type": "json_decode_error",
+            "line": e.lineno,
+            "column": e.colno
+        }
+    except Exception as e:
+        return {
+            "success": False, 
+            "error": f"Unexpected error during JSON parsing: {e}",
+            "error_type": "unexpected_error"
+        }
+
+def safe_json_create(data):
+    """Convert Python data to JSON safely."""
+    try:
+        json_string = json.dumps(data, indent=2, ensure_ascii=False)
+        return {"success": True, "json": json_string}
+        
+    except TypeError as e:
+        # Identify non-serializable objects
+        non_serializable = []
+        if hasattr(e, 'args') and e.args:
+            error_msg = str(e.args[0])
+            if "not JSON serializable" in error_msg:
+                # Extract object type from error message
+                import re
+                match = re.search(r"Object of type (\w+) is not JSON serializable", error_msg)
+                if match:
+                    non_serializable.append(match.group(1))
+        
+        return {
+            "success": False, 
+            "error": f"Data contains non-JSON serializable objects: {e}",
+            "error_type": "type_error",
+            "non_serializable_types": non_serializable
+        }
+    except Exception as e:
+        return {
+            "success": False, 
+            "error": f"Unexpected error during JSON creation: {e}",
+            "error_type": "unexpected_error"
+        }
+
+# Test with various JSON scenarios:
+test_json_strings = [
+    '{"name": "Alice", "age": 30}',                    # Valid JSON
+    '{"name": "Bob", "age":}',                         # Missing value
+    '{"name": "Charlie" "age": 25}',                   # Missing comma
+    '[1, 2, 3, "text", true, null]',                   # Valid array
+    '{"nested": {"deeply": {"value": 42}}}',           # Nested structure
+    '',                                                # Empty string
+    'not json at all',                                 # Invalid format
+    '{"unicode": "Hello 世界"}',                       # Unicode content
+    123,                                               # Wrong type
+]
+
+print("=== JSON Parsing Tests ===")
+for i, test_string in enumerate(test_json_strings):
+    result = safe_json_parse(test_string)
+    print(f"Test {i+1}: {str(test_string)[:50]}...")
+    print(f"  Success: {result['success']}")
+    if result['success']:
+        print(f"  Data type: {type(result['data']).__name__}")
+    else:
+        print(f"  Error: {result['error']}")
+    print()
+
+# Test JSON creation:
+test_python_objects = [
+    {"name": "Alice", "scores": [95, 87, 92]},         # Valid dict
+    [1, 2, {"nested": True}],                          # Valid list
+    {"date": "2024-01-15", "active": True},            # Mixed types
+    {"function": lambda x: x},                         # Non-serializable
+    {"set": {1, 2, 3}},                               # Set (non-serializable)
+    "simple string",                                   # Simple type
+]
+
+print("\n=== JSON Creation Tests ===")
+for i, test_obj in enumerate(test_python_objects):
+    result = safe_json_create(test_obj)
+    print(f"Test {i+1}: {type(test_obj).__name__}")
+    print(f"  Success: {result['success']}")
+    if result['success']:
+        print(f"  JSON: {result['json'][:100]}...")
+    else:
+        print(f"  Error: {result['error']}")
+    print()
+```
+
+### 2.2 Data Validation Solution
+
+```python
+def validate_weather_data(json_data):
+    """Validate weather API response structure."""
+    try:
+        # Handle string input (parse JSON first)
+        if isinstance(json_data, str):
+            try:
+                data = json.loads(json_data)
+            except json.JSONDecodeError as e:
+                return {
+                    "valid": False, 
+                    "error": f"Invalid JSON format: {e.msg} at line {e.lineno}"
+                }
+        else:
+            data = json_data
+        
+        # Check if data is a dictionary
+        if not isinstance(data, dict):
+            return {
+                "valid": False,
+                "error": f"Data must be an object/dictionary, got {type(data).__name__}"
+            }
+        
+        # Required fields validation
+        required_fields = ["temp", "condition", "humidity"]
+        missing_fields = []
+        
+        for field in required_fields:
+            if field not in data:
+                missing_fields.append(field)
+        
+        if missing_fields:
+            return {
+                "valid": False, 
+                "error": f"Missing required fields: {', '.join(missing_fields)}"
+            }
+        
+        # Temperature validation
+        temp = data["temp"]
+        if not isinstance(temp, (int, float)):
+            return {
+                "valid": False, 
+                "error": f"Temperature must be a number, got {type(temp).__name__}: {temp}"
+            }
+        
+        # Reasonable temperature range check
+        if temp < -100 or temp > 150:  # Fahrenheit range
+            return {
+                "valid": False,
+                "error": f"Temperature {temp}°F is outside reasonable range (-100 to 150)"
+            }
+        
+        # Humidity validation
+        humidity = data["humidity"]
+        if not isinstance(humidity, (int, float)):
+            return {
+                "valid": False, 
+                "error": f"Humidity must be a number, got {type(humidity).__name__}: {humidity}"
+            }
+        
+        if not (0 <= humidity <= 100):
+            return {
+                "valid": False, 
+                "error": f"Humidity must be between 0-100, got {humidity}"
+            }
+        
+        # Condition validation
+        condition = data["condition"]
+        if not isinstance(condition, str):
+            return {
+                "valid": False, 
+                "error": f"Condition must be a string, got {type(condition).__name__}: {condition}"
+            }
+        
+        if len(condition.strip()) == 0:
+            return {
+                "valid": False, 
+                "error": "Condition cannot be empty"
+            }
+        
+        # Optional field validation
+        location = data.get("location", "Unknown")
+        if not isinstance(location, str):
+            location = str(location)  # Convert to string if possible
+        
+        timestamp = data.get("timestamp", "Unknown")
+        if not isinstance(timestamp, str):
+            timestamp = str(timestamp)
+        
+        # Extract validated data
+        validated_data = {
+            "temperature": float(temp),
+            "condition": condition.strip().lower(),
+            "humidity": float(humidity),
+            "location": location.strip() if location != "Unknown" else "Unknown",
+            "timestamp": timestamp
+        }
+        
+        # Additional optional fields
+        optional_fields = ["wind_speed", "pressure", "visibility"]
+        for field in optional_fields:
+            if field in data:
+                value = data[field]
+                if isinstance(value, (int, float)):
+                    validated_data[field] = float(value)
+        
+        return {
+            "valid": True,
+            "data": validated_data,
+            "warnings": []  # Could add warnings for unusual values
+        }
+        
+    except Exception as e:
+        return {
+            "valid": False, 
+            "error": f"Validation error: {str(e)}"
+        }
+
+# Test with comprehensive examples:
+test_weather_data = [
+    # Valid data
+    {
+        "temp": 72.5,
+        "condition": "sunny",
+        "humidity": 45,
+        "location": "Seattle, WA",
+        "wind_speed": 8.5
+    },
+    
+    # Valid minimal data
+    {
+        "temp": 68,
+        "condition": "cloudy",
+        "humidity": 80
+    },
+    
+    # Invalid temperature type
+    {
+        "temp": "hot",
+        "condition": "sunny",
+        "humidity": 45
+    },
+    
+    # Missing required field
+    {
+        "temp": 72,
+        "condition": "sunny"
+        # Missing humidity
+    },
+    
+    # Invalid humidity range
+    {
+        "temp": 75,
+        "condition": "rainy",
+        "humidity": 150
+    },
+    
+    # Empty condition
+    {
+        "temp": 70,
+        "condition": "",
+        "humidity": 60
+    },
+    
+    # Extreme temperature
+    {
+        "temp": 200,
+        "condition": "scorching",
+        "humidity": 10
+    },
+    
+    # JSON string input
+    '{"temp": 65, "condition": "partly cloudy", "humidity": 55}',
+    
+    # Invalid JSON string
+    '{"temp": 65, "condition":}',
+    
+    # Wrong data type
+    [72, "sunny", 45],  # List instead of dict
+]
+
+print("=== Weather Data Validation Tests ===")
+for i, test_data in enumerate(test_weather_data):
+    print(f"\nTest {i+1}:")
+    print(f"Input: {str(test_data)[:80]}...")
+    
+    result = validate_weather_data(test_data)
+    print(f"Valid: {result['valid']}")
+    
+    if result['valid']:
+        data = result['data']
+        print(f"Temperature: {data['temperature']}°F")
+        print(f"Condition: {data['condition']}")
+        print(f"Humidity: {data['humidity']}%")
+        print(f"Location: {data['location']}")
+    else:
+        print(f"Error: {result['error']}")
+```
+
+### 2.3 Complex JSON Processing Solution
+
+```python
+def process_forecast_data(forecast_json):
+    """Process complex forecast JSON with error handling."""
+    try:
+        # Parse JSON if it's a string
+        if isinstance(forecast_json, str):
+            try:
+                data = json.loads(forecast_json)
+            except json.JSONDecodeError as e:
+                return {
+                    "success": False, 
+                    "error": f"Invalid JSON format: {e.msg} at line {e.lineno}"
+                }
+        else:
+            data = forecast_json
+        
+        if not isinstance(data, dict):
+            return {
+                "success": False, 
+                "error": f"Data must be an object, got {type(data).__name__}"
+            }
+        
+        # Extract location safely
+        location_data = data.get("location", {})
+        if isinstance(location_data, dict):
+            location = location_data.get("name", "Unknown Location")
+        else:
+            location = str(location_data) if location_data else "Unknown Location"
+        
+        # Extract current weather
+        current = data.get("current", {})
+        if not isinstance(current, dict):
+            return {"success": False, "error": "No current weather data found"}
+        
+        if not current:
+            return {"success": False, "error": "Current weather data is empty"}
+        
+        # Process current weather with validation
+        def safe_get_number(data_dict, key, default=0):
+            """Safely extract numeric value from dictionary."""
+            value = data_dict.get(key, default)
+            if isinstance(value, (int, float)):
+                return value
+            try:
+                return float(value)
+            except (ValueError, TypeError):
+                return default
+        
+        def safe_get_string(data_dict, key, default="Unknown"):
+            """Safely extract string value from dictionary."""
+            value = data_dict.get(key, default)
+            if isinstance(value, str):
+                return value.strip()
+            return str(value) if value is not None else default
+        
+        # Extract current weather condition
+        condition_data = current.get("condition", {})
+        if isinstance(condition_data, dict):
+            condition_text = condition_data.get("text", "Unknown")
+        elif isinstance(condition_data, str):
+            condition_text = condition_data
+        else:
+            condition_text = "Unknown"
+        
+        current_weather = {
+            "location": location,
+            "temperature": safe_get_number(current, "temp_f"),
+            "condition": safe_get_string({"text": condition_text}, "text"),
+            "humidity": safe_get_number(current, "humidity"),
+            "wind_speed": safe_get_number(current, "wind_mph"),
+            "pressure": safe_get_number(current, "pressure_mb"),
+            "visibility": safe_get_number(current, "vis_miles")
+        }
+        
+        # Extract forecast data
+        forecast_container = data.get("forecast", {})
+        if isinstance(forecast_container, dict):
+            forecast_days_raw = forecast_container.get("forecastday", [])
+        else:
+            forecast_days_raw = []
+        
+        if not isinstance(forecast_days_raw, list):
+            forecast_days_raw = []
+        
+        # Process forecast days (limit to first 7 days)
+        forecast_days = []
+        for i, day in enumerate(forecast_days_raw[:7]):
+            if not isinstance(day, dict):
+                continue
+            
+            day_data = day.get("day", {})
+            if not isinstance(day_data, dict):
+                continue
+            
+            # Extract day condition
+            day_condition_data = day_data.get("condition", {})
+            if isinstance(day_condition_data, dict):
+                day_condition = day_condition_data.get("text", "Unknown")
+            else:
+                day_condition = str(day_condition_data) if day_condition_data else "Unknown"
+            
+            forecast_day = {
+                "date": safe_get_string(day, "date", f"Day {i+1}"),
+                "high": safe_get_number(day_data, "maxtemp_f"),
+                "low": safe_get_number(day_data, "mintemp_f"),
+                "condition": day_condition,
+                "chance_of_rain": safe_get_number(day_data, "daily_chance_of_rain"),
+                "max_wind": safe_get_number(day_data, "maxwind_mph"),
+                "avg_humidity": safe_get_number(day_data, "avghumidity")
+            }
+            
+            forecast_days.append(forecast_day)
+        
+        # Validation checks
+        warnings = []
+        if current_weather["temperature"] == 0:
+            warnings.append("Current temperature data may be missing")
+        if len(forecast_days) == 0:
+            warnings.append("No forecast data available")
+        if current_weather["location"] == "Unknown Location":
+            warnings.append("Location information not available")
+        
+        return {
+            "success": True,
+            "current": current_weather,
+            "forecast": forecast_days,
+            "forecast_days_available": len(forecast_days),
+            "warnings": warnings
+        }
+        
+    except Exception as e:
+        return {
+            "success": False, 
+            "error": f"Processing error: {str(e)}"
+        }
+
+# Test with complex forecast data:
+sample_forecast_complete = '''
+{
+  "location": {"name": "Seattle, WA", "country": "USA"},
+  "current": {
+    "temp_f": 68.5,
+    "condition": {"text": "Partly cloudy"},
+    "humidity": 72,
+    "wind_mph": 8.5,
+    "pressure_mb": 1013.2,
+    "vis_miles": 10.0
+  },
+  "forecast": {
+    "forecastday": [
+      {
+        "date": "2024-01-15",
+        "day": {
+          "maxtemp_f": 71,
+          "mintemp_f": 55,
+          "condition": {"text": "Sunny"},
+          "daily_chance_of_rain": 10,
+          "maxwind_mph": 12,
+          "avghumidity": 65
+        }
+      },
+      {
+        "date": "2024-01-16",
+        "day": {
+          "maxtemp_f": 69,
+          "mintemp_f": 58,
+          "condition": {"text": "Cloudy"},
+          "daily_chance_of_rain": 30,
+          "maxwind_mph": 15,
+          "avghumidity": 78
+        }
+      },
+      {
+        "date": "2024-01-17",
+        "day": {
+          "maxtemp_f": 65,
+          "mintemp_f": 52,
+          "condition": {"text": "Rainy"},
+          "daily_chance_of_rain": 85,
+          "maxwind_mph": 20,
+          "avghumidity": 88
+        }
+      }
+    ]
+  }
+}
+'''
+
+# Test with various data quality issues:
+test_forecast_cases = [
+    ("Complete Data", sample_forecast_complete),
+    ("Missing Forecast", '{"location": {"name": "Boston"}, "current": {"temp_f": 45, "condition": {"text": "Cold"}, "humidity": 60}}'),
+    ("Missing Current", '{"location": {"name": "Miami"}, "forecast": {"forecastday": []}}'),
+    ("Malformed JSON", '{"location": {"name": "Error City"}'),
+    ("Empty Object", '{}'),
+    ("Wrong Type", '[]'),
+]
+
+print("=== Forecast Data Processing Tests ===")
+for name, test_data in test_forecast_cases:
+    print(f"\n=== {name} ===")
+    result = process_forecast_data(test_data)
+    
+    if result["success"]:
+        current = result["current"]
+        forecast = result["forecast"]
+        
+        print(f"Location: {current['location']}")
+        print(f"Current: {current['temperature']}°F, {current['condition']}")
+        print(f"Humidity: {current['humidity']}%, Wind: {current['wind_speed']} mph")
+        
+        print(f"\nForecast ({result['forecast_days_available']} days):")
+        for day in forecast:
+            print(f"  {day['date']}: {day['high']}°F/{day['low']}°F - {day['condition']} ({day['chance_of_rain']}% rain)")
+        
+        if result["warnings"]:
+            print(f"\nWarnings: {', '.join(result['warnings'])}")
+    else:
+        print(f"Error: {result['error']}")
+```
+
+## Exercise 3: HTTP Requests Solutions
+
+### 3.1 Basic HTTP Client Solution
+
+```python
+import urllib.request
+import urllib.parse
+import json
+import time
+
+def make_http_request(url, params=None, timeout=10, headers=None):
+    """Make HTTP request with comprehensive error handling."""
+    try:
+        # Validate URL
+        if not isinstance(url, str) or not url.strip():
+            return {
+                "success": False,
+                "error": "URL must be a non-empty string"
+            }
+        
+        # Build URL with parameters
+        if params:
+            if not isinstance(params, dict):
+                return {
+                    "success": False,
+                    "error": "Parameters must be a dictionary"
+                }
+            
+            try:
+                query_string = urllib.parse.urlencode(params)
+                full_url = f"{url}?{query_string}"
+            except Exception as e:
+                return {
+                    "success": False,
+                    "error": f"Error encoding parameters: {e}"
+                }
+        else:
+            full_url = url
+        
+        # Create request
+        try:
+            request = urllib.request.Request(full_url)
+            
+            # Add default headers
+            request.add_header('User-Agent', 'Python-HTTP-Client/1.0')
+            request.add_header('Accept', 'application/json, text/plain, */*')
+            
+            # Add custom headers
+            if headers:
+                for key, value in headers.items():
+                    request.add_header(key, str(value))
+            
+        except Exception as e:
+            return {
+                "success": False,
+                "error": f"Error creating request: {e}"
+            }
+        
+        # Make request
+        start_time = time.time()
+        
+        try:
+            with urllib.request.urlopen(request, timeout=timeout) as response:
+                status_code = response.getcode()
+                content = response.read().decode('utf-8')
+                response_time = time.time() - start_time
+                
+                # Get response headers
+                response_headers = dict(response.headers)
+                
+                return {
+                    "success": True,
+                    "status_code": status_code,
+                    "content": content,
+                    "headers": response_headers,
+                    "url": full_url,
+                    "response_time": response_time
+                }
+                
+        except urllib.error.HTTPError as e:
+            # Try to read error response body
+            try:
+                error_content = e.read().decode('utf-8')
+            except:
+                error_content = None
+            
+            return {
+                "success": False,
+                "error": f"HTTP {e.code}: {e.reason}",
+                "status_code": e.code,
+                "error_content": error_content,
+                "url": full_url,
+                "response_time": time.time() - start_time
+            }
+        
+        except urllib.error.URLError as e:
+            return {
+                "success": False,
+                "error": f"Connection failed: {e.reason}",
+                "url": full_url,
+                "response_time": time.time() - start_time
+            }
+        
+        except TimeoutError:
+            return {
+                "success": False,
+                "error": f"Request timed out after {timeout} seconds",
+                "url": full_url,
+                "response_time": time.time() - start_time
+            }
+        
+    except Exception as e:
+        return {
+            "success": False,
+            "error": f"Unexpected error: {str(e)}"
+        }
+
+# Test the HTTP client:
+def test_http_client():
+    """Test HTTP client with various scenarios."""
+    test_cases = [
+        {
+            "name": "Valid JSON API",
+            "url": "https://httpbin.org/json",
+            "params": None
+        },
+        {
+            "name": "API with parameters",
+            "url": "https://httpbin.org/get",
+            "params": {"test": "value", "number": 42}
+        },
+        {
+            "name": "Not Found (404)",
+            "url": "https://httpbin.org/status/404",
+            "params": None
+        },
+        {
+            "name": "Server Error (500)",
+            "url": "https://httpbin.org/status/500", 
+            "params": None
+        },
+        {
+            "name": "Invalid URL",
+            "url": "https://definitely-not-a-real-url-12345.com",
+            "params": None
+        },
+        {
+            "name": "Timeout test",
+            "url": "https://httpbin.org/delay/2",
+            "params": None,
+            "timeout": 1  # Will timeout
+        }
+    ]
+    
+    print("=== HTTP Client Test Results ===")
+    
+    for test_case in test_cases:
+        print(f"\n--- {test_case['name']} ---")
+        
+        timeout = test_case.get('timeout', 10)
+        result = make_http_request(
+            test_case['url'], 
+            test_case['params'],
+            timeout=timeout
+        )
+        
+        print(f"Success: {result['success']}")
+        print(f"Response Time: {result.get('response_time', 0):.3f}s")
+        
+        if result['success']:
+            print(f"Status Code: {result['status_code']}")
+            print(f"Content Length: {len(result['content'])} characters")
+            if result['content'].startswith('{'):
+                try:
+                    json_data = json.loads(result['content'])
+                    print(f"JSON Keys: {list(json_data.keys()) if isinstance(json_data, dict) else 'N/A'}")
+                except:
+                    print("Content is not valid JSON")
+        else:
+            print(f"Error: {result['error']}")
+            if 'status_code' in result:
+                print(f"Status Code: {result['status_code']}")
+
+# Run the test
+if __name__ == "__main__":
+    test_http_client()
+```
+
+### 3.2 API Response Handler Solution
+
+```python
+def handle_api_response(response_result, expected_format="json"):
+    """Process API response with appropriate error handling."""
+    if not isinstance(response_result, dict):
+        return {
+            "status": "error",
+            "message": "Invalid response result format",
+            "data": None
+        }
+    
+    if not response_result.get("success", False):
+        error = response_result.get("error", "Unknown error")
+        status_code = response_result.get("status_code")
+        
+        # Provide specific error messages based on status code
+        if status_code == 400:
+            message = "Bad request - please check your parameters"
+        elif status_code == 401:
+            message = "Authentication required - check your API key"
+        elif status_code == 403:
+            message = "Access forbidden - insufficient permissions"
+        elif status_code == 404:
+            message = "Resource not found - check the URL"
+        elif status_code == 429:
+            message = "Rate limit exceeded - please wait before trying again"
+        elif status_code and status_code >= 500:
+            message = "Server error - please try again later"
+        else:
+            message = f"Request failed: {error}"
+        
+        return {
+            "status": "error",
+            "message": message,
+            "data": None,
+            "error_details": {
+                "original_error": error,
+                "status_code": status_code,
+                "response_time": response_result.get("response_time")
+            }
+        }
+    
+    # Handle successful response
+    status_code = response_result.get("status_code", 200)
+    content = response_result.get("content", "")
+    
+    if status_code != 200:
+        return {
+            "status": "error",
+            "message": f"Unexpected status code: {status_code}",
+            "data": None
+        }
+    
+    # Process content based on expected format
+    if expected_format == "json":
+        try:
+            data = json.loads(content)
+            
+            # Validate JSON structure for common API patterns
+            if isinstance(data, dict):
+                # Check for error indicators in successful responses
+                if data.get("error") or data.get("status") == "error":
+                    return {
+                        "status": "error",
+                        "message": data.get("message", "API returned error status"),
+                        "data": None,
+                        "error_details": data
+                    }
+                
+                return {
+                    "status": "success",
+                    "message": "Data retrieved successfully",
+                    "data": data,
+                    "metadata": {
+                        "response_time": response_result.get("response_time"),
+                        "content_length": len(content)
+                    }
+                }
+            
+            elif isinstance(data, list):
+                return {
+                    "status": "success",
+                    "message": f"Retrieved {len(data)} items",
+                    "data": data,
+                    "metadata": {
+                        "item_count": len(data),
+                        "response_time": response_result.get("response_time")
+                    }
+                }
+            
+            else:
+                return {
+                    "status": "success",
+                    "message": "Data retrieved successfully",
+                    "data": data,
+                    "metadata": {
+                        "data_type": type(data).__name__,
+                        "response_time": response_result.get("response_time")
+                    }
+                }
+        
+        except json.JSONDecodeError as e:
+            return {
+                "status": "error",
+                "message": f"Invalid JSON response: {e.msg}",
+                "data": None,
+                "error_details": {
+                    "json_error": str(e),
+                    "content_preview": content[:200] + "..." if len(content) > 200 else content
+                }
+            }
+    
+    elif expected_format == "text":
+        return {
+            "status": "success",
+            "message": "Text content retrieved successfully",
+            "data": content,
+            "metadata": {
+                "content_length": len(content),
+                "response_time": response_result.get("response_time")
+            }
+        }
+    
+    else:
+        return {
+            "status": "error",
+            "message": f"Unsupported format: {expected_format}",
+            "data": None
+        }
+
+# Test the response handler:
+def test_response_handler():
+    """Test API response handler with various scenarios."""
+    
+    # Simulate different response scenarios
+    test_responses = [
+        {
+            "name": "Successful JSON",
+            "response": {
+                "success": True,
+                "status_code": 200,
+                "content": '{"users": [{"name": "Alice"}, {"name": "Bob"}], "total": 2}',
+                "response_time": 0.245
+            }
+        },
+        {
+            "name": "API Error in JSON",
+            "response": {
+                "success": True,
+                "status_code": 200,
+                "content": '{"error": true, "message": "Invalid user ID"}',
+                "response_time": 0.123
+            }
+        },
+        {
+            "name": "HTTP 404 Error",
+            "response": {
+                "success": False,
+                "error": "HTTP 404: Not Found",
+                "status_code": 404,
+                "response_time": 0.089
+            }
+        },
+        {
+            "name": "Invalid JSON",
+            "response": {
+                "success": True,
+                "status_code": 200,
+                "content": '{"name": "Alice", "age":}',  # Invalid JSON
+                "response_time": 0.156
+            }
+        },
+        {
+            "name": "Empty Response",
+            "response": {
+                "success": True,
+                "status_code": 200,
+                "content": '',
+                "response_time": 0.067
+            }
+        },
+        {
+            "name": "Rate Limited",
+            "response": {
+                "success": False,
+                "error": "HTTP 429: Too Many Requests",
+                "status_code": 429,
+                "response_time": 0.034
+            }
+        }
+    ]
+    
+    print("=== API Response Handler Tests ===")
+    
+    for test in test_responses:
+        print(f"\n--- {test['name']} ---")
+        result = handle_api_response(test['response'])
+        
+        print(f"Status: {result['status']}")
+        print(f"Message: {result['message']}")
+        
+        if result['data'] is not None:
+            if isinstance(result['data'], dict):
+                print(f"Data Keys: {list(result['data'].keys())}")
+            elif isinstance(result['data'], list):
+                print(f"Data Items: {len(result['data'])}")
+            else:
+                print(f"Data Type: {type(result['data']).__name__}")
+        
+        if 'metadata' in result:
+            metadata = result['metadata']
+            if 'response_time' in metadata:
+                print(f"Response Time: {metadata['response_time']:.3f}s")
+        
+        if 'error_details' in result:
+            details = result['error_details']
+            print(f"Error Details: {list(details.keys())}")
+
+# Run the test
+if __name__ == "__main__":
+    test_response_handler()
+```
+
+### 3.3 Resilient API Client Solution
+
+```python
+import time
+import random
+
+def resilient_api_call(url, params=None, max_retries=3, timeout=10, backoff_factor=2):
+    """Make API call with retry logic and exponential backoff."""
+    
+    def calculate_backoff_time(attempt, base_time=1):
+        """Calculate exponential backoff time with jitter."""
+        backoff_time = base_time * (backoff_factor ** attempt)
+        # Add jitter to prevent thundering herd
+        jitter = random.uniform(0.1, 0.5)
+        return backoff_time + jitter
+    
+    errors_encountered = []
+    
+    for attempt in range(max_retries):
+        attempt_start = time.time()
+        
+        try:
+            print(f"Attempt {attempt + 1} of {max_retries}")
+            
+            # Make the HTTP request
+            result = make_http_request(url, params, timeout)
+            
+            if result["success"]:
+                status_code = result["status_code"]
+                
+                # Success case
+                if status_code == 200:
+                    return {
+                        "success": True,
+                        "data": json.loads(result["content"]) if result["content"] else None,
+                        "attempts": attempt + 1,
+                        "total_time": time.time() - attempt_start,
+                        "errors_encountered": errors_encountered
+                    }
+                
+                # Rate limited - wait and retry
+                elif status_code == 429:
+                    error_info = {
+                        "attempt": attempt + 1,
+                        "error": f"Rate limited (HTTP 429)",
+                        "time": time.time()
+                    }
+                    errors_encountered.append(error_info)
+                    
+                    if attempt < max_retries - 1:
+                        # Try to get retry-after header
+                        headers = result.get("headers", {})
+                        retry_after = headers.get("Retry-After")
+                        
+                        if retry_after:
+                            try:
+                                wait_time = int(retry_after)
+                            except ValueError:
+                                wait_time = calculate_backoff_time(attempt)
+                        else:
+                            wait_time = calculate_backoff_time(attempt, base_time=60)  # Longer for rate limits
+                        
+                        print(f"Rate limited. Waiting {wait_time:.1f} seconds...")
+                        time.sleep(wait_time)
+                        continue
+                
+                # Server error (5xx) - retry
+                elif status_code >= 500:
+                    error_info = {
+                        "attempt": attempt + 1,
+                        "error": f"Server error (HTTP {status_code})",
+                        "time": time.time()
+                    }
+                    errors_encountered.append(error_info)
+                    
+                    if attempt < max_retries - 1:
+                        wait_time = calculate_backoff_time(attempt)
+                        print(f"Server error. Waiting {wait_time:.1f} seconds...")
+                        time.sleep(wait_time)
+                        continue
+                
+                # Client error (4xx) - don't retry (except 429)
+                else:
+                    return {
+                        "success": False,
+                        "error": f"Client error: HTTP {status_code}",
+                        "attempts": attempt + 1,
+                        "errors_encountered": errors_encountered
+                    }
+            
+            # Connection/network error - retry
+            else:
+                error_info = {
+                    "attempt": attempt + 1,
+                    "error": result.get("error", "Connection failed"),
+                    "time": time.time()
+                }
+                errors_encountered.append(error_info)
+                
+                if attempt < max_retries - 1:
+                    wait_time = calculate_backoff_time(attempt)
+                    print(f"Connection failed. Waiting {wait_time:.1f} seconds...")
+                    time.sleep(wait_time)
+                    continue
+                else:
+                    return {
+                        "success": False,
+                        "error": result.get("error", "Connection failed"),
+                        "attempts": attempt + 1,
+                        "errors_encountered": errors_encountered
+                    }
+        
+        except Exception as e:
+            error_info = {
+                "attempt": attempt + 1,
+                "error": f"Unexpected error: {str(e)}",
+                "time": time.time()
+            }
+            errors_encountered.append(error_info)
+            
+            if attempt < max_retries - 1:
+                wait_time = calculate_backoff_time(attempt)
+                print(f"Unexpected error: {e}. Waiting {wait_time:.1f} seconds...")
+                time.sleep(wait_time)
+                continue
+            else:
+                return {
+                    "success": False,
+                    "error": f"Unexpected error: {str(e)}",
+                    "attempts": attempt + 1,
+                    "errors_encountered": errors_encountered
+                }
+    
+    return {
+        "success": False,
+        "error": "Max retries exceeded",
+        "attempts": max_retries,
+        "errors_encountered": errors_encountered
+    }
+
+# Test the resilient client:
+def test_resilient_client():
+    """Test resilient API client with various scenarios."""
+    
+    test_urls = [
+        ("Successful API", "https://httpbin.org/json"),
+        ("Delayed API", "https://httpbin.org/delay/1"),
+        ("Server Error", "https://httpbin.org/status/500"),
+        ("Rate Limited", "https://httpbin.org/status/429"),
+        ("Not Found", "https://httpbin.org/status/404"),
+        ("Invalid URL", "https://fake-api-url-12345.com/data")
+    ]
+    
+    print("=== Resilient API Client Tests ===")
+    
+    for name, url in test_urls:
+        print(f"\n--- Testing: {name} ---")
+        
+        start_time = time.time()
+        result = resilient_api_call(url, max_retries=2, timeout=5)
+        total_time = time.time() - start_time
+        
+        print(f"Success: {result['success']}")
+        print(f"Attempts: {result['attempts']}")
+        print(f"Total Time: {total_time:.2f}s")
+        
+        if result['success']:
+            if result.get('data'):
+                data = result['data']
+                if isinstance(data, dict):
+                    print(f"Data Keys: {list(data.keys())}")
+                else:
+                    print(f"Data Type: {type(data).__name__}")
+        else:
+            print(f"Final Error: {result['error']}")
+        
+        if result['errors_encountered']:
+            print(f"Errors During Process:")
+            for error in result['errors_encountered']:
+                print(f"  Attempt {error['attempt']}: {error['error']}")
+        
+        # Small delay between tests
+        time.sleep(1)
+
+# Run the test
+if __name__ == "__main__":
+    test_resilient_client()
+```
+
+---
+
+# Assessment Solutions
+
+## Error Handling Assessment Solutions
+
+### Task 1: Fixed Error Handler
+
+```python
+def process_user_data(user_input):
+    """Process user data with comprehensive error handling."""
+    try:
+        # Input validation
+        if user_input is None:
+            return {
+                "success": False,
+                "message": "No user data provided",
+                "data": None
+            }
+        
+        if not isinstance(user_input, dict):
+            return {
+                "success": False,
+                "message": "User data must be a dictionary",
+                "data": None
+            }
+        
+        # Age processing
+        try:
+            age_raw = user_input.get("age")
+            if age_raw is None:
+                return {
+                    "success": False,
+                    "message": "Age is required",
+                    "data": None
+                }
+            
+            age = int(age_raw)
+            if age < 0:
+                return {
+                    "success": False,
+                    "message": "Age cannot be negative",
+                    "data": None
+                }
+            if age > 150:
+                return {
+                    "success": False,
+                    "message": "Age seems unrealistic (over 150)",
+                    "data": None
+                }
+            
+        except ValueError:
+            return {
+                "success": False,
+                "message": f"Age must be a valid number, got '{age_raw}'",
+                "data": None
+            }
+        except TypeError:
+            return {
+                "success": False,
+                "message": f"Age must be a number, got {type(age_raw).__name__}",
+                "data": None
+            }
+        
+        # Determine adult status
+        status = "adult" if age >= 18 else "minor"
+        
+        # Profile processing
+        profile = user_input.get("profile")
+        if profile is None:
+            return {
+                "success": False,
+                "message": "Profile information is required",
+                "data": None
+            }
+        
+        if not isinstance(profile, dict):
+            return {
+                "success": False,
+                "message": "Profile must be a dictionary",
+                "data": None
+            }
+        
+        # Name processing
+        try:
+            name_raw = profile.get("name")
+            if name_raw is None:
+                return {
+                    "success": False,
+                    "message": "Name is required in profile",
+                    "data": None
+                }
+            
+            if not isinstance(name_raw, str):
+                return {
+                    "success": False,
+                    "message": "Name must be a string",
+                    "data": None
+                }
+            
+            name = name_raw.strip().upper()
+            if not name:
+                return {
+                    "success": False,
+                    "message": "Name cannot be empty",
+                    "data": None
+                }
+            
+        except AttributeError:
+            return {
+                "success": False,
+                "message": f"Name must be a string, got {type(name_raw).__name__}",
+                "data": None
+            }
+        
+        # Email processing
+        email_raw = profile.get("email")
+        if email_raw is None:
+            return {
+                "success": False,
+                "message": "Email is required in profile",
+                "data": None
+            }
+        
+        if not isinstance(email_raw, str):
+            return {
+                "success": False,
+                "message": "Email must be a string",
+                "data": None
+            }
+        
+        email = email_raw.strip()
+        if not email:
+            return {
+                "success": False,
+                "message": "Email cannot be empty",
+                "data": None
+            }
+        
+        # Email validation
+        if "@" not in email:
+            return {
+                "success": False,
+                "message": "Email must contain @ symbol",
+                "data": None
+            }
+        
+        # More thorough email validation
+        email_parts = email.split("@")
+        if len(email_parts) != 2:
+            return {
+                "success": False,
+                "message": "Email format is invalid",
+                "data": None
+            }
+        
+        if not email_parts[0] or not email_parts[1]:
+            return {
+                "success": False,
+                "message": "Email format is invalid",
+                "data": None
+            }
+        
+        # Calculate birth year
+        current_year = 2024
+        birth_year = current_year - age
+        
+        # Format result
+        result_message = f"{name} ({email}) is {age} years old, born in {birth_year}"
+        
+        return {
+            "success": True,
+            "message": result_message,
+            "data": {
+                "name": name,
+                "email": email,
+                "age": age,
+                "status": status,
+                "birth_year": birth_year
+            }
+        }
+        
+    except Exception as e:
+        return {
+            "success": False,
+            "message": f"Unexpected error processing user data: {str(e)}",
+            "data": None
+        }
+
+# Test the fixed function:
+test_cases = [
+    {"age": "25", "profile": {"name": "Alice", "email": "alice@example.com"}},  # Good
+    {"age": "not_a_number", "profile": {"name": "Bob", "email": "bob@example.com"}},  # Bad age
+    {"profile": {"name": "Charlie", "email": "charlie@example.com"}},  # Missing age
+    {"age": "30", "profile": {"name": "Diana"}},  # Missing email
+    {"age": "22", "profile": {"name": "Eve", "email": "invalid_email"}},  # Bad email
+    {"age": "35"},  # Missing profile
+    None,  # Completely invalid
+    {"age": "-5", "profile": {"name": "Frank", "email": "frank@test.com"}},  # Negative age
+    {"age": "200", "profile": {"name": "Ancient", "email": "old@test.com"}},  # Unrealistic age
+    {"age": "30", "profile": {"name": "", "email": "empty@test.com"}},  # Empty name
+]
+
+print("=== Fixed User Data Processor Tests ===")
+for i, test_case in enumerate(test_cases):
+    print(f"\nTest {i+1}: {str(test_case)[:60]}...")
+    result = process_user_data(test_case)
+    print(f"Success: {result['success']}")
+    print(f"Message: {result['message']}")
+    if result['data']:
+        print(f"Data: {result['data']}")
+```
+
+### Task 2: Custom Exception Hierarchy
+
+```python
+# Custom exception hierarchy
+class FileProcessingError(Exception):
+    """Base exception for file processing errors."""
+    def __init__(self, message, file_path=None):
+        super().__init__(message)
+        self.file_path = file_path
+
+class FileNotFoundError(FileProcessingError):
+    """Raised when file doesn't exist."""
+    pass
+
+class FilePermissionError(FileProcessingError):
+    """Raised when file permissions are insufficient."""
+    pass
+
+class FileFormatError(FileProcessingError):
+    """Raised when file format is incorrect."""
+    def __init__(self, message, file_path=None, expected_format=None, actual_format=None):
+        super().__init__(message, file_path)
+        self.expected_format = expected_format
+        self.actual_format = actual_format
+
+class FileCorruptionError(FileProcessingError):
+    """Raised when file content is corrupted."""
+    pass
+
+class FileSizeError(FileProcessingError):
+    """Raised when file is too large."""
+    def __init__(self, message, file_path=None, file_size=None, max_size=None):
+        super().__init__(message, file_path)
+        self.file_size = file_size
+        self.max_size = max_size
+
+def safe_file_processor(file_path, max_size_mb=10):
+    """Process file with custom exception handling."""
+    import os
+    import mimetypes
+    
+    try:
+        # Check if file exists
+        if not os.path.exists(file_path):
+            raise FileNotFoundError(f"File not found: {file_path}", file_path)
+        
+        # Check if it's actually a file
+        if not os.path.isfile(file_path):
+            raise FileFormatError(f"Path is not a file: {file_path}", file_path)
+        
+        # Check file permissions
+        if not os.access(file_path, os.R_OK):
+            raise FilePermissionError(f"No read permission for file: {file_path}", file_path)
+        
+        # Check file size
+        file_size_bytes = os.path.getsize(file_path)
+        file_size_mb = file_size_bytes / (1024 * 1024)
+        
+        if file_size_mb > max_size_mb:
+            raise FileSizeError(
+                f"File too large: {file_size_mb:.1f}MB (max {max_size_mb}MB)",
+                file_path,
+                file_size_mb,
+                max_size_mb
+            )
+        
+        # Check file format
+        mime_type, _ = mimetypes.guess_type(file_path)
+        if mime_type and not mime_type.startswith('text/'):
+            # For demo, we'll be more lenient
+            if not file_path.lower().endswith(('.txt', '.py', '.md', '.json', '.csv')):
+                raise FileFormatError(
+                    f"Unsupported file format: {mime_type}",
+                    file_path,
+                    "text/*",
+                    mime_type
+                )
+        
+        # Try to read and validate content
+        try:
+            with open(file_path, 'r', encoding='utf-8') as file:
+                content = file.read()
+                
+                # Basic corruption check
+                if len(content) == 0:
+                    raise FileCorruptionError(f"File is empty: {file_path}", file_path)
+                
+                # Check for binary content in text file
+                if '\x00' in content:
+                    raise FileCorruptionError(f"File contains binary data: {file_path}", file_path)
+                
+                return {
+                    "success": True,
+                    "content": content,
+                    "file_size_mb": file_size_mb,
+                    "line_count": content.count('\n') + 1,
+                    "char_count": len(content)
+                }
+        
+        except UnicodeDecodeError:
+            raise FileCorruptionError(f"File has invalid text encoding: {file_path}", file_path)
+        
+    except FileProcessingError:
+        # Re-raise our custom exceptions
+        raise
+    except PermissionError:
+        raise FilePermissionError(f"Permission denied: {file_path}", file_path)
+    except OSError as e:
+        raise FileProcessingError(f"System error accessing file: {e}", file_path)
+
+def handle_file_error(error):
+    """Convert technical exceptions to user-friendly messages."""
+    if isinstance(error, FileNotFoundError):
+        return f"File not found: Please check that '{error.file_path}' exists and the path is correct."
+    
+    elif isinstance(error, FilePermissionError):
+        return f"Access denied: You don't have permission to read '{error.file_path}'. Contact your administrator."
+    
+    elif isinstance(error, FileSizeError):
+        return f"File too large: '{error.file_path}' is {error.file_size:.1f}MB, but maximum allowed is {error.max_size}MB."
+    
+    elif isinstance(error, FileFormatError):
+        if error.expected_format and error.actual_format:
+            return f"Wrong file type: Expected {error.expected_format}, got {error.actual_format} for '{error.file_path}'."
+        else:
+            return f"Unsupported file format: '{error.file_path}' is not a supported text file."
+    
+    elif isinstance(error, FileCorruptionError):
+        return f"File corrupted: '{error.file_path}' appears to be damaged or has invalid content."
+    
+    elif isinstance(error, FileProcessingError):
+        return f"File processing error: {str(error)}"
+    
+    else:
+        return f"Unexpected error: {str(error)}"
+
+# Test the custom exception system:
+def test_file_processor():
+    """Test file processor with various scenarios."""
+    import tempfile
+    import os
+    
+    # Create test files
+    test_dir = tempfile.mkdtemp()
+    
+    # Good text file
+    good_file = os.path.join(test_dir, "good_file.txt")
+    with open(good_file, 'w') as f:
+        f.write("This is a valid text file.\nWith multiple lines.\n")
+    
+    # Binary file
+    binary_file = os.path.join(test_dir, "binary_file.exe")
+    with open(binary_file, 'wb') as f:
+        f.write(b'\x00\x01\x02\x03Binary content')
+    
+    # Large file
+    large_file = os.path.join(test_dir, "large_file.txt")
+    with open(large_file, 'w') as f:
+        # Write ~11MB of text
+        for i in range(1000000):
+            f.write(f"Line {i} - This is a lot of text to make the file large.\n")
+    
+    # Empty file
+    empty_file = os.path.join(test_dir, "empty_file.txt")
+    with open(empty_file, 'w') as f:
+        pass  # Create empty file
+    
+    test_files = [
+        ("Good file", good_file),
+        ("Missing file", os.path.join(test_dir, "missing_file.txt")),
+        ("Binary file", binary_file),
+        ("Large file", large_file),
+        ("Empty file", empty_file),
+    ]
+    
+    print("=== Custom Exception System Tests ===")
+    
+    for name, file_path in test_files:
+        print(f"\n--- Testing: {name} ---")
+        try:
+            result = safe_file_processor(file_path, max_size_mb=10)
+            print(f"✓ Success: {result['line_count']} lines, {result['file_size_mb']:.2f}MB")
+        except FileProcessingError as e:
+            user_message = handle_file_error(e)
+            print(f"✗ Error: {user_message}")
+            print(f"  Technical: {type(e).__name__}: {str(e)}")
+    
+    # Cleanup
+    import shutil
+    shutil.rmtree(test_dir)
+
+# Run the test
+if __name__ == "__main__":
+    test_file_processor()
+```
+
+### Additional Solution Notes
+
+**These solutions demonstrate:**
+
+1. **Comprehensive Error Handling**: Every possible failure point is covered
+2. **User-Friendly Messages**: Technical errors are translated to helpful user guidance
+3. **Proper Exception Hierarchy**: Custom exceptions provide specific error information
+4. **Edge Case Coverage**: Unusual inputs and boundary conditions are handled
+5. **Professional Patterns**: Code follows industry best practices for error handling
+
+**Key Teaching Points:**
+- Specific exceptions enable targeted error handling
+- Error messages should guide users toward solutions
+- Fallback strategies maintain application functionality
+- Testing error scenarios is as important as testing success cases
+- Professional error handling improves user experience significantly
+
+Students should study these solutions to understand how professional error handling systems are built and maintained.

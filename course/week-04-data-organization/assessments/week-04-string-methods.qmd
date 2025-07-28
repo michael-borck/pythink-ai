@@ -1,0 +1,301 @@
+---
+title: "Week 4 Assessment: String Methods"
+subtitle: "Applying String Transformation and Search Methods"
+format:
+  html:
+    toc: true
+    code-fold: false
+  pdf:
+    toc: true
+---
+
+# String Methods Assessment
+
+**Name:** _________________________ **Date:** _____________
+
+**Instructions:** Choose the appropriate string method(s) to solve each problem. Some problems require method chaining.
+
+---
+
+## Part 1: Method Selection (30 points)
+
+For each task, write the method name that accomplishes it:
+
+1. Convert "hello" to "HELLO" → `._____()` 
+
+2. Remove spaces from "  text  " → `._____()` 
+
+3. Find position of "@" in email → `._____("@")` 
+
+4. Replace "old" with "new" → `._____("old", "new")` 
+
+5. Check if string contains only letters → `._____()` 
+
+6. Split "a,b,c" into list → `._____(",")` 
+
+7. Convert "HELLO" to "Hello" → `._____()` 
+
+8. Count occurrences of "a" → `._____("a")` 
+
+9. Check if string starts with "http" → `._____("http")` 
+
+10. Join list ["a", "b", "c"] with "-" → `"-"._____()` 
+
+---
+
+## Part 2: Method Application (30 points)
+
+Write the code to accomplish each task:
+
+### Problem 1: Name Standardization
+```python
+name = "  jOHn  SMitH  "
+
+# Clean and format to "John Smith"
+clean_name = name._____()._____()
+# Need to handle internal spaces too
+final_name = ________________________________
+```
+
+### Problem 2: Email Validation
+```python
+email = "  USER@DOMAIN.COM  "
+
+# Clean and lowercase
+clean_email = email._____()._____()
+
+# Check if valid format (has @ and .)
+has_at = _____ in clean_email
+has_dot = _____ in clean_email
+at_pos = clean_email._____("@")
+dot_after_at = "." in clean_email[_____:]
+
+valid = has_at and has_dot and dot_after_at
+```
+
+### Problem 3: Password Checking
+```python
+password = "Pass123"
+
+# Check requirements
+long_enough = len(password) >= _____
+has_upper = any(c._____ for c in password)
+has_lower = any(c._____ for c in password)
+has_digit = any(c._____ for c in password)
+
+strong = long_enough and has_upper and has_lower and has_digit
+```
+
+---
+
+## Part 3: Method Chaining (20 points)
+
+Complete these method chains:
+
+1. Clean and uppercase:
+```python
+text = "  hello world  \n"
+result = text._____()._____()  # "HELLO WORLD"
+```
+
+2. Extract and clean domain:
+```python
+email = "  John.Doe@Example.COM  "
+# Get just "example.com"
+domain = email._____()._____(___)._____(___)[___]._____()
+```
+
+3. Format title:
+```python
+title = "the lord of the rings"
+# Want: "The Lord Of The Rings"
+formatted = title._____()
+```
+
+4. Remove all spaces:
+```python
+text = "h e l l o  w o r l d"
+# Want: "helloworld"
+no_spaces = text._____(" ", "")
+```
+
+---
+
+## Part 4: Real-World Problems (30 points)
+
+### Problem 1: Parse CSV Line (10 points)
+```python
+line = "John,Doe,25,Engineer"
+
+# Split into parts
+parts = line._____(___)
+
+# Extract and clean each field
+first_name = parts[0]._____()
+last_name = parts[1]._____()
+age = int(parts[2])
+job = parts[3]._____()
+
+# Create formatted output
+output = f"{first_name} {last_name} ({age}) - {job}"
+```
+
+### Problem 2: Clean Phone Number (10 points)
+```python
+phone = "(555) 123-4567"
+
+# Extract just digits
+digits = ""
+for char in phone:
+    if char._____():
+        digits = digits + char
+
+# Format as xxx-xxx-xxxx
+if len(digits) == 10:
+    formatted = digits[___:___] + "-" + digits[___:___] + "-" + digits[___:___]
+```
+
+### Problem 3: Word Analysis (10 points)
+```python
+text = """Python is great.
+Python is easy to learn.
+I love Python."""
+
+# Count sentences (periods)
+sentence_count = text._____(".")
+
+# Count word "Python" (case-insensitive)
+python_count = text._____()._____("python")
+
+# Get all words
+words = text._____(" ", " ")._____("\n", " ")._____()
+
+# Find longest word
+longest = ""
+for word in words:
+    # Remove punctuation from word
+    clean_word = word._____(".", "")._____(",", "")
+    if len(clean_word) > len(longest):
+        longest = clean_word
+```
+
+---
+
+## Part 5: Error Detection (10 points)
+
+Find and fix the errors in this code:
+
+```python
+# Problem 1
+name = "john doe"
+name.title()  # Doesn't change name!
+print(name)   # Still lowercase
+
+# Fix:
+name = _________________
+
+# Problem 2
+email = "User@Domain.Com"
+if email.lower == "user@domain.com":  # Won't work!
+    print("Match")
+
+# Fix:
+if email._____ == "user@domain.com":
+    print("Match")
+
+# Problem 3
+text = "  hello  "
+clean = text.strip(" hello")  # Not what you think!
+
+# Fix (to remove spaces):
+clean = text._____()
+
+# Problem 4
+words = "one,two,three"
+list = words.split()  # Wrong delimiter!
+
+# Fix:
+list = words._____(___)
+```
+
+---
+
+## Part 6: Challenge Problem (10 points bonus)
+
+Create a function-like behavior without using `def`:
+
+```python
+# Clean any messy input
+messy = "  hELLo   WoRLD!!! \n\t"
+
+# Your solution: clean, normalize case, remove extra punctuation
+# Should result in: "Hello World!"
+
+# Step 1: Strip whitespace
+step1 = messy._____()
+
+# Step 2: Proper case
+step2 = step1._____()
+
+# Step 3: Remove extra punctuation (tricky!)
+# Hint: Use replace multiple times
+step3 = step2
+while "!!" in step3:
+    step3 = step3._____("!!", "!")
+    
+# Final result
+clean = step3
+```
+
+---
+
+## Grading Rubric
+
+| Section | Points | Your Score |
+|---------|---------|------------|
+| Part 1: Method Selection | 30 |   |
+| Part 2: Method Application | 30 |   |
+| Part 3: Method Chaining | 20 |   |
+| Part 4: Real-World | 30 |   |
+| Part 5: Error Detection | 10 |   |
+| Part 6: Bonus | 10 |   |
+| **Total** | **120** (+10) |   |
+
+**Grade:** _______
+
+---
+
+## Method Reference Card
+
+| Method | Description | Example |
+|--------|-------------|---------|
+| `.upper()` | Convert to uppercase | `"hi".upper()` → "HI" |
+| `.lower()` | Convert to lowercase | `"HI".lower()` → "hi" |
+| `.title()` | Title case | `"hello world".title()` → "Hello World" |
+| `.strip()` | Remove edge spaces | `" hi ".strip()` → "hi" |
+| `.find()` | Find substring position | `"hello".find("l")` → 2 |
+| `.replace()` | Replace text | `"hi".replace("i", "o")` → "ho" |
+| `.split()` | Split into list | `"a,b".split(",")` → ["a", "b"] |
+| `.join()` | Join list items | `"-".join(["a", "b"])` → "a-b" |
+| `.count()` | Count occurrences | `"hello".count("l")` → 2 |
+| `.isalpha()` | Check if letters only | `"abc".isalpha()` → True |
+| `.isdigit()` | Check if digits only | `"123".isdigit()` → True |
+| `.startswith()` | Check start | `"hi".startswith("h")` → True |
+
+---
+
+## Answer Key (For Instructor Use)
+
+### Part 1
+1. `.upper()`
+2. `.strip()`
+3. `.find("@")`
+4. `.replace("old", "new")`
+5. `.isalpha()`
+6. `.split(",")`
+7. `.title()` or `.capitalize()`
+8. `.count("a")`
+9. `.startswith("http")`
+10. `"-".join()`
+
+[Complete solutions provided separately]

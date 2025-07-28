@@ -1,0 +1,615 @@
+---
+title: "Week 4 Lab: String Mastery and Text Processing"
+subtitle: "Hands-on Practice with Slicing, Methods, and Data Transformation"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Lab Overview
+
+This lab will help you master string operations through hands-on practice. You'll learn to slice strings precisely, apply methods effectively, and build your first text-based game.
+
+**Duration:** 2 hours  
+**Goals:**
+1. Master string and list slicing notation
+2. Apply string methods for data cleaning
+3. Parse and transform structured text
+4. Build engaging word games
+5. Handle edge cases gracefully
+
+---
+
+# Hour 1: Slicing and String Methods
+
+## Part 1: String Slicing Mastery (20 minutes)
+
+### Exercise 1.1: Basic Slicing
+
+Given the string below, extract the requested parts:
+
+```python
+text = "Python Programming"
+#       012345678901234567  # Helper: indices
+```
+
+Extract:
+1. First word: `_____[___:___]`  → "Python"
+2. Second word: `_____[___:___]` → "Programming"
+3. First 3 characters: `_____[___:___]` → "Pyt"
+4. Last 4 characters: `_____[___:___]` → "ming"
+5. Middle 5 characters: `_____[___:___]` → "on Pr"
+
+### Exercise 1.2: Negative Indexing
+
+```python
+email = "student@university.edu"
+#       0         1         2
+#       012345678901234567890  # Forward
+#                            -1 # Backward
+```
+
+Extract using negative indices:
+1. Domain (after @): `email[___:]`
+2. Username (before @): `email[:___]`
+3. Extension (.edu): `email[___:]`
+4. Without extension: `email[:___]`
+
+### Exercise 1.3: Step Parameter
+
+```python
+alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+```
+
+Create:
+1. Every 2nd letter: `alphabet[::___]` → "ACEGIKMOQSUWY"
+2. Every 3rd letter: `alphabet[::___]` → "ADGJMPSVY"
+3. Reversed string: `alphabet[___]` → "ZYXWVUTSRQPONMLKJIHGFEDCBA"
+4. Every 2nd letter, backwards: `alphabet[___]`
+
+### Exercise 1.4: Practical Slicing
+
+Complete these real-world slicing tasks:
+
+```python
+# Extract parts from filename
+filename = "report_2024_final.pdf"
+name = filename[___:___]        # "report_2024_final"
+extension = filename[___:]      # "pdf"
+year = filename[___:___]        # "2024"
+
+# Extract from phone number
+phone = "(555) 123-4567"
+area_code = phone[___:___]      # "555"
+first_part = phone[___:___]     # "123"
+last_part = phone[___:]         # "4567"
+
+# Extract from URL
+url = "https://www.example.com/page"
+protocol = url[___:___]         # "https"
+domain = ___                    # Hint: use find() first
+```
+
+## Part 2: String Methods Practice (20 minutes)
+
+### Exercise 2.1: Case Methods
+
+```python
+# Fix these names
+name1 = "john doe"
+name2 = "JANE SMITH"
+name3 = "mArY jOhNsOn"
+
+# Your code:
+clean1 = name1._____()  # "John Doe"
+clean2 = name2._____()._____()  # "Jane Smith"
+clean3 = name3._____()._____()  # "Mary Johnson"
+
+# Case-insensitive comparison
+user_input = "YeS"
+if user_input._____() == "yes":
+    print("User agreed!")
+```
+
+### Exercise 2.2: Whitespace Cleaning
+
+```python
+# Clean these messy inputs
+input1 = "  hello  "
+input2 = "\tPython\n"
+input3 = "  multiple   spaces  here  "
+
+# Your code:
+clean1 = input1._____()  # "hello"
+clean2 = input2._____()  # "Python"
+
+# For input3, remove extra spaces
+clean3 = input3.strip()
+# Now remove multiple spaces - complete this:
+while "  " in clean3:
+    clean3 = clean3._____("  ", " ")
+```
+
+### Exercise 2.3: Search and Replace
+
+```python
+text = "I love programming in Java. Java is great!"
+
+# Tasks:
+# 1. Check if "Java" is in the text
+if _____ in text:
+    print("Found Java")
+
+# 2. Find position of first "Java"
+pos = text._____("Java")
+print(f"First Java at position: {pos}")
+
+# 3. Count occurrences
+count = text._____("Java")
+print(f"Java appears {count} times")
+
+# 4. Replace all occurrences
+python_text = text._____("Java", "Python")
+print(python_text)
+
+# 5. Replace only first occurrence
+first_only = text._____("Java", "Python", ___)
+```
+
+### Exercise 2.4: Method Chaining
+
+Complete these method chains:
+
+```python
+# Clean and standardize email
+email = "  USER@GMAIL.COM  "
+clean_email = email._____()._____()  # "user@gmail.com"
+
+# Clean and format name
+name = "  john    doe  "
+# Remove extra spaces and proper case
+clean_name = " ".join(name._____()._____())._____()
+
+# Extract and clean domain
+messy_email = "  Student@UNIVERSITY.EDU  \n"
+domain = messy_email._____()._____(___)._____(___)[___]._____()
+# Should give: "university.edu"
+```
+
+## Part 3: Split and Join Operations (20 minutes)
+
+### Exercise 3.1: Basic Splitting
+
+```python
+# Split these strings appropriately
+csv_data = "John,25,Engineer"
+fields = csv_data._____(",")
+name = fields[___]
+age = fields[___]
+job = fields[___]
+
+# Split on different delimiters
+phone = "555-123-4567"
+parts = phone._____(___)  # Get list of three parts
+
+# Split with limit
+text = "one-two-three-four-five"
+first_three = text._____("-", ___)  # ["one", "two", "three-four-five"]
+
+# Split on whitespace
+sentence = "  Python   is    awesome  "
+words = sentence._____()  # Automatically handles multiple spaces!
+```
+
+### Exercise 3.2: Joining Lists
+
+```python
+# Join these lists into strings
+words = ["Python", "is", "fun"]
+sentence = _____.join(words)  # "Python is fun"
+
+# Create different formats
+items = ["apple", "banana", "cherry"]
+comma_list = _____.join(items)  # "apple,banana,cherry"
+nice_list = _____.join(items)   # "apple, banana, cherry"
+bullet_list = _____.join(items)  # "apple\n- banana\n- cherry"
+
+# Build a formatted message
+data = ["John", "25", "Engineer"]
+message = "Name: {}, Age: {}, Job: {}".format(data[0], data[1], data[2])
+# Or using join:
+formatted = _____.join([f"Name: {data[0]}", f"Age: {data[1]}", f"Job: {data[2]}"])
+```
+
+### Exercise 3.3: Parse and Rebuild
+
+```python
+# Parse email list and clean each one
+email_string = "john@GMAIL.com; ALICE@yahoo.COM;bob@HOTMAIL.com"
+
+# Step 1: Split into list
+emails = email_string.split(_____)
+
+# Step 2: Clean each email
+clean_emails = []
+for email in emails:
+    clean = email._____._____ 
+    clean_emails.append(clean)
+
+# Step 3: Join back
+clean_string = _____.join(clean_emails)
+print(clean_string)  # "john@gmail.com; alice@yahoo.com; bob@hotmail.com"
+```
+
+---
+
+# Hour 2: Integration and Word Game
+
+## Part 4: Data Transformation Patterns (20 minutes)
+
+### Exercise 4.1: Input Validation
+
+Create a username validator:
+
+```python
+# Username rules:
+# - 3-20 characters
+# - Only letters, numbers, underscore
+# - Must start with letter
+# - Lowercase only
+
+username = input("Choose username: ").strip().lower()
+
+# Check length
+if len(username) < 3:
+    print("Too short!")
+elif len(username) > 20:
+    print("Too long!")
+# Check first character
+elif not username[0]._____():  # Check if letter
+    print("Must start with letter!")
+# Check all characters
+else:
+    valid = True
+    for char in username:
+        if not (char._____ or char._____ or char == "_"):
+            valid = False
+            break
+    
+    if valid:
+        print(f"Username '{username}' is valid!")
+    else:
+        print("Invalid characters!")
+```
+
+### Exercise 4.2: Text Statistics
+
+Analyze a paragraph:
+
+```python
+text = """Python is a great language.
+It is easy to learn and powerful.
+Many people love Python."""
+
+# Calculate statistics
+# 1. Word count
+words = text.replace("\n", " ").split()
+word_count = _____
+
+# 2. Sentence count (periods)
+sentence_count = text._____(".")
+
+# 3. Average word length
+total_length = 0
+for word in words:
+    total_length = total_length + len(word)
+avg_length = _____ / _____
+
+# 4. Most common word length
+length_counts = {}  # We'll learn dictionaries later
+# For now, just find the longest word
+longest = ""
+for word in words:
+    if len(word) > len(longest):
+        longest = word
+
+print(f"Words: {word_count}")
+print(f"Sentences: {sentence_count}")
+print(f"Avg word length: {avg_length:.1f}")
+print(f"Longest word: {longest}")
+```
+
+### Exercise 4.3: CSV Processing
+
+Parse student data:
+
+```python
+# CSV data with header
+csv_data = """Name,Age,Grade
+Alice Smith,20,A
+Bob Jones,19,B
+Charlie Brown,21,A
+Diana Lee,20,C"""
+
+# Split into lines
+lines = csv_data.strip().split("\n")
+
+# Skip header
+header = lines[0]
+data_lines = lines[1:]
+
+# Process each student
+students = []
+for line in data_lines:
+    parts = line.split(",")
+    name = parts[0]
+    age = int(parts[1])
+    grade = parts[2]
+    
+    # Create formatted string
+    student_info = f"{name} (Age: {age}) - Grade: {grade}"
+    students.append(student_info)
+
+# Display results
+print("Student Report:")
+for student in students:
+    print(f"- {student}")
+```
+
+## Part 5: Word Game Project Start (40 minutes)
+
+### Choose Your Game
+
+Pick ONE of these games to implement:
+
+#### Option 1: Word Scrambler
+```python
+# Game: Scramble a word, player guesses original
+# Features needed:
+# - Scramble letters randomly (tricky without imports!)
+# - Check if guess matches original
+# - Give hints (first letter, length)
+# - Score tracking
+```
+
+#### Option 2: Simple Hangman
+```python
+# Game: Guess letters in a word
+# Features needed:
+# - Hide word with underscores
+# - Reveal correct guesses
+# - Track wrong guesses
+# - Limited attempts
+```
+
+#### Option 3: Word Chain
+```python
+# Game: Each word must start with last letter of previous
+# Features needed:
+# - Check if word starts correctly
+# - Prevent repeated words
+# - Score based on word length
+# - Show valid next letters
+```
+
+### Starter Code: Word Scrambler
+
+```python
+print("=== Word Scrambler Game ===\n")
+
+# Word list (add more!)
+words = ["python", "program", "computer", "science", "coding"]
+
+# Game variables
+score = 0
+round_num = 1
+playing = True
+
+while playing and round_num <= len(words):
+    # Get word for this round
+    original = words[round_num - 1]
+    
+    # Simple scramble (reverse for now)
+    scrambled = original[::-1]
+    
+    print(f"\nRound {round_num}")
+    print(f"Scrambled word: {scrambled}")
+    print(f"Hint: {len(original)} letters, starts with '{original[0]}'")
+    
+    # Get guess
+    attempts = 3
+    guessed = False
+    
+    while attempts > 0 and not guessed:
+        guess = input(f"\nYour guess ({attempts} left): ").strip().lower()
+        
+        if guess == original:
+            print("Correct! +10 points")
+            score = score + 10
+            guessed = True
+        else:
+            attempts = attempts - 1
+            if attempts > 0:
+                print("Wrong! Try again.")
+                # Give another hint
+                if attempts == 1:
+                    print(f"Hint: ends with '{original[-1]}'")
+    
+    if not guessed:
+        print(f"Out of attempts! Word was: {original}")
+    
+    # Next round?
+    round_num = round_num + 1
+    if round_num > len(words):
+        print(f"\nGame Over! Final score: {score}")
+        playing = False
+    else:
+        continue_game = input("\nContinue? (y/n): ").lower()
+        if continue_game != 'y':
+            playing = False
+
+print(f"\nThanks for playing! Final score: {score}")
+```
+
+### Game Enhancement Ideas
+
+1. **Better Scrambling** (without random module):
+   ```python
+   # Swap adjacent pairs
+   scrambled = ""
+   for i in range(0, len(word)-1, 2):
+       scrambled = scrambled + word[i+1] + word[i]
+   if len(word) % 2 == 1:
+       scrambled = scrambled + word[-1]
+   ```
+
+2. **Difficulty Levels**:
+   - Easy: Show first and last letter
+   - Medium: Show only first letter
+   - Hard: No hints
+
+3. **Score System**:
+   - Base points for correct answer
+   - Bonus for speed (fewer attempts)
+   - Streak bonus
+
+4. **Word Categories**:
+   - Animals, foods, countries
+   - Let player choose category
+
+---
+
+# Lab Submission
+
+## What to Submit
+
+1. **Completed Exercises** from Parts 1-4 in one Python file
+2. **Word Game** implementation (as complete as possible)
+3. **Test Cases** showing your game handles:
+   - Valid input
+   - Invalid input  
+   - Edge cases
+4. **Reflection** (3-5 sentences):
+   - Which string operation was most challenging?
+   - How did you handle edge cases?
+   - What would you add to your game?
+
+## Grading Rubric
+
+| Component | Points | Criteria |
+|-----------|---------|----------|
+| Slicing Exercises | 20 | Correct slice notation |
+| String Methods | 20 | Appropriate method usage |
+| Split/Join | 15 | Proper parsing and rebuilding |
+| Data Transformation | 15 | Clean, working solutions |
+| Word Game | 20 | Core features work |
+| Code Quality | 10 | Clear, well-organized |
+
+---
+
+# Common Issues and Solutions
+
+## Slicing Errors
+
+**Problem:**
+```python
+text = "Hello"
+last_two = text[-2]  # Gets one character!
+```
+
+**Solution:** Remember slicing needs start:end
+```python
+last_two = text[-2:]  # Gets "lo"
+```
+
+## String Immutability
+
+**Problem:**
+```python
+word = "test"
+word[0] = "T"  # Error!
+```
+
+**Solution:** Build new string
+```python
+word = "T" + word[1:]  # "Test"
+```
+
+## Split Edge Cases
+
+**Problem:**
+```python
+"a,,b".split(",")  # ['a', '', 'b'] - empty string!
+```
+
+**Solution:** Filter empty strings
+```python
+parts = [p for p in text.split(",") if p]  # Advanced!
+# Or with loop:
+clean_parts = []
+for part in text.split(","):
+    if part:  # Not empty
+        clean_parts.append(part)
+```
+
+## Method Order Matters
+
+**Problem:**
+```python
+"  HELLO  ".lower().strip()  # "  hello  "
+```
+
+**Solution:** Strip first, then transform
+```python
+"  HELLO  ".strip().lower()  # "hello"
+```
+
+---
+
+# Extra Challenges
+
+If you finish early:
+
+1. **Advanced Scrambling**: Mix letters better without random
+2. **Two-Player Mode**: Take turns guessing
+3. **Timer Feature**: Track solving time
+4. **Word Builder**: Make words from given letters
+5. **Pattern Matcher**: Find words matching pattern like "C_T" → "CAT"
+
+---
+
+# AI Usage Guidelines
+
+## Good Prompts for Learning
+
+✅ "Explain why string slicing uses exclusive end index"  
+✅ "Show me how split() handles multiple delimiters"  
+✅ "What's the difference between strip() and replace(' ', '')?"  
+✅ "How can I reverse a string without [::-1]?"  
+
+## Avoid These Prompts
+
+❌ "Write my word game for me"  
+❌ "Give me the complete solution"  
+❌ "How do I use regex for this?"  
+
+Remember: We're learning fundamentals, not shortcuts!
+
+---
+
+# Next Steps
+
+After completing this lab:
+1. Practice slicing with different strings
+2. Try combining multiple string methods
+3. Enhance your word game
+4. Think about text patterns you encounter daily
+
+Next week: Functions to organize our code better!

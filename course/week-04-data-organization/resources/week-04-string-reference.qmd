@@ -1,0 +1,451 @@
+---
+title: "Week 4: String Operations Reference"
+subtitle: "Complete Guide to String Slicing and Methods"
+format:
+  html:
+    toc: true
+    code-fold: false
+  pdf:
+    toc: true
+---
+
+# String Slicing Reference
+
+## Basic Slicing Syntax
+
+```python
+string[start:end:step]
+```
+
+- **start**: Starting index (inclusive)
+- **end**: Ending index (exclusive)
+- **step**: Step size (default 1)
+
+## Slicing Examples
+
+### Basic Slicing
+
+```python
+text = "Python Programming"
+#       012345678901234567  # Index positions
+
+# Get substring
+print(text[0:6])    # "Python"
+print(text[7:18])   # "Programming"
+print(text[0:4])    # "Pyth"
+
+# From start/to end
+print(text[:6])     # "Python" (from beginning)
+print(text[7:])     # "Programming" (to end)
+print(text[:])      # "Python Programming" (complete copy)
+```
+
+### Negative Indexing
+
+```python
+text = "Hello World"
+#       01234567890  # Forward
+#      -11        -1  # Backward
+
+# Negative indices
+print(text[-1])     # "d" (last character)
+print(text[-5:])    # "World" (last 5 characters)
+print(text[:-6])    # "Hello" (all but last 6)
+print(text[-5:-1])  # "Worl" (remember: end is exclusive!)
+```
+
+### Step Parameter
+
+```python
+text = "ABCDEFGHIJ"
+
+# Every other character
+print(text[::2])    # "ACEGI"
+print(text[1::2])   # "BDFHJ"
+
+# Every third character
+print(text[::3])    # "ADGJ"
+
+# Reverse string
+print(text[::-1])   # "JIHGFEDCBA"
+
+# Reverse every other
+print(text[::-2])   # "JHFDB"
+```
+
+### Common Patterns
+
+```python
+# Get file extension
+filename = "document.pdf"
+extension = filename[-3:]  # "pdf"
+name = filename[:-4]       # "document"
+
+# Extract parts
+email = "user@domain.com"
+at_index = email.find("@")
+username = email[:at_index]      # "user"
+domain = email[at_index+1:]      # "domain.com"
+
+# Remove first/last character
+text = "Hello"
+without_first = text[1:]   # "ello"
+without_last = text[:-1]   # "Hell"
+without_both = text[1:-1]  # "ell"
+```
+
+---
+
+# String Methods Reference
+
+## Case Transformation
+
+### `.upper()` - Convert to uppercase
+```python
+text = "Hello World"
+print(text.upper())         # "HELLO WORLD"
+print("python".upper())     # "PYTHON"
+```
+
+### `.lower()` - Convert to lowercase
+```python
+text = "Hello World"
+print(text.lower())         # "hello world"
+print("PYTHON".lower())     # "python"
+
+# Common use: case-insensitive comparison
+if user_input.lower() == "yes":
+    print("User agreed")
+```
+
+### `.title()` - Title case
+```python
+text = "hello world from python"
+print(text.title())         # "Hello World From Python"
+
+# Note: handles apostrophes
+print("it's great".title()) # "It'S Great" (not perfect!)
+```
+
+### `.capitalize()` - Capitalize first letter
+```python
+text = "hello world"
+print(text.capitalize())    # "Hello world"
+```
+
+### `.swapcase()` - Swap case
+```python
+text = "Hello World"
+print(text.swapcase())      # "hELLO wORLD"
+```
+
+## Whitespace Methods
+
+### `.strip()` - Remove edge whitespace
+```python
+text = "  Hello World  \n\t"
+print(text.strip())         # "Hello World"
+
+# Strip specific characters
+text = "***Hello***"
+print(text.strip("*"))      # "Hello"
+```
+
+### `.lstrip()` - Remove left whitespace
+```python
+text = "  Hello World  "
+print(text.lstrip())        # "Hello World  "
+```
+
+### `.rstrip()` - Remove right whitespace
+```python
+text = "  Hello World  \n"
+print(text.rstrip())        # "  Hello World"
+```
+
+## Search Methods
+
+### `in` operator - Check if substring exists
+```python
+text = "Hello World"
+print("World" in text)      # True
+print("world" in text)      # False (case sensitive!)
+```
+
+### `.find()` - Find substring position
+```python
+text = "Hello World World"
+print(text.find("World"))   # 6 (first occurrence)
+print(text.find("xyz"))     # -1 (not found)
+
+# Find starting from position
+print(text.find("World", 7)) # 12 (second occurrence)
+```
+
+### `.index()` - Like find but raises error
+```python
+text = "Hello World"
+print(text.index("World"))  # 6
+# print(text.index("xyz"))  # ValueError! (not found)
+```
+
+### `.count()` - Count occurrences
+```python
+text = "Mississippi"
+print(text.count("i"))      # 4
+print(text.count("ss"))     # 2
+print(text.count("z"))      # 0
+```
+
+### `.startswith()` - Check start
+```python
+url = "https://example.com"
+print(url.startswith("https"))  # True
+print(url.startswith("http"))   # True
+print(url.startswith("ftp"))    # False
+```
+
+### `.endswith()` - Check end
+```python
+filename = "document.pdf"
+print(filename.endswith(".pdf"))  # True
+print(filename.endswith(".doc"))  # False
+```
+
+## Transformation Methods
+
+### `.replace()` - Replace substring
+```python
+text = "Hello World"
+print(text.replace("World", "Python"))  # "Hello Python"
+
+# Replace multiple occurrences
+text = "apple apple apple"
+print(text.replace("apple", "orange"))  # "orange orange orange"
+
+# Limit replacements
+print(text.replace("apple", "orange", 2))  # "orange orange apple"
+```
+
+### `.split()` - Split into list
+```python
+# Split by delimiter
+data = "apple,banana,cherry"
+print(data.split(","))      # ['apple', 'banana', 'cherry']
+
+# Split by whitespace (default)
+text = "Hello   World   Python"
+print(text.split())         # ['Hello', 'World', 'Python']
+
+# Limit splits
+text = "a-b-c-d"
+print(text.split("-", 2))   # ['a', 'b', 'c-d']
+
+# Split lines
+text = "Line1\nLine2\nLine3"
+print(text.split("\n"))     # ['Line1', 'Line2', 'Line3']
+```
+
+### `.join()` - Join list into string
+```python
+# Join with delimiter
+words = ["Python", "is", "great"]
+print(" ".join(words))      # "Python is great"
+print("-".join(words))      # "Python-is-great"
+print("".join(words))       # "Pythonisgreat"
+
+# Join with newlines
+lines = ["Line 1", "Line 2", "Line 3"]
+print("\n".join(lines))     # Multi-line string
+```
+
+## Validation Methods
+
+### `.isalpha()` - Check if all letters
+```python
+print("Hello".isalpha())    # True
+print("Hello123".isalpha()) # False
+print("Hello World".isalpha()) # False (space!)
+```
+
+### `.isdigit()` - Check if all digits
+```python
+print("123".isdigit())      # True
+print("123.45".isdigit())   # False (decimal point)
+print("123abc".isdigit())   # False
+```
+
+### `.isalnum()` - Check if alphanumeric
+```python
+print("Hello123".isalnum()) # True
+print("Hello 123".isalnum()) # False (space!)
+print("Hello_123".isalnum()) # False (underscore)
+```
+
+### `.islower()` - Check if lowercase
+```python
+print("hello".islower())    # True
+print("Hello".islower())    # False
+print("hello123".islower()) # True (ignores non-letters)
+```
+
+### `.isupper()` - Check if uppercase
+```python
+print("HELLO".isupper())    # True
+print("Hello".isupper())    # False
+print("HELLO123".isupper()) # True (ignores non-letters)
+```
+
+### `.isspace()` - Check if all whitespace
+```python
+print("   ".isspace())      # True
+print(" \t\n".isspace())    # True
+print(" a ".isspace())      # False
+```
+
+---
+
+# Common String Patterns
+
+## Email Validation
+```python
+email = "user@domain.com"
+
+# Basic validation
+if "@" in email and email.count("@") == 1:
+    username, domain = email.split("@")
+    if "." in domain and len(username) > 0:
+        print("Valid email format")
+```
+
+## Password Strength
+```python
+password = "MyPass123"
+
+# Check criteria
+has_upper = any(c.isupper() for c in password)
+has_lower = any(c.islower() for c in password)
+has_digit = any(c.isdigit() for c in password)
+long_enough = len(password) >= 8
+
+if all([has_upper, has_lower, has_digit, long_enough]):
+    print("Strong password")
+```
+
+## Input Cleaning
+```python
+# Clean user input
+user_input = "  John DOE  "
+clean_name = user_input.strip().title()
+
+# Remove extra spaces
+text = "Hello    World"
+clean_text = " ".join(text.split())
+```
+
+## CSV Parsing
+```python
+# Parse CSV line
+line = "John,25,Engineer"
+name, age, job = line.split(",")
+age = int(age)  # Convert to number
+```
+
+## URL Components
+```python
+url = "https://www.example.com/path/page"
+
+# Extract parts
+protocol = url[:url.find("://")]
+without_protocol = url[url.find("://")+3:]
+domain = without_protocol[:without_protocol.find("/")]
+path = without_protocol[without_protocol.find("/"):]
+```
+
+---
+
+# Performance Tips
+
+## String Building
+
+```python
+# INEFFICIENT: String concatenation in loop
+result = ""
+for word in words:
+    result = result + word + " "
+
+# BETTER: Join list
+result = " ".join(words)
+
+# BETTER: Build list then join
+parts = []
+for item in items:
+    parts.append(process(item))
+result = "".join(parts)
+```
+
+## Method Chaining
+
+```python
+# Chain methods for efficiency
+clean_email = email.strip().lower()
+
+# But don't overdo it - readability matters!
+# BAD: Too much chaining
+result = text.strip().lower().replace(" ", "_").split("_")[0].upper()
+
+# BETTER: Break into steps
+clean = text.strip().lower()
+underscored = clean.replace(" ", "_")
+first_word = underscored.split("_")[0]
+result = first_word.upper()
+```
+
+---
+
+# Common Mistakes
+
+## Forgetting Strings are Immutable
+```python
+# WRONG
+text = "hello"
+text[0] = "H"  # TypeError!
+
+# RIGHT
+text = "H" + text[1:]
+```
+
+## Not Reassigning After Methods
+```python
+# WRONG
+name = "john"
+name.upper()
+print(name)  # Still "john"
+
+# RIGHT
+name = name.upper()
+print(name)  # "JOHN"
+```
+
+## Off-by-One in Slicing
+```python
+# Getting 3 characters starting at index 1
+text = "ABCDEF"
+# WRONG: text[1:3] gives "BC" (only 2!)
+# RIGHT: text[1:4] gives "BCD"
+```
+
+## Empty String Handling
+```python
+# WRONG
+text = ""
+first = text[0]  # IndexError!
+
+# RIGHT
+if text:
+    first = text[0]
+else:
+    first = ""
+```
+
+Remember: Practice makes perfect! The more you work with strings, the more natural these operations become.

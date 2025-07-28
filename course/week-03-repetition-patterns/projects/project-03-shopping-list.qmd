@@ -1,0 +1,453 @@
+---
+title: "Week 3 Project: Shopping List Manager"
+subtitle: "Building Your First Collection-Based Application"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Project Overview
+
+Create a fully functional shopping list manager that demonstrates your mastery of loops and lists. This project combines everything you've learned about repetition, collections, and user interaction.
+
+**Learning Objectives:**
+- Apply loops for menu-driven programs
+- Use lists to store and manage data
+- Combine while and for loops appropriately
+- Handle user input validation
+- Create a polished user experience
+
+---
+
+# Project Requirements
+
+## Core Features (Required)
+
+Your shopping list manager MUST include these features:
+
+### 1. Add Items
+- User can add items to the shopping list
+- Items are stored in order of entry
+- Confirm item was added with feedback message
+- Handle empty input appropriately
+
+### 2. View List
+- Display all items with numbers (starting at 1)
+- Show message if list is empty
+- Display total number of items
+- Format output clearly
+
+### 3. Remove Items
+- Remove items by their number
+- Handle invalid numbers gracefully
+- Confirm removal with message
+- Update numbering after removal
+
+### 4. Check for Item
+- Search if specific item exists
+- Case-insensitive search
+- Clear found/not found messages
+- Show position if found
+
+### 5. Clear List
+- Remove all items at once
+- Ask for confirmation first
+- Show success message
+
+### 6. Exit Program
+- Clean exit option
+- Thank you message
+- No errors on exit
+
+## User Interface Requirements
+
+### Main Menu
+```
+=== Shopping List Manager ===
+
+1. Add item
+2. View list
+3. Remove item
+4. Check for item
+5. Clear list
+6. Exit
+
+Choose option: _
+```
+
+### Sample Interaction
+```
+Choose option: 1
+Enter item to add: Milk
+'Milk' added to your list.
+
+Choose option: 1
+Enter item to add: Bread
+'Bread' added to your list.
+
+Choose option: 2
+Your Shopping List:
+1. Milk
+2. Bread
+Total items: 2
+
+Choose option: 4
+What item to check for? milk
+'milk' found at position 1!
+
+Choose option: 3
+Your Shopping List:
+1. Milk
+2. Bread
+Which number to remove? 1
+'Milk' removed from your list.
+
+Choose option: 2
+Your Shopping List:
+1. Bread
+Total items: 1
+```
+
+---
+
+# Technical Specifications
+
+## Required Python Features
+
+You MUST use:
+- One list to store shopping items
+- While loop for main program loop
+- For loops for displaying/searching items
+- if/elif/else for menu choices
+- len() to check list size
+- .append() to add items
+- .upper() or .lower() for case-insensitive search
+
+You may also use:
+- range() for numbered display
+- break for early loop exit
+- continue if helpful
+- in operator for searches
+
+## Code Structure
+
+```python
+# Program header
+print("=== Shopping List Manager ===")
+
+# Initialize data
+shopping_list = []
+running = True
+
+# Main program loop
+while running:
+    # Display menu
+    # Get user choice
+    # Process choice with if/elif/else
+    # Each choice performs its operation
+    
+# Exit message
+print("Thank you for using Shopping List Manager!")
+```
+
+## Error Handling
+
+Handle these cases gracefully:
+- Empty list when viewing
+- Invalid menu choices
+- Invalid item numbers for removal
+- Out of range indices
+- Empty input for items
+
+---
+
+# Implementation Guide
+
+## Step 1: Basic Structure
+Start with menu loop and empty options:
+```python
+shopping_list = []
+running = True
+
+while running:
+    # Show menu
+    # Get choice
+    # Basic if/elif structure
+```
+
+## Step 2: Add Feature
+Implement adding items first:
+```python
+if choice == "1":
+    item = input("Enter item to add: ")
+    if item:  # Not empty
+        shopping_list.append(item)
+        print(f"'{item}' added to your list.")
+    else:
+        print("Cannot add empty item!")
+```
+
+## Step 3: View Feature
+Show list with numbers:
+```python
+elif choice == "2":
+    if len(shopping_list) == 0:
+        print("Your list is empty!")
+    else:
+        print("\nYour Shopping List:")
+        for i in range(len(shopping_list)):
+            print(f"{i+1}. {shopping_list[i]}")
+        print(f"Total items: {len(shopping_list)}")
+```
+
+## Step 4: Remove Feature
+Key considerations:
+- Show list first so user knows numbers
+- Convert user input to valid index
+- Check bounds before removing
+
+## Step 5: Search Feature
+Remember to handle case:
+```python
+search_lower = search_item.lower()
+for i in range(len(shopping_list)):
+    if shopping_list[i].lower() == search_lower:
+        # Found it!
+```
+
+## Step 6: Clear Feature
+Always confirm destructive actions:
+```python
+confirm = input("Are you sure? (y/n): ")
+if confirm.lower() == 'y':
+    shopping_list = []
+    print("List cleared!")
+```
+
+---
+
+# Testing Checklist
+
+Test these scenarios thoroughly:
+
+## Basic Operations
+- [ ] Add single item
+- [ ] Add multiple items
+- [ ] View empty list
+- [ ] View list with items
+- [ ] Exit program cleanly
+
+## Edge Cases
+- [ ] Add empty item (just press Enter)
+- [ ] Remove from empty list
+- [ ] Remove with invalid number (0, 999, 'abc')
+- [ ] Search in empty list
+- [ ] Search for non-existent item
+- [ ] Search with different case
+
+## User Experience
+- [ ] All messages are clear
+- [ ] Menu always displays
+- [ ] Invalid choices handled gracefully
+- [ ] Confirmations where appropriate
+- [ ] Clean exit
+
+---
+
+# Grading Rubric
+
+## Functionality (60 points)
+
+| Feature | Points | Criteria |
+|---------|---------|----------|
+| Add Items | 10 | Items added correctly, feedback given |
+| View List | 10 | Numbered display, empty list handled |
+| Remove Items | 15 | Correct removal, bounds checking |
+| Search Items | 10 | Case-insensitive, clear results |
+| Clear List | 5 | Confirmation, proper clearing |
+| Exit | 5 | Clean exit, no errors |
+| Menu System | 5 | Always displays, loops properly |
+
+## Code Quality (25 points)
+
+| Aspect | Points | Criteria |
+|--------|---------|----------|
+| Structure | 10 | Clear organization, proper indentation |
+| Variable Names | 5 | Descriptive, follow conventions |
+| Comments | 5 | Key sections explained |
+| Efficiency | 5 | No unnecessary repetition |
+
+## User Experience (15 points)
+
+| Aspect | Points | Criteria |
+|--------|---------|----------|
+| Clear Messages | 5 | User always knows what's happening |
+| Error Handling | 5 | No crashes, graceful handling |
+| Polish | 5 | Consistent formatting, professional |
+
+---
+
+# Submission Requirements
+
+## What to Submit
+
+1. **Python file**: `shopping_list_manager.py`
+2. **Test documentation**: Show testing of all features
+3. **AI usage report**: Document any AI assistance
+4. **Reflection**: 1 paragraph on challenges and learning
+
+## AI Usage Documentation
+
+Create a section in your code comments:
+```python
+"""
+AI Usage Documentation:
+1. Used AI to: [what you asked for]
+   Prompt: [your prompt]
+   Why: [why you needed help]
+   
+2. Used AI to: [next use]
+   Prompt: [your prompt]
+   Why: [why you needed help]
+   
+All code was understood and typed by me.
+"""
+```
+
+## Code Header
+
+Start your file with:
+```python
+"""
+Shopping List Manager
+Author: [Your Name]
+Date: [Date]
+Description: A program to manage shopping lists using loops and lists.
+
+Features:
+- Add items
+- View list with numbers
+- Remove items by number
+- Search for items
+- Clear entire list
+- Exit program
+"""
+```
+
+---
+
+# Extension Challenges
+
+If you finish early, try adding:
+
+## Level 1 Extensions
+1. **Quantity Tracking**: Store how many of each item
+2. **Sort Option**: Alphabetically sort the list
+3. **Save Position**: Remember last menu choice
+
+## Level 2 Extensions
+1. **Categories**: Organize by type (Dairy, Produce, etc.)
+2. **Priority Items**: Mark some as urgent
+3. **Multiple Lists**: Switch between different lists
+
+## Level 3 Extensions
+1. **Smart Suggestions**: Suggest commonly added items
+2. **Remove Multiple**: Remove several items at once
+3. **List Statistics**: Show most/least common items
+
+---
+
+# Common Mistakes to Avoid
+
+## Logic Errors
+```python
+# WRONG: Off-by-one error
+item_number = int(input("Which number? "))
+removed = shopping_list[item_number]  # User enters 1, gets index 1!
+
+# RIGHT: Adjust for 0-based indexing
+item_number = int(input("Which number? "))
+index = item_number - 1
+if 0 <= index < len(shopping_list):
+    removed = shopping_list[index]
+```
+
+## Infinite Loops
+```python
+# WRONG: Forgot to change running
+while running:
+    choice = input("Choice: ")
+    if choice == "6":
+        print("Bye!")
+        # Forgot running = False!
+
+# RIGHT: Always update loop control
+if choice == "6":
+    running = False
+    print("Bye!")
+```
+
+## Poor User Experience
+```python
+# WRONG: No feedback
+shopping_list.append(item)
+
+# RIGHT: Always confirm actions
+shopping_list.append(item)
+print(f"'{item}' added to your list.")
+```
+
+---
+
+# Tips for Success
+
+1. **Start Simple**: Get basic add/view working first
+2. **Test Often**: Run after each feature
+3. **Think Like a User**: What would confuse you?
+4. **Handle Errors**: Don't let the program crash
+5. **Be Consistent**: Same style throughout
+
+## Development Order
+1. Menu loop with exit
+2. Add feature
+3. View feature
+4. Remove feature (trickiest!)
+5. Search feature
+6. Clear feature
+7. Polish and test
+
+---
+
+# Getting Help
+
+## Good Questions to Ask
+
+✅ "Why does my remove function skip items?"  
+✅ "How do I check if an index is valid?"  
+✅ "What's the best way to do case-insensitive search?"  
+✅ "How can I show an empty list message?"  
+
+## Don't Ask For
+
+❌ "Write my shopping list manager"  
+❌ "Give me the complete code"  
+❌ "Debug my entire program"  
+
+## Debugging Strategy
+
+1. Add print statements to trace values
+2. Test each feature in isolation
+3. Check loop conditions carefully
+4. Verify list indices before use
+5. Handle empty list cases
+
+---
+
+Good luck with your project! Remember: A working program with basic features is better than a broken program with advanced features. Focus on getting the core functionality solid first.

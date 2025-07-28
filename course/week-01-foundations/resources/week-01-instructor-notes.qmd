@@ -1,0 +1,386 @@
+---
+title: "Week 1 Instructor Notes"
+subtitle: "Teaching Guide and Solutions"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Week 1 Instructor Guide
+
+## Overview
+
+Week 1 establishes the foundational philosophy of learning WITH AI while building basic Python skills. The key is setting the right tone and expectations from day one.
+
+## Lecture Notes (1 hour)
+
+### Opening (15 minutes)
+
+**Key Message**: We're learning to program WITH AI, not despite it or through it.
+
+**Discussion Starter**: 
+"Who has tried to learn programming before? What made it hard?"
+(Common answers: too abstract, got stuck on errors, couldn't debug)
+
+**AI Philosophy Introduction**:
+- Show a simple example of asking AI for a "hello world with user's name"
+- AI might give: functions, error handling, type hints
+- We need: 3 lines of basic code
+- Emphasize: "No thanks, simpler please" as a key phrase
+
+**Live Demo - The Calculator Trap**:
+```python
+# What students might get from AI:
+def calculator():
+    while True:
+        try:
+            operation = input("Enter operation (+, -, *, /, or 'quit'): ").strip().lower()
+            if operation == 'quit':
+                break
+            if operation not in ['+', '-', '*', '/']:
+                print("Invalid operation!")
+                continue
+            
+            num1 = float(input("First number: "))
+            num2 = float(input("Second number: "))
+            
+            if operation == '+':
+                result = num1 + num2
+            elif operation == '-':
+                result = num1 - num2
+            elif operation == '*':
+                result = num1 * num2
+            elif operation == '/':
+                if num2 == 0:
+                    print("Cannot divide by zero!")
+                    continue
+                result = num1 / num2
+            
+            print(f"Result: {result}")
+            
+        except ValueError:
+            print("Please enter valid numbers!")
+        except Exception as e:
+            print(f"An error occurred: {e}")
+
+if __name__ == "__main__":
+    print("Simple Calculator")
+    calculator()
+```
+
+Ask: "Who understands every line? Who could modify this to add a % operator?"
+
+### Python Basics (20 minutes)
+
+**Google Colab Introduction**:
+- Show how to create a new notebook
+- Demonstrate code vs text cells
+- Show runtime connection indicator
+- Mention auto-save but emphasize manual saves
+
+**Core Concepts with Live Coding**:
+
+1. **Print and Variables**:
+```python
+# Build this live, explaining each choice
+print("Hello, class!")  # Function that displays text
+
+# Variables store values
+class_name = "Python with AI"  # Descriptive name, lowercase with underscore
+student_count = 25  # Another meaningful name
+print(class_name)
+print(student_count)
+```
+
+2. **Data Types**:
+```python
+# Show type checking
+print(type(student_count))  # <class 'int'>
+print(type(class_name))     # <class 'str'>
+
+# Common confusion
+number_text = "42"
+print(type(number_text))    # Still string!
+```
+
+### User Input (15 minutes)
+
+**The Critical Concept**:
+```python
+# Always returns a string!
+user_age = input("How old are you? ")
+print(type(user_age))  # <class 'str'> - ALWAYS!
+
+# Must convert for math
+user_age = int(user_age)
+next_year = user_age + 1
+```
+
+**Common Error Live Demo**:
+```python
+# This will fail - do it live!
+age = input("Age: ")
+double_age = age * 2  # "2525" not 50!
+```
+
+### AI Demo (10 minutes)
+
+**Good Interaction**:
+- "Why does age * 2 give '2525' instead of 50?"
+- "Explain the difference between print and return in simple terms"
+- "What does 'TypeError' mean?"
+
+**Bad Interaction**:
+- "Write a temperature converter"
+- "Fix my code" (without trying to understand)
+- "Make this work" (without learning)
+
+## Lab Management (2 hours)
+
+### Hour 1 Structure
+
+**Setup Phase (20 min)**:
+- Have a TA or helper for Google account issues
+- Pre-create a sample notebook to show organization
+- Walk the room, ensure everyone connected
+- Common issues:
+  - Not signed into Google
+  - Creating notebook in wrong location
+  - Confusion about code vs markdown cells
+
+**AI Reality Check (25 min)**:
+- This is the "aha" moment - don't rush it
+- Let them struggle with modifying AI code
+- Circulate and ask: "Do you understand line X?"
+- Key point: Complexity prevents learning
+
+**Practice (15 min)**:
+- Encourage experimentation
+- "What happens if...?" mindset
+- Common discoveries:
+  - Print can take multiple arguments
+  - Variables persist between cells
+  - Strings can be multiplied
+
+### Hour 2 Structure
+
+**Interactive Programs (30 min)**:
+- Build personal info collector together first
+- Then let them create variations
+- Encourage creativity within constraints
+- Share interesting variations with class
+
+**Debugging Workshop (20 min)**:
+- Do first error together
+- Have students explain errors to partners
+- Create collaborative debugging culture
+- Emphasize: Errors are learning opportunities
+
+**Project Start (10 min)**:
+- Show planning process explicitly
+- Pseudocode on board/screen
+- Set expectation: Understanding > Completion
+
+## Common Student Challenges
+
+### 1. Colab-Specific Issues
+
+**Problem**: Variables undefined after runtime restart
+**Solution**: Explain session concept, encourage "Run All" after restarts
+
+**Problem**: Confusion about file persistence
+**Solution**: Emphasize notebook saves, but uploaded files are temporary
+
+**Problem**: Code cells vs text cells confusion
+**Solution**: Show keyboard shortcuts (Ctrl+M M for markdown)
+
+### 2. Conceptual Misunderstandings
+
+**Problem**: Not understanding input() returns strings
+**Solution**: Visual diagram - input → "25" → int() → 25
+
+**Problem**: Variable naming confusion
+**Solution**: Emphasize descriptive names, show good/bad examples
+
+**Problem**: Indentation errors
+**Solution**: Python uses indentation for structure (preview of week 2)
+
+### 3. AI Over-reliance
+
+**Problem**: Copying without understanding
+**Solution**: Random "explain this line" checks during lab
+
+**Problem**: Accepting first solution
+**Solution**: Show multiple solutions, discuss tradeoffs
+
+**Problem**: Feature creep from AI suggestions
+**Solution**: Strict project requirements, praise simplicity
+
+## Solutions and Examples
+
+### Temperature Converter - Basic Solution
+
+```python
+# Temperature Converter
+# A simple solution that meets all requirements
+
+# Welcome message
+print("=== Temperature Converter ===")
+print("Welcome! I can convert temperatures for you.")
+print()
+
+# Get temperature from user
+temp_input = input("Enter temperature: ")
+temp_value = float(temp_input)
+
+# Get scale
+scale = input("Is that (C)elsius or (F)ahrenheit? ")
+
+# Convert based on scale
+if scale.upper() == "C":
+    # Convert Celsius to Fahrenheit
+    fahrenheit = (temp_value * 9/5) + 32
+    print(f"\n{temp_value}°C equals {fahrenheit}°F")
+elif scale.upper() == "F":
+    # Convert Fahrenheit to Celsius
+    celsius = (temp_value - 32) * 5/9
+    print(f"\n{temp_value}°F equals {celsius}°C")
+else:
+    print("\nSorry, I don't recognize that scale.")
+
+# Thank you message
+print("\nThanks for using the temperature converter!")
+```
+
+### Temperature Converter - Common Student Variations
+
+```python
+# Variation 1: Using lower() instead of upper()
+scale = input("Is that (C)elsius or (F)ahrenheit? ")
+if scale.lower() == "c":
+    # ... conversion code
+
+# Variation 2: More explicit variable names
+temperature_in_celsius = float(temp_input)
+temperature_in_fahrenheit = (temperature_in_celsius * 9/5) + 32
+
+# Variation 3: Rounding the output
+print(f"\n{temp_value}°C equals {round(fahrenheit, 1)}°F")
+```
+
+### Debugging Exercise Solutions
+
+```python
+# Bug 1: Missing quotes
+print("Hello World")  # Added quotes around Hello World
+
+# Bug 2: Unclosed string
+name = input("What's your name? ")  # Added closing quote
+
+# Bug 3: Type mismatch
+age = input("How old are you? ")
+age = int(age)  # Added conversion to integer
+next_birthday = age + 1
+
+# Bug 4: Case sensitivity
+userName = "Alice"
+print("Welcome, " + userName)  # Fixed variable name case
+
+# Bug 5: Indentation
+temperature = 75
+if temperature > 70:
+    print("It's warm today!")  # Added indentation
+```
+
+## Differentiation Strategies
+
+### For Struggling Students
+- Pair with stronger peers
+- Provide partially completed code
+- Focus on core requirements only
+- Extra office hours in week 1
+- Create step-by-step checklist
+
+### For Advanced Students
+- Optional challenges in project spec
+- Ask them to help explain to others
+- Have them write documentation
+- Challenge: No AI for basic tasks
+- Early preview of next week's content
+
+## Assessment Guidelines
+
+### Lab Participation
+- Completion matters more than perfection
+- Look for evidence of experimentation
+- Check AI interaction logs for learning
+- Value questions asked
+
+### Project Grading
+- Understanding > Functionality
+- Partial credit for good attempts
+- Require explanation of code
+- AI log shows learning process
+
+### Sample Rubric Application
+
+**Excellent (A)**:
+- All requirements met
+- Clear understanding demonstrated
+- Meaningful variable names throughout
+- AI used for learning, not shortcuts
+- Can explain every line
+
+**Good (B)**:
+- Most requirements met
+- Minor understanding gaps
+- Some variable naming issues
+- AI used appropriately mostly
+- Can explain most code
+
+**Satisfactory (C)**:
+- Core requirements met
+- Basic understanding shown
+- Generic variable names
+- Some AI over-reliance
+- Can explain main concepts
+
+**Needs Improvement (D-F)**:
+- Missing requirements
+- Limited understanding
+- Copy-paste evident
+- AI did the work
+- Cannot explain code
+
+## Weekly Reflection
+
+After Week 1, consider:
+1. Did students grasp the AI philosophy?
+2. Are they comfortable with basic syntax?
+3. Can they debug simple errors?
+4. Is the pace appropriate?
+5. Any technical issues to address?
+
+## Tips for Success
+
+1. **Model good AI use** - Show your prompts
+2. **Celebrate errors** - Make them learning moments
+3. **Encourage questions** - No question too basic
+4. **Build community** - Peer learning is powerful
+5. **Stay simple** - Resist complexity creep
+6. **Be patient** - Everyone learns differently
+
+## Looking Ahead to Week 2
+
+Prepare students for:
+- Decision making with if/elif/else
+- More complex logic
+- Continued AI resistance to simplicity
+- Building on this week's foundation
+
+Key message: "This week's 'simple' is next week's building block!"

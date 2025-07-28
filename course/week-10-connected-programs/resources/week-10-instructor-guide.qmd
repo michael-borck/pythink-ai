@@ -1,0 +1,922 @@
+---
+title: "Week 10 Instructor Guide: Connected Programs"
+subtitle: "Teaching Error Handling, API Integration, and Resilient Systems"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Instructor Guide Overview
+
+**Week Focus**: Connected Programs - Error Handling, JSON Processing, and API Integration  
+**Session Duration**: 3 hours (1 hour lecture, 2 hours lab)  
+**Difficulty Level**: Advanced Beginner to Intermediate
+
+## Learning Objectives Recap
+
+Students will master:
+1. Professional error handling with try/except patterns
+2. Safe JSON processing and data validation
+3. HTTP requests and API integration
+4. Building fault-tolerant connected applications
+5. AI-assisted debugging for external integrations
+
+---
+
+# Pre-Class Preparation
+
+## Technical Setup
+
+### Required Tools
+- Python 3.8+ with standard library
+- Internet connection for API testing
+- Text editor or IDE
+- Browser for testing API endpoints
+
+### API Accounts (Optional but Recommended)
+- **OpenWeatherMap**: Free tier, good for demos
+- **HTTPBin**: Perfect for testing HTTP scenarios
+- **JSONPlaceholder**: Fake API for safe testing
+- **News API**: Free tier for real-world examples
+
+### Backup Plans
+- Offline mock APIs using Python's `http.server`
+- Pre-recorded API responses for network failures
+- Local JSON files for data processing exercises
+
+## Content Review
+
+### Key Concepts to Emphasize
+1. **Defensive Programming Mindset**: Expect everything to fail
+2. **Error Hierarchy**: Specific exceptions vs generic handling
+3. **User Experience**: Clear feedback during failures
+4. **Performance**: Caching and optimization strategies
+5. **Real-World Complexity**: APIs are messy and unreliable
+
+### Common Misconceptions to Address
+- "APIs always return valid JSON"
+- "Error handling slows down development"
+- "Network requests are reliable"
+- "All APIs follow the same patterns"
+- "Caching is just for performance"
+
+---
+
+# Lecture Delivery Strategy
+
+## Opening Hook: "The Connected World Reality Check" (10 minutes)
+
+### Live Demonstration Approach
+
+**Start with a broken app scenario:**
+
+```python
+# Show this "typical" beginner approach
+def get_weather(city):
+    url = f"https://api.weather.com/current?q={city}"
+    response = urllib.request.urlopen(url)
+    data = json.loads(response.read())
+    return f"Weather in {city}: {data['temp']}°F"
+
+# Then demonstrate all the ways it can fail:
+print(get_weather("Seattle"))  # What could go wrong?
+```
+
+**Interactive failure scenarios:**
+1. **Disconnect internet** - Show network error
+2. **Use invalid API endpoint** - Show 404 error
+3. **Show malformed JSON** - JSON parsing error
+4. **Use missing data field** - KeyError
+5. **Timeout scenario** - Request hangs
+
+**Key Teaching Point**: "This isn't a bug, it's reality. Professional code expects and handles these failures."
+
+### Student Engagement Strategy
+
+**Poll Question**: "How many external services does your favorite app probably use?"
+- Weather: 5-10 services
+- Social media: 20+ services
+- E-commerce: 50+ services
+
+**Reality Check**: Show network tab in browser on popular website to reveal dozens of API calls.
+
+## Core Concepts: Error Handling (20 minutes)
+
+### Teaching Progression
+
+#### 1. Start with Simple Example (5 minutes)
+
+```python
+# Without error handling
+def divide(a, b):
+    return a / b
+
+# With error handling
+def safe_divide(a, b):
+    try:
+        return a / b
+    except ZeroDivisionError:
+        return "Cannot divide by zero"
+    except TypeError:
+        return "Please provide numbers"
+```
+
+**Teaching Tip**: Start with familiar math operations before moving to external APIs.
+
+#### 2. Build Error Handling Hierarchy (8 minutes)
+
+```python
+# Show progression from generic to specific
+def process_data(data):
+    try:
+        # Complex operations here
+        pass
+    except Exception as e:  # Too generic!
+        print(f"Something went wrong: {e}")
+
+# Better approach:
+def process_data(data):
+    try:
+        # Complex operations here
+        pass
+    except ValueError:
+        # Handle data format errors
+        pass
+    except KeyError:
+        # Handle missing fields
+        pass
+    except Exception as e:
+        # Catch unexpected errors
+        pass
+```
+
+**Teaching Point**: "Be specific about what you expect to go wrong."
+
+#### 3. Professional Error Patterns (7 minutes)
+
+Show students the three key patterns:
+
+1. **Try with Default**
+```python
+def get_setting(config, key, default):
+    try:
+        return config[key]
+    except KeyError:
+        return default
+```
+
+2. **Try with Retry**
+```python
+def reliable_operation(max_attempts=3):
+    for attempt in range(max_attempts):
+        try:
+            return perform_operation()
+        except ConnectionError:
+            if attempt == max_attempts - 1:
+                raise
+            time.sleep(1)
+```
+
+3. **Try with Cleanup**
+```python
+def process_file(filename):
+    file_handle = None
+    try:
+        file_handle = open(filename)
+        return process_data(file_handle.read())
+    except FileNotFoundError:
+        return "File not found"
+    finally:
+        if file_handle:
+            file_handle.close()
+```
+
+### Common Student Questions
+
+**Q: "Why not just use Exception for everything?"**
+A: "Would you go to a doctor who said 'something's wrong' vs 'you have a broken arm'? Specific diagnosis enables specific treatment."
+
+**Q: "Doesn't all this error handling make code longer?"**
+A: "Professional code is longer, but it works when things go wrong. Which would you rather have - short code that crashes or longer code that works?"
+
+**Q: "How do I know what exceptions to catch?"**
+A: "Documentation, experience, and testing. Also, AI can help identify potential exceptions for specific operations."
+
+## JSON Processing (15 minutes)
+
+### Teaching Strategy
+
+#### 1. Start with JSON Basics (5 minutes)
+
+**Visual Approach**: Show JSON on screen alongside Python dictionaries
+
+```python
+# JSON (text format)
+'{"name": "Alice", "age": 30, "hobbies": ["reading", "coding"]}'
+
+# Python (data structure)  
+{"name": "Alice", "age": 30, "hobbies": ["reading", "coding"]}
+```
+
+**Key Point**: "JSON is just Python dictionaries and lists written as text."
+
+#### 2. Safe JSON Processing (10 minutes)
+
+**Live Coding Exercise**: Build this progressively
+
+```python
+# Step 1: Basic parsing
+json_text = '{"temperature": 72, "condition": "sunny"}'
+data = json.loads(json_text)
+print(data["temperature"])
+
+# Step 2: Handle malformed JSON
+broken_json = '{"temperature": 72, "condition":}'  # Missing value
+try:
+    data = json.loads(broken_json)
+except json.JSONDecodeError as e:
+    print(f"Invalid JSON: {e.msg}")
+
+# Step 3: Handle missing fields
+good_json = '{"condition": "sunny"}'  # Missing temperature
+data = json.loads(good_json)
+temperature = data.get("temperature", "Unknown")
+
+# Step 4: Validate types
+data = json.loads('{"temperature": "not_a_number"}')
+temp = data.get("temperature")
+if isinstance(temp, (int, float)):
+    print(f"Temperature: {temp}°F")
+else:
+    print("Invalid temperature data")
+```
+
+**Teaching Progression**: Each step adds one more layer of safety.
+
+### Interactive Exercise
+
+**Have students fix this broken function:**
+
+```python
+def get_weather_info(json_response):
+    data = json.loads(json_response)
+    temp = data["current"]["temperature"]
+    condition = data["current"]["weather"]["description"]
+    return f"{temp}°F, {condition}"
+
+# Test with increasingly problematic data:
+test_cases = [
+    '{"current": {"temperature": 72, "weather": {"description": "sunny"}}}',  # Good
+    '{"current": {"temperature": 72}}',  # Missing weather
+    '{"current": {}}',  # Missing temperature  
+    '{"different_structure": "oops"}',  # Wrong structure
+    'invalid json',  # Malformed JSON
+]
+```
+
+## HTTP Requests and API Integration (10 minutes)
+
+### Teaching Approach
+
+#### 1. Start with HTTPBin Demo (3 minutes)
+
+**Live demonstration using https://httpbin.org:**
+
+```python
+import urllib.request
+import json
+
+# Simple GET request
+response = urllib.request.urlopen("https://httpbin.org/json")
+data = json.loads(response.read().decode('utf-8'))
+print(data)
+```
+
+**Show status codes live:**
+- `https://httpbin.org/status/200` - Success
+- `https://httpbin.org/status/404` - Not found
+- `https://httpbin.org/status/500` - Server error
+
+#### 2. Build Professional HTTP Client (7 minutes)
+
+**Live coding progression:**
+
+```python
+# Step 1: Basic request
+def make_request(url):
+    response = urllib.request.urlopen(url)
+    return response.read().decode('utf-8')
+
+# Step 2: Add error handling
+def make_request(url):
+    try:
+        response = urllib.request.urlopen(url)
+        return response.read().decode('utf-8')
+    except urllib.error.HTTPError as e:
+        return f"HTTP Error: {e.code}"
+    except urllib.error.URLError as e:
+        return f"Connection Error: {e.reason}"
+
+# Step 3: Add timeout and parameters
+def make_request(url, params=None, timeout=10):
+    if params:
+        query_string = urllib.parse.urlencode(params)
+        url = f"{url}?{query_string}"
+    
+    try:
+        response = urllib.request.urlopen(url, timeout=timeout)
+        return {
+            "success": True,
+            "data": response.read().decode('utf-8'),
+            "status_code": response.getcode()
+        }
+    except Exception as e:
+        return {
+            "success": False,
+            "error": str(e)
+        }
+```
+
+### Real-World Connection
+
+**Show actual API documentation** from a service like OpenWeatherMap. Demonstrate:
+1. How to read API docs
+2. Understanding required vs optional parameters
+3. Authentication requirements
+4. Rate limiting information
+5. Response format examples
+
+## AI Partnership Demo (10 minutes)
+
+### Strategic AI Collaboration
+
+**Show effective prompting patterns for connected programming:**
+
+#### 1. API Understanding Prompts
+
+```python
+# GOOD PROMPT:
+"""
+I'm integrating with the OpenWeatherMap API. Here's their documentation:
+
+[paste actual documentation]
+
+I need to:
+1. Get current weather for a city
+2. Handle authentication errors
+3. Process the JSON response safely
+
+What's the best approach for error handling with this API?
+"""
+
+# BAD PROMPT:
+"How do I get weather data?"
+```
+
+#### 2. Error Debugging Prompts
+
+```python
+# GOOD PROMPT:
+"""
+My weather API request is failing with this error:
+
+urllib.error.HTTPError: HTTP Error 401: Unauthorized
+
+My code:
+[paste exact code]
+
+My API key: abc123 (is this format correct?)
+
+What should I check?
+"""
+
+# BAD PROMPT:
+"My API doesn't work, help!"
+```
+
+#### 3. Architecture Design Prompts
+
+```python
+# GOOD PROMPT:
+"""
+I'm building a weather app that should:
+- Cache data to reduce API calls
+- Work offline with cached data
+- Handle rate limits gracefully
+- Provide good user feedback
+
+What error handling and caching strategy would you recommend?
+"""
+```
+
+### Live AI Demonstration
+
+**If possible, show real AI interaction:**
+1. Paste a complex API error into AI
+2. Show how AI explains the error
+3. Ask AI for alternative approaches
+4. Demonstrate iterative problem solving
+
+---
+
+# Lab Facilitation Guide
+
+## Lab Structure Overview
+
+**Duration**: 2 hours  
+**Format**: 6 progressive exercises  
+**Approach**: Hands-on with instructor support
+
+## Exercise-by-Exercise Guidance
+
+### Exercise 1: Error Handling Fundamentals (20 minutes)
+
+**Learning Focus**: Master try/except patterns
+
+#### Instructor Role
+- **Circulate actively** - Students often struggle with exception hierarchy
+- **Debug together** - Show debugging process, not just solutions
+- **Emphasize patterns** - Point out recurring error handling strategies
+
+#### Common Student Issues
+
+1. **Using generic Exception everywhere**
+   - **Solution**: Show specific exception examples
+   - **Teaching moment**: "What would happen if a doctor said 'you're sick' vs 'you have the flu'?"
+
+2. **Forgetting to handle TypeError**
+   - **Guidance**: "What happens if user passes None instead of a string?"
+   - **Show**: Interactive testing with different input types
+
+3. **Not providing fallback values**
+   - **Question**: "What should happen when the operation fails?"
+   - **Guide thinking**: "What would users want to see?"
+
+#### Quick Assessment Indicators
+
+**Students are succeeding when:**
+- They catch specific exceptions (not just Exception)
+- They provide meaningful error messages
+- They include fallback strategies
+- They test with various input types
+
+**Red flags:**
+- Empty except blocks
+- Generic error messages
+- No consideration of user experience
+
+### Exercise 2: JSON Processing (25 minutes)
+
+**Learning Focus**: Safe data parsing and validation
+
+#### Teaching Moments
+
+1. **JSON Structure Visualization**
+   - Draw nested JSON structure on whiteboard
+   - Show path navigation: `data["weather"]["temperature"]`
+   - Demonstrate safe access: `data.get("weather", {}).get("temperature")`
+
+2. **Data Type Validation**
+   - Show why `isinstance()` checking matters
+   - Demonstrate conversion errors: `int("not_a_number")`
+   - Practice with mixed data types
+
+#### Interactive Debugging Session
+
+**When students struggle with complex JSON:**
+
+```python
+# Put this on screen for everyone:
+complex_json = '''
+{
+  "location": {"city": "Seattle", "country": "US"},
+  "current": {"temp": 72, "humidity": 80},
+  "forecast": [
+    {"day": "Monday", "high": 75, "low": 60},
+    {"day": "Tuesday", "high": 73, "low": 58}
+  ]
+}
+'''
+
+# Ask class: "How do we safely get Tuesday's high temperature?"
+# Build solution together step by step
+```
+
+#### Common Mistakes and Solutions
+
+1. **Assuming JSON structure**
+   ```python
+   # Dangerous:
+   temp = data["current"]["temp"]
+   
+   # Safe:
+   temp = data.get("current", {}).get("temp", "Unknown")
+   ```
+
+2. **Not validating data types**
+   ```python
+   # Show: What if temp is a string?
+   temp = data.get("temp")
+   if isinstance(temp, (int, float)):
+       print(f"Temperature: {temp}°F")
+   ```
+
+### Exercise 3: HTTP Requests (25 minutes)
+
+**Learning Focus**: API integration with error handling
+
+#### Live Coding Session
+
+**Build HTTP client together on projector:**
+
+1. **Start simple** - Basic request to HTTPBin
+2. **Add error handling** - Show what breaks when network fails
+3. **Add parameters** - Show URL encoding
+4. **Add authentication** - Headers and API keys
+5. **Add retry logic** - Exponential backoff
+
+#### Network Simulation
+
+**Create failure scenarios:**
+
+```python
+# Instructor preparation:
+# 1. Disconnect internet briefly
+# 2. Use invalid URLs
+# 3. Use endpoints that return errors
+# 4. Show timeout scenarios
+
+test_urls = [
+    "https://httpbin.org/json",           # Good
+    "https://httpbin.org/status/404",     # Not found
+    "https://httpbin.org/delay/30",       # Timeout
+    "https://fake-url-that-doesnt-exist", # DNS error
+]
+```
+
+#### Pair Programming Activity
+
+**Assign pairs for 15 minutes:**
+- One person codes, other reviews
+- Switch every 5 minutes
+- Focus on error handling completeness
+
+### Exercise 4: Weather Information System (30 minutes)
+
+**Learning Focus**: Complete integration project
+
+#### Project Management Approach
+
+**Break into phases:**
+1. **Phase 1 (10 min)**: Basic API client structure
+2. **Phase 2 (10 min)**: Add error handling and caching
+3. **Phase 3 (10 min)**: Build user interface
+
+#### Instructor Support Strategy
+
+**Roam and support:**
+- Don't give answers immediately
+- Ask guiding questions: "What should happen when the API is down?"
+- Encourage AI collaboration: "What would you ask AI about this error?"
+
+#### Common Architecture Issues
+
+1. **Tight coupling between API and UI**
+   - **Guide**: "What if you wanted to switch weather services?"
+   - **Solution**: Show separation of concerns
+
+2. **No caching strategy**
+   - **Question**: "How often should we call the API?"
+   - **Demonstrate**: Cache benefits with timestamps
+
+3. **Poor error messages**
+   - **Review**: Read error messages aloud
+   - **Ask**: "Would your grandmother understand this message?"
+
+### Exercise 5: Advanced Error Handling (20 minutes)
+
+**Learning Focus**: Professional patterns and resilience
+
+#### Circuit Breaker Demonstration
+
+**Live code circuit breaker pattern:**
+
+```python
+class SimpleCircuitBreaker:
+    def __init__(self, failure_threshold=3):
+        self.failure_threshold = failure_threshold
+        self.failure_count = 0
+        self.state = "closed"  # closed, open, half_open
+    
+    def call(self, func):
+        if self.state == "open":
+            return "Service unavailable"
+        
+        try:
+            result = func()
+            self.failure_count = 0
+            self.state = "closed"
+            return result
+        except Exception:
+            self.failure_count += 1
+            if self.failure_count >= self.failure_threshold:
+                self.state = "open"
+            raise
+```
+
+**Show with unreliable service simulation.**
+
+### Exercise 6: Connected Application Workshop (20 minutes)
+
+**Learning Focus**: Integration and polish
+
+#### Code Review Session
+
+**Last 10 minutes of lab:**
+- Students volunteer to show their solutions
+- Class discusses architecture decisions
+- Identify improvement opportunities
+- Share AI collaboration experiences
+
+#### Success Showcase
+
+**Highlight good examples:**
+- Clean error handling
+- User-friendly messages
+- Efficient caching
+- Graceful degradation
+
+---
+
+# Assessment Strategies
+
+## Formative Assessment During Lab
+
+### Observation Checklist
+
+**While circulating, look for:**
+
+✅ **Error Handling**
+- Students use specific exception types
+- Error messages are user-friendly  
+- Fallback strategies are implemented
+- Edge cases are considered
+
+✅ **JSON Processing**
+- Safe parsing with try/except
+- Proper validation of data types
+- Graceful handling of missing fields
+- No assumptions about structure
+
+✅ **API Integration**
+- Proper HTTP error handling
+- Authentication is implemented correctly
+- Rate limiting is considered
+- Timeout handling is present
+
+✅ **AI Collaboration**
+- Students ask specific questions
+- They provide context with errors
+- They iterate on solutions
+- They learn from AI responses
+
+### Quick Check Questions
+
+**Ask students during lab:**
+1. "What happens if this API returns a 500 error?"
+2. "How would you test this code without internet?"
+3. "What would a user see if this operation fails?"
+4. "How did AI help you solve this problem?"
+
+## Summative Assessment
+
+### Project Evaluation Rubric
+
+**Use this for end-of-week project assessment:**
+
+#### Technical Implementation (60%)
+- **Error Handling (20%)**: Comprehensive, specific, user-friendly
+- **API Integration (20%)**: Robust, authenticated, optimized
+- **Data Processing (20%)**: Safe, validated, efficient
+
+#### Professional Practices (25%)
+- **Code Quality (15%)**: Clean, organized, documented
+- **Testing (10%)**: Edge cases covered, failure scenarios tested
+
+#### AI Collaboration (15%)
+- **Strategic Use (10%)**: Effective prompts, iterative improvement
+- **Documentation (5%)**: Clear collaboration log
+
+### Common Assessment Pitfalls
+
+**Avoid these evaluation errors:**
+- Focusing only on working code (not error handling)
+- Not testing failure scenarios
+- Ignoring user experience aspects
+- Undervaluing AI collaboration process
+
+---
+
+# Troubleshooting Guide
+
+## Technical Issues
+
+### Network Connectivity Problems
+
+**Symptoms**: Students can't access APIs, timeouts
+
+**Solutions:**
+1. **Use local mock servers**: Python's `http.server` with JSON files
+2. **Provide offline data**: Pre-downloaded API responses
+3. **Use reliable APIs**: HTTPBin, JSONPlaceholder
+4. **Increase timeouts**: Allow for slow networks
+
+### API Key Issues
+
+**Symptoms**: 401 errors, authentication failures
+
+**Solutions:**
+1. **Use free APIs first**: No key required for initial learning
+2. **Provide demo keys**: Create shared accounts for class
+3. **Show key management**: Environment variables, config files
+4. **Fallback options**: Multiple API services available
+
+### JSON Parsing Errors
+
+**Symptoms**: Students confused by nested structures
+
+**Solutions:**
+1. **Visualize structure**: Draw JSON tree on board
+2. **Use JSON formatters**: Online tools for readability
+3. **Practice with simple data**: Start small, build up
+4. **Show debugging tools**: `json.tool` for formatting
+
+## Pedagogical Challenges
+
+### Overwhelming Complexity
+
+**Symptoms**: Students frustrated by error handling requirements
+
+**Solutions:**
+1. **Build incrementally**: Add one error type at a time
+2. **Show benefits**: Demonstrate what happens without error handling
+3. **Use analogies**: Compare to safety equipment in cars
+4. **Celebrate wins**: Acknowledge when code handles errors well
+
+### AI Over-Reliance
+
+**Symptoms**: Students not understanding AI-generated code
+
+**Solutions:**
+1. **Explain before using**: Have AI explain its suggestions
+2. **Modify AI code**: Don't use AI solutions verbatim
+3. **Test understanding**: Ask students to explain code line by line
+4. **Encourage questions**: "What would you ask AI about this?"
+
+### Performance Anxiety
+
+**Symptoms**: Students afraid to break things
+
+**Solutions:**
+1. **Normalize failure**: "Let's break this on purpose"
+2. **Safe testing environment**: Use sandbox APIs
+3. **Failure celebration**: Reward finding edge cases
+4. **Debugging together**: Show your debugging process
+
+---
+
+# Extension Activities
+
+## For Advanced Students
+
+### 1. Multi-Service Integration
+Build a system that aggregates data from multiple APIs with intelligent fallback strategies.
+
+### 2. Custom Cache Implementation
+Create an LRU cache with TTL and intelligent invalidation.
+
+### 3. Rate Limiting Middleware
+Build a rate limiter that handles multiple APIs with different limits.
+
+### 4. Error Analytics Dashboard
+Create a system that tracks and visualizes error patterns.
+
+## For Students Needing Support
+
+### 1. Guided Error Handling
+Provide templates with specific try/except blocks to fill in.
+
+### 2. JSON Path Practice
+Use simple, flat JSON structures before introducing nesting.
+
+### 3. Mock API First
+Start with predictable mock APIs before using real services.
+
+### 4. Pair Programming
+Partner struggling students with stronger peers.
+
+---
+
+# Real-World Connections
+
+## Industry Examples
+
+### 1. Netflix's Circuit Breaker Pattern
+Show how Netflix handles millions of API calls with failure protection.
+
+### 2. Twitter's Rate Limiting
+Explain how social media platforms protect their APIs.
+
+### 3. E-commerce Error Handling
+Discuss how shopping sites handle payment API failures.
+
+### 4. Mobile App Resilience
+Explain how apps work offline and sync when connected.
+
+## Career Preparation
+
+### Skills Students Are Building
+- **API Integration**: Essential for modern development
+- **Error Handling**: Professional code requirement
+- **Performance Optimization**: Scalability foundation
+- **User Experience**: Making technical systems usable
+
+### Next Steps
+- Advanced async programming
+- Database integration
+- Microservices architecture
+- DevOps and monitoring
+
+---
+
+# Success Metrics
+
+## Student Success Indicators
+
+### During Lab
+- Students proactively add error handling
+- They ask "what if" questions about edge cases
+- AI collaboration becomes natural
+- Code quality improves iteratively
+
+### End of Week
+- Projects handle failures gracefully
+- Error messages are user-friendly
+- Performance optimizations are present
+- Students explain their architecture decisions
+
+### Long-term Goals
+- Students think defensively about code
+- They design for failure scenarios
+- API integration becomes straightforward
+- Professional development practices are adopted
+
+## Instructor Success Metrics
+
+### Engagement
+- High participation in debugging sessions
+- Students volunteer to share solutions
+- Active AI collaboration discussions
+- Peer learning and support
+
+### Understanding
+- Correct error handling patterns
+- Appropriate API integration practices
+- Good user experience design
+- Strategic AI usage
+
+### Preparation for Next Week
+- Confidence with external integrations
+- Understanding of failure handling
+- Foundation for interactive applications
+- Professional coding practices
+
+---
+
+# Resources for Continued Learning
+
+## Recommended Reading
+- "Site Reliability Engineering" by Google
+- "Release It!" by Michael Nygard
+- "Building Microservices" by Sam Newman
+
+## Online Resources
+- HTTP status code reference
+- JSON specification and validators
+- API design best practices
+- Error handling patterns
+
+## Tools and Services
+- Postman for API testing
+- HTTPBin for HTTP testing
+- JSONPlaceholder for practice APIs
+- Circuit breaker libraries
+
+Remember: Your role is to guide students through the complexity of connected systems while building their confidence in handling real-world programming challenges. Focus on the mindset as much as the technical skills!

@@ -1,0 +1,662 @@
+---
+title: "Week 4: Data Organization & Structure"
+subtitle: "Mastering Text Manipulation and Data Transformation"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# The Power of Text Processing
+
+## The Password Validator Problem (10 minutes)
+
+### AI's Security Theater
+
+Let me show you what happens when we ask AI for a "password strength checker":
+
+**Me**: "Create a password strength validator"
+
+**AI might give**:
+```python
+import re
+import hashlib
+from password_strength import PasswordPolicy
+import string
+
+class PasswordValidator:
+    def __init__(self):
+        self.policy = PasswordPolicy.from_names(
+            length=8,
+            uppercase=2,
+            numbers=2,
+            special=2,
+            nonletters=2,
+        )
+        self.common_passwords = self.load_common_passwords()
+        
+    def validate(self, password):
+        # Check against common passwords
+        if self.is_common(password):
+            return False, "Too common"
+            
+        # Check entropy
+        entropy = self.calculate_entropy(password)
+        if entropy < 50:
+            return False, "Too simple"
+            
+        # Check patterns
+        if re.search(r'(.)\1{2,}', password):
+            return False, "Repeated characters"
+            
+        # Check keyboard patterns
+        if self.has_keyboard_pattern(password):
+            return False, "Keyboard pattern detected"
+            
+        # More complexity...
+```
+
+**Let's be honest**:
+- Do you understand regular expressions?
+- What's entropy calculation?
+- Can you modify the validation rules?
+- What does a password REALLY need?
+
+### The Core Truth
+
+A strong password needs:
+1. Sufficient length (8+ characters)
+2. Mix of character types (upper, lower, digit)
+3. Not be a common word
+4. That's it!
+
+We can check ALL of this with basic string operations.
+
+### Today's Journey
+
+We'll discover:
+1. How strings are just sequences of characters
+2. How to extract and transform text
+3. When to use different string methods
+4. How to parse and clean real data
+
+## Why Text Processing Matters (20 minutes)
+
+### Text is Everywhere
+
+Think about the text data you encounter:
+
+**User Input**:
+```
+Name: "  JOHN doe  "          → Need to clean/normalize
+Email: "USER@GMAIL.COM"       → Need to validate format
+Phone: "(555) 123-4567"       → Need to extract numbers
+```
+
+**Data Files**:
+```
+CSV: "name,age,city"          → Need to split into parts
+Log: "[2024-01-15] Error: ..." → Need to extract date/message
+URL: "https://site.com/page"  → Need to parse components
+```
+
+**Communication**:
+```
+Chat: "hey :) how r u?"       → Need to clean/standardize
+Tweet: "#Python is #awesome"  → Need to find hashtags
+Code: "def function_name():"  → Need to extract names
+```
+
+### Strings as Sequences
+
+Just like lists, strings are ordered sequences:
+
+```python
+word = "PYTHON"
+# P Y T H O N
+# 0 1 2 3 4 5  (forward indices)
+#-6-5-4-3-2-1  (backward indices)
+```
+
+This means we can:
+- Access individual characters
+- Extract portions (slicing)
+- Loop through each character
+- Check membership with 'in'
+
+### Three Core Operations
+
+#### 1. Extraction (Getting Parts)
+"I need the domain from an email"
+```python
+email = "user@example.com"
+at_pos = email.find("@")
+domain = email[at_pos+1:]  # "example.com"
+```
+
+#### 2. Transformation (Changing Text)
+"I need to standardize this name"
+```python
+name = "  john DOE  "
+clean_name = name.strip().title()  # "John Doe"
+```
+
+#### 3. Analysis (Understanding Text)
+"Is this a valid phone number?"
+```python
+phone = "(555) 123-4567"
+digits = ""
+for char in phone:
+    if char.isdigit():
+        digits = digits + char
+valid = len(digits) == 10  # True
+```
+
+## From Concepts to Code: Python's String Tools (20 minutes)
+
+### String Slicing: Surgical Text Extraction
+
+The syntax: `string[start:end:step]`
+
+```python
+text = "Hello, World!"
+
+# Basic slicing
+print(text[0:5])      # "Hello" (chars 0-4)
+print(text[7:12])     # "World" (chars 7-11)
+print(text[-6:-1])    # "World" (using negative indices)
+
+# Omitting indices
+print(text[:5])       # "Hello" (from start)
+print(text[7:])       # "World!" (to end)
+print(text[:])        # "Hello, World!" (complete copy)
+
+# Step parameter
+print(text[::2])      # "Hlo ol!" (every 2nd char)
+print(text[1::2])     # "el,Wrd" (every 2nd, starting at 1)
+print(text[::-1])     # "!dlroW ,olleH" (reversed!)
+
+# Practical examples
+filename = "document.pdf"
+name = filename[:-4]   # "document" (remove extension)
+ext = filename[-3:]    # "pdf" (get extension)
+```
+
+### String Methods: Text Transformation Toolkit
+
+**Case Methods**:
+```python
+text = "Python Programming"
+
+print(text.upper())       # "PYTHON PROGRAMMING"
+print(text.lower())       # "python programming"
+print(text.title())       # "Python Programming"
+print(text.swapcase())    # "pYTHON pROGRAMMING"
+
+# Real use: case-insensitive comparison
+user_input = "YES"
+if user_input.lower() == "yes":
+    print("User agreed")
+```
+
+**Whitespace Methods**:
+```python
+messy = "  Hello World  \n\t"
+
+print(messy.strip())      # "Hello World" (remove edges)
+print(messy.lstrip())     # "Hello World  \n\t" (left only)
+print(messy.rstrip())     # "  Hello World" (right only)
+
+# Real use: cleaning user input
+name = input("Name: ").strip()  # Always clean input!
+```
+
+**Search Methods**:
+```python
+email = "alice@example.com"
+
+# Check existence
+if "@" in email:
+    print("Contains @")
+
+# Find position
+at_pos = email.find("@")        # 5 (index of @)
+dot_pos = email.find(".", at_pos) # 13 (dot after @)
+not_found = email.find("xyz")    # -1 (not found)
+
+# Count occurrences  
+text = "mississippi"
+print(text.count("i"))           # 4
+print(text.count("ss"))          # 2
+```
+
+**Replace Method**:
+```python
+text = "I love Java. Java is great!"
+python_text = text.replace("Java", "Python")
+print(python_text)  # "I love Python. Python is great!"
+
+# Limited replacements
+text = "apple apple apple"
+print(text.replace("apple", "orange", 2))  # "orange orange apple"
+```
+
+### Split and Join: Data Parsing Power
+
+**Splitting Strings**:
+```python
+# Split by delimiter
+data = "apple,banana,cherry"
+fruits = data.split(",")         # ["apple", "banana", "cherry"]
+
+# Split by whitespace (default)
+sentence = "Python is awesome"
+words = sentence.split()         # ["Python", "is", "awesome"]
+
+# Limit splits
+text = "one-two-three-four"
+print(text.split("-", 2))        # ["one", "two", "three-four"]
+
+# Real example: parsing CSV line
+line = "John Doe,25,Engineer"
+name, age, job = line.split(",")
+```
+
+**Joining Lists**:
+```python
+# Join with delimiter
+words = ["Python", "is", "fun"]
+sentence = " ".join(words)       # "Python is fun"
+dashed = "-".join(words)         # "Python-is-fun"
+
+# Build formatted output
+items = ["apple", "banana", "cherry"]
+output = "Items: " + ", ".join(items)  # "Items: apple, banana, cherry"
+
+# Creating multi-line strings
+lines = ["Line 1", "Line 2", "Line 3"]
+text = "\n".join(lines)          # Multi-line string
+```
+
+### List Slicing: Same Rules, Different Data
+
+```python
+numbers = [10, 20, 30, 40, 50, 60]
+
+# Same slicing syntax
+print(numbers[1:4])      # [20, 30, 40]
+print(numbers[:3])       # [10, 20, 30]
+print(numbers[3:])       # [40, 50, 60]
+print(numbers[::2])      # [10, 30, 50]
+print(numbers[::-1])     # [60, 50, 40, 30, 20, 10]
+
+# Practical: get chunks
+batch_size = 2
+for i in range(0, len(numbers), batch_size):
+    batch = numbers[i:i+batch_size]
+    print(f"Processing: {batch}")
+```
+
+### Common Text Processing Patterns
+
+**Email Validation (Simple)**:
+```python
+email = input("Enter email: ").strip().lower()
+
+# Basic checks
+valid = True
+error = ""
+
+if "@" not in email:
+    valid = False
+    error = "Missing @ symbol"
+elif email.count("@") != 1:
+    valid = False
+    error = "Multiple @ symbols"
+else:
+    username, domain = email.split("@")
+    if len(username) == 0:
+        valid = False
+        error = "Empty username"
+    elif "." not in domain:
+        valid = False
+        error = "Invalid domain"
+    elif domain.startswith(".") or domain.endswith("."):
+        valid = False
+        error = "Invalid domain format"
+
+if valid:
+    print(f"Valid email: {email}")
+else:
+    print(f"Invalid: {error}")
+```
+
+**Password Strength Checker**:
+```python
+password = input("Enter password: ")
+
+# Check criteria
+length_ok = len(password) >= 8
+has_upper = False
+has_lower = False  
+has_digit = False
+
+for char in password:
+    if char.isupper():
+        has_upper = True
+    elif char.islower():
+        has_lower = True
+    elif char.isdigit():
+        has_digit = True
+
+# Determine strength
+if length_ok and has_upper and has_lower and has_digit:
+    print("Strong password!")
+elif length_ok and ((has_upper and has_lower) or 
+                   (has_lower and has_digit) or 
+                   (has_upper and has_digit)):
+    print("Medium password")
+else:
+    print("Weak password")
+    
+# Provide feedback
+if not length_ok:
+    print("- Need at least 8 characters")
+if not has_upper:
+    print("- Add uppercase letters")
+if not has_lower:
+    print("- Add lowercase letters")
+if not has_digit:
+    print("- Add numbers")
+```
+
+## AI Partnership: Smart String Operations (7 minutes)
+
+### Progressive Prompt Evolution
+
+Let's build a text cleaner intelligently:
+
+#### Attempt 1: Too Vague
+**You**: "clean user input"
+
+**AI gives**: Database sanitization, HTML escaping, SQL injection prevention...
+
+#### Attempt 2: Adding Focus
+**You**: "Remove extra spaces and standardize case for names"
+
+**AI might give**: Complex regex patterns, Unicode handling...
+
+#### Attempt 3: Clear Constraints
+**You**: "Clean name input using ONLY:
+- strip() for whitespace
+- title() for proper case
+- Basic string methods
+No regex, no imports"
+
+**AI gives**:
+```python
+# Get name from user
+name = input("Enter your name: ")
+
+# Clean the input
+clean_name = name.strip()  # Remove edge whitespace
+clean_name = clean_name.title()  # Proper case
+
+# Handle multiple spaces
+while "  " in clean_name:  # Two spaces
+    clean_name = clean_name.replace("  ", " ")
+
+print(f"Hello, {clean_name}!")
+```
+
+Now we understand every line!
+
+### Using AI for String Debugging
+
+**Good Debugging Prompts**:
+> "Why does 'hello'[1:3] give 'el' not 'ell'?"
+
+> "Show me step-by-step how split() works on 'a,b,c'"
+
+> "What's the difference between find() returning -1 and index() raising error?"
+
+> "How do I check if a string contains only letters?"
+
+### Common AI Overcomplications
+
+1. **Regular Expressions** (too advanced):
+   ```python
+   import re
+   if re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email):
+   ```
+
+2. **External Libraries**:
+   ```python
+   from validators import email
+   if email(user_input):
+   ```
+
+3. **Complex Validation**:
+   ```python
+   try:
+       user_input.encode('ascii')
+   except UnicodeEncodeError:
+       print("Non-ASCII characters!")
+   ```
+
+Keep asking for simpler versions using only what we've learned!
+
+## Building on Previous Weeks (3 minutes)
+
+### Integration Points
+
+String operations combine perfectly with what we know:
+- **Loops**: Process each character or word
+- **Conditions**: Check string properties
+- **Lists**: Store split results
+- **Variables**: Build transformed strings
+
+### Foundation for the Future
+
+This week enables:
+- Parsing any text-based data
+- Building interactive text games
+- Cleaning and validating input
+- Processing files (future weeks)
+
+## Preparing for Lab
+
+In today's lab, you'll:
+1. Master string slicing notation
+2. Apply string methods effectively
+3. Parse structured text data
+4. Build an engaging word game
+
+Key advice:
+- Draw index positions when slicing
+- Test methods in isolation first
+- Check edge cases (empty strings)
+- Build incrementally
+
+### Textbook Connection
+
+**Read for next class**:
+- Chapter 13: "String Slicing" - Extracting substrings
+- Chapter 14: "String Methods" - Transformation tools
+- Chapter 15: "Text Processing" - Real-world applications
+
+---
+
+# Instructor Notes
+
+## Hook Management
+
+The password validator example works because:
+1. Everyone knows passwords need to be "strong"
+2. AI massively overcomplicates with regex and libraries
+3. Core need is simple character checking
+4. Sets tone for practical simplification
+
+If AI doesn't overcomplicate enough, try "email validator" or "phone number parser"!
+
+## Key Teaching Points
+
+### Slicing Conceptual Challenges
+
+**Start:End Confusion**:
+- End index is EXCLUSIVE
+- Draw fence posts analogy
+- Show many examples
+
+**Negative Indices**:
+- Count from the right
+- -1 is last character
+- Useful for removing extensions
+
+**Step Parameter**:
+- Default is 1
+- Can be negative (reverses)
+- Rarely used but powerful
+
+### Common Confusions
+
+**String Immutability**:
+```python
+text = "hello"
+text[0] = "H"  # ERROR! Can't change strings
+text = "H" + text[1:]  # Must build new string
+```
+
+**Method Return Values**:
+```python
+name = "john"
+name.upper()  # Returns "JOHN" but doesn't change name
+print(name)    # Still "john"
+name = name.upper()  # Must reassign
+```
+
+**Split Delimiters**:
+- Delimiter is removed
+- Empty strings if consecutive delimiters
+- Default splits on ANY whitespace
+
+## Live Coding Strategy
+
+### Build a Name Cleaner
+
+Start simple, add complexity:
+
+1. Basic strip:
+```python
+name = input("Name: ")
+clean = name.strip()
+```
+
+2. Add case:
+```python
+clean = name.strip().title()
+```
+
+3. Handle middle spaces:
+```python
+parts = clean.split()
+clean = " ".join(parts)
+```
+
+4. Show the one-liner:
+```python
+clean = " ".join(input("Name: ").strip().split()).title()
+```
+
+### Debugging Demo
+
+Common errors to show:
+1. Off-by-one in slicing
+2. Forgetting strings are immutable
+3. Not handling empty strings
+4. Case-sensitive comparisons
+
+### Testing Patterns
+
+Always test:
+- Empty string
+- Single character
+- Normal case
+- Extra whitespace
+- Mixed case
+
+## Assessment Ideas
+
+**Quick Checks**:
+- "What does 'python'[1:4] give?"
+- "How do you get the last 3 characters?"
+- "What's returned by 'hello'.find('x')?"
+
+**Peer Activities**:
+- Slice challenge races
+- Debug each other's string code
+- Explain method choices
+
+## Common Student Issues
+
+1. **Forgetting End is Exclusive**
+   ```python
+   "hello"[0:3]  # Students expect "hel", get "hel"
+   # Wait, that worked! But confusion comes with:
+   "hello"[1:3]  # Expect "ell", get "el"
+   ```
+
+2. **Modifying Strings**
+   ```python
+   text = "test"
+   text.upper()
+   print(text)  # Still "test"!
+   ```
+
+3. **Split Confusion**
+   ```python
+   "a,,b".split(",")  # ['a', '', 'b'] - empty string!
+   ```
+
+4. **Method Chaining Order**
+   ```python
+   "  HELLO  ".strip().lower()  # "hello"
+   "  HELLO  ".lower().strip()  # "  hello  " - different!
+   ```
+
+## Differentiation
+
+**For Struggling Students**:
+- More visual diagrams
+- Simpler patterns first
+- Break method chains into steps
+- Provide slicing templates
+
+**For Advanced Students**:
+- Caesar cipher challenge
+- Text analysis statistics
+- Multi-delimiter parsing
+- Pattern finding algorithms
+
+## Time Management
+- 0:00-0:10 - Hook with password validator
+- 0:10-0:30 - Concepts and string theory
+- 0:30-0:50 - Python implementation
+- 0:50-0:57 - AI partnership
+- 0:57-1:00 - Wrap up and preview
+
+## Week 4 Specific Tips
+
+1. **Visual Learning is Key** - Draw everything
+2. **Many Small Examples** - Better than few complex
+3. **Connect to Real Uses** - Email, names, passwords
+4. **Method Reference Sheet** - Have it ready
+5. **Practice Makes Perfect** - Slicing needs repetition
+
+Remember: String manipulation is used in EVERY real program!

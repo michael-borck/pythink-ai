@@ -1,0 +1,845 @@
+---
+title: "Week 7: Instructor Guide"
+subtitle: "Teaching File Operations and Data Persistence"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+  pdf:
+    toc: true
+---
+
+# Week 7 Overview
+
+This week introduces file operations, transforming student programs from temporary to permanent. The conceptual shift from RAM to disk storage is significant and requires careful scaffolding.
+
+**Key Challenge**: Making abstract file concepts concrete and practical
+
+---
+
+# Pre-Class Preparation
+
+## Review Previous Concepts
+- Dictionaries (Week 6) - will be saved to files
+- Functions (Week 5) - will encapsulate file operations
+- String manipulation (Week 4) - for file parsing
+- Data organization concepts
+
+## Set Up Demonstrations
+1. Contact book from Week 6 (to show data loss)
+2. File explorer views ready
+3. Simple text files for reading examples
+4. Common file errors prepared to demonstrate
+
+## Mental Model Prerequisites
+Students should understand:
+- Variables store data temporarily
+- Programs end and memory is cleared
+- Files are "containers" on disk
+- Path concept (folder navigation)
+
+---
+
+# Lecture Delivery Guide
+
+## Opening Hook (10 minutes)
+
+### The Lost Contact Book
+
+**Setup**: Show working contact book from Week 6
+
+**The Devastating Demo**:
+1. Run contact book, add contacts
+2. Show it works perfectly
+3. **Close/restart the program**
+4. Run again - **all contacts gone!**
+5. "Where did our data go?"
+
+**Key Questions**:
+- "Why don't real apps lose your data?"
+- "What's different about your phone contacts?"
+- "How do we make programs remember?"
+
+**Transition**: "Today we solve the memory problem!"
+
+### Alternative Hooks
+If contact book isn't available:
+- Todo list that disappears
+- Game high scores that reset
+- Settings that don't stick
+
+## Computational Concepts (20 minutes)
+
+### Memory vs Storage
+
+**Visual Analogy**: Use physical props
+- **RAM = Whiteboard**: Fast but erased when you leave
+- **Files = Filing Cabinet**: Slower but permanent
+
+**Real-World Examples**:
+```
+Your Computer:
+- RAM: Programs running now
+- Disk: Documents, photos, music
+
+Your Phone:
+- RAM: Apps in memory
+- Storage: Photos, contacts, apps
+```
+
+### File System Basics
+
+**Folder Structure** (draw on board):
+```
+Computer
+├── Documents/
+│   ├── school_work.txt
+│   └── notes.txt
+├── Photos/
+└── Programs/
+    └── my_program.py
+```
+
+**Path Concept**:
+- Path = address to find a file
+- Like a street address for data
+- Start simple: same folder as program
+
+### File Types We'll Use
+
+**Text Files (.txt)**:
+- Human readable
+- Easy to create/edit
+- What we see in Notepad
+- Perfect for learning
+
+**Later in Course**:
+- CSV (Week 9) - Spreadsheet data
+- JSON (Week 10) - Structured data
+
+## From Concepts to Code (20 minutes)
+
+### File Operations Progression
+
+**Step 1: Opening Files**
+```python
+# Basic pattern (don't do this yet)
+file = open("data.txt", "r")
+content = file.read()
+file.close()  # MUST remember!
+
+# Better pattern (use this!)
+with open("data.txt", "r") as file:
+    content = file.read()
+# File automatically closed!
+```
+
+**Emphasize**:
+- 'with' statement is essential
+- Files must be closed
+- Show what happens if you forget
+
+**Step 2: File Modes**
+```python
+# "r" - Read (file must exist)
+with open("existing.txt", "r") as file:
+    data = file.read()
+
+# "w" - Write (creates new/overwrites!)
+with open("output.txt", "w") as file:
+    file.write("Hello, World!")
+
+# "a" - Append (adds to end)
+with open("log.txt", "a") as file:
+    file.write("New entry\n")
+```
+
+**Critical Demo**: Show 'w' mode overwriting!
+
+**Step 3: Reading Patterns**
+```python
+# Method 1: All at once
+with open("story.txt", "r") as file:
+    entire_file = file.read()
+
+# Method 2: Line by line
+with open("story.txt", "r") as file:
+    for line in file:
+        print(line.strip())
+
+# Method 3: Into a list
+with open("story.txt", "r") as file:
+    all_lines = file.readlines()
+```
+
+**Step 4: Practical Example**
+
+Build this live with the class:
+```python
+def save_shopping_list(items, filename="shopping.txt"):
+    """Save shopping list to file."""
+    with open(filename, "w") as file:
+        file.write("Shopping List\n")
+        file.write("=============\n")
+        for item in items:
+            file.write(f"- {item}\n")
+
+def load_shopping_list(filename="shopping.txt"):
+    """Load shopping list from file."""
+    items = []
+    try:
+        with open(filename, "r") as file:
+            file.readline()  # Skip "Shopping List"
+            file.readline()  # Skip "============="
+            for line in file:
+                if line.strip().startswith("-"):
+                    item = line.strip()[2:]  # Remove "- "
+                    items.append(item)
+    except FileNotFoundError:
+        print("No shopping list found!")
+    return items
+
+# Test it!
+my_items = ["Milk", "Bread", "Eggs"]
+save_shopping_list(my_items)
+loaded = load_shopping_list()
+print(f"Loaded: {loaded}")
+```
+
+### Show File Explorer Integration
+
+**Critical Demo**:
+1. Run the save function in Python
+2. **Open file explorer**
+3. **Show the file was created!**
+4. **Open in text editor**
+5. Show the formatted content
+
+This makes files tangible!
+
+## AI Partnership (7 minutes)
+
+### Smart File Operation Prompts
+
+**Evolution Example**:
+
+**Too Vague**: "save data to file"
+→ AI suggests JSON, databases, complex formats
+
+**Better**: "save a Python list to a text file"
+→ AI might still suggest csv module
+
+**Best**: "Save Python list to text file using ONLY:
+- open() with 'w' mode
+- file.write()
+- with statement
+- for loops
+No imports, no csv, no json"
+
+**Result**: Simple, appropriate code!
+
+### Common AI Overcomplications
+
+**Watch for**:
+```python
+# AI suggests - too advanced!
+import os
+import pathlib
+import json
+import csv
+```
+
+**Keep Simple**:
+```python
+# This is what we want
+with open("data.txt", "w") as file:
+    file.write("simple data\n")
+```
+
+### Good Debugging Prompts
+
+- "Why do I get FileNotFoundError?"
+- "What's the difference between 'w' and 'a' mode?"
+- "How do I save a dictionary without json?"
+- "My file is empty after writing - why?"
+
+## Building on Previous Weeks (3 minutes)
+
+### Integration Points
+
+Files complete the toolkit:
+- **Lists** → Save to files, load from files
+- **Dictionaries** → Persistent data structures
+- **Functions** → Organize file operations
+- **Loops** → Process file contents
+- **Strings** → Format file data
+
+### Real Applications Unlocked
+
+With files, students can now build:
+- Contact books that remember
+- Todo lists that persist
+- Games that save progress
+- Programs with settings
+- Data analysis tools
+
+---
+
+# Common Student Difficulties
+
+## 1. File Path Confusion
+
+**Problem**: Students struggle with file locations
+
+**Symptoms**:
+- "My file disappeared!"
+- "It worked yesterday, now FileNotFoundError"
+- Confusion about relative vs absolute paths
+
+**Solution Strategy**:
+```python
+# Start with same directory
+with open("data.txt", "w") as file:  # Same folder as .py file
+    file.write("Hello")
+
+# Show in file explorer immediately
+# Avoid complex paths initially
+```
+
+**Teaching Tips**:
+- Use only filenames at first
+- Show file explorer after every save
+- Draw directory diagrams
+- Avoid path complexity until Week 8
+
+## 2. Mode Selection Paralysis
+
+**Problem**: Students freeze choosing file modes
+
+**Common Confusion**:
+- When to use 'r' vs 'w' vs 'a'
+- Fear of overwriting data
+- Not understanding mode consequences
+
+**Solution Strategy**:
+```python
+# Create mode decision tree
+# Reading existing file? → "r"
+# Creating new file? → "w"
+# Adding to existing file? → "a"
+```
+
+**Teaching Tips**:
+- Make a mode cheat sheet
+- Show consequences of wrong mode
+- Practice mode selection exercises
+- Emphasize 'w' overwrites everything
+
+## 3. FileNotFoundError Anxiety
+
+**Problem**: Students panic when files don't exist
+
+**Why It Happens**:
+- New concept of "file doesn't exist"
+- Don't understand read mode requirements
+- Fear they "broke" something
+
+**Solution Strategy**:
+```python
+# Show the error is normal and fixable
+try:
+    with open("missing.txt", "r") as file:
+        content = file.read()
+except FileNotFoundError:
+    print("File not found - that's okay!")
+    content = ""
+```
+
+**Teaching Tips**:
+- Normalize the error
+- Show it's not destructive
+- Teach checking patterns
+- Make error handling friendly
+
+## 4. Forgetting to Close Files
+
+**Problem**: Files left open, causing issues
+
+**Symptoms**:
+- "Permission denied" errors
+- Files locked in other programs
+- Data not saved properly
+
+**Solution Strategy**:
+```python
+# Always demonstrate the with statement
+with open("file.txt", "w") as file:
+    file.write("data")
+# File automatically closed here!
+
+# Show what happens without it (briefly)
+file = open("file.txt", "w")
+file.write("data")
+# Forgot file.close()! Bad things happen...
+```
+
+**Teaching Tips**:
+- Make 'with' statement mandatory
+- Show consequences of forgetting
+- Practice pattern until automatic
+- Connect to real-world analogies (closing doors)
+
+## 5. Newline Character Confusion
+
+**Problem**: Unexpected line breaks or missing breaks
+
+**Symptoms**:
+- Everything on one line
+- Extra blank lines
+- Weird formatting when reading
+
+**Solution Strategy**:
+```python
+# Show explicit newlines
+file.write("Line 1\n")
+file.write("Line 2\n")
+
+# Show what happens without \n
+file.write("Line 1")
+file.write("Line 2")  # Same line!
+
+# Show strip() for reading
+for line in file:
+    print(line.strip())  # Removes \n
+```
+
+**Teaching Tips**:
+- Explain \n character explicitly
+- Show in text editor
+- Practice formatting exercises
+- Connect to pressing Enter
+
+---
+
+# Live Coding Strategies
+
+## Progressive File Building
+
+### Start Ultra-Simple
+```python
+# Step 1: Just write one line
+with open("test.txt", "w") as file:
+    file.write("Hello, World!")
+
+# Show in file explorer!
+```
+
+### Add Complexity Gradually
+```python
+# Step 2: Multiple lines
+with open("test.txt", "w") as file:
+    file.write("Line 1\n")
+    file.write("Line 2\n")
+    file.write("Line 3\n")
+
+# Step 3: Write from a list
+items = ["Apple", "Banana", "Cherry"]
+with open("fruits.txt", "w") as file:
+    for item in items:
+        file.write(item + "\n")
+
+# Step 4: Read it back
+with open("fruits.txt", "r") as file:
+    for line in file:
+        print(line.strip())
+```
+
+### Build Real Applications
+```python
+# Step 5: Save/load contact book
+def save_contacts(contacts):
+    with open("contacts.txt", "w") as file:
+        for name, phone in contacts.items():
+            file.write(f"{name}|{phone}\n")
+
+def load_contacts():
+    contacts = {}
+    try:
+        with open("contacts.txt", "r") as file:
+            for line in file:
+                name, phone = line.strip().split("|")
+                contacts[name] = phone
+    except FileNotFoundError:
+        print("No contacts found")
+    return contacts
+```
+
+## Common Errors to Demonstrate
+
+**Plan these "mistakes"**:
+
+1. **Wrong Mode Error**:
+```python
+with open("data.txt", "r") as file:
+    file.write("Hello")  # Error! Can't write in read mode
+```
+
+2. **File Not Found**:
+```python
+with open("nonexistent.txt", "r") as file:
+    content = file.read()  # FileNotFoundError!
+```
+
+3. **Overwriting Data**:
+```python
+# Create file with data
+with open("important.txt", "w") as file:
+    file.write("Important data!")
+
+# Accidentally overwrite
+with open("important.txt", "w") as file:
+    file.write("Oops!")  # Original data gone!
+```
+
+4. **Forgot Newlines**:
+```python
+with open("names.txt", "w") as file:
+    file.write("Alice")
+    file.write("Bob")
+    file.write("Carol")
+# All on one line: "AliceBobCarol"
+```
+
+---
+
+# Lab Support Strategies
+
+## Hour 1: Building Confidence
+
+**Focus Areas**:
+- Get first file working
+- See files in explorer
+- Practice different modes
+- Handle FileNotFoundError gracefully
+
+**Common Issues**:
+- Path problems - stay in same directory
+- Mode confusion - use decision tree
+- Newline issues - show explicitly
+
+**Interventions**:
+- Walk around frequently
+- Check file explorer with students
+- Celebrate first successful saves
+- Pair programming for struggling students
+
+## Hour 2: Real Applications
+
+**Focus Areas**:
+- Contact book upgrade
+- Todo list creation
+- Data processing
+- Backup strategies
+
+**Common Issues**:
+- Format design confusion
+- Parsing difficulties
+- Error handling gaps
+
+**Interventions**:
+- Provide format templates
+- Help debug parsing
+- Show error handling patterns
+- Encourage experimentation
+
+## Debugging Help Patterns
+
+### File Explorer Verification
+1. Student: "My file isn't saving!"
+2. Teacher: "Let's check file explorer together"
+3. Navigate to file location
+4. Verify file exists and has content
+5. Identify actual problem
+
+### Error Message Translation
+1. Student: "I get FileNotFoundError"
+2. Teacher: "That means the file doesn't exist yet"
+3. Explain read mode requires existing file
+4. Show how to create it first
+5. Practice checking file existence
+
+### Mode Decision Help
+1. Student: "Which mode should I use?"
+2. Teacher: "What do you want to do?"
+3. Read existing data? → "r"
+4. Replace all data? → "w"
+5. Add to existing data? → "a"
+
+---
+
+# Assessment Guidelines
+
+## During Class Checks
+
+**Quick Questions**:
+- "What mode to read a file?"
+- "Why use 'with' statement?"
+- "What happens if file doesn't exist?"
+- "How do you add a new line?"
+
+**Practical Checks**:
+- Watch them open files correctly
+- Verify they check file explorer
+- Observe error handling
+- Test their format design
+
+## Project Evaluation Focus
+
+**Journal Application Key Points**:
+- File format design
+- Save/load functionality
+- Error handling
+- User interface
+- Data persistence
+
+**Common Issues to Watch**:
+- No error handling
+- Poor file format
+- Overwrites without backup
+- Can't handle empty files
+
+## Red Flags
+
+**Immediate Intervention Needed**:
+- Not using 'with' statement
+- Complex path manipulation
+- No error handling
+- Files not actually saving
+
+**Advanced Help Needed**:
+- Sophisticated format design
+- Complex parsing logic
+- Advanced error recovery
+- Performance optimization
+
+---
+
+# Platform-Specific Considerations
+
+## Google Colab Specifics
+
+**Special Challenges**:
+- Temporary file system
+- Files disappear on disconnect
+- No persistent storage by default
+
+**Teaching Adaptations**:
+```python
+# Show download/upload patterns
+from google.colab import files
+
+# Save and download
+with open("my_data.txt", "w") as f:
+    f.write("Important data")
+files.download("my_data.txt")
+
+# Upload for processing
+uploaded = files.upload()
+```
+
+**Key Points**:
+- Explain temporary nature
+- Show download for persistence
+- Mention Google Drive integration
+- Prepare for Week 8 solutions
+
+## Cross-Platform Issues
+
+**Path Separators**:
+- Avoid initially: use only filenames
+- Later: mention / vs \ difference
+- Focus on portable approaches
+
+**Line Endings**:
+- Don't overcomplicate initially
+- Mention if students notice
+- Python handles automatically
+
+---
+
+# Week-Specific Teaching Tips
+
+## Make Files Tangible
+
+1. **Always Show File Explorer**: After every save operation
+2. **Open in Text Editor**: Show the actual file contents
+3. **Physical Analogies**: Filing cabinets, notebooks, etc.
+4. **Size Awareness**: Show file sizes, compare to documents
+
+## Emphasize Persistence
+
+1. **Before/After Demos**: Show data surviving program restart
+2. **Real Examples**: Compare to phone apps, word processors
+3. **Practical Benefits**: "Your contact book now remembers!"
+4. **Future Possibilities**: Preview what's now possible
+
+## Error Normalization
+
+1. **Expected Behavior**: "Files don't always exist - that's normal"
+2. **Recovery Patterns**: Show how to handle missing files
+3. **Safe Practices**: Always check, always backup
+4. **Debugging Skills**: Read error messages carefully
+
+## Format Design Thinking
+
+1. **Human Readable**: Can you understand it in text editor?
+2. **Simple Parsing**: Easy to split and reconstruct
+3. **Extensible**: Can you add new fields later?
+4. **Robust**: Handles missing or corrupted data
+
+---
+
+# Differentiation Strategies
+
+## For Struggling Students
+
+**Simplifications**:
+- Provide file format templates
+- Start with single-file applications
+- Use pair programming
+- Focus on basic save/load only
+
+**Support Materials**:
+- File mode cheat sheet
+- Error handling templates
+- Step-by-step guides
+- Visual file system diagrams
+
+## For Advanced Students
+
+**Extensions**:
+- Multiple file handling
+- Backup rotation systems
+- File format versioning
+- Data validation
+
+**Challenges**:
+- Design file formats for complex data
+- Handle corrupted files
+- Optimize for large files
+- Create file utilities
+
+## For Different Learning Styles
+
+**Visual Learners**:
+- File system diagrams
+- Flowcharts for file operations
+- Before/after file explorer screenshots
+
+**Kinesthetic Learners**:
+- Physical file folder analogies
+- Hands-on file creation
+- File manipulation exercises
+
+**Auditory Learners**:
+- Verbal walkthrough of operations
+- Discussion of design decisions
+- Pair programming conversations
+
+---
+
+# Time Management
+
+## Pacing Guidelines
+
+- **0:00-0:10**: Hook with lost data
+- **0:10-0:30**: File concepts and value
+- **0:30-0:50**: Hands-on file operations
+- **0:50-0:57**: AI partnership
+- **0:57-1:00**: Lab preview
+
+## If Running Behind
+
+**Skip/Reduce**:
+- Complex file format examples
+- Advanced error handling
+- Multiple reading methods demo
+- Detailed AI section
+
+**Keep Essential**:
+- Basic file operations
+- 'with' statement
+- File modes
+- One complete save/load example
+
+## If Running Ahead
+
+**Add Value**:
+- More format design examples
+- Backup strategies
+- File processing patterns
+- Preview of CSV/JSON
+
+## Critical Checkpoints
+
+- **0:20**: Should have shown basic file write
+- **0:35**: Should have demonstrated save/load
+- **0:45**: Should have covered error handling
+- **0:55**: Wrapping up for lab
+
+---
+
+# Common Questions and Responses
+
+## "Why not just use variables?"
+
+**Response**: "Variables disappear when program ends. Files survive. Would you want your contacts to disappear every time you close your phone?"
+
+## "What if I accidentally delete my file?"
+
+**Response**: "Great question! That's why we'll learn backup strategies. Always keep copies of important data."
+
+## "Why do we need different modes?"
+
+**Response**: "Safety! Read mode prevents accidental overwriting. Write mode makes your intention clear. It's like having different tools for different jobs."
+
+## "Can I edit the file outside Python?"
+
+**Response**: "Absolutely! That's the beauty of text files - any text editor can open them. Try it!"
+
+## "What about really big files?"
+
+**Response**: "Great thinking! We'll learn techniques for that later. For now, we focus on files you can open in text editor."
+
+---
+
+# Success Metrics
+
+## By End of Week
+
+**All Students Should**:
+- Open and close files properly
+- Use 'with' statement correctly
+- Choose appropriate file modes
+- Handle FileNotFoundError
+
+**Most Students Should**:
+- Design simple file formats
+- Save and load data structures
+- Create persistent applications
+- Check files in file explorer
+
+**Some Students Will**:
+- Handle complex data formats
+- Implement backup systems
+- Design robust error handling
+- Optimize file operations
+
+## Red Flags for Extra Help
+
+- Still forgetting 'with' statement
+- Confusion about file locations
+- Cannot handle missing files
+- Files don't actually save
+
+Remember: Files transform programs from toys to tools!

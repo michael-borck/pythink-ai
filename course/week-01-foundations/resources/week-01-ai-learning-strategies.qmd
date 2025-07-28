@@ -1,0 +1,281 @@
+---
+title: "Week 1: AI Learning Strategies"
+subtitle: "A Student Guide to Strategic AI Use"
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Using AI as Your Learning Partner
+
+## The New Reality
+
+AI can write code. That's a fact. But here's what makes you valuable:
+- You understand the problem
+- You verify the solution
+- You can modify and adapt
+- You know when something's wrong
+
+This guide shows you how to use AI strategically to learn programming, not just to get code.
+
+## Prompt Evolution: Your Core Skill
+
+### Starting Vague (And Why That's OK)
+
+**First Attempts Often Look Like**:
+- "temperature converter"
+- "calculator program"  
+- "make a greeting"
+
+**What You'll Get**: Complex solutions with features you don't understand
+
+**Why This Helps**: Shows you what to avoid!
+
+### Adding Requirements
+
+**Better Prompts Include**:
+- What the program should do
+- How it should interact with users
+- What features you need
+
+**Example**:
+> "Temperature converter that asks user for a temperature and whether it's C or F, then converts to the other scale"
+
+### Constraining Complexity
+
+**Magic Words for Simplicity**:
+> "Using ONLY these features:
+> - print() for output
+> - input() for user input
+> - float() and int() for conversion
+> - if/else for decisions
+> - Basic math operators
+> No functions, no loops, no error handling, no imports"
+
+### Learning-Focused Prompts
+
+**After Getting Code**:
+> "Explain each line of this code"
+> "Why do we need float() here?"
+> "What happens if the user enters 'abc'?"
+> "Where would I add [new feature]?"
+
+## Pattern Recognition
+
+### The Universal Pattern
+
+Every program follows: **Input → Process → Output**
+
+When you see AI's code, identify:
+- Where is input happening?
+- What processing occurs?
+- Where is output shown?
+
+### Common Structures
+
+**Variables** (Storage):
+```python
+name = "Alice"          # Storing text
+temperature = 98.6      # Storing a number
+is_ready = True        # Storing yes/no
+```
+
+**Decisions** (Branching):
+```python
+if condition:
+    # Do this
+else:
+    # Do that
+```
+
+**Input/Output** (Communication):
+```python
+data = input("Prompt: ")    # Getting data IN
+print("Result:", result)    # Sending data OUT
+```
+
+## Verification Strategies
+
+### Always Test with Known Values
+
+**Temperature Converter**:
+- 0°C should = 32°F
+- 100°C should = 212°F
+- -40°C should = -40°F
+
+**Calculator**:
+- 2 + 2 should = 4
+- 10 - 5 should = 5
+- 3 × 4 should = 12
+
+### Check the Logic
+
+Ask yourself:
+- Does this make sense?
+- What could go wrong?
+- Are there edge cases?
+
+### Use AI to Verify
+
+**Good Verification Prompts**:
+> "Is this formula correct for converting Celsius to Fahrenheit?"
+> "What happens in this code if the user enters a negative number?"
+> "Can you trace through this code with input '32' and 'F'?"
+
+## Common AI Pitfalls
+
+### Overcomplication
+
+**AI Loves To Add**:
+- Error handling (try/except)
+- Functions when not needed
+- Loops for single operations
+- Classes for simple programs
+- Type hints and decorators
+
+**Your Response**: "Can you simplify this using only basic concepts?"
+
+### Wrong Assumptions
+
+**AI Might Assume You Know**:
+- How functions work
+- What imports do
+- Advanced syntax
+- Object-oriented concepts
+
+**Your Response**: "I haven't learned about [concept] yet. Show me without it."
+
+### Subtle Errors
+
+**AI Sometimes**:
+- Uses wrong formulas
+- Mixes up variable names
+- Creates logic errors
+- Makes incorrect assumptions
+
+**Your Response**: Always verify with test cases!
+
+## Building Mental Models
+
+### Before Coding, Draw
+
+```
+Temperature Converter:
+User Input "32" → Store in temp_value
+User Input "F" → Store in scale
+Decision: Is scale "F"?
+  Yes → Calculate C = (F-32)×5/9
+  No → Calculate F = C×9/5+32
+Show result
+```
+
+### Trace Execution
+
+Follow the program step by step:
+1. What happens first?
+2. What values do variables hold?
+3. Which path does the decision take?
+4. What gets displayed?
+
+### Predict Before Running
+
+Before running code:
+- What should happen?
+- What will the output be?
+- Where might errors occur?
+
+## Your AI Toolkit
+
+### Google Colab's Gemini
+- Built into Colab
+- Click the sparkle ✨ icon
+- Can directly insert code
+- Great for quick questions
+
+### ChatGPT/Claude
+- Better for detailed explanations
+- Good for learning concepts
+- Can have longer conversations
+- May give more complex code
+
+### Choosing What to Ask Where
+- **Quick syntax**: Gemini in Colab
+- **Concept explanation**: ChatGPT/Claude
+- **Debugging help**: Either works
+- **Code review**: ChatGPT/Claude
+
+## This Week's Power Prompts
+
+### For Understanding
+1. "Explain [concept] like I'm a complete beginner"
+2. "What does this error message mean in simple terms?"
+3. "Show me the simplest possible example of [concept]"
+4. "Why do we need [feature] in Python?"
+
+### For Debugging
+1. "This code gives [error]. What does that mean?"
+2. "Trace through this code with input [value]"
+3. "What's the difference between what I wrote and what should happen?"
+4. "Where in this code would [problem] occur?"
+
+### For Learning
+1. "What pattern does this code follow?"
+2. "How would I modify this to [do something]?"
+3. "What concepts do I need to understand to build [program]?"
+4. "Break down this problem into smaller steps"
+
+## Assignment Strategy
+
+### For the Temperature Converter Project
+
+1. **Start Broad**: "temperature converter"
+2. **Refine**: Add your requirements
+3. **Constrain**: Limit to concepts you know
+4. **Understand**: Ask for explanations
+5. **Verify**: Test with known values
+6. **Document**: Record your journey
+
+### Documentation Template
+
+```markdown
+## Attempt 1
+**What I Asked**: 
+**What I Got**: 
+**Problems**: 
+
+## Attempt 2  
+**What I Asked**: 
+**What I Got**: 
+**Improvements**: 
+
+## Final Version
+**What I Asked**: 
+**Result**: 
+**Why This Works**: 
+
+## What I Learned
+- Key insight 1
+- Key insight 2
+- Key insight 3
+```
+
+## Remember
+
+1. **AI is powerful but needs direction** - You're the architect
+2. **Understanding > Working Code** - A broken program you understand beats working code you don't
+3. **Verify everything** - AI makes mistakes too
+4. **Document your learning** - The journey matters more than the destination
+5. **Ask why, not just how** - Concepts last longer than syntax
+
+## Your Learning Journey
+
+This week: Build foundations and good habits
+Next week: Add complexity gradually
+By Week 12: Design systems AI can implement
+
+You're not learning to code without AI - you're learning to think computationally and guide AI effectively!

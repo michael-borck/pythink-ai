@@ -1,0 +1,334 @@
+---
+title: "Week 4 Assessment: Data Processing"
+subtitle: "Parsing and Transforming Text Data"
+format:
+  html:
+    toc: true
+    code-fold: false
+  pdf:
+    toc: true
+---
+
+# Data Processing Assessment
+
+**Name:** _________________________ **Date:** _____________
+
+**Instructions:** Complete the data processing tasks below. Focus on clean, working solutions using string operations.
+
+---
+
+## Problem 1: Student Records Parser (25 points)
+
+Parse this student data and create a formatted report:
+
+```python
+student_data = """Name,Age,Grade,Major
+Alice Johnson,20,A,Computer Science
+Bob Smith,19,B+,Mathematics  
+Carol Davis,21,A-,Physics
+David Brown,20,B,Engineering"""
+
+# Your task: Create a formatted report
+# 1. Split into lines
+lines = student_data.strip().split("\n")
+
+# 2. Skip header line
+header = lines[0]
+data_lines = lines[___:___]
+
+# 3. Process each student
+print("Student Report")
+print("=" * 40)
+
+for line in data_lines:
+    # Split the line
+    parts = line.split(___)
+    
+    # Extract fields (clean each one!)
+    name = parts[0]._____()
+    age = parts[1]._____()
+    grade = parts[2]._____()
+    major = parts[3]._____()
+    
+    # Create formatted output
+    print(f"{name} ({age} years)")
+    print(f"  Grade: {grade} in {major}")
+    print()
+```
+
+**Expected Output Format:**
+```
+Student Report
+========================================
+Alice Johnson (20 years)
+  Grade: A in Computer Science
+
+Bob Smith (19 years)
+  Grade: B+ in Mathematics
+...
+```
+
+---
+
+## Problem 2: Email List Cleaner (25 points)
+
+Clean and validate a list of email addresses:
+
+```python
+email_list = """john.doe@gmail.com; ALICE@YAHOO.COM ;bob@company.net;  
+invalid.email; sarah@domain.co.uk ; @missing.com; joe@"""
+
+# Your task: Clean and validate emails
+# 1. Split by semicolon
+raw_emails = email_list.split(_____)
+
+# 2. Clean and validate each
+valid_emails = []
+invalid_emails = []
+
+for email in raw_emails:
+    # Clean whitespace and lowercase
+    clean = email._____._____ 
+    
+    # Skip empty
+    if not clean:
+        continue
+    
+    # Basic validation
+    if "@" not in clean:
+        invalid_emails.append(clean)
+    elif clean.count("@") != 1:
+        invalid_emails.append(clean)
+    elif clean.startswith("@") or clean.endswith("@"):
+        invalid_emails.append(clean)
+    elif "." not in clean.split("@")[1]:  # No dot in domain
+        invalid_emails.append(clean)
+    else:
+        valid_emails.append(clean)
+
+# 3. Display results
+print(f"Valid emails ({len(valid_emails)}):")
+for email in valid_emails:
+    print(f"  - {email}")
+
+print(f"\nInvalid emails ({len(invalid_emails)}):")
+for email in invalid_emails:
+    print(f"  - {email}")
+```
+
+---
+
+## Problem 3: Log File Parser (25 points)
+
+Extract information from log entries:
+
+```python
+log_data = """[2024-01-15 10:30:45] INFO: User login successful - user123
+[2024-01-15 10:31:02] ERROR: Database connection failed - timeout
+[2024-01-15 10:31:45] WARNING: Low memory - 85% used
+[2024-01-15 10:32:10] INFO: File uploaded - document.pdf
+[2024-01-15 10:32:55] ERROR: Invalid password attempt - admin"""
+
+# Your task: Parse and categorize log entries
+# 1. Split into entries
+entries = log_data.strip().split("\n")
+
+# 2. Initialize counters
+info_count = 0
+error_count = 0
+warning_count = 0
+errors = []
+
+# 3. Process each entry
+for entry in entries:
+    # Extract timestamp (inside [...])
+    start = entry.find("[")
+    end = entry.find("]")
+    timestamp = entry[___:___]
+    
+    # Extract log level
+    rest = entry[___:]  # After timestamp
+    
+    if "INFO:" in rest:
+        info_count = info_count + 1
+    elif "ERROR:" in rest:
+        error_count = error_count + 1
+        # Extract error message
+        msg_start = rest.find("ERROR: ") + 7
+        error_msg = rest[___:]
+        errors.append((timestamp, error_msg))
+    elif "WARNING:" in rest:
+        warning_count = warning_count + 1
+
+# 4. Display summary
+print("Log Summary")
+print("-" * 30)
+print(f"INFO entries: {info_count}")
+print(f"ERROR entries: {error_count}")
+print(f"WARNING entries: {warning_count}")
+print("\nErrors found:")
+for time, msg in errors:
+    print(f"  {time}: {msg}")
+```
+
+---
+
+## Problem 4: Text Statistics (25 points)
+
+Analyze a paragraph of text:
+
+```python
+text = """Python is an amazing programming language. It is easy to learn,
+powerful to use, and has a vast ecosystem. Python can be used for web
+development, data science, automation, and more. Many beginners choose
+Python as their first language because of its simple syntax."""
+
+# Your task: Calculate various statistics
+# 1. Clean and prepare text
+clean_text = text.replace("\n", " ")
+
+# 2. Word analysis
+words = clean_text.split()
+word_count = len(words)
+
+# 3. Find unique words (case-insensitive)
+unique_words = []
+for word in words:
+    # Remove punctuation
+    clean_word = word.strip(".,!?").lower()
+    if clean_word not in unique_words:
+        unique_words.append(clean_word)
+
+unique_count = len(unique_words)
+
+# 4. Find longest and shortest words
+longest = ""
+shortest = words[0] if words else ""
+
+for word in words:
+    clean_word = word.strip(".,!?")
+    if len(clean_word) > len(longest):
+        longest = clean_word
+    if len(clean_word) < len(shortest) and clean_word:
+        shortest = clean_word
+
+# 5. Count specific words
+python_count = 0
+for word in words:
+    if word.strip(".,!?").lower() == "python":
+        python_count = python_count + 1
+
+# 6. Average word length
+total_length = 0
+for word in words:
+    clean_word = word.strip(".,!?")
+    total_length = total_length + len(clean_word)
+
+avg_length = total_length / word_count if word_count > 0 else 0
+
+# Display results
+print("Text Analysis Results")
+print("=" * 30)
+print(f"Total words: {word_count}")
+print(f"Unique words: {unique_count}")
+print(f"Longest word: '{longest}' ({len(longest)} chars)")
+print(f"Shortest word: '{shortest}' ({len(shortest)} chars)")
+print(f"'Python' appears: {python_count} times")
+print(f"Average word length: {avg_length:.1f} characters")
+```
+
+---
+
+## Bonus Challenge: URL Parser (10 points)
+
+Parse components from URLs without using advanced libraries:
+
+```python
+urls = [
+    "https://www.example.com/path/to/page",
+    "http://subdomain.site.org:8080/api/v1",
+    "ftp://files.server.net/downloads/file.zip"
+]
+
+for url in urls:
+    print(f"\nParsing: {url}")
+    
+    # Extract protocol
+    protocol_end = url.find("://")
+    protocol = url[___:___] if protocol_end != -1 else "unknown"
+    
+    # Extract domain (tricky!)
+    domain_start = protocol_end + 3 if protocol_end != -1 else 0
+    
+    # Find where domain ends (/, :, or end of string)
+    domain_end = len(url)
+    for char in ["/", ":"]:
+        pos = url.find(char, domain_start)
+        if pos != -1 and pos < domain_end:
+            domain_end = pos
+    
+    domain = url[___:___]
+    
+    # Extract path (if exists)
+    path_start = url.find("/", domain_start + len(domain))
+    path = url[___:] if path_start != -1 else "/"
+    
+    print(f"  Protocol: {protocol}")
+    print(f"  Domain: {domain}")
+    print(f"  Path: {path}")
+```
+
+---
+
+## Grading Rubric
+
+| Problem | Points | Your Score |
+|---------|---------|------------|
+| Problem 1: Student Parser | 25 |   |
+| Problem 2: Email Cleaner | 25 |   |
+| Problem 3: Log Parser | 25 |   |
+| Problem 4: Text Stats | 25 |   |
+| Bonus: URL Parser | 10 |   |
+| **Total** | **100** (+10) |   |
+
+**Grade:** _______
+
+---
+
+## Key Concepts to Remember
+
+1. **Always clean input**: strip(), lower() as needed
+2. **Check for empty strings**: before processing
+3. **Handle edge cases**: empty data, missing delimiters
+4. **Build incrementally**: test each step
+5. **Use descriptive variables**: makes code readable
+
+---
+
+## Answer Key (For Instructor Use)
+
+### Problem 1 Key Points:
+- Correct splitting by newline and comma
+- Proper indexing [1:] to skip header
+- Clean each field with strip()
+- Format output clearly
+
+### Problem 2 Key Points:
+- Split by semicolon
+- Handle multiple validation criteria
+- Check for @ symbol presence and position
+- Verify domain has dot
+
+### Problem 3 Key Points:
+- Extract timestamp with find() and slicing
+- Categorize by log level
+- Store errors with timestamp
+- Display summary statistics
+
+### Problem 4 Key Points:
+- Clean text and split into words
+- Remove punctuation for analysis
+- Track unique words (case-insensitive)
+- Calculate averages correctly
+
+[Complete solutions provided separately]

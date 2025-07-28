@@ -1,0 +1,522 @@
+---
+title: "Week 8 Assessment: Application Design and Integration"
+subtitle: "Complete Application Development"
+author: "AI-Integrated Programming Course"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Assessment Overview
+
+**Points:** 30 points  
+**Time Limit:** 60 minutes  
+**Type:** Design and implementation  
+
+This assessment evaluates your ability to design complete applications, integrate multiple components, and create professional user interfaces.
+
+---
+
+# Part A: Application Architecture Planning (12 points)
+
+## Scenario: Recipe Management System
+
+You need to design a recipe management application with these requirements:
+
+**Core Features:**
+- Add new recipes with ingredients and instructions
+- Search recipes by name or ingredient
+- View all recipes in organized format
+- Edit existing recipes
+- Delete recipes with confirmation
+- Save/load recipe data from files
+- Generate shopping lists from selected recipes
+
+## Question 1: Data Structure Design (4 points)
+
+Design the data structures to store recipe information.
+
+**1. What data structure would you use to store all recipes?** (1 point)
+□ List  
+□ Dictionary  
+□ String  
+□ Tuple  
+
+**2. What information should each recipe contain?** (2 points)
+Design a sample recipe entry:
+
+```python
+sample_recipe = {
+    # Fill in the structure for one recipe
+    
+    
+    
+    
+}
+```
+
+**3. How would you store ingredients with quantities?** (1 point)
+Show the structure for ingredients:
+
+```python
+ingredients_structure = {
+    # Your design here
+    
+    
+}
+```
+
+## Question 2: Function Architecture (4 points)
+
+List the main functions your application would need, organized by purpose:
+
+**Data Management Functions:** (1 point)
+1. _________________________
+2. _________________________
+
+**Recipe Operation Functions:** (1 point)
+1. _________________________
+2. _________________________
+3. _________________________
+
+**User Interface Functions:** (1 point)
+1. _________________________
+2. _________________________
+
+**Main Coordination Function:** (1 point)
+1. _________________________
+
+## Question 3: User Interface Design (4 points)
+
+**1. Design the main menu structure:** (2 points)
+
+```
+=== RECIPE MANAGER ===
+[Your menu design here]
+
+
+
+
+Your choice: 
+```
+
+**2. Design the "Add Recipe" user interaction flow:** (2 points)
+Write the sequence of prompts and inputs:
+
+```
+Step 1: ________________________
+Step 2: ________________________
+Step 3: ________________________
+Step 4: ________________________
+```
+
+---
+
+# Part B: Implementation (12 points)
+
+## Question 4: Core Function Implementation (8 points)
+
+Implement these key functions for the recipe system:
+
+### Function 1: Add Recipe (4 points)
+```python
+def add_recipe(recipes):
+    """
+    Add a new recipe to the collection.
+    
+    Args:
+        recipes: Dictionary storing all recipes
+    
+    Returns:
+        Boolean indicating success
+    """
+    # Your implementation here
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+```
+
+### Function 2: Search Recipes (4 points)
+```python
+def search_recipes(recipes, search_term):
+    """
+    Search for recipes containing the search term.
+    
+    Args:
+        recipes: Dictionary of all recipes
+        search_term: String to search for
+    
+    Returns:
+        List of matching recipe names
+    """
+    # Your implementation here
+    
+    
+    
+    
+    
+    
+    
+    
+    
+```
+
+## Question 5: Error Handling Implementation (4 points)
+
+### Safe File Operations
+```python
+def load_recipes(filename="recipes.txt"):
+    """
+    Load recipes from file with error handling.
+    
+    Args:
+        filename: Name of file to load from
+    
+    Returns:
+        Dictionary of recipes or empty dict if error
+    """
+    # Your implementation here
+    
+    
+    
+    
+    
+    
+    
+    
+
+def save_recipes(recipes, filename="recipes.txt"):
+    """
+    Save recipes to file with error handling.
+    
+    Args:
+        recipes: Dictionary of recipes to save
+        filename: Name of file to save to
+    
+    Returns:
+        Boolean indicating success
+    """
+    # Your implementation here
+    
+    
+    
+    
+    
+    
+    
+    
+```
+
+---
+
+# Part C: Integration and Testing (6 points)
+
+## Question 6: Main Application Flow (3 points)
+
+Write the main application loop that coordinates all components:
+
+```python
+def main():
+    """
+    Main application - coordinates all recipe management features.
+    """
+    print("Welcome to Recipe Manager!")
+    
+    # Load existing recipes
+    
+    
+    # Main application loop
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    # Save and exit
+    
+
+if __name__ == "__main__":
+    main()
+```
+
+## Question 7: Testing Strategy (3 points)
+
+Write test functions for your recipe system:
+
+### Test 1: Recipe Addition (1 point)
+```python
+def test_add_recipe():
+    """Test recipe addition function."""
+    test_recipes = {}
+    
+    # Test normal case
+    
+    # Test edge case
+    
+    print("Recipe addition tests passed!")
+
+test_add_recipe()
+```
+
+### Test 2: Recipe Search (1 point)
+```python
+def test_search_recipes():
+    """Test recipe search function."""
+    test_recipes = {
+        "Pasta": {"ingredients": ["pasta", "tomato", "cheese"]},
+        "Pizza": {"ingredients": ["dough", "tomato", "cheese"]}
+    }
+    
+    # Test normal search
+    
+    # Test no matches
+    
+    print("Recipe search tests passed!")
+
+test_search_recipes()
+```
+
+### Test 3: Integration Test (1 point)
+```python
+def test_complete_workflow():
+    """Test complete add-search-save workflow."""
+    # Test the complete process
+    
+    
+    
+    
+    print("Complete workflow test passed!")
+
+test_complete_workflow()
+```
+
+---
+
+# Bonus Section: Advanced Features (3 bonus points)
+
+## Question 8: Feature Enhancement (3 points)
+
+Choose ONE advanced feature to design and partially implement:
+
+**Option A: Shopping List Generator**
+```python
+def generate_shopping_list(recipes, recipe_names):
+    """Generate shopping list from selected recipes."""
+    # Your implementation here
+    
+    
+    
+```
+
+**Option B: Recipe Rating System**
+```python
+def rate_recipe(recipes, recipe_name, rating):
+    """Add rating to recipe (1-5 stars)."""
+    # Your implementation here
+    
+    
+    
+```
+
+**Option C: Recipe Categories**
+```python
+def organize_by_category(recipes):
+    """Organize recipes by category (breakfast, lunch, etc.)."""
+    # Your implementation here
+    
+    
+    
+```
+
+**Which option did you choose and why?**
+_________________________________________________
+_________________________________________________
+
+---
+
+# Grading Rubric
+
+## Part A: Architecture Planning (12 points)
+
+### Question 1: Data Structure Design (4 points)
+- Correct data structure choice: 1 point
+- Complete recipe structure: 2 points
+- Logical ingredients design: 1 point
+
+### Question 2: Function Architecture (4 points)
+- Data management functions: 1 point
+- Recipe operation functions: 1 point
+- User interface functions: 1 point
+- Main coordination: 1 point
+
+### Question 3: User Interface Design (4 points)
+- Clear menu structure: 2 points
+- Logical interaction flow: 2 points
+
+## Part B: Implementation (12 points)
+
+### Question 4: Core Functions (8 points)
+- Add recipe function: 4 points
+  - Input collection: 1 point
+  - Data validation: 1 point
+  - Storage logic: 1 point
+  - Error handling: 1 point
+- Search recipe function: 4 points
+  - Search logic: 2 points
+  - Result handling: 1 point
+  - Edge cases: 1 point
+
+### Question 5: Error Handling (4 points)
+- Load function: 2 points
+- Save function: 2 points
+
+## Part C: Integration (6 points)
+
+### Question 6: Main Application (3 points)
+- Proper initialization: 1 point
+- Menu loop structure: 1 point
+- Clean shutdown: 1 point
+
+### Question 7: Testing (3 points)
+- Each test function: 1 point each
+
+## Bonus (3 points)
+- Implementation quality: 2 points
+- Justification: 1 point
+
+---
+
+# Answer Key (For Instructors)
+
+## Part A Sample Answers
+
+### Question 1: Data Structure Design
+```python
+# Recommended structure
+recipes = {
+    "recipe_name": {
+        "ingredients": [
+            {"name": "flour", "amount": "2 cups"},
+            {"name": "eggs", "amount": "3 large"}
+        ],
+        "instructions": [
+            "Mix flour and eggs",
+            "Cook for 10 minutes"
+        ],
+        "servings": 4,
+        "prep_time": "20 minutes",
+        "category": "breakfast"
+    }
+}
+```
+
+### Question 2: Function Architecture
+**Data Management:**
+- `load_recipes()`
+- `save_recipes()`
+
+**Recipe Operations:**
+- `add_recipe()`
+- `edit_recipe()`
+- `delete_recipe()`
+- `search_recipes()`
+- `display_recipe()`
+
+**User Interface:**
+- `display_menu()`
+- `get_menu_choice()`
+- `get_recipe_input()`
+
+**Coordination:**
+- `main()`
+
+## Part B Sample Solutions
+
+### Add Recipe Function
+```python
+def add_recipe(recipes):
+    print("\n=== Add New Recipe ===")
+    
+    name = input("Recipe name: ").strip()
+    if not name:
+        print("Recipe name cannot be empty.")
+        return False
+    
+    if name in recipes:
+        print(f"Recipe '{name}' already exists.")
+        return False
+    
+    # Get ingredients
+    ingredients = []
+    while True:
+        ingredient = input("Ingredient (or 'done' to finish): ").strip()
+        if ingredient.lower() == 'done':
+            break
+        if ingredient:
+            amount = input(f"Amount of {ingredient}: ").strip()
+            ingredients.append({"name": ingredient, "amount": amount})
+    
+    # Get instructions
+    instructions = []
+    step = 1
+    while True:
+        instruction = input(f"Step {step} (or 'done' to finish): ").strip()
+        if instruction.lower() == 'done':
+            break
+        if instruction:
+            instructions.append(instruction)
+            step += 1
+    
+    servings = input("Number of servings: ").strip()
+    prep_time = input("Prep time: ").strip()
+    
+    recipes[name] = {
+        "ingredients": ingredients,
+        "instructions": instructions,
+        "servings": servings,
+        "prep_time": prep_time
+    }
+    
+    print(f"✓ Recipe '{name}' added successfully!")
+    return True
+```
+
+## Teaching Notes
+
+### Common Student Errors
+1. **Over-complicated data structures** - Students often try nested dictionaries when simple lists work
+2. **Missing validation** - Forgetting to check for empty inputs or duplicates
+3. **Poor error handling** - Not gracefully handling file operations or user input errors
+4. **Unclear function responsibilities** - Functions that try to do too many things
+
+### Assessment Focus Areas
+- **Architecture thinking** - Can students break down complex problems?
+- **Integration skills** - Can they connect multiple components?
+- **Professional practices** - Do they include error handling and testing?
+- **User experience** - Do they consider how users will interact with the system?
+
+### Extension Opportunities
+- Discuss how this could scale to web applications
+- Explore database concepts
+- Consider mobile app design patterns
+- Professional software development practices

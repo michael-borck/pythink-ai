@@ -1,0 +1,598 @@
+---
+title: "Week 5: Common Function Patterns"
+subtitle: "Essential Function Design Patterns"
+format:
+  html:
+    toc: true
+    code-fold: false
+  pdf:
+    toc: true
+---
+
+# Common Function Patterns
+
+This reference shows the most common function patterns you'll use repeatedly. Master these patterns to write clean, reusable code.
+
+---
+
+## Pattern 1: Validator Functions
+
+**Purpose**: Check if data meets criteria, return True/False
+
+### Basic Validator
+```python
+def is_valid_age(age):
+    """Check if age is in valid range.
+    
+    Args:
+        age: Age to validate
+        
+    Returns:
+        True if valid (0-120), False otherwise
+    """
+    return 0 <= age <= 120
+
+# Usage
+age = int(input("Enter age: "))
+if is_valid_age(age):
+    print("Valid age!")
+else:
+    print("Invalid age!")
+```
+
+### String Validator
+```python
+def is_valid_email(email):
+    """Check if email has basic valid format.
+    
+    Args:
+        email: Email string to validate
+        
+    Returns:
+        True if contains @ and . in right places
+    """
+    if "@" not in email:
+        return False
+    
+    parts = email.split("@")
+    if len(parts) != 2:
+        return False
+        
+    username, domain = parts
+    if not username or not domain:
+        return False
+        
+    if "." not in domain:
+        return False
+        
+    return True
+```
+
+### Password Validator
+```python
+def is_strong_password(password, min_length=8):
+    """Check if password meets strength requirements.
+    
+    Args:
+        password: Password to check
+        min_length: Minimum required length (default: 8)
+        
+    Returns:
+        True if meets all requirements
+    """
+    if len(password) < min_length:
+        return False
+        
+    has_upper = any(c.isupper() for c in password)
+    has_lower = any(c.islower() for c in password)
+    has_digit = any(c.isdigit() for c in password)
+    
+    return has_upper and has_lower and has_digit
+```
+
+---
+
+## Pattern 2: Transformer Functions
+
+**Purpose**: Take input, return transformed version
+
+### String Transformers
+```python
+def clean_input(text):
+    """Clean and standardize user input.
+    
+    Args:
+        text: Raw input text
+        
+    Returns:
+        Cleaned text (stripped, lower case)
+    """
+    return text.strip().lower()
+
+def format_name(first, last):
+    """Format name consistently.
+    
+    Args:
+        first: First name
+        last: Last name
+        
+    Returns:
+        Formatted "Last, First" string
+    """
+    return f"{last.title()}, {first.title()}"
+
+def remove_spaces(text):
+    """Remove all spaces from text.
+    
+    Args:
+        text: Input text
+        
+    Returns:
+        Text with spaces removed
+    """
+    return text.replace(" ", "")
+```
+
+### Number Transformers
+```python
+def celsius_to_fahrenheit(celsius):
+    """Convert Celsius to Fahrenheit.
+    
+    Args:
+        celsius: Temperature in Celsius
+        
+    Returns:
+        Temperature in Fahrenheit
+    """
+    return (celsius * 9/5) + 32
+
+def round_to_cents(amount):
+    """Round monetary amount to nearest cent.
+    
+    Args:
+        amount: Dollar amount
+        
+    Returns:
+        Amount rounded to 2 decimal places
+    """
+    return round(amount, 2)
+
+def percentage_to_decimal(percent):
+    """Convert percentage to decimal.
+    
+    Args:
+        percent: Percentage value (e.g., 25 for 25%)
+        
+    Returns:
+        Decimal value (e.g., 0.25)
+    """
+    return percent / 100
+```
+
+---
+
+## Pattern 3: Calculator Functions
+
+**Purpose**: Perform calculations and return results
+
+### Basic Calculations
+```python
+def calculate_area(length, width):
+    """Calculate rectangle area.
+    
+    Args:
+        length: Length of rectangle
+        width: Width of rectangle
+        
+    Returns:
+        Area (length × width)
+    """
+    return length * width
+
+def calculate_average(numbers):
+    """Calculate average of number list.
+    
+    Args:
+        numbers: List of numbers
+        
+    Returns:
+        Average value, or None if empty list
+    """
+    if not numbers:
+        return None
+    return sum(numbers) / len(numbers)
+
+def calculate_discount(price, discount_percent):
+    """Calculate price after discount.
+    
+    Args:
+        price: Original price
+        discount_percent: Discount percentage
+        
+    Returns:
+        Final price after discount
+    """
+    discount_amount = price * (discount_percent / 100)
+    return price - discount_amount
+```
+
+### Safe Calculations
+```python
+def safe_divide(dividend, divisor):
+    """Divide two numbers safely.
+    
+    Args:
+        dividend: Number to divide
+        divisor: Number to divide by
+        
+    Returns:
+        Result of division, or None if divisor is 0
+    """
+    if divisor == 0:
+        return None
+    return dividend / divisor
+
+def safe_square_root(number):
+    """Calculate square root safely.
+    
+    Args:
+        number: Number to find square root of
+        
+    Returns:
+        Square root, or None if negative
+    """
+    if number < 0:
+        return None
+    
+    # Simple approximation
+    if number == 0:
+        return 0
+        
+    guess = number / 2
+    for _ in range(10):
+        guess = (guess + number / guess) / 2
+    return guess
+```
+
+---
+
+## Pattern 4: Display Functions
+
+**Purpose**: Format and display output (no return value)
+
+### Basic Display
+```python
+def display_header(title):
+    """Display formatted header.
+    
+    Args:
+        title: Header text to display
+    """
+    print("=" * 40)
+    print(title.center(40))
+    print("=" * 40)
+
+def display_menu(options):
+    """Display numbered menu.
+    
+    Args:
+        options: List of menu options
+    """
+    print("\nMenu:")
+    for i, option in enumerate(options, 1):
+        print(f"{i}. {option}")
+
+def display_error(message):
+    """Display error message.
+    
+    Args:
+        message: Error message to show
+    """
+    print(f"ERROR: {message}")
+```
+
+### Formatted Display
+```python
+def display_money(amount, currency="$"):
+    """Display formatted currency.
+    
+    Args:
+        amount: Money amount
+        currency: Currency symbol (default: $)
+    """
+    print(f"{currency}{amount:,.2f}")
+
+def display_percentage(value, total):
+    """Display value as percentage of total.
+    
+    Args:
+        value: Part value
+        total: Total value
+    """
+    if total == 0:
+        print("N/A (total is zero)")
+    else:
+        percent = (value / total) * 100
+        print(f"{percent:.1f}%")
+```
+
+---
+
+## Pattern 5: Input Functions
+
+**Purpose**: Get valid input from user
+
+### Basic Input
+```python
+def get_integer(prompt):
+    """Get valid integer from user.
+    
+    Args:
+        prompt: Message to display
+        
+    Returns:
+        Valid integer entered by user
+    """
+    while True:
+        try:
+            return int(input(prompt))
+        except ValueError:
+            print("Please enter a valid integer!")
+
+def get_yes_no(prompt):
+    """Get yes/no answer from user.
+    
+    Args:
+        prompt: Question to ask
+        
+    Returns:
+        True for yes, False for no
+    """
+    while True:
+        answer = input(f"{prompt} (y/n): ").lower()
+        if answer in ['y', 'yes']:
+            return True
+        elif answer in ['n', 'no']:
+            return False
+        else:
+            print("Please answer 'y' or 'n'")
+```
+
+### Validated Input
+```python
+def get_in_range(prompt, min_val, max_val):
+    """Get number within specified range.
+    
+    Args:
+        prompt: Message to display
+        min_val: Minimum allowed value
+        max_val: Maximum allowed value
+        
+    Returns:
+        Valid number in range
+    """
+    while True:
+        value = get_integer(prompt)
+        if min_val <= value <= max_val:
+            return value
+        print(f"Please enter a number between {min_val} and {max_val}")
+
+def get_menu_choice(options):
+    """Get valid menu choice.
+    
+    Args:
+        options: List of valid options
+        
+    Returns:
+        Index of chosen option (0-based)
+    """
+    display_menu(options)
+    while True:
+        choice = get_integer("Enter choice: ")
+        if 1 <= choice <= len(options):
+            return choice - 1  # Convert to 0-based
+        print(f"Please choose 1-{len(options)}")
+```
+
+---
+
+## Pattern 6: Search Functions
+
+**Purpose**: Find items in collections
+
+### Basic Search
+```python
+def find_in_list(items, target):
+    """Find target item in list.
+    
+    Args:
+        items: List to search
+        target: Item to find
+        
+    Returns:
+        Index of item, or -1 if not found
+    """
+    for i in range(len(items)):
+        if items[i] == target:
+            return i
+    return -1
+
+def contains_item(items, target):
+    """Check if item exists in list.
+    
+    Args:
+        items: List to search
+        target: Item to find
+        
+    Returns:
+        True if found, False otherwise
+    """
+    return target in items
+```
+
+### Advanced Search
+```python
+def find_all_matches(items, condition_func):
+    """Find all items matching condition.
+    
+    Args:
+        items: List to search
+        condition_func: Function that returns True for matches
+        
+    Returns:
+        List of matching items
+    """
+    matches = []
+    for item in items:
+        if condition_func(item):
+            matches.append(item)
+    return matches
+
+# Usage example:
+# numbers = [1, 2, 3, 4, 5, 6]
+# evens = find_all_matches(numbers, lambda x: x % 2 == 0)
+# But lambdas aren't taught yet, so:
+
+def find_all_above(numbers, threshold):
+    """Find all numbers above threshold.
+    
+    Args:
+        numbers: List of numbers
+        threshold: Minimum value
+        
+    Returns:
+        List of numbers above threshold
+    """
+    results = []
+    for num in numbers:
+        if num > threshold:
+            results.append(num)
+    return results
+```
+
+---
+
+## Pattern 7: Accumulator Functions
+
+**Purpose**: Build up a result through iteration
+
+### Numeric Accumulators
+```python
+def sum_list(numbers):
+    """Calculate sum of numbers.
+    
+    Args:
+        numbers: List of numbers
+        
+    Returns:
+        Sum of all numbers
+    """
+    total = 0
+    for num in numbers:
+        total = total + num
+    return total
+
+def count_matches(items, target):
+    """Count occurrences of target.
+    
+    Args:
+        items: List to search
+        target: Item to count
+        
+    Returns:
+        Number of times target appears
+    """
+    count = 0
+    for item in items:
+        if item == target:
+            count = count + 1
+    return count
+```
+
+### String Builders
+```python
+def join_with_commas(items):
+    """Join items with commas.
+    
+    Args:
+        items: List of items to join
+        
+    Returns:
+        String with items separated by commas
+    """
+    if not items:
+        return ""
+    
+    result = str(items[0])
+    for item in items[1:]:
+        result = result + ", " + str(item)
+    return result
+
+def build_report(title, data):
+    """Build formatted report string.
+    
+    Args:
+        title: Report title
+        data: List of data lines
+        
+    Returns:
+        Formatted report as string
+    """
+    report = f"=== {title} ===\n"
+    for line in data:
+        report = report + f"- {line}\n"
+    report = report + "=" * (len(title) + 8)
+    return report
+```
+
+---
+
+# Function Composition Patterns
+
+## Combining Functions
+
+```python
+def process_user_input(prompt):
+    """Get and clean user input.
+    
+    Combines get_input and clean_input functions.
+    """
+    raw = input(prompt)
+    return clean_input(raw)
+
+def calculate_final_price(price, tax_rate, discount_percent=0):
+    """Calculate final price with tax and discount.
+    
+    Uses multiple calculation functions.
+    """
+    # Apply discount first
+    if discount_percent > 0:
+        price = calculate_discount(price, discount_percent)
+    
+    # Then add tax
+    tax = price * tax_rate
+    return round_to_cents(price + tax)
+
+def validate_and_process_email(email):
+    """Validate and clean email address.
+    
+    Returns cleaned email if valid, None otherwise.
+    """
+    cleaned = clean_input(email)
+    if is_valid_email(cleaned):
+        return cleaned
+    return None
+```
+
+---
+
+# Best Practices
+
+1. **Single Purpose**: Each function does ONE thing
+2. **Clear Names**: Function name describes what it does
+3. **Document Well**: Always include docstring
+4. **Handle Edges**: Check for None, empty, zero
+5. **Return Consistently**: Same type always
+6. **Test Independently**: Each function works alone
+
+Remember: Good functions are like LEGO blocks - small, focused, and combine well!

@@ -1,0 +1,201 @@
+---
+title: "Week 2: AI Prompts for Learning Decisions"
+subtitle: "Strategic AI Use for Conditional Logic"
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# AI Prompts for Learning Decision Logic
+
+## Understanding Concepts
+
+### Basic Explanation Prompts
+
+**For Understanding Comparisons**:
+> "Explain the difference between = and == in Python with simple examples"
+
+> "Why does Python use == for comparison instead of just =?"
+
+> "What does it mean when a comparison 'returns a boolean'?"
+
+**For Understanding Flow**:
+> "Explain how elif is different from multiple if statements"
+
+> "Why does the order of elif statements matter?"
+
+> "What happens if no condition in an if/elif/else chain is True?"
+
+### Visualization Prompts
+
+> "Show me how to draw a flowchart for an if/elif/else statement"
+
+> "Can you trace through this code step by step when x = 75?" [paste code]
+
+> "Create a diagram showing how Python decides which branch to execute"
+
+## Debugging with AI
+
+### Logic Error Prompts
+
+**Finding Issues**:
+> "This grade calculator always gives 'C' for passing scores. Why?" [paste code]
+
+> "My code says 90 is a 'B' but it should be an 'A'. Help me understand the logic error"
+
+> "What values would expose problems in this conditional logic?" [paste code]
+
+**Understanding Errors**:
+> "What does 'SyntaxError: invalid syntax' mean when I write 'if score = 100:'?"
+
+> "Why do I get 'NameError' when my if statement doesn't execute?"
+
+> "Explain this IndentationError in simple terms"
+
+### Testing Prompts
+
+> "What test cases should I use for a grade calculator with A/B/C/D/F?"
+
+> "Help me create a test plan for boundary values in my conditions"
+
+> "What edge cases should I check in this password validator?" [paste code]
+
+## Progressive Learning Prompts
+
+### Level 1: Concept Building
+1. "What is a boolean value in simple terms?"
+2. "Show me the simplest possible if statement"
+3. "When would I use if vs if/else?"
+
+### Level 2: Applied Understanding  
+1. "How do I check if a number is in a range like 80-90?"
+2. "What's the clearest way to check multiple conditions?"
+3. "How can I handle case-insensitive input comparisons?"
+
+### Level 3: Problem Solving
+1. "I need to validate user input is between 0-100. What's the pattern?"
+2. "How do I structure conditions for a grade calculator efficiently?"
+3. "What's the best order for checking temperature ranges?"
+
+## Constraint Templates for Week 2
+
+### When Getting Code from AI
+
+**Good Constraint Prompt**:
+> "Write a grade calculator using ONLY:
+> - Variables and input/output from Week 1
+> - if, elif, else statements
+> - Comparison operators: ==, !=, <, >, <=, >=
+> - Logical operators: and, or, not
+> - String methods: .upper(), .lower()
+> NO: loops, lists, functions, try/except, or dictionaries"
+
+**For Debugging**:
+> "Explain this logic error using only concepts from Weeks 1-2. Don't use any advanced features to fix it."
+
+## Anti-Patterns to Avoid
+
+### Don't Ask:
+❌ "Write a complete grade calculator for me"
+❌ "Fix all the bugs in my code"
+❌ "Make this work" (without understanding)
+❌ "Convert this to use a dictionary" (too advanced)
+
+### Do Ask:
+✅ "Explain why this condition never executes"
+✅ "What happens when score equals exactly 90?"
+✅ "How can I test if my logic covers all cases?"
+✅ "Why does order matter in elif chains?"
+
+## Simplification Prompts
+
+When AI gives complex solutions:
+
+> "That uses concepts I haven't learned. Show me using only if/elif/else"
+
+> "Can you simplify this without using [advanced feature]?"
+
+> "I only know basic conditionals. How would I write this simply?"
+
+> "Remove the error handling and show just the core logic"
+
+## Learning by Example
+
+### Comparison Prompts
+> "Show me examples of when > vs >= makes a difference"
+
+> "Give me three examples where 'and' vs 'or' changes the result"
+
+> "Demonstrate why 'not' can make code clearer sometimes"
+
+### Pattern Recognition
+> "What's the pattern for checking if input is valid?"
+
+> "Show me the standard pattern for menu choices"
+
+> "What's the typical structure for range checking?"
+
+## Practice Problem Prompts
+
+> "Give me a simple decision problem to practice if/else"
+
+> "Create a debugging exercise with a logic error in elif ordering"
+
+> "Suggest a real-world scenario that needs multiple conditions"
+
+> "What's a good edge case testing exercise for beginners?"
+
+## Verification Prompts
+
+### For Your Own Code
+> "I wrote this grade calculator. What inputs should I test?" [paste code]
+
+> "Does this logic cover all possible cases?" [paste code]
+
+> "Are there any redundant conditions here?" [paste code]
+
+### For AI's Code
+> "Trace through this code with score = 92.5"
+
+> "Is this the simplest way to write these conditions?"
+
+> "What assumptions does this code make?"
+
+## Common Week 2 Challenges
+
+### Indentation Help
+> "Explain Python indentation rules for if statements with examples"
+
+> "Why does Python use indentation instead of brackets?"
+
+> "Show me correct vs incorrect indentation"
+
+### Logic Combination
+> "When should I use 'and' vs 'or' in conditions?"
+
+> "How do I check if a value is NOT in a range?"
+
+> "What's the difference between 'not x == y' and 'x != y'?"
+
+### String Comparisons
+> "Why doesn't 'Yes' == 'yes' work?"
+
+> "How do I accept Y, y, Yes, yes, YES as valid inputs?"
+
+> "What's the simplest way to do case-insensitive comparison?"
+
+## Remember
+
+The goal is understanding, not just working code. Use AI to:
+- Explain concepts you're unsure about
+- Trace through logic step-by-step  
+- Verify your understanding
+- Get ideas for test cases
+- Simplify overcomplicated solutions
+
+Always verify AI's explanations with your own testing!

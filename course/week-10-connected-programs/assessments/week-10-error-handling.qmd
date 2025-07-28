@@ -1,0 +1,535 @@
+---
+title: "Week 10 Assessment: Error Handling Mastery"
+subtitle: "Testing Your Exception Handling and Recovery Skills"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Assessment Overview
+
+**Duration**: 45 minutes  
+**Objective**: Demonstrate mastery of error handling patterns and defensive programming techniques
+
+## Skills Assessed
+
+- Exception handling with try/except blocks
+- Specific exception type identification and handling
+- Error recovery strategies and fallback mechanisms
+- User-friendly error message design
+- Defensive programming practices
+
+---
+
+# Task 1: Fix the Broken Error Handler (15 minutes)
+
+## Problem Statement
+
+The following code attempts to process user data but has poor error handling. Your task is to fix all error handling issues and implement proper exception management.
+
+### Broken Code
+
+```python
+def process_user_data(user_input):
+    """Process user data - BROKEN VERSION"""
+    # Convert to number
+    age = int(user_input["age"])
+    
+    # Check if adult
+    if age >= 18:
+        status = "adult"
+    else:
+        status = "minor"
+    
+    # Get user profile
+    profile = user_input["profile"]
+    name = profile["name"].upper()
+    email = profile["email"]
+    
+    # Validate email
+    if "@" not in email:
+        raise Exception("Bad email")
+    
+    # Calculate birth year
+    current_year = 2024
+    birth_year = current_year - age
+    
+    # Format result
+    result = f"{name} ({email}) is {age} years old, born in {birth_year}"
+    
+    return {"success": True, "message": result, "status": status}
+
+# Test data that will cause various errors:
+test_cases = [
+    {"age": "25", "profile": {"name": "Alice", "email": "alice@example.com"}},  # Good
+    {"age": "not_a_number", "profile": {"name": "Bob", "email": "bob@example.com"}},  # Bad age
+    {"profile": {"name": "Charlie", "email": "charlie@example.com"}},  # Missing age
+    {"age": "30", "profile": {"name": "Diana"}},  # Missing email
+    {"age": "22", "profile": {"name": "Eve", "email": "invalid_email"}},  # Bad email
+    {"age": "35"},  # Missing profile
+    None,  # Completely invalid
+]
+```
+
+### Your Task
+
+**Fix the function to handle all possible errors gracefully:**
+
+1. **Identify all potential errors** in the original code
+2. **Implement specific exception handling** for each error type
+3. **Provide meaningful error messages** for users
+4. **Return consistent response format** with success/error indicators
+5. **Use appropriate fallback values** where sensible
+
+### Expected Behavior
+
+Your fixed function should:
+- Never crash with an unhandled exception
+- Return a consistent dictionary format: `{"success": bool, "message": str, "data": dict/None}`
+- Provide specific, helpful error messages
+- Handle edge cases gracefully
+
+### Solution Template
+
+```python
+def process_user_data(user_input):
+    """Process user data with comprehensive error handling."""
+    try:
+        # Your implementation here
+        pass
+    except SpecificException as e:
+        # Handle specific errors
+        pass
+    except Exception as e:
+        # Handle unexpected errors
+        pass
+
+# Test your solution:
+for i, test_case in enumerate(test_cases):
+    print(f"\nTest {i+1}: {test_case}")
+    result = process_user_data(test_case)
+    print(f"Result: {result}")
+```
+
+---
+
+# Task 2: Design Exception Hierarchy (10 minutes)
+
+## Problem Statement
+
+You're building a file processing system that needs custom exceptions for different error scenarios. Design a proper exception hierarchy and implement error handling that uses these custom exceptions.
+
+### Requirements
+
+Create custom exceptions for:
+1. **File processing errors** (base category)
+2. **File not found errors**
+3. **File permission errors** 
+4. **File format errors** (wrong file type)
+5. **File corruption errors** (damaged content)
+6. **File too large errors**
+
+### Your Task
+
+```python
+# 1. Define your custom exception hierarchy
+class FileProcessingError(Exception):
+    """Base exception for file processing errors."""
+    pass
+
+# Add your other custom exceptions here
+
+# 2. Implement file processor with custom exceptions
+def safe_file_processor(file_path, max_size_mb=10):
+    """
+    Process file with custom exception handling.
+    
+    Should check:
+    - File exists
+    - File is readable
+    - File size is under limit
+    - File is text format
+    - File content is not corrupted
+    """
+    try:
+        # Your implementation here
+        pass
+    except YourCustomException as e:
+        # Handle specific errors
+        pass
+
+# 3. Implement error handler that converts exceptions to user messages
+def handle_file_error(error):
+    """Convert technical exceptions to user-friendly messages."""
+    # Your implementation here
+    pass
+
+# Test your implementation:
+test_files = [
+    "good_file.txt",           # Should work
+    "missing_file.txt",        # File doesn't exist
+    "huge_file.txt",          # Too large
+    "binary_file.exe",        # Wrong format
+    "corrupted_file.txt",     # Damaged content
+]
+
+for file_path in test_files:
+    try:
+        result = safe_file_processor(file_path)
+        print(f"✓ {file_path}: {result}")
+    except FileProcessingError as e:
+        user_message = handle_file_error(e)
+        print(f"✗ {file_path}: {user_message}")
+```
+
+---
+
+# Task 3: Implement Retry Logic (10 minutes)
+
+## Problem Statement
+
+Create a robust retry system that handles different types of failures with appropriate retry strategies.
+
+### Requirements
+
+Implement a retry decorator that:
+1. **Retries on specific exceptions** only
+2. **Uses exponential backoff** for timing
+3. **Has maximum retry limits**
+4. **Logs retry attempts**
+5. **Handles different retry strategies** for different error types
+
+### Your Task
+
+```python
+import time
+import random
+
+def retry_on_failure(max_retries=3, backoff_factor=2, retry_on=None):
+    """
+    Decorator that retries function calls on specific exceptions.
+    
+    Args:
+        max_retries: Maximum number of retry attempts
+        backoff_factor: Multiplier for exponential backoff
+        retry_on: List of exception types to retry on
+    """
+    if retry_on is None:
+        retry_on = [ConnectionError, TimeoutError]
+    
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            # Your implementation here
+            pass
+        return wrapper
+    return decorator
+
+# Test the retry decorator:
+@retry_on_failure(max_retries=3, retry_on=[ConnectionError, ValueError])
+def unreliable_network_call(should_fail=True, fail_type="connection"):
+    """Simulate an unreliable network operation."""
+    print(f"Attempting network call...")
+    
+    if should_fail:
+        if fail_type == "connection":
+            raise ConnectionError("Network connection failed")
+        elif fail_type == "value":
+            raise ValueError("Invalid response data")
+        elif fail_type == "permission":
+            raise PermissionError("Access denied")  # Should not retry
+    
+    return {"success": True, "data": "Network call succeeded"}
+
+# Test scenarios:
+print("=== Testing Retry Logic ===")
+
+# Test 1: Connection error (should retry)
+try:
+    result = unreliable_network_call(should_fail=True, fail_type="connection")
+    print(f"Result: {result}")
+except Exception as e:
+    print(f"Final failure: {e}")
+
+# Test 2: Permission error (should not retry)
+try:
+    result = unreliable_network_call(should_fail=True, fail_type="permission")
+    print(f"Result: {result}")
+except Exception as e:
+    print(f"Immediate failure: {e}")
+
+# Test 3: Success case
+try:
+    result = unreliable_network_call(should_fail=False)
+    print(f"Success: {result}")
+except Exception as e:
+    print(f"Unexpected failure: {e}")
+```
+
+---
+
+# Task 4: Build Graceful Degradation System (10 minutes)
+
+## Problem Statement
+
+Create a service that provides increasingly degraded functionality as dependencies fail, but never completely stops working.
+
+### Scenario
+
+You're building a user profile service that depends on:
+1. **Primary database** (full user data)
+2. **Cache system** (recent user data) 
+3. **Backup database** (basic user data)
+4. **Default profile** (minimal fallback)
+
+### Your Task
+
+```python
+class UserProfileService:
+    """User profile service with graceful degradation."""
+    
+    def __init__(self):
+        self.primary_db = MockDatabase("primary", failure_rate=0.3)
+        self.cache = MockCache("cache", failure_rate=0.2)
+        self.backup_db = MockDatabase("backup", failure_rate=0.1)
+    
+    def get_user_profile(self, user_id):
+        """
+        Get user profile with graceful degradation.
+        
+        Try sources in order:
+        1. Primary database (full profile)
+        2. Cache (recent profile) 
+        3. Backup database (basic profile)
+        4. Default profile (minimal data)
+        
+        Return degradation level and available data.
+        """
+        degradation_attempts = []
+        
+        # Strategy 1: Primary database
+        try:
+            # Your implementation here
+            pass
+        except Exception as e:
+            degradation_attempts.append({"source": "primary_db", "error": str(e)})
+        
+        # Strategy 2: Cache
+        try:
+            # Your implementation here
+            pass
+        except Exception as e:
+            degradation_attempts.append({"source": "cache", "error": str(e)})
+        
+        # Strategy 3: Backup database
+        try:
+            # Your implementation here
+            pass
+        except Exception as e:
+            degradation_attempts.append({"source": "backup_db", "error": str(e)})
+        
+        # Strategy 4: Default profile (always works)
+        # Your implementation here
+        pass
+
+# Mock services for testing:
+class MockDatabase:
+    def __init__(self, name, failure_rate=0.0):
+        self.name = name
+        self.failure_rate = failure_rate
+    
+    def get_user(self, user_id):
+        if random.random() < self.failure_rate:
+            raise ConnectionError(f"{self.name} database unavailable")
+        
+        if self.name == "primary":
+            return {
+                "id": user_id,
+                "name": f"User {user_id}",
+                "email": f"user{user_id}@example.com",
+                "preferences": {"theme": "dark", "notifications": True},
+                "last_login": "2024-01-15",
+                "profile_picture": f"profile_{user_id}.jpg"
+            }
+        else:  # backup
+            return {
+                "id": user_id,
+                "name": f"User {user_id}",
+                "email": f"user{user_id}@example.com"
+            }
+
+class MockCache:
+    def __init__(self, name, failure_rate=0.0):
+        self.name = name
+        self.failure_rate = failure_rate
+    
+    def get_cached_user(self, user_id):
+        if random.random() < self.failure_rate:
+            raise TimeoutError(f"{self.name} system timeout")
+        
+        return {
+            "id": user_id,
+            "name": f"User {user_id}",
+            "email": f"user{user_id}@example.com",
+            "cached_at": "2024-01-15 10:30",
+            "source": "cache"
+        }
+
+# Test the graceful degradation:
+service = UserProfileService()
+
+print("=== Testing Graceful Degradation ===")
+for i in range(5):
+    print(f"\nAttempt {i+1}:")
+    result = service.get_user_profile(123)
+    print(f"Success: {result['success']}")
+    print(f"Degradation: {result['degradation_level']}")
+    print(f"Data source: {result['data'].get('source', 'unknown')}")
+    if result['failed_attempts']:
+        print(f"Failures: {len(result['failed_attempts'])}")
+```
+
+---
+
+# Assessment Criteria
+
+## Technical Accuracy (40 points)
+
+### Exception Handling (20 points)
+- **Excellent (18-20)**: All exceptions handled appropriately with specific types
+- **Good (14-17)**: Most exceptions handled well, minor issues
+- **Satisfactory (10-13)**: Basic exception handling present
+- **Needs Improvement (0-9)**: Poor or missing exception handling
+
+### Error Recovery (20 points)
+- **Excellent (18-20)**: Robust recovery strategies with multiple fallbacks
+- **Good (14-17)**: Good recovery strategies implemented
+- **Satisfactory (10-13)**: Basic recovery mechanisms present
+- **Needs Improvement (0-9)**: Limited or no recovery strategies
+
+## Code Quality (30 points)
+
+### Code Organization (15 points)
+- **Excellent (14-15)**: Clean, well-structured, readable code
+- **Good (11-13)**: Well-organized with minor issues
+- **Satisfactory (8-10)**: Acceptable organization
+- **Needs Improvement (0-7)**: Poor organization or readability
+
+### Error Message Design (15 points)
+- **Excellent (14-15)**: Clear, helpful, user-friendly error messages
+- **Good (11-13)**: Good error messages with minor issues
+- **Satisfactory (8-10)**: Adequate error messages
+- **Needs Improvement (0-7)**: Poor or confusing error messages
+
+## Problem Solving (20 points)
+
+### Design Decisions (10 points)
+- **Excellent (9-10)**: Thoughtful design choices with clear reasoning
+- **Good (7-8)**: Good design decisions
+- **Satisfactory (5-6)**: Acceptable design approach
+- **Needs Improvement (0-4)**: Poor design decisions
+
+### Edge Case Handling (10 points)
+- **Excellent (9-10)**: Comprehensive edge case coverage
+- **Good (7-8)**: Good edge case handling
+- **Satisfactory (5-6)**: Basic edge case coverage
+- **Needs Improvement (0-4)**: Missing important edge cases
+
+## Professional Practices (10 points)
+
+### Documentation and Comments (5 points)
+- **Excellent (5)**: Clear documentation and meaningful comments
+- **Good (4)**: Good documentation
+- **Satisfactory (2-3)**: Basic documentation
+- **Needs Improvement (0-1)**: Poor or missing documentation
+
+### Testing and Validation (5 points)
+- **Excellent (5)**: Thorough testing of error scenarios
+- **Good (4)**: Good testing coverage
+- **Satisfactory (2-3)**: Basic testing performed
+- **Needs Improvement (0-1)**: Minimal or no testing
+
+---
+
+# Submission Guidelines
+
+## What to Submit
+
+1. **Completed code** for all four tasks
+2. **Test results** showing your solutions working
+3. **Brief explanations** of your design decisions
+4. **Error scenario analysis** for each task
+
+## Submission Format
+
+```python
+# =============================================
+# Week 10 Error Handling Assessment
+# Student: [Your Name]
+# Date: [Submission Date]
+# =============================================
+
+# TASK 1: Fixed Error Handler
+def process_user_data(user_input):
+    """Your solution here"""
+    pass
+
+# Explanation of Task 1 approach:
+"""
+[Explain your error handling strategy, what exceptions you caught,
+and why you chose specific recovery methods]
+"""
+
+# TASK 2: Custom Exception Hierarchy
+# [Your exception classes and implementation]
+
+# Explanation of Task 2 approach:
+"""
+[Explain your exception hierarchy design and error handling strategy]
+"""
+
+# TASK 3: Retry Logic Implementation
+# [Your retry decorator and test results]
+
+# Explanation of Task 3 approach:
+"""
+[Explain your retry strategy and backoff algorithm choices]
+"""
+
+# TASK 4: Graceful Degradation System
+# [Your service implementation]
+
+# Explanation of Task 4 approach:
+"""
+[Explain your degradation strategy and fallback order reasoning]
+"""
+
+# TESTING RESULTS:
+"""
+[Include test output showing your solutions handle various error scenarios]
+"""
+```
+
+## Success Indicators
+
+You've mastered error handling when your solutions:
+
+✅ **Never crash unexpectedly** - All exceptions are caught and handled
+
+✅ **Provide clear feedback** - Users understand what went wrong and what to do
+
+✅ **Recover gracefully** - Applications continue working even when components fail
+
+✅ **Handle edge cases** - Unusual inputs and scenarios are managed properly
+
+✅ **Follow best practices** - Specific exceptions, meaningful messages, proper logging
+
+✅ **Maintain user experience** - Errors don't break the application flow
+
+Remember: Great error handling is invisible to users when things work, but saves the day when things go wrong!

@@ -1,0 +1,204 @@
+---
+title: "Week 1: Effective AI Prompts for Learning"
+subtitle: "A Student Guide to AI-Assisted Learning"
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Using AI to Learn (Not Just to Code)
+
+This guide shows you how to use AI tools effectively for learning Python. Remember: AI is your tutor, not your ghostwriter!
+
+## Good vs. Bad AI Prompts
+
+### ❌ Bad: Asking AI to Do Your Work
+
+**Bad Prompt**:
+> "Write a Python temperature converter program"
+
+**Why it's bad**: 
+- You learn nothing
+- You can't modify the code later
+- You won't understand errors
+
+**Bad Prompt**:
+> "Fix this code for me: [paste code]"
+
+**Why it's bad**:
+- No understanding of what was wrong
+- Miss the learning opportunity
+- Creates dependence on AI
+
+### ✅ Good: Asking AI to Help You Learn
+
+**Good Prompt**:
+> "I'm trying to convert a string to an integer in Python but getting a ValueError. Can you explain what this error means?"
+
+**Why it's good**:
+- Focuses on understanding
+- Specific about the problem
+- Seeks explanation, not solution
+
+**Good Prompt**:
+> "Can you explain the difference between = and == in Python with simple examples?"
+
+**Why it's good**:
+- Targets specific concept
+- Asks for examples
+- Promotes understanding
+
+## Prompt Templates for Week 1 Topics
+
+### Understanding Errors
+
+**Template**:
+> "I'm getting a [ERROR TYPE] in Python. My code is [PASTE RELEVANT LINE]. Can you explain what this error means and why it might be happening?"
+
+**Example**:
+> "I'm getting a TypeError in Python. My code is `age = input('Age: ')` and then `next_year = age + 1`. Can you explain what this error means and why it might be happening?"
+
+### Concept Clarification
+
+**Template**:
+> "Can you explain [CONCEPT] in Python using simple terms? I'm a beginner and haven't learned about [ADVANCED TOPICS] yet."
+
+**Example**:
+> "Can you explain what the input() function does in Python using simple terms? I'm a beginner and haven't learned about functions or exception handling yet."
+
+### Code Understanding
+
+**Template**:
+> "What does this line of Python code do: [CODE]? Please explain each part."
+
+**Example**:
+> "What does this line of Python code do: `print(f'Hello {name}!')`. Please explain each part."
+
+### Debugging Help
+
+**Template**:
+> "My Python code prints [UNEXPECTED OUTPUT] but I expected [EXPECTED OUTPUT]. Here's my code: [CODE]. Can you help me understand why?"
+
+**Example**:
+> "My Python code prints '55' but I expected 10. Here's my code: `number = '5'` and `result = number * 2`. Can you help me understand why?"
+
+## Progressive Learning Prompts
+
+### Level 1: Basic Understanding
+1. "What is a variable in Python?"
+2. "What's the difference between a string and an integer?"
+3. "What does the print() function do?"
+
+### Level 2: Applying Concepts
+1. "How do I get user input in Python?"
+2. "How do I convert a string to a number?"
+3. "How do I combine two strings together?"
+
+### Level 3: Problem Solving
+1. "I want to calculate someone's age next year. What concepts do I need?"
+2. "How can I check if the user typed 'yes' or 'no'?"
+3. "What's the simplest way to show a temperature with the degree symbol?"
+
+## When AI Overcomplicates
+
+### The "Simpler Please" Response
+
+When AI gives you complex code, respond with:
+> "That's too advanced for me. Can you show me a simpler version using only basic print(), input(), variables, and if statements?"
+
+### Example Interaction
+
+**You**: "How do I check if a number is positive or negative?"
+
+**AI** might give:
+```python
+def check_number(num):
+    try:
+        number = float(num)
+        return "positive" if number > 0 else "negative" if number < 0 else "zero"
+    except ValueError:
+        return "Invalid input"
+```
+
+**You**: "That's too advanced for me. Can you show me a simpler version using only basic concepts?"
+
+**Better AI response**:
+```python
+number = input("Enter a number: ")
+number = float(number)
+
+if number > 0:
+    print("The number is positive")
+elif number < 0:
+    print("The number is negative")
+else:
+    print("The number is zero")
+```
+
+## What NOT to Ask AI
+
+### ❌ Don't Ask for Complete Programs
+- "Write a calculator for me"
+- "Create a temperature converter"
+- "Make a program that..."
+
+### ❌ Don't Ask for Homework Solutions
+- "Solve this assignment"
+- "What's the answer to..."
+- "Complete this exercise"
+
+### ❌ Don't Skip Understanding
+- "Just make it work"
+- "I don't care how, just fix it"
+- "Give me the code"
+
+## Building Your AI Learning Skills
+
+### Week 1 Practice Prompts
+
+1. **After Getting an Error**:
+   > "I got [ERROR]. Instead of fixing it, can you explain what this error means so I can fix it myself?"
+
+2. **When Confused**:
+   > "I don't understand why [SOMETHING HAPPENS]. Can you explain the concept behind this?"
+
+3. **Before Coding**:
+   > "I want to build [SIMPLE PROGRAM]. What Python concepts should I understand first?"
+
+4. **After Coding**:
+   > "I wrote this code: [CODE]. It works, but can you explain why it works?"
+
+## AI Learning Log Template
+
+Keep track of your AI interactions:
+
+```
+Date: [DATE]
+What I Asked: [YOUR PROMPT]
+AI Response Summary: [KEY POINTS]
+What I Learned: [YOUR UNDERSTANDING]
+How I Applied It: [YOUR CODE]
+```
+
+## Remember
+
+1. **AI can be wrong** - Always test code yourself
+2. **AI loves complexity** - Keep asking for simpler versions
+3. **Understanding > Working Code** - A broken program you understand is better than working code you don't
+4. **Learn to say no** - "Thanks, but that's too advanced for me right now"
+5. **Ask why, not just how** - Understanding concepts matters more than syntax
+
+## Your AI Learning Journey
+
+Week 1 is about building good habits. By the end of this week, you should be comfortable:
+- Asking AI for explanations, not solutions
+- Recognizing when AI overcomplicates
+- Using AI to understand errors
+- Learning concepts, not just copying code
+
+The goal is to become an independent programmer who uses AI as a tool, not a crutch!

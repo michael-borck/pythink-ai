@@ -1,0 +1,574 @@
+---
+title: "Week 9 Assessment: Statistical Analysis and Interpretation"
+subtitle: "Understanding Data Through Statistics"
+author: "AI-Integrated Programming Course"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# Assessment Overview
+
+**Points:** 25 points  
+**Time Limit:** 45 minutes  
+**Type:** Calculation implementation and interpretation  
+
+This assessment evaluates your ability to calculate statistics, interpret results, and choose appropriate measures for different scenarios.
+
+---
+
+# Part A: Statistical Calculations (10 points)
+
+## Question 1: Basic Statistics Implementation (5 points)
+
+Complete the implementation of a comprehensive statistics calculator:
+
+```python
+def calculate_statistics(values):
+    """
+    Calculate comprehensive statistics for a list of numbers.
+    
+    Should calculate:
+        - count, sum, mean
+        - median, mode
+        - min, max, range
+        - variance, standard deviation
+    
+    Args:
+        values: List of numbers
+    
+    Returns:
+        Dictionary with all statistics
+    """
+    if not values:
+        return {
+            "count": 0, "sum": 0, "mean": 0,
+            "median": 0, "mode": None, "min": 0,
+            "max": 0, "range": 0, "variance": 0,
+            "std_dev": 0
+        }
+    
+    stats = {}
+    
+    # Basic statistics
+    stats["count"] = len(values)
+    stats["sum"] = sum(values)
+    stats["mean"] = stats["sum"] / stats["count"]
+    
+    # Median calculation
+    sorted_values = sorted(values)
+    # Your implementation here
+    
+    
+    
+    
+    # Mode calculation
+    # Your implementation here
+    
+    
+    
+    
+    
+    # Range statistics
+    stats["min"] = sorted_values[0]
+    stats["max"] = sorted_values[-1]
+    stats["range"] = stats["max"] - stats["min"]
+    
+    # Variance and standard deviation
+    # Your implementation here
+    
+    
+    
+    
+    
+    return stats
+
+# Test your function
+test_datasets = [
+    [10, 20, 30, 40, 50],  # Simple sequence
+    [5, 5, 10, 10, 10, 15, 20],  # Has mode
+    [100, 200, 300, 400, 1000],  # Has outlier
+    [42],  # Single value
+    [15, 15, 15, 15],  # All same
+]
+
+for dataset in test_datasets:
+    print(f"\nDataset: {dataset}")
+    stats = calculate_statistics(dataset)
+    print(f"Mean: {stats['mean']:.2f}, Median: {stats['median']:.2f}")
+    print(f"Mode: {stats['mode']}, Std Dev: {stats['std_dev']:.2f}")
+```
+
+## Question 2: Percentile Calculations (5 points)
+
+Implement percentile calculations using linear interpolation:
+
+```python
+def calculate_percentiles(values, percentiles=[25, 50, 75, 90]):
+    """
+    Calculate specified percentiles from data.
+    
+    Uses linear interpolation between points.
+    
+    Args:
+        values: List of numbers
+        percentiles: List of percentiles to calculate (0-100)
+    
+    Returns:
+        Dictionary mapping percentile to value
+    """
+    if not values:
+        return {p: 0 for p in percentiles}
+    
+    sorted_values = sorted(values)
+    n = len(sorted_values)
+    results = {}
+    
+    for p in percentiles:
+        # Your implementation here
+        # Remember: percentile p means p% of values are below this point
+        
+        
+        
+        
+        
+        
+        
+    
+    return results
+
+# Test percentiles
+test_data = [10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100]
+percentiles = calculate_percentiles(test_data, [10, 25, 50, 75, 90])
+
+print("Percentile Analysis:")
+print(f"Data: {test_data}")
+print(f"Count: {len(test_data)}")
+for p, value in percentiles.items():
+    print(f"{p}th percentile: {value}")
+
+# Verify with known values
+small_data = [1, 2, 3, 4, 5]
+small_percentiles = calculate_percentiles(small_data, [0, 25, 50, 75, 100])
+print(f"\nSmall dataset: {small_data}")
+for p, value in small_percentiles.items():
+    print(f"{p}th percentile: {value}")
+```
+
+---
+
+# Part B: Statistical Interpretation (8 points)
+
+## Question 3: Choosing Appropriate Measures (4 points)
+
+For each scenario, determine which statistical measure is most appropriate and explain why:
+
+```python
+def analyze_dataset_characteristics(values):
+    """
+    Analyze a dataset and recommend which statistics to use.
+    
+    Should check for:
+        - Outliers (values > 3 std devs from mean)
+        - Skewness (mean vs median difference)
+        - Distribution type
+    
+    Returns:
+        Dictionary with recommendations
+    """
+    if not values or len(values) < 3:
+        return {"recommendation": "Insufficient data"}
+    
+    stats = calculate_statistics(values)
+    recommendations = {
+        "central_tendency": "",
+        "spread": "",
+        "reasoning": "",
+        "warnings": []
+    }
+    
+    # Check for outliers
+    # Your implementation here
+    
+    
+    
+    
+    # Check skewness
+    # Your implementation here
+    
+    
+    
+    
+    # Make recommendations
+    # Your implementation here
+    
+    
+    
+    
+    return recommendations
+
+# Test scenarios
+scenarios = {
+    "Employee Salaries": [45000, 48000, 50000, 52000, 55000, 58000, 250000],
+    "Test Scores": [78, 82, 85, 85, 87, 88, 90, 91, 92, 95],
+    "Response Times (ms)": [100, 105, 110, 98, 102, 99, 2000, 101, 103, 97],
+    "Product Ratings": [5, 5, 4, 5, 5, 4, 5, 5, 5, 4, 5]
+}
+
+for name, data in scenarios.items():
+    print(f"\n{name}:")
+    print(f"Data: {data}")
+    stats = calculate_statistics(data)
+    print(f"Mean: {stats['mean']:.2f}, Median: {stats['median']:.2f}")
+    
+    analysis = analyze_dataset_characteristics(data)
+    print(f"Recommendation: Use {analysis['central_tendency']} for central tendency")
+    print(f"Reasoning: {analysis['reasoning']}")
+```
+
+## Question 4: Correlation Analysis (4 points)
+
+Implement correlation analysis between two variables:
+
+```python
+def calculate_correlation(x_values, y_values):
+    """
+    Calculate Pearson correlation coefficient.
+    
+    Formula: r = Σ((x - x̄)(y - ȳ)) / √(Σ(x - x̄)² * Σ(y - ȳ)²)
+    
+    Returns:
+        Correlation coefficient (-1 to 1)
+        Interpretation string
+    """
+    if not x_values or not y_values or len(x_values) != len(y_values):
+        return 0, "Invalid data"
+    
+    n = len(x_values)
+    if n < 2:
+        return 0, "Insufficient data"
+    
+    # Calculate means
+    x_mean = sum(x_values) / n
+    y_mean = sum(y_values) / n
+    
+    # Your implementation here
+    
+    
+    
+    
+    
+    
+    
+    
+    # Interpret correlation
+    if abs(correlation) < 0.2:
+        interpretation = "Very weak or no correlation"
+    elif abs(correlation) < 0.4:
+        interpretation = "Weak correlation"
+    elif abs(correlation) < 0.6:
+        interpretation = "Moderate correlation"
+    elif abs(correlation) < 0.8:
+        interpretation = "Strong correlation"
+    else:
+        interpretation = "Very strong correlation"
+    
+    if correlation < 0:
+        interpretation = "Negative " + interpretation.lower()
+    elif correlation > 0:
+        interpretation = "Positive " + interpretation.lower()
+    
+    return round(correlation, 3), interpretation
+
+# Test correlations
+test_cases = [
+    # Perfect positive correlation
+    ([1, 2, 3, 4, 5], [2, 4, 6, 8, 10]),
+    
+    # Perfect negative correlation
+    ([1, 2, 3, 4, 5], [10, 8, 6, 4, 2]),
+    
+    # No correlation
+    ([1, 2, 3, 4, 5], [3, 1, 4, 2, 5]),
+    
+    # Real-world example: Study hours vs test scores
+    ([2, 3, 1, 4, 5, 2, 6, 4, 3, 5], 
+     [65, 70, 60, 75, 85, 68, 90, 78, 72, 82])
+]
+
+for i, (x, y) in enumerate(test_cases):
+    corr, interp = calculate_correlation(x, y)
+    print(f"\nTest case {i+1}:")
+    print(f"X: {x}")
+    print(f"Y: {y}")
+    print(f"Correlation: {corr} - {interp}")
+```
+
+---
+
+# Part C: Data Analysis Application (7 points)
+
+## Question 5: Complete Statistical Analysis (7 points)
+
+Perform a complete statistical analysis of sales data:
+
+```python
+def analyze_sales_performance(sales_data):
+    """
+    Comprehensive sales analysis with statistical insights.
+    
+    Args:
+        sales_data: List of dictionaries with 'date', 'amount', 'region'
+    
+    Returns:
+        Dictionary with analysis results and recommendations
+    """
+    analysis = {
+        "overall": {},
+        "by_region": {},
+        "trends": {},
+        "insights": [],
+        "recommendations": []
+    }
+    
+    # Extract amounts for overall analysis
+    amounts = [sale["amount"] for sale in sales_data]
+    
+    # Overall statistics
+    # Your implementation here
+    
+    
+    
+    
+    # Regional analysis
+    # Your implementation here
+    
+    
+    
+    
+    
+    # Trend analysis (by date)
+    # Your implementation here
+    
+    
+    
+    
+    
+    # Generate insights
+    # Your implementation here
+    
+    
+    
+    
+    
+    return analysis
+
+# Test data
+sales_data = [
+    {"date": "2024-01-01", "amount": 1200, "region": "North"},
+    {"date": "2024-01-02", "amount": 1500, "region": "South"},
+    {"date": "2024-01-03", "amount": 800, "region": "North"},
+    {"date": "2024-01-04", "amount": 2000, "region": "East"},
+    {"date": "2024-01-05", "amount": 1100, "region": "North"},
+    {"date": "2024-01-06", "amount": 1800, "region": "South"},
+    {"date": "2024-01-07", "amount": 950, "region": "West"},
+    {"date": "2024-01-08", "amount": 2200, "region": "East"},
+    {"date": "2024-01-09", "amount": 1300, "region": "North"},
+    {"date": "2024-01-10", "amount": 5000, "region": "East"},  # Outlier
+]
+
+# Perform analysis
+results = analyze_sales_performance(sales_data)
+
+# Display results
+print("SALES PERFORMANCE ANALYSIS")
+print("=" * 50)
+print(f"\nOverall Statistics:")
+for key, value in results["overall"].items():
+    print(f"  {key}: {value}")
+
+print(f"\nRegional Performance:")
+for region, stats in results["by_region"].items():
+    print(f"  {region}: {stats}")
+
+print(f"\nKey Insights:")
+for insight in results["insights"]:
+    print(f"  • {insight}")
+
+print(f"\nRecommendations:")
+for rec in results["recommendations"]:
+    print(f"  → {rec}")
+```
+
+---
+
+# Bonus Question: Advanced Statistics (3 bonus points)
+
+Implement outlier detection using the IQR method:
+
+```python
+def detect_outliers(values, method="iqr", threshold=1.5):
+    """
+    Detect outliers using IQR or Z-score method.
+    
+    IQR method: Values outside Q1 - threshold*IQR or Q3 + threshold*IQR
+    Z-score method: Values with |z-score| > 3
+    
+    Returns:
+        Dictionary with outliers and their indices
+    """
+    if not values or len(values) < 4:
+        return {"outliers": [], "indices": [], "bounds": None}
+    
+    if method == "iqr":
+        # Your implementation here
+        
+        
+        
+        
+        
+        
+        
+    elif method == "zscore":
+        # Your implementation here
+        
+        
+        
+        
+        
+        
+    
+    return result
+
+# Test outlier detection
+test_data = [10, 12, 12, 13, 14, 14, 15, 15, 16, 17, 18, 35, 95]
+print(f"Data: {test_data}")
+
+iqr_outliers = detect_outliers(test_data, method="iqr")
+print(f"\nIQR Method:")
+print(f"Outliers: {iqr_outliers['outliers']}")
+print(f"Bounds: {iqr_outliers['bounds']}")
+
+zscore_outliers = detect_outliers(test_data, method="zscore")
+print(f"\nZ-score Method:")
+print(f"Outliers: {zscore_outliers['outliers']}")
+```
+
+---
+
+# Grading Rubric
+
+## Part A: Statistical Calculations (10 points)
+- **Question 1 (5 points)**
+  - Median calculation: 1 point
+  - Mode calculation: 2 points
+  - Variance/Std Dev: 2 points
+- **Question 2 (5 points)**
+  - Percentile formula: 2 points
+  - Interpolation: 2 points
+  - Edge cases: 1 point
+
+## Part B: Statistical Interpretation (8 points)
+- **Question 3 (4 points)**
+  - Outlier detection: 1 point
+  - Skewness check: 1 point
+  - Recommendations: 1 point
+  - Reasoning: 1 point
+- **Question 4 (4 points)**
+  - Correlation formula: 2 points
+  - Correct calculation: 1 point
+  - Interpretation: 1 point
+
+## Part C: Data Analysis (7 points)
+- **Question 5 (7 points)**
+  - Overall analysis: 2 points
+  - Regional grouping: 2 points
+  - Trend detection: 1 point
+  - Insights generation: 1 point
+  - Recommendations: 1 point
+
+## Bonus (3 points)
+- IQR implementation: 1.5 points
+- Z-score implementation: 1.5 points
+
+---
+
+# Answer Key (For Instructors)
+
+## Question 1 Solution (Median and Mode):
+```python
+# Median
+mid = stats["count"] // 2
+if stats["count"] % 2 == 0:
+    stats["median"] = (sorted_values[mid-1] + sorted_values[mid]) / 2
+else:
+    stats["median"] = sorted_values[mid]
+
+# Mode
+frequency = {}
+for val in values:
+    frequency[val] = frequency.get(val, 0) + 1
+
+max_freq = max(frequency.values())
+modes = [val for val, freq in frequency.items() if freq == max_freq]
+
+if len(modes) == 1:
+    stats["mode"] = modes[0]
+elif len(modes) == stats["count"]:
+    stats["mode"] = None  # No mode if all values appear once
+else:
+    stats["mode"] = modes  # Multiple modes
+
+# Variance and standard deviation
+mean = stats["mean"]
+squared_diffs = [(x - mean) ** 2 for x in values]
+stats["variance"] = sum(squared_diffs) / stats["count"]
+stats["std_dev"] = stats["variance"] ** 0.5
+```
+
+## Question 2 Solution (Percentiles):
+```python
+for p in percentiles:
+    if p == 0:
+        results[p] = sorted_values[0]
+    elif p == 100:
+        results[p] = sorted_values[-1]
+    else:
+        # Calculate position
+        pos = (n - 1) * (p / 100)
+        lower_index = int(pos)
+        upper_index = lower_index + 1
+        
+        if upper_index >= n:
+            results[p] = sorted_values[-1]
+        else:
+            # Linear interpolation
+            lower_value = sorted_values[lower_index]
+            upper_value = sorted_values[upper_index]
+            fraction = pos - lower_index
+            
+            results[p] = lower_value + fraction * (upper_value - lower_value)
+```
+
+## Teaching Notes
+
+### Key Concepts to Emphasize
+1. **When to use mean vs median** - Median is robust to outliers
+2. **Understanding spread** - Why standard deviation matters
+3. **Correlation ≠ Causation** - Classic statistics principle
+4. **Practical interpretation** - What do these numbers mean for decisions?
+
+### Common Misconceptions
+- Mode always exists (it doesn't if all values are unique)
+- Higher correlation means better relationship (direction matters)
+- Outliers are always bad (sometimes they're important signals)
+- Standard deviation units (same as original data)
+
+This assessment bridges mathematical concepts with practical data analysis skills!

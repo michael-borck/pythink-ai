@@ -1,0 +1,473 @@
+---
+title: "Week 6: Instructor Guide"
+subtitle: "Teaching Dictionaries and Complex Data Structures"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+  pdf:
+    toc: true
+---
+
+# Week 6 Overview
+
+This week introduces dictionaries as a fundamental data structure for organizing information. Students often struggle with the conceptual shift from positional (list) to associative (dictionary) thinking.
+
+**Key Challenge**: Moving from sequential to key-based data access
+
+---
+
+# Pre-Class Preparation
+
+## Review Previous Concepts
+- Functions (Week 5) - will process dictionaries
+- Lists (Week 3) - contrast with dictionaries
+- Loops (Week 3) - iterate through dictionaries
+- String methods (Week 4) - keys are often strings
+
+## Set Up Examples
+1. Contact book data (simple and complex versions)
+2. Visual diagrams of key-value relationships
+3. Common KeyError scenarios ready to demonstrate
+4. List vs dictionary comparison examples
+
+## Common Misconceptions to Address
+- "Dictionaries are just fancy lists"
+- "Keys must be strings"
+- "Order matters in dictionaries"
+- "Dictionaries are always faster"
+
+---
+
+# Lecture Delivery Guide
+
+## Opening Hook (10 minutes)
+
+### The Contact Book Problem
+
+**Setup**: Ask AI for a contact management system
+
+**What AI Gives** (have this ready):
+```python
+# Overcomplicated enterprise solution
+import sqlite3
+from flask import Flask
+class ContactManager:
+    def __init__(self):
+        self.db = DatabaseConnection()
+        # ... 50 more lines of complexity
+```
+
+**Discussion Points**:
+1. "Who understands this code?"
+2. "What does a contact book REALLY need?"
+3. "Store names with phones/emails - that's it!"
+
+**Transition**: "We need to connect names to information..."
+
+### Alternative Hooks
+- Restaurant menu (item → price)
+- Student grades (ID → grades)
+- Game inventory (item → quantity)
+
+## Computational Concepts (20 minutes)
+
+### Key-Value Relationships
+
+**Real-World Examples** (use props/visuals):
+1. **Phone Book**: Draw on board
+   ```
+   "Alice" ────→ "555-1234"
+   "Bob" ──────→ "555-5678"
+   ```
+
+2. **Restaurant Menu**: Show actual menu
+   ```
+   "Pizza" ────→ $12.99
+   "Burger" ───→ $8.99
+   ```
+
+3. **Student Records**: Use class example
+   ```
+   "S001" ─────→ {Alice, 92%, CS Major}
+   ```
+
+### Lists vs Dictionaries Demo
+
+**Live Comparison**:
+```python
+# The Problem with Lists
+names = ["Alice", "Bob", "Carol"]
+phones = ["555-1234", "555-5678", "555-9012"]
+
+# Finding Bob's phone (inefficient!)
+for i in range(len(names)):
+    if names[i] == "Bob":
+        print(phones[i])
+
+# The Dictionary Solution
+contacts = {
+    "Alice": "555-1234",
+    "Bob": "555-5678",
+    "Carol": "555-9012"
+}
+
+# Direct access!
+print(contacts["Bob"])
+```
+
+**Key Points**:
+- Direct access vs searching
+- Meaningful names vs positions
+- No synchronization issues
+
+## From Concepts to Code (20 minutes)
+
+### Building Understanding Progressively
+
+**Step 1: Simple Dictionary**
+```python
+# Start with one person
+person = {"name": "Alice", "age": 25}
+```
+
+**Step 2: Access and Modify**
+```python
+# Show both access methods
+print(person["name"])      # Direct - can error!
+print(person.get("phone")) # Safe - returns None
+```
+
+**Step 3: Build Complexity**
+```python
+# Nested structure
+contacts = {
+    "Alice": {
+        "phone": "555-1234",
+        "email": "alice@email.com"
+    }
+}
+```
+
+### Common Patterns to Demonstrate
+
+1. **Configuration/Settings**
+2. **Counting/Frequency**
+3. **Lookup Tables**
+4. **Grouping Data**
+
+## AI Partnership (7 minutes)
+
+### Progressive Prompting Demo
+
+Show evolution of prompts:
+
+1. **Too Vague**: "contact system"
+2. **Better**: "store contacts with phone numbers"
+3. **Best**: "dictionary to store names and phones, no classes"
+
+### Managing AI Complexity
+
+**What to Watch For**:
+- Classes (too early)
+- Databases (not needed)
+- JSON (Week 10)
+- Complex libraries
+
+**Good Constraints**:
+```
+"Using only dictionaries, lists, loops, and functions
+No imports, no classes, no files"
+```
+
+---
+
+# Common Student Difficulties
+
+## 1. KeyError Anxiety
+
+**Problem**: Students afraid to access dictionaries
+
+**Solution Strategy**:
+```python
+# Show the error first
+person = {"name": "Alice"}
+print(person["phone"])  # KeyError!
+
+# Then show solutions
+# Option 1: Check first
+if "phone" in person:
+    print(person["phone"])
+
+# Option 2: Use .get()
+print(person.get("phone", "No phone"))
+```
+
+## 2. Nested Access Confusion
+
+**Problem**: Can't navigate nested structures
+
+**Solution Strategy**:
+```python
+# Break it down step by step
+data = {"users": {"alice": {"age": 25}}}
+
+# Show intermediate steps
+users = data["users"]
+alice = users["alice"]
+age = alice["age"]
+
+# Then show chained access
+age = data["users"]["alice"]["age"]
+```
+
+## 3. Iteration Method Confusion
+
+**Problem**: Don't know how to loop through dictionaries
+
+**Solution Strategy**:
+```python
+person = {"name": "Alice", "age": 25, "city": "NYC"}
+
+# Show all three methods
+for key in person:  # Just keys
+    print(key)
+
+for value in person.values():  # Just values
+    print(value)
+
+for key, value in person.items():  # Both
+    print(f"{key}: {value}")
+```
+
+## 4. When to Use Lists vs Dictionaries
+
+**Problem**: Wrong data structure choice
+
+**Teaching Strategy**:
+- Lists: Ordered, similar items, access by position
+- Dicts: Labeled data, varied types, access by name
+
+**Examples**:
+```python
+# Good for list: daily temperatures
+temps = [72, 75, 71, 68, 70]
+
+# Good for dict: person's attributes  
+person = {"name": "Alice", "age": 25, "gpa": 3.8}
+```
+
+---
+
+# Live Coding Suggestions
+
+## Build a Contact Entry (10 minutes)
+
+Start simple and grow:
+
+```python
+# Version 1
+contact = {"name": "Alice", "phone": "555-1234"}
+
+# Version 2 - Add fields
+contact["email"] = "alice@email.com"
+
+# Version 3 - Nested phones
+contact = {
+    "name": "Alice",
+    "phones": {
+        "home": "555-1234",
+        "work": "555-5678"
+    }
+}
+```
+
+## Debugging Session (5 minutes)
+
+Intentionally make these mistakes:
+1. Access missing key (KeyError)
+2. Forget quotes around string key
+3. Try to use list method on dict
+4. Modify dict while iterating
+
+Show how to fix each one.
+
+---
+
+# Lab Support
+
+## Hour 1 Focus
+- Let students experiment with basic operations
+- Walk around checking for KeyErrors
+- Encourage using .get() method
+- Help visualize nested structures
+
+## Hour 2 Focus  
+- Guide contact book design
+- Suggest data structure improvements
+- Help with search functionality
+- Encourage testing edge cases
+
+## Common Lab Issues
+
+1. **Empty Dictionary Checks**
+   ```python
+   if contacts:  # False if empty
+       # process
+   else:
+       print("No contacts")
+   ```
+
+2. **Case-Sensitive Keys**
+   ```python
+   # Standardize input
+   name = input("Name: ").title()
+   ```
+
+3. **Duplicate Handling**
+   ```python
+   if name in contacts:
+       print("Already exists!")
+   ```
+
+---
+
+# Assessment Guidelines
+
+## Quick Checks During Class
+
+1. "What's the difference between `dict[key]` and `dict.get(key)`?"
+2. "When would you use a list instead of a dictionary?"
+3. "How do you get all values from a dictionary?"
+
+## Project Evaluation Focus
+
+**Contact Book Key Points**:
+- Data structure design choice
+- Handling missing data
+- Search implementation
+- User interface clarity
+
+**Common Issues to Watch**:
+- No validation
+- Poor key choices
+- Overcomplicated structure
+- Not handling edge cases
+
+---
+
+# Pacing Guidelines
+
+## If Running Behind
+- Skip complex nesting examples
+- Focus on single-level dictionaries
+- Reduce AI partnership section
+- Move some patterns to lab
+
+## If Running Ahead
+- Add more real-world examples
+- Show dictionary comprehensions (preview)
+- Discuss performance implications
+- Compare more data structures
+
+## Checkpoints
+- 0:20 - Should be showing code
+- 0:40 - Should have covered methods
+- 0:50 - Starting AI section
+- 0:57 - Wrapping up
+
+---
+
+# Week-Specific Teaching Tips
+
+## Visual Aids
+1. **Box Diagrams**: Show key pointing to value box
+2. **Comparison Table**: List vs Dict operations
+3. **Nested Circles**: For nested dictionaries
+4. **Error Screenshots**: Common KeyErrors
+
+## Analogies That Work
+- Dictionary = Phone book
+- Key = Person's name
+- Value = Phone number
+- KeyError = Name not in book
+
+## Demonstrations
+1. **Physical Props**: Index cards with key/value pairs
+2. **Interactive**: Students suggest keys and values
+3. **Mistakes**: Show what not to do
+4. **Debugging**: Fix errors together
+
+## Discussion Prompts
+- "What information in your life is key-value?"
+- "When is finding by name better than position?"
+- "How would you organize a music playlist?"
+- "What makes a good dictionary key?"
+
+---
+
+# Additional Resources
+
+## For Struggling Students
+- Provide dictionary method cheat sheet
+- Extra practice with single-level dicts
+- Pair programming on contact book
+- Visual dictionary structure diagrams
+
+## For Advanced Students
+- Nested dictionary challenges
+- Performance comparison tasks
+- Alternative data structure designs
+- Real-world data modeling
+
+## Homework Support
+- Provide starter code template
+- List of test cases
+- Common error solutions
+- Design pattern examples
+
+---
+
+# Looking Ahead
+
+## Connection to Week 7 (Files)
+"Next week, we'll save these dictionaries to files so your contact book persists!"
+
+## Prep Students For
+- Saving dictionary data
+- Loading from files
+- Data persistence
+- Complete applications
+
+## Reinforce This Week
+- Dictionaries are everywhere in programming
+- Key-value thinking is fundamental
+- This enables real applications
+- Foundation for JSON (Week 10)
+
+---
+
+# Quick Reference
+
+## Must Cover
+✓ Dictionary creation  
+✓ Access methods ([] vs .get())  
+✓ Adding/updating/deleting  
+✓ .keys(), .values(), .items()  
+✓ Iteration patterns  
+✓ Nested structures  
+✓ When to use dicts vs lists
+
+## Common Errors
+✓ KeyError  
+✓ TypeError (unhashable key)  
+✓ AttributeError (wrong method)  
+✓ RuntimeError (dict changed during iteration)
+
+## Time Savers
+- Pre-create error examples
+- Have visual aids ready
+- Use real student names in examples
+- Keep backup examples simple
+
+Remember: Dictionaries enable students to build real applications!

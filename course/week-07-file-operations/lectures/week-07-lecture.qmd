@@ -1,0 +1,557 @@
+---
+title: "Week 7: File I/O and Persistence"
+subtitle: "Making Your Programs Remember"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    embed-resources: true
+    self-contained: true
+  pdf:
+    toc: true
+---
+
+# The Power of Persistence
+
+## The Lost Contact Book Problem (10 minutes)
+
+### Last Week's Victory... and Defeat
+
+Let me show you something that will frustrate you about our contact book:
+
+**Me**: "Let's run our amazing contact book from last week!"
+
+```python
+# Our beautiful contact book
+contacts = {
+    "Alice": {"phone": "555-1234", "email": "alice@email.com"},
+    "Bob": {"phone": "555-5678", "email": "bob@email.com"}
+}
+
+print("Contacts loaded!")
+print(f"We have {len(contacts)} contacts")
+```
+
+**Now watch this**:
+1. Close the program (or restart Colab)
+2. Run it again...
+3. Where are our contacts? GONE! 😱
+
+### The Core Problem
+
+Every variable, list, and dictionary lives in RAM (Random Access Memory):
+- RAM = Temporary storage
+- Power off = Data gone
+- Program ends = Memory cleared
+- Colab disconnects = Everything lost
+
+But look at your computer:
+- Your documents are still there tomorrow
+- Your photos survive restarts  
+- Your apps remember your settings
+- How? They use FILES!
+
+### Today's Journey
+
+We'll discover:
+1. How to save data to files (permanent storage)
+2. How to load data back when needed
+3. How to build programs that remember
+4. How to handle file problems gracefully
+
+## Why Files Matter (20 minutes)
+
+### Understanding Permanent Storage
+
+Think about these everyday examples:
+
+**Your Phone Contacts**:
+```
+Not stored in RAM → Stored in files
+Survive restart → Still there tomorrow
+Can backup → Copy to another device
+Can share → Send to someone else
+```
+
+**A Video Game**:
+```
+Save game → Write to file
+Load game → Read from file
+Multiple saves → Multiple files
+Share saves → Copy files
+```
+
+**A Word Processor**:
+```
+Create document → Save to file
+Open document → Read from file
+Auto-save → Update file regularly
+Recover → Read backup file
+```
+
+### Files vs Variables
+
+Let's compare:
+
+| Variables (RAM) | Files (Disk) |
+|----------------|--------------|
+| Temporary | Permanent |
+| Fast access | Slower access |
+| Limited size | Much larger |
+| Lost on exit | Survives forever |
+| Can't share | Can share/copy |
+
+### Types of Files
+
+For now, we'll work with **text files**:
+- Human readable
+- Simple to create and edit
+- Perfect for learning
+- What you see in Notepad/TextEdit
+
+Later in the course:
+- CSV files (Week 9) - Spreadsheet data
+- JSON files (Week 10) - Structured data
+
+## From Concepts to Code: File Operations (20 minutes)
+
+### Opening and Closing Files
+
+The basic pattern:
+
+```python
+# DON'T DO THIS (but understand it)
+file = open("myfile.txt", "r")  # Open for reading
+content = file.read()            # Read content
+file.close()                     # MUST close!
+
+# DO THIS INSTEAD (automatic closing)
+with open("myfile.txt", "r") as file:
+    content = file.read()
+# File automatically closed here!
+```
+
+### File Modes
+
+The second parameter to `open()` is the mode:
+
+```python
+# "r" - Read mode (default)
+# File must exist or error!
+with open("data.txt", "r") as file:
+    content = file.read()
+
+# "w" - Write mode  
+# Creates new file OR overwrites existing!
+with open("output.txt", "w") as file:
+    file.write("Hello, World!\n")
+
+# "a" - Append mode
+# Adds to end of existing file
+with open("log.txt", "a") as file:
+    file.write("New log entry\n")
+```
+
+### Reading Files - Three Ways
+
+```python
+# Method 1: Read entire file at once
+with open("story.txt", "r") as file:
+    entire_content = file.read()
+    print(entire_content)
+
+# Method 2: Read line by line (memory efficient)
+with open("story.txt", "r") as file:
+    for line in file:
+        print(line.strip())  # strip() removes \n
+
+# Method 3: Read all lines into a list
+with open("story.txt", "r") as file:
+    all_lines = file.readlines()
+    print(f"The file has {len(all_lines)} lines")
+```
+
+### Writing to Files
+
+```python
+# Write multiple lines
+with open("shopping.txt", "w") as file:
+    file.write("Shopping List\n")
+    file.write("=============\n")
+    file.write("Milk\n")
+    file.write("Bread\n")
+    file.write("Eggs\n")
+
+# Write from a list
+items = ["Apples", "Bananas", "Oranges"]
+with open("fruits.txt", "w") as file:
+    for item in items:
+        file.write(item + "\n")
+
+# Write with formatting
+scores = {"Alice": 95, "Bob": 87, "Carol": 92}
+with open("scores.txt", "w") as file:
+    file.write("Grade Report\n")
+    for name, score in scores.items():
+        file.write(f"{name}: {score}%\n")
+```
+
+### Practical Example: Saving Our Contacts
+
+Here's how to make our contact book permanent:
+
+```python
+def save_contacts(contacts, filename="contacts.txt"):
+    """Save contacts to a file."""
+    with open(filename, "w") as file:
+        # Write header
+        file.write("Contact Book Data\n")
+        file.write("=================\n")
+        
+        # Write each contact
+        for name, info in contacts.items():
+            # Create a formatted line
+            line = f"{name}|{info['phone']}|{info['email']}\n"
+            file.write(line)
+    
+    print(f"Saved {len(contacts)} contacts to {filename}")
+
+def load_contacts(filename="contacts.txt"):
+    """Load contacts from a file."""
+    contacts = {}
+    
+    try:
+        with open(filename, "r") as file:
+            # Skip header lines
+            file.readline()  # Skip "Contact Book Data"
+            file.readline()  # Skip "================="
+            
+            # Read each contact
+            for line in file:
+                # Remove newline and split by |
+                parts = line.strip().split("|")
+                
+                # Check we have all parts
+                if len(parts) == 3:
+                    name, phone, email = parts
+                    contacts[name] = {
+                        "phone": phone,
+                        "email": email
+                    }
+    
+    except FileNotFoundError:
+        print(f"No saved contacts found. Starting fresh!")
+    
+    return contacts
+
+# Test it!
+my_contacts = {
+    "Alice": {"phone": "555-1234", "email": "alice@email.com"},
+    "Bob": {"phone": "555-5678", "email": "bob@email.com"}
+}
+
+save_contacts(my_contacts)
+loaded = load_contacts()
+print(f"Loaded {len(loaded)} contacts")
+```
+
+### Handling Missing Files
+
+Always be prepared for files that don't exist:
+
+```python
+# Method 1: Let it fail (for learning)
+with open("missing.txt", "r") as file:
+    content = file.read()  # FileNotFoundError!
+
+# Method 2: Check first
+import os  # Wait, we can't use imports yet!
+
+# Method 3: Just try it (we'll learn try/except in Week 10)
+# For now, use this pattern:
+
+def read_safe(filename):
+    """Read file or return empty string."""
+    try:
+        with open(filename, "r") as file:
+            return file.read()
+    except FileNotFoundError:
+        return ""
+
+# Method 4: Create if missing
+def read_or_create(filename):
+    """Read file or create empty one."""
+    try:
+        with open(filename, "r") as file:
+            return file.read()
+    except FileNotFoundError:
+        # Create empty file
+        with open(filename, "w") as file:
+            file.write("")
+        return ""
+```
+
+## AI Partnership: Smart File Handling (7 minutes)
+
+### Progressive Prompt Evolution
+
+Working with files often needs debugging help:
+
+#### Attempt 1: Too Vague
+**You**: "save data to file"
+
+**AI gives**: Complex JSON, databases, binary formats...
+
+#### Attempt 2: Adding Constraints  
+**You**: "Save a list of names to a text file using only basic Python file operations"
+
+**AI might give**: Still includes csv module or advanced features...
+
+#### Attempt 3: Clear Requirements
+**You**: "Save a Python list to a text file using ONLY:
+- open() with 'w' mode
+- file.write()
+- with statement
+- for loops
+No imports, no csv, no json"
+
+**AI gives**:
+```python
+names = ["Alice", "Bob", "Carol"]
+
+with open("names.txt", "w") as file:
+    for name in names:
+        file.write(name + "\n")
+```
+
+Perfect! Simple and clear.
+
+### Debugging File Issues with AI
+
+**Good prompts for help**:
+> "Why do I get FileNotFoundError when opening a file?"
+
+> "What's the difference between 'w' and 'a' mode?"
+
+> "How do I save a dictionary to a text file without json?"
+
+> "My file has extra blank lines when I read it - why?"
+
+### Common AI Overcomplications
+
+1. **Path Libraries**:
+   ```python
+   # AI suggests - too advanced!
+   from pathlib import Path
+   ```
+
+2. **JSON/CSV**:
+   ```python
+   # AI suggests - we haven't learned this!
+   import json
+   json.dump(data, file)
+   ```
+
+3. **Complex Error Handling**:
+   ```python
+   # AI suggests - Week 10 material!
+   try:
+       ...
+   except (IOError, OSError) as e:
+       logging.error(f"File error: {e}")
+   ```
+
+Keep it simple with basic file operations!
+
+## Building on Previous Weeks (3 minutes)
+
+### Integration with Everything
+
+Files complete our toolkit:
+- **Lists** → Save to files
+- **Dictionaries** → Persist complex data
+- **Functions** → Encapsulate file operations
+- **Loops** → Process file contents
+- **Strings** → Format file data
+
+### Real Applications Now Possible
+
+With files, you can build:
+- Contact book that remembers
+- Todo list that persists
+- Journal that saves entries
+- Game that saves progress
+- Grade tracker that stores scores
+
+## Preparing for Lab
+
+In today's lab, you'll:
+1. Practice all file operations
+2. Upgrade your contact book
+3. Build a todo list app
+4. Create a personal journal
+
+Key advice:
+- Always use 'with' statements
+- Test with small files first
+- Check if files exist
+- Handle errors gracefully
+
+### Textbook Connection
+
+**Read for next class**:
+- Chapter 24: "File Input/Output"
+- Chapter 25: "Text File Processing"
+- Chapter 26: "Data Persistence"
+- Chapter 27: "File Formats"
+
+---
+
+# Instructor Notes
+
+## Hook Management
+
+The "lost contact book" works because:
+1. Students just built it last week
+2. Frustration is immediate and relatable
+3. Solution (files) is obviously needed
+4. Builds on their success
+
+Alternative hooks: Lost game progress, Lost todo list, Lost notes
+
+## Key Teaching Points
+
+### File Concept Challenges
+
+**Abstract Nature**:
+- Files are less tangible than variables
+- Path concept is confusing
+- Persistence seems magical
+
+**Mode Confusion**:
+```python
+# Common mistakes to demonstrate
+file = open("data.txt", "r")
+file.write("Hello")  # Error! Can't write in read mode
+
+file = open("data.txt", "w")
+# Oops! Just erased the file!
+```
+
+**Not Closing Files**:
+- Show what happens (file locked)
+- Emphasize 'with' statement
+- Make it a habit
+
+### Common Confusions
+
+**Path vs Filename**:
+- Start with just filenames
+- Same directory assumption
+- Path complexity later
+
+**Read vs Readlines**:
+```python
+# Demonstrate the difference
+content = file.read()      # One big string
+lines = file.readlines()   # List of strings
+```
+
+**Newline Characters**:
+- Why \n appears
+- When to strip()
+- Writing with/without \n
+
+## Live Coding Strategy
+
+### Build a Simple Save/Load
+
+Start minimal and grow:
+```python
+# Version 1: Save one string
+with open("data.txt", "w") as f:
+    f.write("Hello")
+
+# Version 2: Save a list
+items = ["A", "B", "C"]
+with open("data.txt", "w") as f:
+    for item in items:
+        f.write(item + "\n")
+
+# Version 3: Save with formatting
+# ... build complexity
+```
+
+### Common Errors to Demo
+
+1. FileNotFoundError
+2. Wrong mode error
+3. Overwriting data accidentally
+4. Forgetting newlines
+
+## Assessment Ideas
+
+**Quick Checks**:
+- "What mode to add to a file?"
+- "What does readlines() return?"
+- "Why use 'with'?"
+
+**Peer Review**:
+- Exchange file formats
+- Try to read each other's files
+- Discuss design choices
+
+## Common Student Issues
+
+1. **Path Anxiety**
+   - Stick to simple filenames
+   - Same directory only
+   - Avoid path complexity
+
+2. **Mode Paralysis**
+   - Make a mode cheat sheet
+   - Practice choosing modes
+   - Show consequences
+
+3. **Format Design**
+   - Start with one item per line
+   - Graduate to delimited
+   - Keep it human-readable
+
+4. **Colab Concerns**
+   - Files are temporary!
+   - Show download/upload
+   - Mention Drive later
+
+## Differentiation
+
+**For Struggling Students**:
+- Provide file templates
+- Start with reading only
+- Give format examples
+- Pair programming
+
+**For Advanced Students**:
+- Multiple file handling
+- Complex formats
+- Backup systems
+- File statistics
+
+## Time Management
+- 0:00-0:10 - Hook with lost data
+- 0:10-0:30 - File concepts and value
+- 0:30-0:50 - Hands-on coding
+- 0:50-0:57 - AI partnership
+- 0:57-1:00 - Lab preview
+
+## Week 7 Specific Tips
+
+1. **Show File Explorer** - Make files tangible
+2. **Celebrate Persistence** - "Your data survives!"
+3. **Simple Formats First** - Complexity comes later
+4. **Lots of Practice** - Files need repetition
+5. **Real Applications** - This enables everything!
+
+Remember: Files transform programs from toys to tools!
