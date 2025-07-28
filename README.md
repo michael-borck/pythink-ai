@@ -105,7 +105,16 @@ This course is actively maintained. To contribute:
 
 ## 📄 License
 
-This course is provided under the MIT License. See LICENSE file for details.
+This project uses a dual licensing approach:
+
+- **Educational Content** (lectures, labs, projects, assessments): Licensed under [Creative Commons BY-SA 4.0](LICENSE-CONTENT)
+  - You must give appropriate credit
+  - Adaptations must be shared under the same license
+  
+- **Code Examples**: Licensed under [MIT License](LICENSE-CODE)
+  - Free to use with minimal restrictions
+
+See [LICENSE](LICENSE) for details.
 
 ## 🙏 Acknowledgments
 

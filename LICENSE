@@ -1,21 +1,32 @@
-MIT License
+# Dual License
+
+This project uses different licenses for different types of content:
+
+## Course Content (Educational Materials)
+
+All educational materials including but not limited to:
+- Lecture notes (.qmd files in lectures/)
+- Lab exercises (.qmd files in labs/)
+- Projects (.qmd files in projects/)
+- Assessments (.qmd files in assessments/)
+- Instructor guides and resources
+- Course documentation and curriculum
+
+Are licensed under the **Creative Commons Attribution-ShareAlike 4.0 International License (CC BY-SA 4.0)**.
+
+See LICENSE-CONTENT for the full license text.
+
+## Code Examples
+
+All code examples, scripts, and software implementations within the course materials are licensed under the **MIT License**.
+
+See LICENSE-CODE for the full license text.
+
+## Summary
+
+- **Educational Content**: CC BY-SA 4.0 - Must attribute, share modifications under same license
+- **Code Examples**: MIT License - Free to use with minimal restrictions
+
+When using this material, please provide appropriate attribution for educational content and include the MIT license notice with code examples.
 
 Copyright (c) 2024 PyThink AI Course Contributors
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
