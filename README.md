@@ -1,5 +1,9 @@
 # PyThink AI: Python Programming Through Computational Thinking
 
+<!-- BADGES:START -->
+[![curriculum](https://img.shields.io/badge/-curriculum-blue?style=flat-square)](https://github.com/topics/curriculum) [![curtin](https://img.shields.io/badge/-curtin-f57c00?style=flat-square)](https://github.com/topics/curtin) [![ai](https://img.shields.io/badge/-ai-ff6f00?style=flat-square)](https://github.com/topics/ai) [![beginner-friendly](https://img.shields.io/badge/-beginner--friendly-blue?style=flat-square)](https://github.com/topics/beginner-friendly) [![computational-thinking](https://img.shields.io/badge/-computational--thinking-blue?style=flat-square)](https://github.com/topics/computational-thinking) [![edtech](https://img.shields.io/badge/-edtech-4caf50?style=flat-square)](https://github.com/topics/edtech) [![education](https://img.shields.io/badge/-education-blue?style=flat-square)](https://github.com/topics/education) [![learning](https://img.shields.io/badge/-learning-blue?style=flat-square)](https://github.com/topics/learning) [![programming-course](https://img.shields.io/badge/-programming--course-blue?style=flat-square)](https://github.com/topics/programming-course) [![python](https://img.shields.io/badge/-python-3776ab?style=flat-square)](https://github.com/topics/python)
+<!-- BADGES:END -->
+
 > *Learn Python by thinking like a programmer, with AI as your guide*
 
 ## 🎯 Course Overview
